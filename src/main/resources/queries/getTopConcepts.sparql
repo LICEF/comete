@@ -1,0 +1,8 @@
+SELECT DISTINCT ?s
+WHERE {
+    ?s rdf:type skos:Concept .
+    OPTIONAL {
+        ?s skos:broader ?o
+    }
+    FILTER(!BOUND(?o))
+}
