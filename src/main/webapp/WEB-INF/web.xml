@@ -12,11 +12,11 @@
     id="identity-agent"
     version="2.5">   
 
-    <description>Vocabulary startup servlet</description>
+    <description>Core startup servlet</description>
 
     <servlet>
-        <servlet-name>vocabulary</servlet-name>
-        <servlet-class>ca.licef.proeaf.vocabulary.VocabularyServlet</servlet-class>
+        <servlet-name>core</servlet-name>
+        <servlet-class>ca.licef.comete.core.CoreServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet> 
 
@@ -28,6 +28,7 @@
         <init-param>
             <param-name>com.sun.jersey.config.property.packages</param-name>
             <param-value>ca.licef.comete.metadata.resource,
+                         ca.licef.comete.harvester.resource,
                          ca.licef.comete.security.resource</param-value>
         </init-param>
         <init-param>

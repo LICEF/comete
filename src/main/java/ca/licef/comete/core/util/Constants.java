@@ -36,6 +36,7 @@ public class Constants {
     //**********
     // Classes
     //**********
+    public static final String TYPE_REPOSITORY = "http://comete.licef.ca/reference#Repository";
     public static final String TYPE_VOCABULARY_CONTEXT = "http://comete.licef.ca/reference#VocContext";
     public static final String TYPE_VOCABULARY = "http://www.w3.org/2004/02/skos/core#ConceptScheme";
     public static final String TYPE_VOCABULARY_CONCEPT = "http://www.w3.org/2004/02/skos/core#Concept";
