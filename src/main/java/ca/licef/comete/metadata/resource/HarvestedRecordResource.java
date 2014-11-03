@@ -1,9 +1,9 @@
 package ca.licef.comete.metadata.resource;
 
 import ca.licef.comete.core.util.Constants;
-import ca.licef.comete.core.util.Security;
 import ca.licef.comete.core.util.Util;
 import ca.licef.comete.metadata.Metadata;
+import ca.licef.comete.security.Security;
 import com.sun.jersey.spi.resource.Singleton;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +27,7 @@ public class HarvestedRecordResource {
                                         @QueryParam( "repoId" ) String repoId,
                                         String record ) throws Exception {
 
-        if (!Security.isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to post records.").build();
 
         String repoUri = Util.makeURI( repoId, Constants.TYPE_REPOSITORY );
@@ -42,7 +42,7 @@ public class HarvestedRecordResource {
                                            @PathParam( "oaiID" ) String oaiID,
                                            @QueryParam( "namespace" ) String namespace ) throws Exception {
 
-        if (!Security.isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to delete records.").build();
 
         String res = Metadata.getInstance().deleteHarvestedRecord( oaiID, namespace );

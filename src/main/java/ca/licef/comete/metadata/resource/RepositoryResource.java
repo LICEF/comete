@@ -2,9 +2,9 @@ package ca.licef.comete.metadata.resource;
 
 import ca.licef.comete.core.Core;
 import ca.licef.comete.core.util.Constants;
-import ca.licef.comete.core.util.Security;
 import ca.licef.comete.core.util.Util;
 import ca.licef.comete.metadata.RepositoryManager;
+import ca.licef.comete.security.Security;
 import com.sun.jersey.spi.resource.Singleton;
 import licef.StringUtil;
 import org.json.JSONArray;
@@ -123,7 +123,7 @@ public class RepositoryResource {
     @Produces( MediaType.TEXT_PLAIN )
     public Response addOrUpdateRepository( @Context HttpServletRequest request,
                                            @PathParam( "id" ) String id, @QueryParam( "name" ) String name, @QueryParam( "type" ) String type, @QueryParam( "url" ) String url, @QueryParam( "adminEmail" ) String adminEmail ) throws Exception {
-        if (!Security.isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to manage repository objects.").build();
 
         String repoUri = RepositoryManager.getInstance().addOrUpdateRepository( id, name, type, url, adminEmail );
@@ -162,7 +162,7 @@ public class RepositoryResource {
     public Response deleteRecords( @Context HttpServletRequest request,
                                    @PathParam( "id" ) String id ) throws Exception {
 
-        if (!Security.isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to delete records.").build();
 
         RepositoryManager.getInstance().deleteRepositoryRecords(id);

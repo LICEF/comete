@@ -1,7 +1,7 @@
 package ca.licef.comete.harvester.resource;
 
-import ca.licef.comete.core.util.Security;
 import ca.licef.comete.harvester.Harvester;
+import ca.licef.comete.security.Security;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 import com.sun.jersey.spi.resource.Singleton;
@@ -59,7 +59,7 @@ public class DefinitionResource {
                                   @PathParam( "id" ) String id,
                                   @FormDataParam("file") InputStream uploadedInputStream,
                                   @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
-        if (!Security.isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to add harvest definition.").build();
 
         Harvester.getInstance().storeDefinition(id, uploadedInputStream, fileDetail);
@@ -74,7 +74,7 @@ public class DefinitionResource {
                                   @PathParam( "id" ) String id,
                                   @FormDataParam("file") InputStream uploadedInputStream,
                                   @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
-        if (!Security.isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to add harvest XSL file.").build();
 
         try {
@@ -94,7 +94,7 @@ public class DefinitionResource {
     @Produces( MediaType.TEXT_PLAIN )
     public Response deleteDefinition(@Context HttpServletRequest request,
                                      @PathParam( "id" ) String id) throws Exception {
-        if (!Security.isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to delete harvest definition.").build();
 
         try {

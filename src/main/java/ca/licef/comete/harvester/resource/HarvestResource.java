@@ -1,7 +1,7 @@
 package ca.licef.comete.harvester.resource;
 
-import ca.licef.comete.core.util.Security;
 import ca.licef.comete.harvester.Harvester;
+import ca.licef.comete.security.Security;
 import com.sun.jersey.spi.resource.Singleton;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,7 +52,7 @@ public class HarvestResource {
     @Produces( MediaType.TEXT_PLAIN )
     public Response startHarvest(@Context HttpServletRequest request,
                                   @PathParam( "id" ) String id, @QueryParam( "from" ) String from) throws Exception {
-        if (!Security.isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to start harvest.").build();
         
         try {
@@ -72,7 +72,7 @@ public class HarvestResource {
     @Produces( MediaType.TEXT_PLAIN )
     public Response stopHarvest(@Context HttpServletRequest request,
                                 @PathParam( "id" ) String id) throws Exception {
-        if (!Security.isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to stop harvest.").build();
 
         try {
