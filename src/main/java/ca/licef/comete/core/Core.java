@@ -14,6 +14,7 @@ import java.util.ResourceBundle;
 public class Core {
     private static Core core;
 
+    private FedoraService fedora;
     private TripleStore tripleStore;
 
     private String cometeHome;
@@ -21,6 +22,10 @@ public class Core {
     private String version;
     private String uriPrefix;
     private String smtpHost;
+
+    private String fedoraUrl;
+    private String fedoraUsername;
+    private String fedoraPassword;
 
     public static Core getInstance() {
         if (core == null)
@@ -36,6 +41,9 @@ public class Core {
             adminEmail = resBundle.getString("comete.admin.email");
             version = resBundle.getString("comete.version");
             smtpHost = resBundle.getString("smtp.host");
+            fedoraUrl = resBundle.getString("fedora.url");
+            fedoraUsername = resBundle.getString("fedora.username");
+            fedoraPassword = resBundle.getString("fedora.password");
 
             initTripleStore();
 
@@ -94,4 +102,18 @@ public class Core {
             initTripleStore();
         return tripleStore;
     }
+
+    /*
+     * Fedora services
+     */
+    public FedoraService getFedoraService() {
+        if (fedora == null) {
+            fedora = new FedoraService();
+            fedora.setUrl(fedoraUrl);
+            fedora.setUsername(fedoraUsername);
+            fedora.setPassword(fedoraPassword);
+        }
+        return fedora;
+    }
+
 }

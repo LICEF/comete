@@ -112,7 +112,7 @@
         <dependency>
             <groupId>licef</groupId>
             <artifactId>licef-tsapi</artifactId>
-            <version>0.1.0</version>
+            <version>0.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.dspace</groupId>
@@ -143,6 +143,16 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.6.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fcrepo</groupId>
+            <artifactId>fcrepo-client-impl</artifactId>
+            <version>4.0.0-beta-04-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging-api</artifactId>
+            <version>1.1</version>
         </dependency>
     </dependencies>
 
@@ -203,10 +213,20 @@
             <url>http://download.java.net/maven/2/</url>
             <layout>default</layout>
         </repository>
-        <repository>
+        <!--repository>
             <id>duraspace-thirdparty</id>
             <name>Duraspace Thirdparty Maven Repository</name>
             <url>https://m2.duraspace.org/content/repositories/thirdparty</url>
-        </repository>
+        </repository-->
+        <!--repository>
+            <id>snapshots-repo</id>
+            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository-->
     </repositories>
 </project>
