@@ -112,7 +112,7 @@
         <dependency>
             <groupId>licef</groupId>
             <artifactId>licef-tsapi</artifactId>
-            <version>0.1.1</version>
+            <version>0.1.2</version>
         </dependency>
         <dependency>
             <groupId>org.dspace</groupId>
@@ -158,7 +158,7 @@
 
     <!-- More Project Information -->
     <name>COMETE</name>
-    <description>Comète Project Jena Migration</description>
+    <description>Comete Project Jena Migration</description>
     <url>https://github.com/LICEF/comete.git</url>
     <inceptionYear>2014</inceptionYear>
     <licenses>
@@ -218,7 +218,7 @@
             <name>Duraspace Thirdparty Maven Repository</name>
             <url>https://m2.duraspace.org/content/repositories/thirdparty</url>
         </repository-->
-        <!--repository>
+        <repository>
             <id>snapshots-repo</id>
             <url>http://oss.sonatype.org/content/repositories/snapshots</url>
             <releases>
@@ -227,6 +227,6 @@
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
-        </repository-->
+        </repository>
     </repositories>
 </project>
