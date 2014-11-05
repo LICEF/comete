@@ -111,14 +111,15 @@ public class FedoraService {
     //}
 
     public String createDigitalObject() throws FedoraException {
-        FedoraObject object = getRepository().createObject( "/", true );
+        //FedoraObject object = getRepository().createObject( "/", true );
         //System.out.println( "Object created. Name=" + object.getName() +" Path=" + object.getPath() + " Size=" + object.getSize() );
         //Iterator<Triple> properties = object.getProperties();
         //for( ; properties.hasNext(); ) {
         //    Triple property = properties.next();
         //    System.out.println( "Prop: " + property );
         //}
-        return( object.getName() );
+        //return( object.getName() );
+        return( null );
     }
 
     public String createDigitalObject( String path ) throws FedoraException {
@@ -136,10 +137,11 @@ public class FedoraService {
      * @param contentType Possible values are "application/rdf+xml", "text/turtle", etc.
      */
     public String ingestDigitalObject( String path, String rdf, String contentType ) throws FedoraException {
-        FedoraObject object = getRepository().createObject( "/", true );
-        InputStream is = new ByteArrayInputStream( rdf.getBytes( StandardCharsets.UTF_8 ) );
-        object.updateProperties( is, contentType ); 
-        return( object.getName() );
+        //FedoraObject object = getRepository().createObject( "/", true );
+        //InputStream is = new ByteArrayInputStream( rdf.getBytes( StandardCharsets.UTF_8 ) );
+        //object.updateProperties( is, contentType ); 
+        //return( object.getName() );
+        return( null );
     }
 
     //public String ingestDigitalObject( String foxml, String logMessage ) throws FedoraClientException {

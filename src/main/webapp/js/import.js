@@ -29,7 +29,7 @@
             var uploadForm = uploadPanel.getForm();    
             if (uploadForm.isValid()) {
                 uploadForm.submit({ 
-                    url: '/comete/rest/metadataRecords',
+                    url: 'rest/metadataRecords',
                     success: function(form, action) {
                         /*var res = '';
                         for (i = 0; i < action.result.data.length; i++)
