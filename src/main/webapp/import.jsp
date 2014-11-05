@@ -5,11 +5,10 @@
     <title>Comète</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-    <link rel="stylesheet" href="ext-4.2.1.883/resources/css/ext-all-neptune.css"/>
+    <link rel="stylesheet" href="ext-5.0.1/build/packages/ext-theme-crisp/build/resources/ext-theme-crisp-all.css"/>
 
-    <script type="text/javascript" src="ext-4.2.1.883/ext-all.js"></script>
-    <script type="text/javascript" src="ext-4.2.1.883/locale/ext-lang-en.js"></script>
-    <script type="text/javascript" src="ext-4.2.1.883/ext-theme-neptune.js"></script>
+    <script type="text/javascript" src="ext-5.0.1/build/ext-all.js"></script>
+    <script type="text/javascript" src="ext-5.0.1/build/packages/ext-theme-crisp/build/ext-theme-crisp.js"></script>
 
     <script type="text/javascript" src="js/i18n.js"></script>
     <% if( request.getParameter( "lang" ) != null && !"en".equals( request.getParameter( "lang" ) ) ) { %>

@@ -1,9 +1,4 @@
-﻿Ext.onReady( function() {    
-    //Ext.QuickTips.init();
-    setAuthorized(function(){init();})
-});
-
-function init() {
+﻿function init() {
     
     // By default, the interface is displayed in English.
     //var lang = ( Ext.getUrlParam( 'lang' ) || 'en' );
@@ -62,16 +57,21 @@ function init() {
     var importer = Ext.create('Ext.panel.Panel', {
         layout: 'vbox',
         border: false,
-        region: 'center',
         items:[ uploadPanel, resultLabel ]
     } );
 
-    Ext.create('Ext.container.Viewport', {
+    Ext.create('Ext.Panel', {
         layout: 'fit',
-        items: [ {
-            layout: 'border',
-            border: false,
-            items: [ importer ]
-        } ]       
-    } );
+        renderTo: Ext.getBody(),
+        items: [ importer ]
+    });
+    
 }
+
+Ext.application({
+    name: 'Comete',
+    launch: function() {
+        setAuthorized(function(){init();})
+    }
+});
+
