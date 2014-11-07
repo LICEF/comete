@@ -1,0 +1,7 @@
+PREFIX comete: <http://comete.licef.ca/reference#>
+
+SELECT ?s
+WHERE '{'
+    ?s comete:metadataFormat <{0}> .
+    ?s <http://www.openarchives.org/OAI/2.0/oai-identifier> "{1}"
+'}'
