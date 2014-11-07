@@ -23,4 +23,7 @@ public class CoreServlet extends HttpServlet {
         }
     }
 
+    public void destroy() {
+        Core.getInstance().getTripleStore().stopServer();
+    }
 }
