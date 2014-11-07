@@ -1,7 +1,7 @@
 package ca.licef.comete.metadata;
 
 import ca.licef.comete.core.Core;
-import ca.licef.comete.core.FedoraService;
+import ca.licef.comete.core.Fedora;
 import ca.licef.comete.core.metadataformat.MetadataFormat;
 import ca.licef.comete.core.metadataformat.MetadataFormats;
 import ca.licef.comete.core.metadataformat.OAI_DC;
@@ -341,7 +341,7 @@ System.out.println( "Created" );
         ArrayList<Triple> triples = new ArrayList<Triple>();
         String fedoraId;
         MetadataFormat metadataFormat = MetadataFormats.getMetadataFormat(namespace);
-        FedoraService fedora = Core.getInstance().getFedoraService();
+        Fedora fedora = Core.getInstance().getFedora();
         TripleStore tripleStore = Core.getInstance().getTripleStore();
         if (recordURI == null) {
             String recordId = fedora.createDigitalObject();
@@ -464,7 +464,7 @@ System.out.println( "fedoraId="+fedoraId+" recordURI="+recordURI );
     //            learningObjectUri = triple.getObject();
     //    }
 
-    //    String recordXml = Core.getInstance().getFedoraService().getDatastream( fedoraId, Constants.DATASTREAM_DATA );
+    //    String recordXml = Core.getInstance().getFedora().getDatastream( fedoraId, Constants.DATASTREAM_DATA );
 
     //    return( processMetadataRecord( recordXml, learningObjectUri, metadataRecordUri, applicationProfile ) );
     //}

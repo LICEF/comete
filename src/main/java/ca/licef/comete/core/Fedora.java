@@ -40,7 +40,7 @@ import org.fcrepo.client.impl.FedoraRepositoryImpl;
 //import java.util.Hashtable;
 //import java.util.List;
 
-public class FedoraService {
+public class Fedora {
 
     private String url;
     private String username;
@@ -754,8 +754,8 @@ public class FedoraService {
     //public void substituteObjectOld(String object1, String object2, boolean isLiteral) throws Exception {
     //    Triple[] triples = getRelationsWithObjectOld(object1, isLiteral);
     //    for (Triple triple : triples) {
-    //        Core.getInstance().getFedoraService().purgeRelationship(triple.getSubject(), triple.getPredicate(), object1, isLiteral);
-    //        Core.getInstance().getFedoraService().addRelationship(triple.getSubject(), triple.getPredicate(), object2, isLiteral);
+    //        Core.getInstance().getFedora().purgeRelationship(triple.getSubject(), triple.getPredicate(), object1, isLiteral);
+    //        Core.getInstance().getFedora().addRelationship(triple.getSubject(), triple.getPredicate(), object2, isLiteral);
     //    }
     //}
 

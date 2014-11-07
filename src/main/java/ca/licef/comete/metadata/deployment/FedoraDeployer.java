@@ -1,7 +1,7 @@
 package ca.licef.comete.metadata.deployment;
 
 import ca.licef.comete.core.Core;
-import ca.licef.comete.core.FedoraService;
+import ca.licef.comete.core.Fedora;
 import ca.licef.comete.core.util.Util;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -21,10 +21,10 @@ import java.io.StringReader;
  */
 public class FedoraDeployer extends ResourceDeployer {
 
-    FedoraService fedora;
+    Fedora fedora;
 
     public FedoraDeployer(String fedoraUrl, String fedoraUsername, String fedoraPassword) {
-        fedora = new FedoraService();
+        fedora = new Fedora();
         fedora.setUrl(fedoraUrl);
         fedora.setUsername(fedoraUsername);
         fedora.setPassword(fedoraPassword);

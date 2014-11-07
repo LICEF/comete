@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
 public class Core {
     private static Core core;
 
-    private FedoraService fedora;
+    private Fedora fedora;
     private TripleStore tripleStore;
 
     private String cometeHome;
@@ -137,9 +137,9 @@ public class Core {
     /*
      * Fedora services
      */
-    public FedoraService getFedoraService() {
+    public Fedora getFedora() {
         if (fedora == null) {
-            fedora = new FedoraService();
+            fedora = new Fedora();
             fedora.setUrl(fedoraUrl);
             fedora.setUsername(fedoraUsername);
             fedora.setPassword(fedoraPassword);
