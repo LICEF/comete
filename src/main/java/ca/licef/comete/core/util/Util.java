@@ -99,7 +99,11 @@ public class Util {
 
     public static String getTypeLabel(String type) {
         String typeVal = null;
-        if (COMETE.VocContext.getURI().equals(type))
+        if (Constants.TYPE_METADATA_RECORD.equals(type))
+            typeVal = "metadatarecord";
+        else if (Constants.TYPE_LEARNING_OBJECT.equals(type))
+            typeVal = "learningobject";
+        else if (COMETE.VocContext.getURI().equals(type))
             typeVal = "voccontext";
         return typeVal;
     }
