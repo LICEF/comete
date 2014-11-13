@@ -5,6 +5,7 @@ import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.Util;
 import ca.licef.comete.metadata.Metadata;
 import ca.licef.comete.metadata.RepositoryManager;
+import ca.licef.comete.vocabularies.COMETE;
 
 /**
  * Created with IntelliJ IDEA.
@@ -40,7 +41,7 @@ public class Digester {
         else
             return IGNORED;*/
 
-        String repoUri = Util.makeURI(repoId, Constants.TYPE_REPOSITORY);
+        String repoUri = Util.makeURI(repoId, COMETE.Repository );
         String res = Metadata.getInstance().storeHarvestedRecord(oaiID, namespace, repoUri, record, datestamp, false);
         if ("added".equals(res))
             return ADDED;

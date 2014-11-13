@@ -24,6 +24,10 @@ public class Constants {
     //Standards
     public static final String OAI_DC_NAMESPACE = "http://www.openarchives.org/OAI/2.0/oai_dc/";
     public static final String IEEE_LOM_NAMESPACE = "http://ltsc.ieee.org/xsd/LOM";
+    public static final String VDEX_NAMESPACE = "http://www.imsglobal.org/xsd/imsvdex_v1p0";
+
+
+    public static final String OAI_ID = "http://www.openarchives.org/OAI/2.0/oai-identifier";
 
     //Mimetypes
     public static final String VCARD_MIMETYPE = "text/x-vcard";
@@ -33,45 +37,6 @@ public class Constants {
     };
     public static final List MIMETYPE_CATEGORIES = Arrays.asList(_MIMETYPE_CATEGORIES);
 
-    //**********
-    // Classes
-    //**********
-    public static final String TYPE_LEARNING_OBJECT = "http://comete.licef.ca/reference#LearningObject";
-    public static final String TYPE_METADATA_RECORD = "http://comete.licef.ca/reference#MetadataRecord";
-    public static final String TYPE_REPOSITORY = "http://comete.licef.ca/reference#Repository";
-    public static final String TYPE_VOCABULARY_CONTEXT = "http://comete.licef.ca/reference#VocContext";
-    public static final String TYPE_VOCABULARY = "http://www.w3.org/2004/02/skos/core#ConceptScheme";
-    public static final String TYPE_VOCABULARY_CONCEPT = "http://www.w3.org/2004/02/skos/core#Concept";
-    public static final String FOAF_DOCUMENT = "http://xmlns.com/foaf/0.1/Document";
-
-    //************
-    // Predicates
-    //************
-    public static final String TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
-    public static final String LABEL = "http://www.w3.org/2000/01/rdf-schema#label";
-    public static final String OAI_ID = "http://www.openarchives.org/OAI/2.0/oai-identifier";
-    public static final String DO_PID = "http://comete.licef.ca/reference#fedoraDigitalObject";
-    public static final String FOAF_PRIMARY_TOPIC = "http://xmlns.com/foaf/0.1/primaryTopic";
-    public static final String FOAF_IS_PRIMARY_TOPIC_OF = "http://xmlns.com/foaf/0.1/isPrimaryTopicOf";
-
-    public static final String SKOS_LABEL = "http://www.w3.org/2004/02/skos/core#prefLabel";
-    public static final String SKOS_TOP_CONCEPT_OF = "http://www.w3.org/2004/02/skos/core#topConceptOf";
-    public static final String SKOS_NARROWER = "http://www.w3.org/2004/02/skos/core#narrower";
-    public static final String SKOS_CLOSE_MATCH = "http://www.w3.org/2004/02/skos/core#closeMatch";
-    public static final String SKOS_RELATED_MATCH = "http://www.w3.org/2004/02/skos/core#relatedMatch ";
-
-    public static final String METAMODEL_ADDED = "http://comete.licef.ca/reference#added";
-    public static final String METAMODEL_METADATA_FORMAT = "http://comete.licef.ca/reference#metadataFormat";
-    public static final String METAMODEL_REPOSITORY = "http://comete.licef.ca/reference#repository";
-
-    //Metamodel Vocabulary
-    public static final String METAMODEL_VOCABULARY_ID = "http://comete.licef.ca/reference#vocId";
-    public static final String METAMODEL_VOCABULARY_SOURCE = "http://comete.licef.ca/reference#vocSource";
-    public static final String METAMODEL_VOCABULARY_SOURCE_LOCATION = "http://comete.licef.ca/reference#vocSourceLocation";
-    public static final String METAMODEL_VOCABULARY_URI = "http://comete.licef.ca/reference#vocUri";
-    public static final String METAMODEL_VOCABULARY_GRAPH = "http://comete.licef.ca/reference#vocGraph";
-    public static final String METAMODEL_VOCABULARY_NAVIGABLE = "http://comete.licef.ca/reference#vocNavigable";
-    public static final String METAMODEL_VOCABULARY_ALIAS = "http://comete.licef.ca/reference#vocAlias";
 
     //********
     // Fedora
@@ -100,7 +65,7 @@ public class Constants {
     };
 
     static final String[] _DATE_PREDICATES = new String[] {
-        METAMODEL_ADDED
+//        METAMODEL_ADDED
 //        METAMODEL_ADDED, METAMODEL_UPDATED, METAMODEL_CREATED
     };
 

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+         xmlns:skos="http://www.w3.org/2004/02/skos/core#">
+   <skos:ConceptScheme rdf:about="${comete.uri.prefix}/voc/lomv1.0/2.2_status">
+      <skos:definition xml:lang="en">The completion status or condition of learning object.</skos:definition>
+      <skos:prefLabel xml:lang="en">LOMv1.0: 2.2 Status</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">LOMv1.0: 2.2 Statut</skos:prefLabel>
+      <skos:definition xml:lang="en">The completion status or condition of learning object.</skos:definition>
+      <skos:definition xml:lang="fr">L’état d’avancement de la REA.</skos:definition>
+   </skos:ConceptScheme>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/2.2_status/draft">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/2.2_status"/>
+      <skos:prefLabel xml:lang="en">Draft</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">Brouillon</skos:prefLabel>
+      <skos:description xml:lang="en">According to the Oxford English Dictionary (1989), a draft is a "rough form of a writing or document" (OED).</skos:description>
+      <skos:description xml:lang="fr">Esquisse d’une rédaction ou d’un document</skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/2.2_status"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/2.2_status/final">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/2.2_status"/>
+      <skos:prefLabel xml:lang="en">Final</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">Définitif</skos:prefLabel>
+      <skos:description xml:lang="en">This value "mark[s] the last stage of a process" (OED).</skos:description>
+      <skos:description xml:lang="fr">Dernière étape d’un processus</skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/2.2_status"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/2.2_status/revised">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/2.2_status"/>
+      <skos:prefLabel xml:lang="en">Revised</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">Révisé</skos:prefLabel>
+      <skos:description xml:lang="en">This value refers to a learning resource that has been "corrected" or "amended" (OED).</skos:description>
+      <skos:description xml:lang="fr">Dans le sens de corrigé, modifié ou amendé</skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/2.2_status"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/2.2_status/unavailable">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/2.2_status"/>
+      <skos:prefLabel xml:lang="en">Unavailable</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">Indisponible</skos:prefLabel>
+      <skos:description xml:lang="en">This value is used when the learning resource is "not available" (OED). It may be useful for indicating those records not to be included in search results, or for records describing resources that are only temporarily unavailable.</skos:description>
+      <skos:description xml:lang="fr">Cette valeur peut s’avérer pratique pour indiquer les documents à ne pas inclure dans les résultats de recherche ou pour les documents décrivant les ressources qui sont temporairement non disponibles.</skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/2.2_status"/>
+   </skos:Concept>
+</rdf:RDF>

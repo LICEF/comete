@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:skos="http://www.w3.org/2004/02/skos/core#">
+   <skos:ConceptScheme rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type">
+      <skos:prefLabel xml:lang="en">LOMv1.0: 5.2 Learning Resource Type</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">LOMv1.0: 5.2 Type de REA</skos:prefLabel>
+      <skos:definition xml:lang="en">Specific kind of learning object.</skos:definition>
+      <skos:definition xml:lang="fr">Type spécifique de REA.</skos:definition>
+   </skos:ConceptScheme>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type/exam">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+      <skos:prefLabel xml:lang="en">exam</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">examen</skos:prefLabel>
+      <skos:description xml:lang="en">An exam is "the process of testing, by questions oral or written, the knowledge or ability of pupils, or of candidates for office, degrees, etc." (OED).</skos:description>
+      <skos:description xml:lang="fr">Processus par lequel on évalue, par des questions orales ou écrites, les connaissances ou l’habileté des élèves, candidats en milieu de travail, degrés, etc. *(OED)</skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type/problem_statement">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+      <skos:prefLabel xml:lang="en">problem statement</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">énoncé d'un problème</skos:prefLabel>
+      <skos:description xml:lang="en">A problem statement is "a written or oral communication setting forth… a difficult or puzzling question proposed for solution" (OED). </skos:description>
+      <skos:description xml:lang="fr">Énoncé oral ou écrit qui établit … une question embêtante ou une difficulté à laquelle on propose de trouver une solution. *(OED) </skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type/self_assessment">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+      <skos:prefLabel xml:lang="en">self assessment</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">autoévaluation</skos:prefLabel>
+      <skos:description xml:lang="en">A self-assessment is an "assessment or evaluation of oneself, one's actions or attitudes by oneself" (OED).</skos:description>
+      <skos:description xml:lang="fr">Évaluation de soi-même, de ses actions ou attitudes. *(OED)</skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type/simulation">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+      <skos:prefLabel xml:lang="fr">simulation</skos:prefLabel>
+      <skos:prefLabel xml:lang="en">simulation</skos:prefLabel>
+      <skos:description xml:lang="en">A simulation is "the technique of imitating the behaviour of some situation or process (whether economic, military, mechanical, etc.) by means of a suitably analogous situation or apparatus" (OED).  </skos:description>
+      <skos:description xml:lang="fr">Technique qui consiste à reproduire les conditions de certaines situations ou certains processus (économiques, militaires, mécaniques, etc.) par le biais d’une situation ou d’un appareil analogue adéquat. *(OED)  </skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type/narrative_text">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+      <skos:prefLabel xml:lang="fr">texte narratif</skos:prefLabel>
+      <skos:prefLabel xml:lang="en">narrative text</skos:prefLabel>
+      <skos:description xml:lang="en">A narrative text is "an account or narration; a history, tale, story, recital (of facts, etc.) that is a portion of the contents of a manuscript or printed book, or of a page, which constitutes the original matter, as distinct from the notes or other critical appendages" (OED). </skos:description>
+      <skos:description xml:lang="fr">Compte rendu ou narration - histoire, légende, récit (de faits, etc.) qui est une section du contenu d’un manuscrit ou d’un livre imprimé ou d’une page qui constitue l’élément original et non un élément tiré de notes ou d’autres annexes importantes. *(OED) </skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type/lecture">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+      <skos:prefLabel xml:lang="en">lecture</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">exposé</skos:prefLabel>
+      <skos:description xml:lang="en">A lecture is "a discourse given before an audience upon a given subject, usually for the purpose of instruction" (OED).</skos:description>
+      <skos:description xml:lang="fr">Discours devant un auditoire sur un sujet donné, habituellement à des fins d’instruction *(OED)</skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type/slide">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+      <skos:prefLabel xml:lang="en">slide</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">diapositive</skos:prefLabel>
+      <skos:description xml:lang="en">A slide is "a photographic transparency for use in a slide projector" (OED).</skos:description>
+      <skos:description xml:lang="fr">Transparent photographique utilisé dans un projecteur de diapositives. *(OED)</skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type/index">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+      <skos:prefLabel xml:lang="en">index</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">index</skos:prefLabel>
+      <skos:description xml:lang="en">An index is "a reference list; an alphabetical list" (OED).</skos:description>
+      <skos:description xml:lang="fr">Liste de référence – Liste alphabétique.(OED)</skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type/diagram">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+      <skos:prefLabel xml:lang="en">diagram</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">diagramme</skos:prefLabel>
+      <skos:description xml:lang="en">A diagram is "an illustrative figure which, without representing the exact appearance of a resource, gives an outline or general scheme of it, so as to exhibit the shape and relations of its various parts; a set of lines, marks, or tracings which represent symbolically the course or results of any action or process, or the variations which characterize it" (OED). </skos:description>
+      <skos:description xml:lang="fr">Figure illustrée, qui ne représente pas l’apparence exacte d’une ressource, qui offre un aperçu ou un schéma global de cette ressource afin d’illustrer la forme et la relation entre les divers aspects. Une série de lignes, marques ou traçage qui représente symboliquement le cours ou les résultats de toute action ou tout processus ou les variations qui les caractérisent. *(OED) </skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type/graph">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+      <skos:prefLabel xml:lang="en">graph</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">graphique</skos:prefLabel>
+      <skos:description xml:lang="en">A graph is "a kind of symbolic diagram (used in Chemistry, Mathematics, etc.) in which a system of connections is expressed by spots or circles, some pairs of which are colligated by one or more lines" (OED).</skos:description>
+      <skos:description xml:lang="fr">Type de diagramme symbolique (utilisé en chimie, mathématiques, etc.) dans lequel un système de relations est présenté par des points ou des cercles dont certaines paires sont reliées par une ou plusieurs lignes. </skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type/figure">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+      <skos:prefLabel xml:lang="en">figure</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">figure</skos:prefLabel>
+      <skos:description xml:lang="en">A figure is "the image, likeness, or representation of something material or immaterial" (OED).</skos:description>
+      <skos:description xml:lang="fr">Image, ressemblance ou représentation d’un élément matériel ou non matériel. *(OED)</skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type/questionnaire">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+      <skos:prefLabel xml:lang="en">questionnaire</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">questionnaire</skos:prefLabel>
+      <skos:description xml:lang="en">A questionnaire is "a list of questions by which information is sought from a selected group, usually for statistical analysis" (OED).</skos:description>
+      <skos:description xml:lang="fr">Série de questions qui permettent d’obtenir des renseignements d’un groupe donné, normalement pour analyse statistique.*(OED)</skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type/exercise">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+      <skos:prefLabel xml:lang="en">exercise</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">exercice</skos:prefLabel>
+      <skos:description xml:lang="en">An exercise is "the use of or method of using; a task prescribed or performed for the sake of attaining proficiency, for training either body or mind, or as an exhibition or test of proficiency or skill" (OED). </skos:description>
+      <skos:description xml:lang="fr">Utilisation ou méthode d’utilisation – Tâche prescrite ou effectuée dans le but de maîtriser quelque chose, formation pratique ou mentale ou destinée à démontrer une compétence ou une habileté.*(OED). </skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type/table">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+      <skos:prefLabel xml:lang="en">table</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">tableau</skos:prefLabel>
+      <skos:description xml:lang="en">A table is "an arrangement in columns and lines…as the multiplication table, tables of weights and measures, a table of logarithms, astronomical tables, insurance tables, time-tables, etc. " (OED).</skos:description>
+      <skos:description xml:lang="fr">Objet formé de colonnes et de lignes … comme les tables de multiplication, tables de poids et mesures, tables de logarithmes, tables astronomiques, grilles d’assurances, grilles horaires, etc. *(OED)</skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type/experiment">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+      <skos:prefLabel xml:lang="en">experiment</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">expérience</skos:prefLabel>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.2_learning_resource_type"/>
+   </skos:Concept>
+</rdf:RDF>

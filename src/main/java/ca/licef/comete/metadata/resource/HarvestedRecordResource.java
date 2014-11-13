@@ -4,6 +4,7 @@ import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.Util;
 import ca.licef.comete.metadata.Metadata;
 import ca.licef.comete.security.Security;
+import ca.licef.comete.vocabularies.COMETE;
 import com.sun.jersey.spi.resource.Singleton;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +31,7 @@ public class HarvestedRecordResource {
         if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to post records.").build();
 
-        String repoUri = Util.makeURI( repoId, Constants.TYPE_REPOSITORY );
+        String repoUri = Util.makeURI( repoId, COMETE.Repository );
         String res = Metadata.getInstance().storeHarvestedRecord( oaiID, namespace, repoUri, record, datestamp, false );
         return (Response.ok(res).build());
     }

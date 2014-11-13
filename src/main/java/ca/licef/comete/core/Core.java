@@ -1,8 +1,14 @@
 package ca.licef.comete.core;
 
 import ca.licef.comete.vocabularies.COMETE;
+import ca.licef.comete.vocabulary.Vocabulary;
+import ca.licef.comete.vocabulary.VocabularyManager;
+import licef.reflection.Invoker;
+import licef.reflection.ThreadInvoker;
 import licef.tsapi.TripleStore;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ResourceBundle;
 
 
@@ -26,10 +32,13 @@ public class Core {
     private String fedoraUrl;
     private String fedoraUsername;
     private String fedoraPassword;
+    private static boolean initProcess = false;
 
     public static Core getInstance() {
-        if (core == null)
+        if (core == null || !initProcess) {
+            initProcess = true;
             core = new Core();
+        }
         return core;
     }
 
@@ -37,7 +46,7 @@ public class Core {
         try {
             ResourceBundle resBundle = ResourceBundle.getBundle("core");
             cometeHome = resBundle.getString("comete.home");
-            uriPrefix = resBundle.getString("comete.uriPrefix");
+            uriPrefix = resBundle.getString("comete.uri.prefix");
             adminEmail = resBundle.getString("comete.admin.email");
             version = resBundle.getString("comete.version");
             smtpHost = resBundle.getString("smtp.host");
@@ -47,6 +56,9 @@ public class Core {
 
             initTripleStore();
 
+            (new ThreadInvoker(new Invoker(Vocabulary.getInstance().getVocabularyManager(),
+                    "ca.licef.comete.vocabulary.VocabularyManager",
+                        "initVocabularyModule", new Object[]{}))).start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -91,9 +103,11 @@ public class Core {
      */
     private void initTripleStore() {
         if (tripleStore == null) {
-            tripleStore = new TripleStore(cometeHome + "/database", cometeHome, getUriPrefix());
+            tripleStore = new TripleStore(cometeHome + "/database", cometeHome, getUriPrefix() + "/");
             tripleStore.registerVocabulary("http://comete.licef.ca/reference#", COMETE.class);
             tripleStore.startServer(false);
+
+            waitTripleStoreUp();
         }
     }
 
@@ -101,6 +115,23 @@ public class Core {
         if (tripleStore == null)
             initTripleStore();
         return tripleStore;
+    }
+
+    private static void waitTripleStoreUp() {
+        try {
+            URL server = new URL("http://localhost:3030");
+            boolean up = false;
+            while (!up) {
+                try {
+                    server.getContent();
+                    up = true;
+                    Thread.sleep(100);
+                } catch (IOException e) {
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /*
@@ -115,5 +146,4 @@ public class Core {
         }
         return fedora;
     }
-
 }

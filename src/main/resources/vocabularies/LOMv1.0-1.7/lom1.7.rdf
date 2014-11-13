@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:skos="http://www.w3.org/2004/02/skos/core#">
+   <skos:ConceptScheme rdf:about="${comete.uri.prefix}/voc/lomv1.0/1.7_structure">
+      <skos:prefLabel xml:lang="en">LOMv1.0: 1.7 Structure</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">LOMv1.0: 1.7 Structure</skos:prefLabel>
+      <skos:definition xml:lang="en">Underlying organizational structure of learning objet.</skos:definition>
+      <skos:definition xml:lang="fr">Structure organisationnelle sous-jacente de la REA.</skos:definition>
+   </skos:ConceptScheme>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/1.7_structure/atomic">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/1.7_structure"/>
+      <skos:prefLabel xml:lang="en">Atomic</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">Atomique</skos:prefLabel>
+      <skos:description xml:lang="en">An object that is undivisible (in this context).</skos:description>
+      <skos:description xml:lang="fr">Toute REA qui est un fichier média brut ou un fragment ou qui correspond à une ressource de niveau 1 telle que définie dans l’élément 1.8 Niveau d’agrégation. </skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/1.7_structure"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/1.7_structure/collection">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/1.7_structure"/>
+      <skos:prefLabel xml:lang="en">Collection</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">Collection</skos:prefLabel>
+      <skos:description xml:lang="en">A set of objects with no specified relationship between them.</skos:description>
+      <skos:description xml:lang="fr">Tout ensemble de REA n’ayant aucun lien établi ou défini entre elles.  Par exemple, un ensemble de pages Web qui n’ont pas de lien entre elles. </skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/1.7_structure"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/1.7_structure/networked">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/1.7_structure"/>
+      <skos:prefLabel xml:lang="en">Networked</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">Réseauté</skos:prefLabel>
+      <skos:description xml:lang="en">A set of objects with relationships that are unspecified.</skos:description>
+      <skos:description xml:lang="fr">Tout ensemble de ressources qui sont interreliées, mais sans l’être d’une façon linéaire ou hiérarchisée, ou lorsqu’il y a un lien entre elles qui n’est pas identifié de façon claire et consistante. Ce terme peut également s’appliquer à des ressources qui sont interreliées en combinant à la fois des liens hiérarchisés et linéaires. </skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/1.7_structure"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/1.7_structure/hierarchical">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/1.7_structure"/>
+      <skos:prefLabel xml:lang="en">Hierarchical</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">Hiérarchisé</skos:prefLabel>
+      <skos:description xml:lang="en">A set of objects whose relationships can be represented by a tree structure.</skos:description>
+      <skos:description xml:lang="fr">Tout ensemble de ressources interreliées dans une structure arborescente. </skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/1.7_structure"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/1.7_structure/linear">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/1.7_structure"/>
+      <skos:prefLabel xml:lang="en">Linear</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">Linéaire</skos:prefLabel>
+      <skos:description xml:lang="en">A set of objects that are fully ordered. (Example: A set of objects that are connected by "previous" and "next" relationships.)</skos:description>
+      <skos:description xml:lang="fr">Tout ensemble de ressources interreliées dans une séquence simple. </skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/1.7_structure"/>
+   </skos:Concept>
+</rdf:RDF>

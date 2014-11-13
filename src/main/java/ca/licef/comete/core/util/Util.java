@@ -2,6 +2,7 @@ package ca.licef.comete.core.util;
 
 import ca.licef.comete.core.Core;
 import ca.licef.comete.vocabularies.COMETE;
+import com.hp.hpl.jena.ontology.OntClass;
 import licef.IOUtil;
 import licef.StringUtil;
 import licef.XMLUtil;
@@ -74,7 +75,15 @@ public class Util {
         if (id.startsWith("http://"))
             return id;
         String typeVal = getTypeLabel(type);
-        return Core.getInstance().getUriPrefix() + typeVal + "/" + getIdNumberValue(id);
+        return Core.getInstance().getUriPrefix() + "/" + typeVal + "/" + getIdNumberValue(id);
+    }
+
+    public static String makeURI(OntClass _class) {
+        return makeURI(getNewId(), _class);
+    }
+
+    public static String makeURI(String id, OntClass _class) {
+        return makeURI(id, _class.getURI());
     }
 
     /**
@@ -99,9 +108,9 @@ public class Util {
 
     public static String getTypeLabel(String type) {
         String typeVal = null;
-        if (Constants.TYPE_METADATA_RECORD.equals(type))
+        if (COMETE.MetadataRecord.getURI().equals(type))
             typeVal = "metadatarecord";
-        else if (Constants.TYPE_LEARNING_OBJECT.equals(type))
+        else if (COMETE.LearningObject.getURI().equals(type))
             typeVal = "learningobject";
         else if (COMETE.VocContext.getURI().equals(type))
             typeVal = "voccontext";

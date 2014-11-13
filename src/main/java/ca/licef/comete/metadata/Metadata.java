@@ -8,6 +8,8 @@ import ca.licef.comete.core.metadataformat.OAI_DC;
 import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.Util;
 import ca.licef.comete.metadata.deployment.ResourceDeployer;
+import ca.licef.comete.vocabularies.COMETE;
+import com.hp.hpl.jena.vocabulary.RDF;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import licef.DateUtil;
 import licef.IOUtil;
@@ -289,11 +291,11 @@ System.out.println( "values["+i+"]="+values[i]);
                 TripleStore tripleStore = Core.getInstance().getTripleStore();
                 String recordURI = getRecordURI(pseudoOaiID, namespace);
                 if (recordURI == null) {
-                    loURI = Util.makeURI(Constants.TYPE_LEARNING_OBJECT);
+                    loURI = Util.makeURI(COMETE.LearningObject.getURI());
 System.out.println( "loURI="+loURI );       
                     List<Triple> triples = new ArrayList<Triple>();
-                    triples.add( new Triple( loURI, Constants.TYPE, Constants.TYPE_LEARNING_OBJECT, false ) );
-                    triples.add( new Triple( loURI, Constants.METAMODEL_ADDED, DateUtil.toISOString(new Date(), null, null), false ) );
+                    triples.add( new Triple( loURI, RDF.type, COMETE.LearningObject.getURI()) );
+                    triples.add( new Triple( loURI, COMETE.added, DateUtil.toISOString(new Date(), null, null) ) );
                     tripleStore.insertTriples( triples );
                     state = "created";
 System.out.println( "Created" );                    
@@ -353,14 +355,14 @@ System.out.println( "recordId afer fedora.createDigitalObject()="+recordId );
             //}
 
             fedoraId = /*"info:fedora/" +*/ recordId;
-            recordURI = Util.makeURI(recordId, Constants.TYPE_METADATA_RECORD);
+            recordURI = Util.makeURI(recordId, COMETE.MetadataRecord);
 System.out.println( "fedoraId="+fedoraId+" recordURI="+recordURI );
 
-            triples.add(new Triple(recordURI, Constants.TYPE, Constants.TYPE_METADATA_RECORD, false));
-            triples.add(new Triple(recordURI, Constants.METAMODEL_METADATA_FORMAT, namespace, false));
-            triples.add(new Triple(recordURI, Constants.DO_PID, fedoraId, false));
+            triples.add(new Triple(recordURI, RDF.type, COMETE.MetadataRecord.getURI()));
+            triples.add(new Triple(recordURI, COMETE.metadataFormat, namespace));
+            triples.add(new Triple(recordURI, COMETE.fedoraDigitalObject, fedoraId));
             if( repoURI != null && !"".equals( repoURI ) )
-                triples.add(new Triple(recordURI, Constants.METAMODEL_REPOSITORY, repoURI, false));
+                triples.add(new Triple(recordURI, COMETE.repository, repoURI));
 
             ////format datastream creation
             //fedora.addDatastream(fedoraId, Constants.DATASTREAM_DATA, Constants.DATASTREAM_DATA_LABEL, false, record, "text/xml", namespace, "M", logMessage);
@@ -538,7 +540,8 @@ System.out.println( "fedoraId="+fedoraId+" recordURI="+recordURI );
             if (!fedoraId.startsWith("info:fedora/"))
                 fedoraId = "info:fedora/" + fedoraId;
             try {
-                Triple[] triples = Core.getInstance().getTripleStore().getTriplesWithPredicateObject(Constants.DO_PID, fedoraId, false, null);
+                Triple[] triples = Core.getInstance().getTripleStore().getTriplesWithPredicateObject(
+                        COMETE.fedoraDigitalObject, fedoraId, false, null);
                 if (triples.length > 0)
                     uri = triples[0].getSubject();
             } catch (Exception e) {
@@ -554,7 +557,8 @@ System.out.println( "fedoraId="+fedoraId+" recordURI="+recordURI );
             return uri;
         else {
             try {
-                Triple[] triples = Core.getInstance().getTripleStore().getTriplesWithSubjectPredicate(uri, Constants.DO_PID);
+                Triple[] triples = Core.getInstance().getTripleStore().getTriplesWithSubjectPredicate(
+                        uri, COMETE.fedoraDigitalObject);
                 if (triples.length > 0)
                     id = triples[0].getObject();
             } catch (Exception e) {

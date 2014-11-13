@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:skos="http://www.w3.org/2004/02/skos/core#">
+   <skos:ConceptScheme rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.5_intended_end_user_role">
+      <skos:prefLabel xml:lang="en">LOMv1.0: 5.5 Intended End User Role</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">LOMv1.0: 5.5 Role de l'utilisateur final</skos:prefLabel>
+      <skos:definition xml:lang="en">Principal user(s) for which this learning object was designed, most dominant first.</skos:definition>
+      <skos:definition xml:lang="fr">Principal ou principaux utilisateurs auxquels est destiné cette REA, par ordre d’importance. </skos:definition>
+   </skos:ConceptScheme>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.5_intended_end_user_role/teacher">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.5_intended_end_user_role"/>
+      <skos:prefLabel xml:lang="en">Teacher</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">Enseignant</skos:prefLabel>
+      <skos:description xml:lang="en">A teacher is "one who or that which teaches or instructs; an instructor" (OED).</skos:description>
+      <skos:description xml:lang="fr">L’enseignant est la personne responsable de la transmission des éléments d’un contenu.</skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.5_intended_end_user_role"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.5_intended_end_user_role/author">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.5_intended_end_user_role"/>
+      <skos:prefLabel xml:lang="en">Author</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">Auteur</skos:prefLabel>
+      <skos:description xml:lang="en">An author is "the person who originates or gives existence to anything" (OED).</skos:description>
+      <skos:description xml:lang="fr">L’auteur est à l’origine de la REA.</skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.5_intended_end_user_role"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.5_intended_end_user_role/learner">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.5_intended_end_user_role"/>
+      <skos:prefLabel xml:lang="en">Learner</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">Apprenant</skos:prefLabel>
+      <skos:description xml:lang="en">A learner is "one who learns or receives instruction" (OED).</skos:description>
+      <skos:description xml:lang="fr">L’apprenant travaille avec la REA afin d’apprendre quelque chose.</skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.5_intended_end_user_role"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.5_intended_end_user_role/manager">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.5_intended_end_user_role"/>
+      <skos:prefLabel xml:lang="en">Manager</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">Gestionnaire</skos:prefLabel>
+      <skos:description xml:lang="en">A manager is "a person who organizes, directs, or plots something; a person who regulates or deploys resources" (OED). Note that manager can be considered as a broad equivalent for more specific values not included in this listing, such as parent, guardian, or supervisor.</skos:description>
+      <skos:description xml:lang="fr">Le gestionnaire est la personne qui gère ou déploie des ressources. Un gestionnaire, par exemple une université ou un collège, gère la livraison d’une REA. Le document d’un gestionnaire est habituellement un curriculum. (Le gestionnaire peut être considéré comme un équivalent étendu pour des valeurs plus spécifiques qui ne figurent pas dans cette liste, comme « parent », « tuteur », « professionnel » ou « superviseur ». Voir la section « Remarques » dans les documents de référence.)</skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.5_intended_end_user_role"/>
+   </skos:Concept>
+</rdf:RDF>

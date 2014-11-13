@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:skos="http://www.w3.org/2004/02/skos/core#">
+   <skos:ConceptScheme rdf:about="${comete.uri.prefix}/voc/lomv1.0/1.8_aggregation_level">
+      <skos:prefLabel xml:lang="en">LOMv1.0: 1.8 Aggregation Level</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">LOMv1.0: 1.8 Niveau d'aggrégation</skos:prefLabel>
+      <skos:definition xml:lang="en">The functional granularity of a learning object.</skos:definition>
+      <skos:definition xml:lang="fr">Niveau de granularité d'une ressource.</skos:definition>
+   </skos:ConceptScheme>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/1.8_aggregation_level/4">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/1.8_aggregation_level"/>
+      <skos:prefLabel xml:lang="en">4</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">4</skos:prefLabel>
+      <skos:description xml:lang="en">The largest level of granularity, e.g., a set of courses that lead to a certificate.  NOTE:  Level 4 objects can contain level 3 objects, or can recursively contain other level 4 objects.</skos:description>
+      <skos:description xml:lang="fr">Fait référence à une collection de REA de niveau d'aggrégation 3 ou 4.</skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/1.8_aggregation_level"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/1.8_aggregation_level/3">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/1.8_aggregation_level"/>
+      <skos:prefLabel xml:lang="en">3</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">3</skos:prefLabel>
+      <skos:description xml:lang="en">A collection of level 2 learning objects, e.g., a course.</skos:description>
+      <skos:description xml:lang="fr">Une collection de REA de niveau 2. Ex. : Un ensemble d'activités d'apprentissage pouvant constituer un cours.</skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/1.8_aggregation_level"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/1.8_aggregation_level/2">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/1.8_aggregation_level"/>
+      <skos:prefLabel xml:lang="en">2</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">2</skos:prefLabel>
+      <skos:description xml:lang="en">A collection of level 1 learning objects, e.g., a lesson.</skos:description>
+      <skos:description xml:lang="fr">Une collection de REA de niveau 1. Ex. : une activité d'apprentissage comprenant une ou des photos numériques.</skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/1.8_aggregation_level"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/1.8_aggregation_level/1">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/1.8_aggregation_level"/>
+      <skos:prefLabel xml:lang="en">1</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">1</skos:prefLabel>
+      <skos:description xml:lang="en">The smallest level of aggregation, e.g., raw media data or fragments.</skos:description>
+      <skos:description xml:lang="fr">Données médias brutes ou fragments. Fait référence à toute REA qui ne peut être davantage ou facilement décomposée en éléments de ressource. Ex. : une photo numérique.</skos:description>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/1.8_aggregation_level"/>
+   </skos:Concept>
+</rdf:RDF>

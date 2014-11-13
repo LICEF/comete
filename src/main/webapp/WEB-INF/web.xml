@@ -18,11 +18,11 @@
         <servlet-name>core</servlet-name>
         <servlet-class>ca.licef.comete.core.CoreServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
-    </servlet> 
+    </servlet>
 
     <description>COMETE REST services</description>
 
-        <servlet>
+    <servlet>
         <servlet-name>Jersey Web Application</servlet-name>
         <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
         <init-param>

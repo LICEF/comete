@@ -76,7 +76,16 @@ public class COMETE {
     
     /** <p>significative word describing the object</p> */
     public static final DatatypeProperty keyword = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#keyword" );
-    
+
+    /** <p>significative word describing the object</p> */
+    public static final ObjectProperty learningResourceType = m_model.createObjectProperty( "http://comete.licef.ca/reference#learningResourceType" );
+
+    /** <p>significative word describing the object</p> */
+    public static final DatatypeProperty metadataFormat  = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#metadataFormat" );
+
+    /** <p>Type of repository like OAI or HTML</p> */
+    public static final ObjectProperty repository = m_model.createObjectProperty( "http://comete.licef.ca/reference#repository" );
+
     /** <p>Type of repository like OAI or HTML</p> */
     public static final DatatypeProperty repoType = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#repoType" );
     
@@ -85,9 +94,12 @@ public class COMETE {
     
     /** <p>Alias corresponding to the vocabulary</p> */
     public static final DatatypeProperty vocAlias = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#vocAlias" );
-    
+
     /** <p>graph name of vocabulary content</p> */
     public static final DatatypeProperty vocGraph = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#vocGraph" );
+
+    /** <p>graph name of vocabulary content</p> */
+    public static final DatatypeProperty vocConceptUriPrefix = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#vocConceptUriPrefix" );
     
     /** <p>ID for internal management</p> */
     public static final DatatypeProperty vocId = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#vocId" );

@@ -1,0 +1,112 @@
+﻿# Valeurs LOM v1.0
+
+<skos:prefLabel xml:lang="en">exam</skos:prefLabel>
+<skos:prefLabel xml:lang="fr">examen</skos:prefLabel>
+
+<skos:prefLabel xml:lang="en">problem statement</skos:prefLabel>
+<skos:prefLabel xml:lang="fr">énoncé d'un problème</skos:prefLabel>
+
+<skos:prefLabel xml:lang="en">self assessment</skos:prefLabel>
+<skos:prefLabel xml:lang="fr">autoévaluation</skos:prefLabel>
+
+<skos:prefLabel xml:lang="fr">simulation</skos:prefLabel>
+<skos:prefLabel xml:lang="en">simulation</skos:prefLabel>
+
+<skos:prefLabel xml:lang="fr">texte narratif</skos:prefLabel>
+<skos:prefLabel xml:lang="en">narrative text</skos:prefLabel>
+
+<skos:prefLabel xml:lang="en">lecture</skos:prefLabel>
+<skos:prefLabel xml:lang="fr">exposé</skos:prefLabel>
+
+<skos:prefLabel xml:lang="en">slide</skos:prefLabel>
+<skos:prefLabel xml:lang="fr">diapositive</skos:prefLabel>
+
+<skos:prefLabel xml:lang="en">index</skos:prefLabel>
+<skos:prefLabel xml:lang="fr">index</skos:prefLabel>
+
+<skos:prefLabel xml:lang="en">diagram</skos:prefLabel>
+<skos:prefLabel xml:lang="fr">diagramme</skos:prefLabel>
+
+<skos:prefLabel xml:lang="en">graph</skos:prefLabel>
+<skos:prefLabel xml:lang="fr">graphique</skos:prefLabel>
+
+<skos:prefLabel xml:lang="en">figure</skos:prefLabel>
+<skos:prefLabel xml:lang="fr">figure</skos:prefLabel>
+
+<skos:prefLabel xml:lang="en">questionnaire</skos:prefLabel>
+<skos:prefLabel xml:lang="fr">questionnaire</skos:prefLabel>
+
+<skos:prefLabel xml:lang="en">exercise</skos:prefLabel>
+<skos:prefLabel xml:lang="fr">exercice</skos:prefLabel>
+
+<skos:prefLabel xml:lang="en">table</skos:prefLabel>
+<skos:prefLabel xml:lang="fr">tableau</skos:prefLabel>
+
+<skos:prefLabel xml:lang="en">experiment</skos:prefLabel>
+<skos:prefLabel xml:lang="fr">expérience</skos:prefLabel>
+
+
+
+# Valeurs Normetic 1.2
+
+<skos:prefLabel xml:lang="en">evaluation</skos:prefLabel>
+<skos:prefLabel xml:lang="fr">évaluation</skos:prefLabel>
+
+<skos:prefLabel xml:lang="en">animation</skos:prefLabel>
+<skos:prefLabel xml:lang="fr">animation</skos:prefLabel>
+
+<skos:prefLabel xml:lang="fr">tutoriel</skos:prefLabel>
+<skos:prefLabel xml:lang="en">tutorial</skos:prefLabel>
+
+<skos:prefLabel xml:lang="fr">glossaire</skos:prefLabel>
+<skos:prefLabel xml:lang="en">glossary</skos:prefLabel>
+
+<skos:prefLabel xml:lang="fr">guide</skos:prefLabel>
+<skos:prefLabel xml:lang="en">guide</skos:prefLabel>
+
+<skos:prefLabel xml:lang="fr">matériel de référence</skos:prefLabel>
+<skos:prefLabel xml:lang="en">reference material</skos:prefLabel>
+
+<skos:prefLabel xml:lang="en">tools</skos:prefLabel>
+<skos:prefLabel xml:lang="fr">outils</skos:prefLabel>
+
+<skos:prefLabel xml:lang="en">simulation</skos:prefLabel>
+<skos:prefLabel xml:lang="fr">simulation</skos:prefLabel>
+
+<skos:prefLabel xml:lang="en">lecture/presentation</skos:prefLabel>
+<skos:prefLabel xml:lang="fr">lecture/présentation</skos:prefLabel>
+
+<skos:prefLabel xml:lang="fr">activité</skos:prefLabel>
+<skos:prefLabel xml:lang="en">activity</skos:prefLabel>
+
+<skos:prefLabel xml:lang="fr">démonstration</skos:prefLabel>
+<skos:prefLabel xml:lang="en">demonstration</skos:prefLabel>
+
+<skos:prefLabel xml:lang="en">exam</skos:prefLabel>
+<skos:prefLabel xml:lang="fr">examen</skos:prefLabel>
+
+<skos:prefLabel xml:lang="fr">exercice</skos:prefLabel>
+<skos:prefLabel xml:lang="en">exercise</skos:prefLabel>
+
+<skos:prefLabel xml:lang="fr">expérience</skos:prefLabel>
+<skos:prefLabel xml:lang="en">experiment</skos:prefLabel>
+
+<skos:prefLabel xml:lang="en">exploration</skos:prefLabel>
+<skos:prefLabel xml:lang="fr">exploration</skos:prefLabel>
+
+<skos:prefLabel xml:lang="fr">méthodologie</skos:prefLabel>
+<skos:prefLabel xml:lang="en">methodology</skos:prefLabel>
+
+<skos:prefLabel xml:lang="fr">questionnaire</skos:prefLabel>
+<skos:prefLabel xml:lang="en">questionnaire</skos:prefLabel>
+
+<skos:prefLabel xml:lang="fr">scénario pédagogique</skos:prefLabel>
+<skos:prefLabel xml:lang="en">teaching activity</skos:prefLabel>
+
+<skos:prefLabel xml:lang="en">teaching activity</skos:prefLabel>
+<skos:prefLabel xml:lang="fr">situation d'apprentissage et d'évaluation</skos:prefLabel>
+
+<skos:prefLabel xml:lang="en">informative document</skos:prefLabel>
+<skos:prefLabel xml:lang="fr">texte-document informatif</skos:prefLabel>
+
+

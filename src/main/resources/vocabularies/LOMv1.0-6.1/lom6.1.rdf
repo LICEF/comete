@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:skos="http://www.w3.org/2004/02/skos/core#">
+   <skos:ConceptScheme rdf:about="${comete.uri.prefix}/voc/lomv1.0/6.1_cost">
+      <skos:prefLabel xml:lang="en">LOMv1.0: 6.1 Cost</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">LOMv1.0: 6.1 Coût</skos:prefLabel>      
+      <skos:definition xml:lang="en">Whether use of this learning object requires payment.</skos:definition>
+      <skos:definition xml:lang="fr">L'utilisation de cet objet d'apprentissage exige le paiement.</skos:definition>
+   </skos:ConceptScheme>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/6.1_cost/yes">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/6.1_cost"/>
+      <skos:prefLabel xml:lang="en">yes</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">oui</skos:prefLabel>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/6.1_cost"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/6.1_cost/no">
+      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/6.1_cost"/>
+      <skos:prefLabel xml:lang="en">no</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">non</skos:prefLabel>
+      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/6.1_cost"/>
+   </skos:Concept>
+</rdf:RDF>
