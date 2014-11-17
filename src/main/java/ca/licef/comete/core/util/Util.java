@@ -62,6 +62,7 @@ public class Util {
     }
 
     public static String getIdNumberValue(String id) {
+System.out.println( "getIdNumberValue id="+id );        
         String[] vals = StringUtil.split(id, '/');
         String[] val = StringUtil.split(vals[vals.length - 1], ':');
         return val[val.length - 1];
@@ -72,6 +73,7 @@ public class Util {
     }
 
     public static String makeURI(String id, String type) {
+System.out.println( "makeURI id="+id+" type="+type );        
         if (id.startsWith("http://"))
             return id;
         String typeVal = getTypeLabel(type);
@@ -108,12 +110,18 @@ public class Util {
 
     public static String getTypeLabel(String type) {
         String typeVal = null;
+//<<<<<<< HEAD
+//        if (COMETE.MetadataRecord.getURI().equals(type))
+//            typeVal = "metadatarecord";
+//        else if (COMETE.LearningObject.getURI().equals(type))
+//            typeVal = "learningobject";
+//=======
         if (COMETE.MetadataRecord.getURI().equals(type))
-            typeVal = "metadatarecord";
+            typeVal = Constants.OBJ_TYPE_METADATA_RECORD;
         else if (COMETE.LearningObject.getURI().equals(type))
-            typeVal = "learningobject";
+            typeVal = Constants.OBJ_TYPE_LEARNING_OBJECT;
         else if (COMETE.VocContext.getURI().equals(type))
-            typeVal = "voccontext";
+            typeVal = Constants.OBJ_TYPE_VOC_CONTEXT;
         return typeVal;
     }
 

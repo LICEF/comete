@@ -1,9 +1,19 @@
 package ca.licef.comete.core;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Iterator;
+import java.util.UUID;
 import java.nio.charset.StandardCharsets;
-//import ca.licef.comete.core.util.Constants;
+import ca.licef.comete.core.util.Constants;
 //import ca.licef.comete.core.util.Triple;
 //import ca.licef.comete.core.util.Util;
 //import com.yourmediashelf.fedora.client.FedoraClient;
@@ -12,9 +22,11 @@ import java.nio.charset.StandardCharsets;
 //import com.yourmediashelf.fedora.client.request.*;
 //import com.yourmediashelf.fedora.client.response.*;
 //import licef.CommonNamespaceContext;
-//import licef.IOUtil;
+import licef.IOUtil;
 //import licef.StreamUtil;
 //import licef.XMLUtil;
+import org.fcrepo.client.FedoraContent;
+import org.fcrepo.client.FedoraDatastream;
 import org.fcrepo.client.FedoraException;
 import org.fcrepo.client.FedoraObject;
 import org.fcrepo.client.FedoraRepository;
@@ -39,6 +51,7 @@ import org.fcrepo.client.impl.FedoraRepositoryImpl;
 //import java.util.Date;
 //import java.util.Hashtable;
 //import java.util.List;
+
 
 public class Fedora {
 
@@ -110,27 +123,15 @@ public class Fedora {
     //    return ingestDigitalObject(objXML, logMessage);
     //}
 
+
     public String createDigitalObject() throws FedoraException {
-        //FedoraObject object = getRepository().createObject( "/", true );
-        //System.out.println( "Object created. Name=" + object.getName() +" Path=" + object.getPath() + " Size=" + object.getSize() );
-        //Iterator<Triple> properties = object.getProperties();
-        //for( ; properties.hasNext(); ) {
-        //    Triple property = properties.next();
-        //    System.out.println( "Prop: " + property );
-        //}
-        //return( object.getName() );
-        return( null );
+        FedoraObject object = getRepository().createObject( "/", true );
+        return( object.getPath() ); 
     }
 
     public String createDigitalObject( String path ) throws FedoraException {
         FedoraObject object = getRepository().createObject( path );
-        //System.out.println( "Object created. Name=" + object.getName() +" Path=" + object.getPath() + " Size=" + object.getSize() );
-        //Iterator<Triple> properties = object.getProperties();
-        //for( ; properties.hasNext(); ) {
-        //    Triple property = properties.next();
-        //    System.out.println( "Prop: " + property );
-        //}
-        return( object.getName() );
+        return( object.getPath() );
     }
 
     /**
@@ -333,6 +334,33 @@ public class Fedora {
     //    AddDatastreamResponse resp = req.execute( getClient() );
     //    return resp.getStatus();
     //}
+
+    public void addDatastream( String parentId, String dataStream, Object content, String mimetype, String checksum ) throws FedoraException, FileNotFoundException, MalformedURLException, IOException, URISyntaxException {
+        String path = parentId + "/" + dataStream;
+
+        FedoraContent fc = new FedoraContent();
+        if( content instanceof File ) {
+            File contentFile = (File)content;
+            fc.setFilename( contentFile.toString() );
+            fc.setContent( new FileInputStream( contentFile ) );
+        }
+        else if( content instanceof String ) {
+            String contentString = (String)content;
+            if( IOUtil.isURL( contentString ) ) {
+                URL contentUrl = new URL( contentString );
+                fc.setContent( contentUrl.openStream() ); 
+            }
+            else
+                fc.setContent( new ByteArrayInputStream( contentString.getBytes( StandardCharsets.UTF_8 ) ) );
+        }
+        if( mimetype != null )
+            fc.setContentType( mimetype );
+        if( checksum != null )
+            fc.setChecksum( new URI( checksum ) );
+
+        FedoraDatastream ds = getRepository().createDatastream( path, fc );
+System.out.println( "ds="+ds+" hasContent="+ds.hasContent()+" name="+ds.getName()+" contentSize="+ds.getContentSize()+" fn="+ds.getFilename()+" contentType="+ds.getContentType()+" path="+ds.getPath()+" size="+ds.getSize() );        
+    }
 
     //public void modifyDatastream( String id, String dataStream, Object content, String logMessage ) throws FedoraClientException {
     //    if (id.startsWith("info:fedora/"))

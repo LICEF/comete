@@ -1,7 +1,7 @@
 package ca.licef.comete.vocabulary;
 
 import ca.licef.comete.core.Core;
-import ca.licef.comete.core.FedoraService;
+import ca.licef.comete.core.Fedora;
 import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.vocabularies.COMETE;
 import ca.licef.comete.vocabulary.util.Util;
@@ -129,7 +129,7 @@ public class VocabularyManager {
             }
         }
 
-        //FedoraService fedora = Core.getInstance().getFedoraService();
+        //Fedora fedora = Core.getInstance().getFedora();
 
         boolean isNew = false;
         String uri = null;
@@ -278,7 +278,7 @@ public class VocabularyManager {
     }
 
     /*boolean hasVocabularyChanged(String id, String location) throws Exception {
-        FedoraService fedora = Core.getInstance().getFedoraService();
+        Fedora fedora = Core.getInstance().getFedora();
         String vocContent;
         URL sourceUrl;
 

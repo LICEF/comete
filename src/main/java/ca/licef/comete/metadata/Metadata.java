@@ -9,7 +9,6 @@ import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.Util;
 import ca.licef.comete.metadata.deployment.ResourceDeployer;
 import ca.licef.comete.vocabularies.COMETE;
-import com.hp.hpl.jena.vocabulary.RDF;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import licef.DateUtil;
 import licef.IOUtil;
@@ -18,17 +17,23 @@ import licef.XMLUtil;
 import licef.tsapi.model.Triple;
 import licef.tsapi.model.Tuple;
 import licef.tsapi.TripleStore;
+import licef.tsapi.vocabulary.RDF;
+import licef.tsapi.vocabulary.FOAF;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import javax.xml.transform.stream.StreamSource;
 
 public class Metadata {
 
@@ -172,9 +177,6 @@ System.out.println( "fileDetail.fn="+fileDetail.getFileName() );
                     fos.close();
             }
         }
-System.out.println( "errorMessage="+errorMessage );
-System.out.println( "record="+record );
-System.out.println( "resource="+resource);
 
         return new Object[]{errorMessage, record, resource};
     }
@@ -354,8 +356,9 @@ System.out.println( "recordId afer fedora.createDigitalObject()="+recordId );
             //        record = Util.getNewDcXml( recordId );
             //}
 
-            fedoraId = /*"info:fedora/" +*/ recordId;
-            recordURI = Util.makeURI(recordId, COMETE.MetadataRecord);
+            fedoraId = /*"info:fedora/" +*/ recordId; 
+            // We remove the leading / beforehand.
+            recordURI = Util.makeURI(recordId.substring( 1 ), COMETE.MetadataRecord.getURI());
 System.out.println( "fedoraId="+fedoraId+" recordURI="+recordURI );
 
             triples.add(new Triple(recordURI, RDF.type, COMETE.MetadataRecord.getURI()));
@@ -364,16 +367,16 @@ System.out.println( "fedoraId="+fedoraId+" recordURI="+recordURI );
             if( repoURI != null && !"".equals( repoURI ) )
                 triples.add(new Triple(recordURI, COMETE.repository, repoURI));
 
-            ////format datastream creation
-            //fedora.addDatastream(fedoraId, Constants.DATASTREAM_DATA, Constants.DATASTREAM_DATA_LABEL, false, record, "text/xml", namespace, "M", logMessage);
-            //triples.add(new Triple(recordURI, Constants.METAMODEL_LOCATION, Core.getInstance().getFedoraUrl() + "/objects/" + recordId + "/datastreams/data/content"));
+            //format datastream creation
+            fedora.addDatastream(fedoraId, Constants.DATASTREAM_DATA, record, "text/xml", null);
+            triples.add(new Triple(recordURI, FOAF.page, Core.getInstance().getFedoraRestUrl() + recordId + "/data/fcr:content"));
 
-            ////Resource association
-            //triples.add(new Triple(loURI, Constants.METAMODEL_METADATA_RECORD, recordURI));
-            //triples.add(new Triple(recordURI, Constants.METAMODEL_DESCRIBES, loURI));
+            //Resource association
+            triples.add(new Triple(loURI, COMETE.hasMetadataRecord, recordURI));
+            triples.add(new Triple(recordURI, COMETE.describes, loURI));
 
-            ////Fix the future oai identifier for oai-pmh exposition with oaiprovider (via Fedora RELS-EXT)
-            ////SHA of harvested oai id to keep a trace of source in our oai come from
+            //Fix the future oai identifier for oai-pmh exposition with oaiprovider (via Fedora RELS-EXT)
+            //SHA of harvested oai id to keep a trace of source in our oai come from
             //String _oaiId = DigestUtils.shaHex(oaiId);
             //fedora.addRelationship(fedoraId, Constants.OAI_ID,
             //        "oai:" + Core.getInstance().getRepositoryNamespace()+ ":" + _oaiId, true);
@@ -389,7 +392,9 @@ System.out.println( "fedoraId="+fedoraId+" recordURI="+recordURI );
 
         //validateRecord( fedoraId, loURI, recordURI, record, namespace, logMessage );
 
-        //String extractedTriplesAsXml = processMetadataRecord( record, loURI, recordURI, namespace );
+        String extractedTriplesAsXml = processMetadataRecord( record, loURI, recordURI, namespace );
+System.out.println( "extractedTriplesAsXml="+extractedTriplesAsXml );
+
         //Triple[] extractedTriples = Triple.readTriplesFromXml(extractedTriplesAsXml);
         //triples.addAll(Arrays.asList(extractedTriples));
 
@@ -399,7 +404,7 @@ System.out.println( "fedoraId="+fedoraId+" recordURI="+recordURI );
         //ArrayList<String> loLanguages = new ArrayList<String>();
         //ArrayList<String> recordLanguages = new ArrayList<String>();
         //for (Triple triple : triples) {
-        //    if (Constants.METAMODEL_LOCATION.equals(triple.getPredicate())) {
+        //    if (FOAF.page.getURI().equals(triple.getPredicate())) {
         //        location = triple.getObject();
         //        if( location != null && !location.startsWith( "http" ) ) 
         //            location = "http://" + location;
@@ -439,16 +444,19 @@ System.out.println( "fedoraId="+fedoraId+" recordURI="+recordURI );
         return recordURI;
     }
 
-    //public String processMetadataRecord( String xml, String loURI, String recordURI, String namespace ) throws Exception {
-    //    String format = MetadataFormats.getMetadataFormat( namespace ).getName();
+    public String processMetadataRecord( String xml, String loURI, String recordURI, String namespace ) throws Exception {
+System.out.println( "processMetadataRecord xml="+xml+" loURI="+loURI+" recordURI="+recordURI );
+System.out.println( "namespace="+namespace );        
+        String format = MetadataFormats.getMetadataFormat( namespace ).getName();
+System.out.println( "format="+format );
 
-    //    StreamSource xmlSource = new StreamSource( new BufferedReader( new StringReader( xml ) ) );
-    //    HashMap<String,String> params = new HashMap<String,String>();
-    //    params.put( "loURI", loURI );
-    //    params.put( "recordURI", recordURI );
-    //    String triplesAsXml = Util.applyXslToDocument( "process" + StringUtil.capitalize( format ) + "Record", xmlSource, params );
-    //    return( triplesAsXml );
-    //}
+        StreamSource xmlSource = new StreamSource( new BufferedReader( new StringReader( xml ) ) );
+        HashMap<String,String> params = new HashMap<String,String>();
+        params.put( "loURI", loURI );
+        params.put( "recordURI", recordURI );
+        String triplesAsXml = Util.applyXslToDocument( "process" + StringUtil.capitalize( format ) + "Record", xmlSource, params );
+        return( triplesAsXml );
+    }
 
     //public String processMetadataRecord( String recordId ) throws Exception {
     //    String metadataRecordUri = Util.makeURI( recordId, Constants.TYPE_METADATA_RECORD );

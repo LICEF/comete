@@ -97,6 +97,13 @@ public class Core {
         return smtpHost;
     }
 
+    public String getFedoraUrl() {
+        return fedoraUrl;
+    }
+
+    public String getFedoraRestUrl() {
+        return fedoraUrl + "/rest";
+    }
 
     /*
      * Triple Store services
@@ -140,6 +147,7 @@ public class Core {
     public Fedora getFedora() {
         if (fedora == null) {
             fedora = new Fedora();
+System.out.println( "fedoraUrl="+fedoraUrl+" un="+fedoraUsername+" pw="+fedoraPassword );            
             fedora.setUrl(fedoraUrl);
             fedora.setUsername(fedoraUsername);
             fedora.setPassword(fedoraPassword);

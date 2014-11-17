@@ -69,11 +69,17 @@ public class COMETE {
     public static final DatatypeProperty applicationProfile = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#applicationProfile" );
     
     /** <p>extra unqualified information</p> */
+    public static final DatatypeProperty educationalLevel = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#educationalLevel" );
+    
+    /** <p>extra unqualified information</p> */
     public static final DatatypeProperty extraInfo = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#extraInfo" );
     
     /** <p>formatted postal address</p> */
     public static final DatatypeProperty formattedAddress = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#formattedAddress" );
     
+    /** <p>significative word describing the object</p> */
+    public static final DatatypeProperty intellectualProperty = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#intellectualProperty" );
+
     /** <p>significative word describing the object</p> */
     public static final DatatypeProperty keyword = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#keyword" );
 

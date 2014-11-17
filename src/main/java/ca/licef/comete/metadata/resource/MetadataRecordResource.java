@@ -48,13 +48,10 @@ public class MetadataRecordResource {
         if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to upload metadata records.").build();
 
-        String trace = "uploadedInputStream="+uploadedInputStream+" fileDetail="+fileDetail+" uploadedInputStreamRes="+uploadedInputStreamRes+" fileDetailRes="+fileDetailRes;
-System.out.println( "resp="+trace);
         String resp = null;
         Object[] files = Metadata.getInstance().storeUploadedContentTmp(uploadedInputStream, fileDetail, uploadedInputStreamRes, fileDetailRes);
         String errorMessage = (String)files[0];
         Object[] res = null;
-System.out.println( "errorMessage="+errorMessage );        
         if (errorMessage == null) {
             res = Metadata.getInstance().isRecordExists((File)files[1]);
             errorMessage = (String)res[0];
@@ -125,7 +122,6 @@ System.out.println( "errorMessage="+errorMessage );
     }
 
     String doUploadEff(File record, File resource) throws Exception {
-System.out.println( "doUploadEff record="+record+" resource="+resource );
         Object[] results = Metadata.getInstance().storeUploadedContent(record, resource);
         String errorMessage = (String)results[0];
         String[][] data = (String[][])results[1];
