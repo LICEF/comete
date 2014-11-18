@@ -7,7 +7,7 @@
     exclude-result-prefixes="vdex">
     <xsl:output method="xml" indent="yes"/>
 
-    <xsl:param name="vocabularyUri"/>
+    <xsl:variable name="vocabularyUri" select="vdex:vdex/vdex:vocabIdentifier"/>
     <xsl:variable name="profileType" select="vdex:vdex/@profileType"/>
 
     <xsl:template name="processLangstring">
@@ -37,7 +37,7 @@
 
     <xsl:template match="vdex:term">
         <xsl:variable name="termIdentifier" select="replace(iri-to-uri(vdex:termIdentifier), '/', '%2F' )"/>
-        <xsl:variable name="termUri" select="concat( $vocabularyUri, '/', $termIdentifier )"/> 
+        <xsl:variable name="termUri" select="concat( $vocabularyUri, '#', $termIdentifier )"/>
         <skos:Concept rdf:about="{$termUri}">
             <skos:inScheme rdf:resource="{$vocabularyUri}"/>
             <xsl:call-template name="processLangstring">
@@ -51,7 +51,7 @@
             <xsl:choose>
                 <xsl:when test="../vdex:termIdentifier">
                     <xsl:variable name="parentTermIdentifier" select="iri-to-uri( ../vdex:termIdentifier )"/>
-                    <xsl:variable name="parentTermUri" select="concat( $vocabularyUri, '/', $parentTermIdentifier )"/>
+                    <xsl:variable name="parentTermUri" select="concat( $vocabularyUri, '#', $parentTermIdentifier )"/>
                     <skos:broader rdf:resource="{$parentTermUri}"/>
                 </xsl:when>
                 <xsl:otherwise>

@@ -133,6 +133,7 @@ public class VocabularyManager {
 
         boolean isNew = false;
         String uri = null;
+        //set vocUri as local URI (default value for new records). reset later
         String vocUri = Core.getInstance().getUriPrefix() + "/voc/" + source.toLowerCase() + "/" + cat;
         String fedoraId = null;
         String query = CoreUtil.getQuery("getVocContext.sparql", voc);
@@ -197,7 +198,7 @@ public class VocabularyManager {
         int format = Util.getVocabularyFormat(vocContent);
         switch (format) {
             case Util.VDEX_FORMAT : //keep vdex version for history
-                skosContent = convertVdexToSkos(vocContent, vocUri);
+                skosContent = convertVdexToSkos(vocContent);
 //                IOUtil.writeStringToFile(skosContent, new File(vocabulariesDir, "skos.rdf"));
                 break;
             default:
@@ -206,8 +207,10 @@ public class VocabularyManager {
 
         //force reset to catch external vocUris inside vocab
         Hashtable attributes = XMLUtil.getAttributes(skosContent, "//skos:ConceptScheme");
-        vocUri = attributes.get("about").toString();
-        tripleStore.insertTriple(new Triple(uri, COMETE.vocUri, vocUri));
+        String newVocUri = attributes.get("about").toString();
+        tripleStore.removeTriple(new Triple(uri, COMETE.vocUri, vocUri));
+        tripleStore.insertTriple(new Triple(uri, COMETE.vocUri, newVocUri));
+        vocUri = newVocUri;
 
         //load content
         if (isNavigable) //todo load with text indexing
@@ -265,11 +268,9 @@ public class VocabularyManager {
         return relDescr;
     }*/
 
-    public String convertVdexToSkos( String vdexContent, String vocUri ) throws Exception {
-        HashMap<String, String> params = new HashMap<String, String>();
-        params.put( "vocabularyUri", vocUri );
+    public String convertVdexToSkos( String vdexContent ) throws Exception {
         StreamSource source = new StreamSource( new ByteArrayInputStream( vdexContent.getBytes() ) );
-        return( CoreUtil.applyXslToDocument( "convertVDEXToSKOS", source, params ) );
+        return( CoreUtil.applyXslToDocument( "convertVDEXToSKOS", source ) );
     }
 
     public String convertVdexRelationshipsToSkos( String vdexContent ) throws Exception {
