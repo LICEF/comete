@@ -5,16 +5,18 @@ String.prototype.trim = function () {
 }
 
 String.prototype.startsWith = function(str) {
-	return (this.match("^"+str) == str);
+    //return (this.match("^"+str) == str);
+    return this.slice(0, str.length) == str;
 }
 
 function Snorql() {
     // modify this._endpoint to point to your SPARQL endpoint
-    this._endpoint = document.location.href.match(/^([^?]*)snorql\//)[1] + 'sparql';
+    //this._endpoint = document.location.href.match(/^([^?]*)snorql\//)[1] + 'sparql';
+    this._endpoint = '${sparql.endpoint}';
     // modify these to your likeing
-    this._poweredByLink = 'http://www4.wiwiss.fu-berlin.de/bizer/d2r-server/';
-    this._poweredByLabel = 'D2R Server';
-    this._enableNamedGraphs = false;
+    this._poweredByLink = 'http://jena.apache.org/documentation/serving_data/';
+    this._poweredByLabel = 'Apache Jena Fuseki';
+    this._enableNamedGraphs = true;
 
     this._browserBase = null;
     this._namespaces = {};
@@ -26,12 +28,12 @@ function Snorql() {
         this.setBrowserBase(document.location.href.replace(/\?.*/, ''));
         this._displayEndpointURL();
         this._displayPoweredBy();
-        this.setNamespaces(D2R_namespacePrefixes);
+        this.setNamespaces(Comete_namespacePrefixes);
         this.updateOutputMode();
         var match = document.location.href.match(/\?(.*)/);
         var queryString = match ? match[1] : '';
         if (!queryString) {
-            document.getElementById('querytext').value = 'SELECT DISTINCT * WHERE {\n  ?s ?p ?o\n}\nLIMIT 10';
+            document.getElementById('querytext').value = 'SELECT DISTINCT * WHERE {\n  ?s ?p ?o\n}\nLIMIT 100';
             this._updateGraph(null, false);
             return;
         }
