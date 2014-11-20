@@ -1,0 +1,17 @@
+<xs:schema targetNamespace="http://www.lom-fr.fr/xsd/SCOLOMFR/unique"
+           xmlns="http://www.lom-fr.fr/xsd/SCOLOMFR/unique"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           version="SCOLOMFR v1.1 10/2011">
+
+    
+    <!-- Attribute group declarations -->
+
+    <xs:attributeGroup name="generalResourceType"/>
+    <xs:attributeGroup name="place"/>
+    <xs:attributeGroup name="educationalMethod"/>
+    <xs:attributeGroup name="tool"/>
+    
+
+
+</xs:schema>

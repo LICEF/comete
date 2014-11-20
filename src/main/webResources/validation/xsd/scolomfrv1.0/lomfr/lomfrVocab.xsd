@@ -1,0 +1,18 @@
+<xs:schema targetNamespace="http://www.lom-fr.fr/xsd/LOMFR/vocab"
+           xmlns="http://www.lom-fr.fr/xsd/LOMFR/vocab"
+           xmlns:lomfr="http://www.lom-fr.fr/xsd/LOMFR"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           version="LOMFR NF Z 76-040 12/2006">
+
+  <xs:import namespace="http://www.lom-fr.fr/xsd/LOMFR"/>
+
+   <xs:simpleType name="documentType">
+      <xs:union memberTypes="lomfr:documentTypeValues"/>
+   </xs:simpleType>
+
+   <xs:simpleType name="activity">
+      <xs:union memberTypes="lomfr:activityValues"/>
+   </xs:simpleType>
+
+</xs:schema>

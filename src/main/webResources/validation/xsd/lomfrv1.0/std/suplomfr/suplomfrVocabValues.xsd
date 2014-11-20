@@ -1,0 +1,41 @@
+<xs:schema targetNamespace="http://www.lom-fr.fr/xsd/SupLOMFR" xmlns="http://www.lom-fr.fr/xsd/SupLOMFR"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+
+
+    <!-- extended vocabularies -->
+
+    <!-- Source -->
+    <xs:simpleType name="sourceValues">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="SupLOMFRv1.0"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+
+    <!-- 5.2 Learning Resource Type -->
+    <xs:simpleType name="learningResourceTypeValues">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="étude de cas"/>
+            <xs:enumeration value="liste de références"/>
+            <xs:enumeration value="jeu de données"/>
+            <xs:enumeration value="autres"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- 5.6 Context -->
+    <xs:simpleType name="contextValues">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="bac+1"/>
+            <xs:enumeration value="bac+2"/>
+            <xs:enumeration value="bac+3"/>
+            <xs:enumeration value="bac+4"/>
+            <xs:enumeration value="bac+5"/>
+            <xs:enumeration value="bac>=6"/>
+            <xs:enumeration value="mastère"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+
+
+</xs:schema>

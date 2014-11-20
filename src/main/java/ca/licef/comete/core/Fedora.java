@@ -394,16 +394,16 @@ System.out.println( "ds="+ds+" hasContent="+ds.hasContent()+" name="+ds.getName(
     //    return( resp.getLastModifiedDate() + "" );
     //}
 
-    //public void purgeDatastream(String id, String dataStream, String logMessage) throws Exception {
+    public void purgeDatastream(String id, String dataStream, String logMessage) throws Exception {
     //    if (id.startsWith("info:fedora/"))
     //        id = id.substring("info:fedora/".length());
 
     //    PurgeDatastream req = new PurgeDatastream( id, dataStream );
     //    req.logMessage( logMessage );
     //    PurgeDatastreamResponse resp = req.execute( getClient() );
-    //}
+    }
 
-    //public boolean isDatastreamExists(String id, String dataStream) throws FedoraClientException, IOException {
+    public boolean isDatastreamExists(String id, String dataStream) throws FedoraException, IOException {
     //    if (id.startsWith("info:fedora/"))
     //        id = id.substring("info:fedora/".length());
 
@@ -426,7 +426,8 @@ System.out.println( "ds="+ds+" hasContent="+ds.hasContent()+" name="+ds.getName(
     //    }
 
     //    return( datastreamCount > 0 );
-    //}
+        return( false );
+    }
 
 
     ///*

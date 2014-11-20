@@ -36,7 +36,7 @@ public class COMETE {
     public static final ObjectProperty describes = m_model.createObjectProperty( "http://comete.licef.ca/reference#describes" );
     
     /** <p>Link to local Fedora persistent digital object identifier</p> */
-    public static final ObjectProperty fedoraDigitalObject = m_model.createObjectProperty( "http://comete.licef.ca/reference#fedoraDigitalObject" );
+    public static final DatatypeProperty fedoraDigitalObject = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#fedoraDigitalObject" );
     
     /** <p>an associated metadata record</p> */
     public static final ObjectProperty hasMetadataRecord = m_model.createObjectProperty( "http://comete.licef.ca/reference#hasMetadataRecord" );
@@ -87,7 +87,7 @@ public class COMETE {
     public static final ObjectProperty learningResourceType = m_model.createObjectProperty( "http://comete.licef.ca/reference#learningResourceType" );
 
     /** <p>significative word describing the object</p> */
-    public static final DatatypeProperty metadataFormat  = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#metadataFormat" );
+    public static final ObjectProperty metadataFormat  = m_model.createObjectProperty( "http://comete.licef.ca/reference#metadataFormat" );
 
     /** <p>Type of repository like OAI or HTML</p> */
     public static final ObjectProperty repository = m_model.createObjectProperty( "http://comete.licef.ca/reference#repository" );
@@ -98,6 +98,9 @@ public class COMETE {
     /** <p>modification date of object into the system</p> */
     public static final DatatypeProperty updated = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#updated" );
     
+    /** <p>Alias corresponding to the vocabulary</p> */
+    public static final DatatypeProperty validationEnabled = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#validationEnabled" );
+
     /** <p>Alias corresponding to the vocabulary</p> */
     public static final DatatypeProperty vocAlias = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#vocAlias" );
 

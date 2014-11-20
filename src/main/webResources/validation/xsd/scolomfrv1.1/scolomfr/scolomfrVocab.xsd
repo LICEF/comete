@@ -1,0 +1,31 @@
+<xs:schema targetNamespace="http://www.lom-fr.fr/xsd/SCOLOMFR/vocab"
+   xmlns="http://www.lom-fr.fr/xsd/SCOLOMFR/vocab"
+   xmlns:lomfr="http://www.lom-fr.fr/xsd/LOMFR"
+   xmlns:scolomfr="http://www.lom-fr.fr/xsd/SCOLOMFR"
+   xmlns:xs="http://www.w3.org/2001/XMLSchema"
+   elementFormDefault="qualified"
+   version="SCOLOMFR v1.1 10/2011">
+
+  <xs:import namespace="http://www.lom-fr.fr/xsd/SCOLOMFR"/>
+   
+   <!-- generalResourceTypeValues -->
+   <xs:simpleType name="generalResourceType">
+      <xs:union memberTypes="scolomfr:generalResourceTypeValues"/>
+   </xs:simpleType>
+   
+   <!-- placeValues -->
+   <xs:simpleType name="place">
+      <xs:union memberTypes="scolomfr:placeValues"/>
+   </xs:simpleType>
+   
+   <!-- educationalMethod -->
+   <xs:simpleType name="educationalMethod">
+      <xs:union memberTypes="scolomfr:educationalMethodValues"/>
+   </xs:simpleType>
+   
+   <!-- tool -->
+   <xs:simpleType name="tool">
+      <xs:union memberTypes="scolomfr:toolValues"/>
+   </xs:simpleType>
+
+</xs:schema>

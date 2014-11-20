@@ -1,0 +1,121 @@
+<xs:schema targetNamespace="http://www.lom-fr.fr/xsd/LOMFR"
+           xmlns="http://www.lom-fr.fr/xsd/LOMFR"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+
+
+           
+  <!-- new vocabularies -->
+
+  <xs:simpleType name="documentTypeValues">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="collection"/>
+      <xs:enumeration value="ensemble de données"/>
+      <xs:enumeration value="évènement"/>
+      <xs:enumeration value="image"/>
+      <xs:enumeration value="image en mouvement"/>
+      <xs:enumeration value="image fixe"/>
+      <xs:enumeration value="logiciel"/>
+      <xs:enumeration value="objet physique"/>
+      <xs:enumeration value="ressource interactive"/>
+      <xs:enumeration value="service"/>
+      <xs:enumeration value="son"/>
+      <xs:enumeration value="texte"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+
+  <xs:simpleType name="activityValues">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="animer"/>
+      <xs:enumeration value="apprendre"/>
+      <xs:enumeration value="collaborer"/>
+      <xs:enumeration value="communiquer"/>
+      <xs:enumeration value="coopérer"/>
+      <xs:enumeration value="créer"/>
+      <xs:enumeration value="échanger"/>
+      <xs:enumeration value="lire"/>
+      <xs:enumeration value="observer"/>
+      <xs:enumeration value="organiser"/>
+      <xs:enumeration value="produire"/>
+      <xs:enumeration value="publier"/>
+      <xs:enumeration value="rechercher"/>
+      <xs:enumeration value="s'auto-former"/>
+      <xs:enumeration value="s'exercer"/>
+      <xs:enumeration value="s'informer"/>
+      <xs:enumeration value="se former"/>
+      <xs:enumeration value="simuler"/>
+      <xs:enumeration value="s'évaluer"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+
+           
+  <!-- extended vocabularies -->
+
+   <!-- Source -->
+   <xs:simpleType name="sourceValues">
+      <xs:restriction base="xs:token">
+         <xs:enumeration value="LOMFRv1.0"/>
+      </xs:restriction>
+   </xs:simpleType>
+
+<!-- 2.3.1 Role -->
+   <xs:simpleType name="roleValues">
+     <xs:restriction base="xs:token">
+       <xs:enumeration value="contributeur"/>
+     </xs:restriction>	
+   </xs:simpleType>
+
+   <!-- 4.4.1.2 Name -->
+   <xs:simpleType name="nameValues">
+      <xs:restriction base="xs:token">
+	<xs:enumeration value="firefox"/>
+	<xs:enumeration value="safari"/>
+	<xs:enumeration value="linux"/>
+      </xs:restriction>
+   </xs:simpleType>
+
+<!-- 5.2 Learning Resource Type -->
+   <xs:simpleType name="learningResourceTypeValues">
+      <xs:restriction base="xs:token">
+	<xs:enumeration value="démonstration"/>
+	<xs:enumeration value="évaluation"/>
+	<xs:enumeration value="animation"/>
+	<xs:enumeration value="tutoriel"/>
+	<xs:enumeration value="glossaire"/>
+	<xs:enumeration value="guide"/>
+	<xs:enumeration value="matériel de référence"/>
+	<xs:enumeration value="méthodologie"/>
+	<xs:enumeration value="outil"/>
+	<xs:enumeration value="scénario pédagogique"/>
+      </xs:restriction>
+   </xs:simpleType>
+
+<!-- 5.6 Context -->
+   <xs:simpleType name="contextValues">
+      <xs:restriction base="xs:token">
+	<xs:enumeration value="enseignement primaire"/>
+	<xs:enumeration value="enseignement secondaire"/>
+	<xs:enumeration value="licence"/>
+	<xs:enumeration value="master"/>
+	<xs:enumeration value="doctorat"/>
+	<xs:enumeration value="formation continue"/>
+	<xs:enumeration value="formation en entreprise"/>
+      </xs:restriction>
+   </xs:simpleType>
+
+   <!-- 7.1 Kind -->
+   <xs:simpleType name="kindValues">
+      <xs:restriction base="xs:token">
+	<xs:enumeration value="est associée à"/>
+	<xs:enumeration value="est la traduction de"/>
+	<xs:enumeration value="fait l'objet d'une traduction"/>
+	<xs:enumeration value="est la localisation de"/>
+	<xs:enumeration value="fait l'objet d'une localisation"/>
+	<xs:enumeration value="est prérequis de"/>
+ 	<xs:enumeration value="a pour prérequis"/>
+      </xs:restriction>
+   </xs:simpleType>
+
+</xs:schema>

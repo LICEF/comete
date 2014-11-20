@@ -1,0 +1,45 @@
+<xs:schema targetNamespace="http://www.lom-fr.fr/xsd/LOMFR"
+           xmlns="http://www.lom-fr.fr/xsd/LOMFR"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           version="LOMFR NF Z 76-040 12/2006">
+
+   <!-- Element declarations -->
+
+
+   <xs:group name="documentType">
+      <xs:sequence>
+         <xs:element name="documentType" type="documentType">
+            <xs:unique name="documentTypeUnique">
+               <xs:selector xpath="*"/>
+               <xs:field xpath="@uniqueElementName"/>
+            </xs:unique>
+         </xs:element>
+      </xs:sequence>
+   </xs:group>
+
+ 
+   <xs:group name="activity">
+      <xs:sequence>
+         <xs:element name="activity" type="activity">
+            <xs:unique name="activityUnique">
+               <xs:selector xpath="*"/>
+               <xs:field xpath="@uniqueElementName"/>
+            </xs:unique>
+         </xs:element>
+      </xs:sequence>
+   </xs:group>
+
+ 
+   <xs:group name="credit">
+      <xs:sequence>
+         <xs:element name="credit" type="credit">
+            <xs:unique name="creditUnique">
+               <xs:selector xpath="*"/>
+               <xs:field xpath="@uniqueElementName"/>
+            </xs:unique>
+         </xs:element>
+      </xs:sequence>
+   </xs:group>
+
+</xs:schema>

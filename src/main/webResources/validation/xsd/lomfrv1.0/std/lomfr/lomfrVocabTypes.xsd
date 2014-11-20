@@ -1,0 +1,63 @@
+<xs:schema targetNamespace="http://www.lom-fr.fr/xsd/LOMFR"
+           xmlns="http://www.lom-fr.fr/xsd/LOMFR"
+           xmlns:vocfr="http://www.lom-fr.fr/xsd/LOMFR/vocab"
+           xmlns:lom="http://ltsc.ieee.org/xsd/LOM"
+           xmlns:ag="http://ltsc.ieee.org/xsd/LOM/unique"
+           xmlns:ex="http://ltsc.ieee.org/xsd/LOM/extend"
+           xmlns:voc="http://ltsc.ieee.org/xsd/LOM/vocab"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           version="LOMFR NF Z 76-040 12/2006">
+
+
+  <xs:import namespace="http://www.lom-fr.fr/xsd/LOMFR/vocab" schemaLocation="../lomfr/lomfrVocab.xsd"/>
+  <xs:import namespace="http://ltsc.ieee.org/xsd/LOM" schemaLocation="../lomfr.xsd"/>
+  <xs:import namespace="http://ltsc.ieee.org/xsd/LOM/unique" schemaLocation="../unique/strict.xsd"/>
+  <xs:import namespace="http://ltsc.ieee.org/xsd/LOM/extend" schemaLocation="../extend/strict.xsd"/>
+
+   <!-- Vocabulary type declarations -->
+    <!-- Source -->
+   <xs:complexType name="sourceValue">
+      <xs:simpleContent>
+         <xs:extension base="vocfr:source">
+            <xs:attributeGroup ref="ag:source"/>
+            <xs:attributeGroup ref="ex:customAttributes"/>
+         </xs:extension>
+      </xs:simpleContent>
+   </xs:complexType>
+
+   <xs:complexType name="documentTypeVocab">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+         <xs:element name="source" type="sourceValue"/>
+         <xs:element name="value" type="documentTypeValue"/>
+      </xs:choice>
+   </xs:complexType>
+
+   <xs:complexType name="documentTypeValue">
+      <xs:simpleContent>
+         <xs:extension base="vocfr:documentType">
+            <xs:attributeGroup ref="ag:value"/>
+            <xs:attributeGroup ref="ex:customAttributes"/>
+         </xs:extension>
+      </xs:simpleContent>
+   </xs:complexType>
+
+
+   <xs:complexType name="activityVocab">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+         <xs:element name="source" type="sourceValue"/>
+         <xs:element name="value" type="activityValue"/>
+      </xs:choice>
+   </xs:complexType>
+
+   <xs:complexType name="activityValue">
+      <xs:simpleContent>
+         <xs:extension base="vocfr:activity">
+            <xs:attributeGroup ref="ag:value"/>
+            <xs:attributeGroup ref="ex:customAttributes"/>
+         </xs:extension>
+      </xs:simpleContent>
+   </xs:complexType>
+
+
+</xs:schema>

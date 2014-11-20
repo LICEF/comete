@@ -5,6 +5,7 @@ import ca.licef.comete.core.Fedora;
 import ca.licef.comete.core.metadataformat.MetadataFormat;
 import ca.licef.comete.core.metadataformat.MetadataFormats;
 import ca.licef.comete.core.metadataformat.OAI_DC;
+import ca.licef.comete.core.Settings;
 import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.Util;
 import ca.licef.comete.metadata.deployment.ResourceDeployer;
@@ -17,22 +18,35 @@ import licef.XMLUtil;
 import licef.tsapi.model.Triple;
 import licef.tsapi.model.Tuple;
 import licef.tsapi.TripleStore;
+import licef.tsapi.vocabulary.DCTERMS;
 import licef.tsapi.vocabulary.RDF;
 import licef.tsapi.vocabulary.FOAF;
+import org.apache.tika.language.LanguageIdentifier;
+import org.ariadne.util.JDomUtils;
+import org.ariadne.validation.Validator;
+import org.ariadne.validation.exception.InitialisationException;
+import org.ariadne.validation.exception.ValidationException;
+import org.ariadne.validation.utils.ValidationUtils;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.IOException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import javax.xml.transform.stream.StreamSource;
 
 public class Metadata {
@@ -52,7 +66,7 @@ public class Metadata {
             String recordURI = getRecordURI(oaiID, namespace);
             if (recordURI != null) {
                 isUpdate = true;
-                TripleStoreService tripleStore = Core.getInstance().getTripleStoreService();
+                TripleStore tripleStore = Core.getInstance().getTripleStore();
                 Triple[] triples = tripleStore.getTriplesWithSubjectPredicate(recordURI, Constants.OAI_DATESTAMP);
                 if (triples.length > 0) {
                     Date d1 = DateUtil.toDate(triples[0].getObject());
@@ -71,7 +85,7 @@ public class Metadata {
     public String storeHarvestedRecordEff(String oaiID, String namespace, String repoUri, String record, String datestamp, boolean isUpdate ) throws Exception {
         //MetadataFormat metadataFormat = MetadataFormats.getMetadataFormat(namespace);
         /*System.out.println("storeHarvestedRecord: " +  oaiID + " (" + metadataFormat.getName() + " format)");
-        TripleStoreService tripleStore = Core.getInstance().getTripleStoreService();
+        TripleStore tripleStore = Core.getInstance().getTripleStore();
 
         String loURI = null;
 
@@ -129,9 +143,28 @@ public class Metadata {
         return null;
     }
 
+    //public String getLearningObjectURI( String metadataRecordUri ) throws Exception {
+    //    Hashtable<String, String>[] res = Core.getInstance().getTripleStore().getResults("getLearningObject.sparql", metadataRecordUri);
+    //    if (res.length > 0)
+    //        return( res[0].get("res") );
+    //    return( null );
+    //}
+
+    public String getLearningObjectURI( String metadataRecordUri ) throws Exception {
+        TripleStore tripleStore = Core.getInstance().getTripleStore();
+        String query = Util.getQuery( "getLearningObject.sparql", metadataRecordUri );
+        Tuple[] tuples = tripleStore.sparqlSelect( query );
+        if( tuples.length > 0 )
+            return( tuples[ 0 ].getValue( "res" ).getContent() );
+        else
+            return( null );
+    }
+
     public String getRecordURI( String oaiID, String namespace ) throws Exception {
+System.out.println( "getRecordURI oaiID="+oaiID+" namespace="+namespace );        
         TripleStore tripleStore = Core.getInstance().getTripleStore();
         String query = Util.getQuery( "getMetadataRecordWith-oai-id.sparql", namespace, oaiID );
+System.out.println( "query="+query );        
         Tuple[] tuples = tripleStore.sparqlSelect(query);
         if( tuples.length > 0 )
             return( tuples[ 0 ].getValue( "s" ).getContent() );
@@ -292,6 +325,7 @@ System.out.println( "values["+i+"]="+values[i]);
             try {
                 TripleStore tripleStore = Core.getInstance().getTripleStore();
                 String recordURI = getRecordURI(pseudoOaiID, namespace);
+System.out.println( "recordURI="+recordURI );                
                 if (recordURI == null) {
                     loURI = Util.makeURI(COMETE.LearningObject.getURI());
 System.out.println( "loURI="+loURI );       
@@ -302,14 +336,16 @@ System.out.println( "loURI="+loURI );
                     state = "created";
 System.out.println( "Created" );                    
                 }
-                //else {
-                //    loURI = getLearningObjectURI(recordURI);
-                //    resetLearningObjectNonPersistentTriples(recordURI);
-                //    state = "updated";
-                //}
+                else {
+System.out.println( "BEFORE recordURI="+recordURI );                    
+                    loURI = getLearningObjectURI(recordURI);
+System.out.println( "AFTER loURI="+loURI );                    
+                    resetLearningObjectNonPersistentTriples(recordURI);
+                    state = "updated";
+                }
 
                 recordURI = digestRecord(loURI, recordURI, content, namespace, null, "localRecord", pseudoOaiID);
-                tripleStore.insertTriple(new Triple( recordURI, Constants.OAI_ID, pseudoOaiID, false ) );
+                tripleStore.insertTriple(new Triple( recordURI, Constants.OAI_ID, pseudoOaiID, true ) );
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -347,7 +383,6 @@ System.out.println( "Created" );
         TripleStore tripleStore = Core.getInstance().getTripleStore();
         if (recordURI == null) {
             String recordId = fedora.createDigitalObject();
-System.out.println( "recordId afer fedora.createDigitalObject()="+recordId );
 
             //if (record == null) { //case used for new record from metadata editor. -AM
             //    if (namespace.equals(Constants.IEEE_LOM_NAMESPACE))
@@ -356,13 +391,13 @@ System.out.println( "recordId afer fedora.createDigitalObject()="+recordId );
             //        record = Util.getNewDcXml( recordId );
             //}
 
-            fedoraId = /*"info:fedora/" +*/ recordId; 
+            fedoraId = recordId; 
             // We remove the leading / beforehand.
             recordURI = Util.makeURI(recordId.substring( 1 ), COMETE.MetadataRecord.getURI());
-System.out.println( "fedoraId="+fedoraId+" recordURI="+recordURI );
 
             triples.add(new Triple(recordURI, RDF.type, COMETE.MetadataRecord.getURI()));
             triples.add(new Triple(recordURI, COMETE.metadataFormat, namespace));
+
             triples.add(new Triple(recordURI, COMETE.fedoraDigitalObject, fedoraId));
             if( repoURI != null && !"".equals( repoURI ) )
                 triples.add(new Triple(recordURI, COMETE.repository, repoURI));
@@ -382,7 +417,7 @@ System.out.println( "fedoraId="+fedoraId+" recordURI="+recordURI );
             //        "oai:" + Core.getInstance().getRepositoryNamespace()+ ":" + _oaiId, true);
         }
         else {
-            //fedoraId = getFedoraIdFromURI(recordURI);
+            fedoraId = getFedoraIdFromURI(recordURI);
 
             ////format datastream update
             //String previous = fedora.getDatastream(fedoraId, Constants.DATASTREAM_DATA);
@@ -390,50 +425,49 @@ System.out.println( "fedoraId="+fedoraId+" recordURI="+recordURI );
             //    fedora.modifyDatastream(fedoraId, Constants.DATASTREAM_DATA, record, logMessage);
         }
 
-        //validateRecord( fedoraId, loURI, recordURI, record, namespace, logMessage );
+        validateRecord( fedoraId, loURI, recordURI, record, namespace, logMessage );
 
         String extractedTriplesAsXml = processMetadataRecord( record, loURI, recordURI, namespace );
-System.out.println( "extractedTriplesAsXml="+extractedTriplesAsXml );
 
-        //Triple[] extractedTriples = Triple.readTriplesFromXml(extractedTriplesAsXml);
-        //triples.addAll(Arrays.asList(extractedTriples));
+        Triple[] extractedTriples = Triple.readTriplesFromXml(extractedTriplesAsXml);
+        triples.addAll(Arrays.asList(extractedTriples));
 
-        //String format = null, location = null;
-        //ArrayList<Triple> titles = new ArrayList<Triple>();
-        //ArrayList<Triple> descriptions = new ArrayList<Triple>();
-        //ArrayList<String> loLanguages = new ArrayList<String>();
-        //ArrayList<String> recordLanguages = new ArrayList<String>();
-        //for (Triple triple : triples) {
-        //    if (FOAF.page.getURI().equals(triple.getPredicate())) {
-        //        location = triple.getObject();
-        //        if( location != null && !location.startsWith( "http" ) ) 
-        //            location = "http://" + location;
-        //    }
-        //    else if (Constants.METAMODEL_FORMAT.equals(triple.getPredicate()))
-        //        format = triple.getObject();
-        //    else if (Constants.METAMODEL_LANGUAGE.equals(triple.getPredicate())) {
-        //        if( recordURI.equals( triple.getSubject() ) )
-        //            recordLanguages.add( triple.getObject() );
-        //        else if( loURI.equals( triple.getSubject() ) )
-        //            loLanguages.add( triple.getObject() );
-        //    }
-        //    else if (Constants.METAMODEL_TITLE.equals(triple.getPredicate()))
-        //        titles.add( triple );
-        //    else if (Constants.METAMODEL_DESCRIPTION.equals(triple.getPredicate()))
-        //        descriptions.add( triple );
-        //}
+        String format = null, location = null;
+        ArrayList<Triple> titles = new ArrayList<Triple>();
+        ArrayList<Triple> descriptions = new ArrayList<Triple>();
+        ArrayList<String> loLanguages = new ArrayList<String>();
+        ArrayList<String> recordLanguages = new ArrayList<String>();
+        for (Triple triple : triples) {
+            if (FOAF.page.getURI().equals(triple.getPredicate())) {
+                location = triple.getObject();
+                if( location != null && !location.startsWith( "http" ) ) 
+                    location = "http://" + location;
+            }
+            else if (DCTERMS.format.getURI().equals(triple.getPredicate()))
+                format = triple.getObject();
+            else if (DCTERMS.language.getURI().equals(triple.getPredicate())) {
+                if( recordURI.equals( triple.getSubject() ) )
+                    recordLanguages.add( triple.getObject() );
+                else if( loURI.equals( triple.getSubject() ) )
+                    loLanguages.add( triple.getObject() );
+            }
+            else if (DCTERMS.title.getURI().equals(triple.getPredicate()))
+                titles.add( triple );
+            else if (DCTERMS.description.getURI().equals(triple.getPredicate()))
+                descriptions.add( triple );
+        }
 
-        //if (format == null && location != null) {
-        //    String mimetype = IOUtil.getMimeType( location );
-        //    format = "http://purl.org/NET/mediatypes/" + mimetype;
-        //    Triple tripleFormat = new Triple( loURI, Constants.METAMODEL_FORMAT, format, false );
-        //    triples.add(tripleFormat);
-        //}
-        //
-        //manageLanguages( recordLanguages, loLanguages, recordURI, loURI, titles, descriptions, triples );
+        if (format == null && location != null) {
+            String mimetype = IOUtil.getMimeType( location );
+            format = "http://purl.org/NET/mediatypes/" + mimetype;
+            Triple tripleFormat = new Triple( loURI, DCTERMS.format, format );
+            triples.add(tripleFormat);
+        }
+        
+        manageLanguages( recordLanguages, loLanguages, recordURI, loURI, titles, descriptions, triples );
 
-        ////triples insertions
-        //tripleStore.addTriples(triples);
+        //triples insertions
+        tripleStore.insertTriples(triples);
 
         ////Identity and vocabulary referencement management
         //recordToInternalFormat(loURI, recordURI, fedoraId, metadataFormat);
@@ -445,10 +479,7 @@ System.out.println( "extractedTriplesAsXml="+extractedTriplesAsXml );
     }
 
     public String processMetadataRecord( String xml, String loURI, String recordURI, String namespace ) throws Exception {
-System.out.println( "processMetadataRecord xml="+xml+" loURI="+loURI+" recordURI="+recordURI );
-System.out.println( "namespace="+namespace );        
         String format = MetadataFormats.getMetadataFormat( namespace ).getName();
-System.out.println( "format="+format );
 
         StreamSource xmlSource = new StreamSource( new BufferedReader( new StringReader( xml ) ) );
         HashMap<String,String> params = new HashMap<String,String>();
@@ -460,10 +491,10 @@ System.out.println( "format="+format );
 
     //public String processMetadataRecord( String recordId ) throws Exception {
     //    String metadataRecordUri = Util.makeURI( recordId, Constants.TYPE_METADATA_RECORD );
-    //    String fedoraId = Core.getInstance().getTripleStoreService().getFedoraIdFromURI( metadataRecordUri );
+    //    String fedoraId = Core.getInstance().getTripleStore().getFedoraIdFromURI( metadataRecordUri );
     //    String applicationProfile = null;
     //    String learningObjectUri = null;
-    //    Triple[] metadataRecordTriples = Core.getInstance().getTripleStoreService().getTriplesWithSubject( metadataRecordUri );
+    //    Triple[] metadataRecordTriples = Core.getInstance().getTripleStore().getTriplesWithSubject( metadataRecordUri );
     //    for( int i = 0; i < metadataRecordTriples.length; i++ ) {
     //        Triple triple = metadataRecordTriples[ i ];
     //        if( Constants.METAMODEL_APPLICATION_PROFILE.equals( triple.getPredicate() ) )
@@ -477,64 +508,164 @@ System.out.println( "format="+format );
     //    return( processMetadataRecord( recordXml, learningObjectUri, metadataRecordUri, applicationProfile ) );
     //}
 
-    //private void manageLanguages( ArrayList<String> recordInitLanguages, ArrayList<String> loInitLanguages, String recordURI, String loURI, ArrayList<Triple> titles, ArrayList<Triple> descriptions, ArrayList<Triple> triples ) {
-    //    HashSet<String> recordLanguages = new HashSet<String>();
-    //    
-    //    // If no languages are specified for the metadata record, try to guess it.
-    //    if( recordInitLanguages.isEmpty() ) {
+    private void manageLanguages( ArrayList<String> recordInitLanguages, ArrayList<String> loInitLanguages, String recordURI, String loURI, ArrayList<Triple> titles, ArrayList<Triple> descriptions, ArrayList<Triple> triples ) {
+        HashSet<String> recordLanguages = new HashSet<String>();
+        
+        // If no languages are specified for the metadata record, try to guess it.
+        if( recordInitLanguages.isEmpty() ) {
 
-    //        // Check if some language attributes are already set for titles and descriptions.
-    //        for( Triple t : titles ) {
-    //            if( t.getLanguage() != null )
-    //                recordLanguages.add( t.getLanguage() );
-    //        }
-    //        for( Triple t : descriptions ) {
-    //            if( t.getLanguage() != null )
-    //                recordLanguages.add( t.getLanguage() );
-    //        }
+            // Check if some language attributes are already set for titles and descriptions.
+            for( Triple t : titles ) {
+                if( t.getLanguage() != null )
+                    recordLanguages.add( t.getLanguage() );
+            }
+            for( Triple t : descriptions ) {
+                if( t.getLanguage() != null )
+                    recordLanguages.add( t.getLanguage() );
+            }
 
-    //        // Otherwise, try to guess the language used in the descriptions.  The descriptions are likely longer than titles and
-    //        // might give better results.
-    //        if( recordLanguages.isEmpty() ) {
-    //            for( Triple t : descriptions ) {
-    //                LanguageIdentifier langIdentifier = new LanguageIdentifier( t.getObject() );
-    //                recordLanguages.add( langIdentifier.getLanguage() );
-    //            }
-    //        }
+            // Otherwise, try to guess the language used in the descriptions.  The descriptions are likely longer than titles and
+            // might give better results.
+            if( recordLanguages.isEmpty() ) {
+                for( Triple t : descriptions ) {
+                    LanguageIdentifier langIdentifier = new LanguageIdentifier( t.getObject() );
+                    recordLanguages.add( langIdentifier.getLanguage() );
+                }
+            }
 
-    //        // Otherwise, try to guess the language using the titles.
-    //        if( recordLanguages.isEmpty() ) {
-    //            for( Triple t : titles ) {
-    //                LanguageIdentifier langIdentifier = new LanguageIdentifier( t.getObject() );
-    //                recordLanguages.add( langIdentifier.getLanguage() );
-    //            }
-    //        }
+            // Otherwise, try to guess the language using the titles.
+            if( recordLanguages.isEmpty() ) {
+                for( Triple t : titles ) {
+                    LanguageIdentifier langIdentifier = new LanguageIdentifier( t.getObject() );
+                    recordLanguages.add( langIdentifier.getLanguage() );
+                }
+            }
 
-    //        // Add the triples for the recordLanguages found.
-    //        for( String lang : recordLanguages ) {
-    //            Triple triple = new Triple( recordURI, Constants.METAMODEL_LANGUAGE, lang );
-    //            triples.add( triple );
-    //        }
-    //    }
+            // Add the triples for the recordLanguages found.
+            for( String lang : recordLanguages ) {
+                Triple triple = new Triple( recordURI, DCTERMS.language, lang );
+                triples.add( triple );
+            }
+        }
 
-    //    // If no languages are specified for the resource, we try to guess it.
-    //    if( loInitLanguages.isEmpty() ) {
-    //        if( !recordInitLanguages.isEmpty() ) {
-    //            // Take the initial languages of the metadata records if any.
-    //            for( String lang : recordInitLanguages ) {
-    //                Triple triple = new Triple( loURI, Constants.METAMODEL_LANGUAGE, lang );
-    //                triples.add( triple );
-    //            }
-    //        }
-    //        else {
-    //            // Otherwise take the languages that we guessed for the metadata record.
-    //            for( String lang : recordLanguages ) {
-    //                Triple triple = new Triple( loURI, Constants.METAMODEL_LANGUAGE, lang );
-    //                triples.add( triple );
-    //            }
-    //        }
-    //    }
-    //}
+        // If no languages are specified for the resource, we try to guess it.
+        if( loInitLanguages.isEmpty() ) {
+            if( !recordInitLanguages.isEmpty() ) {
+                // Take the initial languages of the metadata records if any.
+                for( String lang : recordInitLanguages ) {
+                    Triple triple = new Triple( loURI, DCTERMS.language, lang );
+                    triples.add( triple );
+                }
+            }
+            else {
+                // Otherwise take the languages that we guessed for the metadata record.
+                for( String lang : recordLanguages ) {
+                    Triple triple = new Triple( loURI, DCTERMS.language, lang );
+                    triples.add( triple );
+                }
+            }
+        }
+    }
+
+    /*****
+     * Record's Redigest
+     */
+
+    private void resetLearningObjectNonPersistentTriples(String recordURI) throws Exception {
+        TripleStore tripleStore = Core.getInstance().getTripleStore();
+        String query = Util.getQuery( "deleteLOTriplesToReset.sparql", recordURI );
+        tripleStore.sparqlUpdate( query );
+    }
+
+
+    private void validateRecord( String fedoraId, String loURI, String recordURI, String record, String namespace, String logMessage ) throws Exception {
+        Fedora fedora = Core.getInstance().getFedora();
+        TripleStore tripleStore = Core.getInstance().getTripleStore();
+
+        Map<String,Boolean> applProfToValidate = Settings.getValidatedApplicationProfiles();
+System.out.println( "validateRecord applProfToValidate="+applProfToValidate );
+
+        String[] applProfiles = null;
+        if( Constants.IEEE_LOM_NAMESPACE.equals( namespace ) )
+            applProfiles = Constants.lomApplProfiles;
+        else if( Constants.OAI_DC_NAMESPACE.equals( namespace ) )
+            applProfiles = Constants.dcApplProfiles;
+
+        for( int i = 0; i < applProfiles.length; i++ ) {
+            Boolean isValidationRequired = applProfToValidate.get( applProfiles[ i ] );
+            if( isValidationRequired == null || !isValidationRequired.booleanValue() )
+                continue;
+
+            String profileUri = applProfiles[ i ];
+            boolean isValid = true;
+            long startTime = System.currentTimeMillis();
+            System.out.println( "Validating record " + recordURI + " against " + profileUri );
+            String reportDataStream = Util.getReportDataStream( profileUri );
+            if( fedora.isDatastreamExists( fedoraId, reportDataStream ) )
+                fedora.purgeDatastream( fedoraId, reportDataStream, logMessage );
+            try {
+                getValidator().validateMetadata( record, profileUri );
+                tripleStore.insertTriple( new Triple( recordURI, COMETE.applicationProfile, profileUri ) ); 
+            } 
+catch( FileNotFoundException e2 ) {
+    e2.printStackTrace();
+}
+            catch( ValidationException e ) {
+e.printStackTrace();
+                isValid = false;
+                String errorReport = JDomUtils.parseXml2string(ValidationUtils.collectErrorsAsXml(e.getMessage()),null);
+                if( !fedora.isDatastreamExists( fedoraId, reportDataStream ) )
+                    fedora.addDatastream( fedoraId, reportDataStream, errorReport, "text/xml", null);
+                    //fedora.addDatastream( fedoraId, reportDataStream, reportDataStream, false, errorReport, "text/xml", namespace, "M", logMessage);
+            }
+            finally {
+                long timeTaken = System.currentTimeMillis() - startTime;
+                System.out.println( "Validation complete (elapsed time: "+ timeTaken + " ms): " + ( isValid ? "VALID" : "INVALID" ) );
+            }
+        }
+    }
+
+    private Validator getValidator() throws IOException, FileNotFoundException, ClassNotFoundException, InstantiationException, IllegalAccessException, InitialisationException {
+        if( !isValidatorInitialized ) {
+            BufferedReader bis = null;
+            java.io.BufferedWriter bos = null;
+            File configFile = null;
+            try {
+                configFile = File.createTempFile( "validatorConfig", ".properties" );
+                java.io.FileWriter fw = new java.io.FileWriter( configFile );
+                bos = new java.io.BufferedWriter( fw );
+                InputStream is = Validator.class.getResourceAsStream( "config.properties" );
+                bis = new BufferedReader( new java.io.InputStreamReader( is ) );
+                for( ;; ) {
+                    String line = bis.readLine();
+                    if( line == null )
+                        break;
+                    String fixedLine = null;
+                    if( line.startsWith( "#" ) || line.indexOf( "Location" ) == -1 )
+                        fixedLine = line;
+                    else
+                        fixedLine = line.replaceFirst( "( = )(.*)(/validation)", "$1" + Core.getInstance().getCometeUrl() + "$3" );
+                    bos.write( fixedLine );
+                    bos.write( "\n" ); 
+                    bos.flush();
+                }
+            }
+            finally {
+                if( bis != null )
+                    bis.close();
+                if( bos != null )
+                    bos.close();
+            }
+
+            Validator.getPropertiesManager().init( configFile );
+            if( configFile != null )
+                configFile.delete();
+            Validator.getValidator().initFromPropertiesManager();
+
+            isValidatorInitialized = true;
+        }
+        return( Validator.getValidator() );
+    }
 
     /*
     * URI Fedora conversion
@@ -575,6 +706,8 @@ System.out.println( "format="+format );
         }
         return id;
     }
+
+    private boolean isValidatorInitialized = false;
 
     private ResourceDeployer deployer;
 

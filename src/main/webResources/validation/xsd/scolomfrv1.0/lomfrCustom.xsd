@@ -1,0 +1,19 @@
+<xs:schema targetNamespace="http://www.lom-fr.fr/xsd/LOMFR"
+           xmlns="http://www.lom-fr.fr/xsd/LOMFR"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+
+
+  <xs:import namespace="http://www.lom-fr.fr/xsd/LOMFR/unique"
+             schemaLocation="lomfr/lomfrUnique.xsd"/>
+
+  <xs:import namespace="http://www.lom-fr.fr/xsd/LOMFR/vocab"
+		schemaLocation="lomfr/lomfrVocab.xsd"/>
+
+  <xs:include schemaLocation="lomfr/lomfrElementTypes.xsd"/>
+  <xs:include schemaLocation="lomfr/lomfrElementNames.xsd"/>
+  <xs:include schemaLocation="lomfr/lomfrVocabValues.xsd"/>
+  <xs:include schemaLocation="lomfr/lomfrVocabTypes.xsd"/>
+
+
+</xs:schema>

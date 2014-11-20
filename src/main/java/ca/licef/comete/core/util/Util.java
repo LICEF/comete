@@ -62,7 +62,6 @@ public class Util {
     }
 
     public static String getIdNumberValue(String id) {
-System.out.println( "getIdNumberValue id="+id );        
         String[] vals = StringUtil.split(id, '/');
         String[] val = StringUtil.split(vals[vals.length - 1], ':');
         return val[val.length - 1];
@@ -73,7 +72,6 @@ System.out.println( "getIdNumberValue id="+id );
     }
 
     public static String makeURI(String id, String type) {
-System.out.println( "makeURI id="+id+" type="+type );        
         if (id.startsWith("http://"))
             return id;
         String typeVal = getTypeLabel(type);
@@ -110,12 +108,6 @@ System.out.println( "makeURI id="+id+" type="+type );
 
     public static String getTypeLabel(String type) {
         String typeVal = null;
-//<<<<<<< HEAD
-//        if (COMETE.MetadataRecord.getURI().equals(type))
-//            typeVal = "metadatarecord";
-//        else if (COMETE.LearningObject.getURI().equals(type))
-//            typeVal = "learningobject";
-//=======
         if (COMETE.MetadataRecord.getURI().equals(type))
             typeVal = Constants.OBJ_TYPE_METADATA_RECORD;
         else if (COMETE.LearningObject.getURI().equals(type))
@@ -173,6 +165,24 @@ System.out.println( "makeURI id="+id+" type="+type );
         return type;
     }
 
+    public static String getReportDataStream( String profileUri ) throws Exception {
+        if( Constants.APPL_PROF_LOM_STRICT.equals( profileUri ) )
+            return( Constants.DATASTREAM_VALIDATION_ERRORS_LOM_STRICT );
+        else if( Constants.APPL_PROF_LOM_LOOSE.equals( profileUri ) )
+            return( Constants.DATASTREAM_VALIDATION_ERRORS_LOM_LOOSE );
+        else if( Constants.APPL_PROF_LOM_FR_1_0.equals( profileUri ) )
+            return( Constants.DATASTREAM_VALIDATION_ERRORS_LOM_FR );
+        else if( Constants.APPL_PROF_SCO_LOM_FR_1_0.equals( profileUri ) )
+            return( Constants.DATASTREAM_VALIDATION_ERRORS_SCO_LOM_FR_1_0 );
+        else if( Constants.APPL_PROF_SCO_LOM_FR_1_1.equals( profileUri ) )
+            return( Constants.DATASTREAM_VALIDATION_ERRORS_SCO_LOM_FR_1_1 );
+        else if( Constants.APPL_PROF_LOM_NORMETIC_1_2.equals( profileUri ) )
+            return( Constants.DATASTREAM_VALIDATION_ERRORS_LOM_NORMETIC_1_2 );
+        else if( Constants.APPL_PROF_OAI_DC.equals( profileUri ) )
+            return( Constants.DATASTREAM_VALIDATION_ERRORS_OAI_DC );
+        else
+            throw( new Exception( "Unknown application profile: " + profileUri + "." ) );
+    }
 
     public static String buildFilterConstraints(String[] values, String varName, boolean resourceValues, String test, String delimiter) {
         return buildFilterConstraints(Arrays.asList(values), varName, resourceValues, test, delimiter);

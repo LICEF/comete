@@ -1,0 +1,47 @@
+<xs:schema targetNamespace="http://www.lom-fr.fr/xsd/LOMFR/extendedVocab"
+   xmlns="http://www.lom-fr.fr/xsd/LOMFR/extendedVocab" 
+   xmlns:ag="http://ltsc.ieee.org/xsd/LOM/unique"
+   xmlns:ex="http://ltsc.ieee.org/xsd/LOM/extend" 
+   xmlns:lx="http://www.lom-fr.fr/xsd/LOMFR"
+   xmlns:suplx="http://www.lom-fr.fr/xsd/SupLOMFR"
+  xmlns:lom="http://ltsc.ieee.org/xsd/LOM"
+   xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+   elementFormDefault="qualified"
+   version="LOMFR NF Z 76-040 12/2006">
+
+
+  <xs:import namespace="http://ltsc.ieee.org/xsd/LOM/unique" schemaLocation="../unique/strict.xsd"/>
+   <xs:import namespace="http://ltsc.ieee.org/xsd/LOM/extend" schemaLocation="../extend/strict.xsd"/>
+   <xs:import namespace="http://ltsc.ieee.org/xsd/LOM" schemaLocation="../common/vocabValues.xsd"/>
+   <xs:import namespace="http://www.lom-fr.fr/xsd/LOMFR" schemaLocation="../lomfr/lomfrVocabValues.xsd"/>
+   <xs:import namespace="http://www.lom-fr.fr/xsd/SupLOMFR" schemaLocation="../suplomfr/suplomfrVocabValues.xsd"/>
+
+   <!-- Vocabulary type declarations -->
+   <!-- Source -->
+   <xs:simpleType name="source">
+      <xs:union memberTypes="lom:sourceValues lx:sourceValues"/>
+   </xs:simpleType>
+ 
+   <xs:complexType name="sourceValue">
+      <xs:simpleContent>
+         <xs:extension base="source">
+            <xs:attributeGroup ref="ag:source"/>
+            <xs:attributeGroup ref="ex:customAttributes"/>
+         </xs:extension>
+      </xs:simpleContent>
+   </xs:complexType>
+
+   <xs:simpleType name="sourceSup">
+      <xs:union memberTypes="lom:sourceValues lx:sourceValues suplx:sourceValues"/>
+   </xs:simpleType>
+ 
+   <xs:complexType name="sourceSupValue">
+      <xs:simpleContent>
+         <xs:extension base="sourceSup">
+            <xs:attributeGroup ref="ag:source"/>
+            <xs:attributeGroup ref="ex:customAttributes"/>
+         </xs:extension>
+      </xs:simpleContent>
+   </xs:complexType>
+
+</xs:schema>

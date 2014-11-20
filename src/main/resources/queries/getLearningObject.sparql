@@ -1,0 +1,6 @@
+PREFIX comete: <http://comete.licef.ca/reference#>
+
+SELECT ?res
+WHERE '{'
+    <{0}> comete:describes ?res
+'}'

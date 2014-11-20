@@ -1,0 +1,93 @@
+<xs:schema targetNamespace="http://www.lom-fr.fr/xsd/SCOLOMFR"
+           xmlns="http://www.lom-fr.fr/xsd/SCOLOMFR"
+           xmlns:vocfr="http://www.lom-fr.fr/xsd/LOMFR/vocab"
+           xmlns:vocscolomfr="http://www.lom-fr.fr/xsd/SCOLOMFR/vocab"
+           xmlns:lom="http://ltsc.ieee.org/xsd/LOM"
+            xmlns:scolom="http://ltsc.ieee.org/xsd/SCOLOM"
+           xmlns:ag="http://ltsc.ieee.org/xsd/LOM/unique"
+           xmlns:ex="http://ltsc.ieee.org/xsd/LOM/extend"
+           xmlns:voc="http://ltsc.ieee.org/xsd/LOM/vocab"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           version="SCOLOMFR v1.1 10/2011">
+
+
+  <xs:import namespace="http://www.lom-fr.fr/xsd/SCOLOMFR/vocab"/>
+  <xs:import namespace="http://ltsc.ieee.org/xsd/LOM"/>
+  <xs:import namespace="http://ltsc.ieee.org/xsd/LOM/unique"/>
+  <xs:import namespace="http://ltsc.ieee.org/xsd/LOM/extend"/>
+
+   <!-- Vocabulary type declarations -->
+   
+   <!-- 1.10 GeneralResourceType -->
+   <xs:complexType name="generalResourceTypeVocab">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+         <xs:element name="source" type="lom:sourceValue"/>
+         <xs:element name="value" type="generalResourceTypeValue"/>
+      </xs:choice>
+   </xs:complexType>
+
+   <xs:complexType name="generalResourceTypeValue">
+      <xs:simpleContent>
+         <xs:extension base="vocscolomfr:generalResourceType">
+            <xs:attributeGroup ref="ag:value"/>
+            <xs:attributeGroup ref="ex:customAttributes"/>
+         </xs:extension>
+      </xs:simpleContent>
+   </xs:complexType>
+   
+   
+   <!-- 5.14 Place -->
+   <xs:complexType name="placeVocab">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+         <xs:element name="source" type="lom:sourceValue"/>
+         <xs:element name="value" type="placeValue"/>
+      </xs:choice>
+   </xs:complexType>
+   
+   <xs:complexType name="placeValue">
+      <xs:simpleContent>
+         <xs:extension base="vocscolomfr:place">
+            <xs:attributeGroup ref="ag:value"/>
+            <xs:attributeGroup ref="ex:customAttributes"/>
+         </xs:extension>
+      </xs:simpleContent>
+   </xs:complexType>
+   
+   
+   <!-- 5.15 EducationalMethod -->
+   <xs:complexType name="educationalMethodVocab">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+         <xs:element name="source" type="lom:sourceValue"/>
+         <xs:element name="value" type="educationalMethodValue"/>
+      </xs:choice>
+   </xs:complexType>
+   
+   <xs:complexType name="educationalMethodValue">
+      <xs:simpleContent>
+         <xs:extension base="vocscolomfr:educationalMethod">
+            <xs:attributeGroup ref="ag:value"/>
+            <xs:attributeGroup ref="ex:customAttributes"/>
+         </xs:extension>
+      </xs:simpleContent>
+   </xs:complexType>
+   
+   
+   <!-- 5.16 Tool -->
+   <xs:complexType name="toolVocab">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+         <xs:element name="source" type="lom:sourceValue"/>
+         <xs:element name="value" type="toolValue"/>
+      </xs:choice>
+   </xs:complexType>
+   
+   <xs:complexType name="toolValue">
+      <xs:simpleContent>
+         <xs:extension base="vocscolomfr:tool">
+            <xs:attributeGroup ref="ag:value"/>
+            <xs:attributeGroup ref="ex:customAttributes"/>
+         </xs:extension>
+      </xs:simpleContent>
+   </xs:complexType>
+
+</xs:schema>

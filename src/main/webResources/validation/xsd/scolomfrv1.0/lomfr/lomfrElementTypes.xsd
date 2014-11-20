@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.lom-fr.fr/xsd/LOMFR" 
+	   xmlns:ag="http://www.lom-fr.fr/xsd/LOMFR/unique"
+	   xmlns:lom="http://ltsc.ieee.org/xsd/LOM" 
+	   xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	   targetNamespace="http://www.lom-fr.fr/xsd/LOMFR" 
+	   elementFormDefault="qualified">
+
+  <xs:import namespace="http://ltsc.ieee.org/xsd/LOM"/>
+  <xs:import namespace="http://www.lom-fr.fr/xsd/LOMFR/unique"/>
+
+
+  <xs:complexType name="documentType">
+    <xs:complexContent>
+      <xs:extension base="documentTypeVocab">
+	<xs:attributeGroup ref="ag:documentType"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="activity">
+    <xs:complexContent>
+      <xs:extension base="activityVocab">
+	<xs:attributeGroup ref="ag:activity"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="credit">
+    <xs:simpleContent>
+      <xs:extension base="lom:CharacterString">
+	<xs:attributeGroup ref="ag:credit"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+</xs:schema>
+
+

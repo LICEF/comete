@@ -26,6 +26,7 @@ public class Core {
     private String cometeHome;
     private String adminEmail;
     private String version;
+    private String cometeUrl;
     private String uriPrefix;
     private String smtpHost;
 
@@ -47,6 +48,7 @@ public class Core {
             ResourceBundle resBundle = ResourceBundle.getBundle("core");
             cometeHome = resBundle.getString("comete.home");
             uriPrefix = resBundle.getString("comete.uri.prefix");
+            cometeUrl = resBundle.getString("comete.url");
             adminEmail = resBundle.getString("comete.admin.email");
             version = resBundle.getString("comete.version");
             smtpHost = resBundle.getString("smtp.host");
@@ -87,6 +89,10 @@ public class Core {
 
     public String getVersion() {
         return( version );
+    }
+
+    public String getCometeUrl() {
+        return( cometeUrl );
     }
 
     public String getUriPrefix() {

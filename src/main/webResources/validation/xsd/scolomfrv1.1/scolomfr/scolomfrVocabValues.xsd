@@ -1,0 +1,278 @@
+<xs:schema targetNamespace="http://www.lom-fr.fr/xsd/SCOLOMFR"
+  xmlns="http://www.lom-fr.fr/xsd/SCOLOMFR"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified">
+  
+  <!-- New vocabularies -->
+  
+  <!-- 1.10 GeneralResourceType -->
+  <xs:simpleType name="generalResourceTypeValues">
+    <xs:restriction base="xs:token">
+      <!-- SCOLOMFR v1.0 -->
+      <xs:enumeration value="annuaire"/>
+      <xs:enumeration value="article"/>
+      <xs:enumeration value="atlas"/>
+      <xs:enumeration value="banque de vidéos"/>
+      <xs:enumeration value="banque d'images"/>
+      <xs:enumeration value="base de données"/>
+      <xs:enumeration value="bibliographie/sitographie"/>
+      <xs:enumeration value="carte"/>
+      <xs:enumeration value="carte heuristique et conceptuelle"/>
+      <xs:enumeration value="chronologie"/>
+      <xs:enumeration value="collection de documents"/>
+      <xs:enumeration value="collection de données"/>
+      <xs:enumeration value="compte rendu"/>
+      <xs:enumeration value="conférence"/>
+      <xs:enumeration value="diaporama"/>
+      <xs:enumeration value="dossier technique"/>
+      <xs:enumeration value="feuille de calcul"/>
+      <xs:enumeration value="image numérique"/>
+      <xs:enumeration value="livre numérique"/>
+      <xs:enumeration value="maquette/prototype"/>
+      <xs:enumeration value="norme"/>
+      <xs:enumeration value="jeu de données"/>
+      <xs:enumeration value="note"/>
+      <xs:enumeration value="objet"/>
+      <xs:enumeration value="objet 3D"/>
+      <xs:enumeration value="ouvrage"/>
+      <xs:enumeration value="partition"/>
+      <xs:enumeration value="photographie"/>
+      <xs:enumeration value="podcast"/>
+      <xs:enumeration value="présentation multimédia"/>
+      <xs:enumeration value="programme scolaire"/>
+      <xs:enumeration value="rapport"/>
+      <xs:enumeration value="référentiel de compétences"/>
+      <xs:enumeration value="schéma/graphique"/>
+      <xs:enumeration value="site web"/>
+      <xs:enumeration value="tableau"/>
+      <xs:enumeration value="web média"/>
+      <!-- SCOLOMFR v1.1 -->
+	  <xs:enumeration value="archives"/>
+      <xs:enumeration value="bande dessinée"/>
+      <xs:enumeration value="biographie"/>
+      <xs:enumeration value="dossier documentaire"/>
+      <xs:enumeration value="exposition"/>
+      <xs:enumeration value="film"/>
+      <xs:enumeration value="objet physique"/>
+      <xs:enumeration value="partition musicale"/>
+      <xs:enumeration value="périodique"/>
+      <xs:enumeration value="tableau (art)"/>      
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <!-- 5.12 Activity -->
+  <xs:simpleType name="activityValues">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="expérimenter"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  
+  <!-- 5.14 Place -->
+  <xs:simpleType name="placeValues">
+    <xs:restriction base="xs:token">
+      <!-- SCOLOMFR v1.0 -->
+      <xs:enumeration value="en amphithéâtre"/>
+      <xs:enumeration value="en atelier"/>
+      <xs:enumeration value="en atelier de pédagogie personnalisée"/>
+      <xs:enumeration value="en CDI"/>
+      <xs:enumeration value="en salle de classe"/>
+      <xs:enumeration value="en établissement"/>
+      <xs:enumeration value="espace dédié à une pratique spécifique"/>
+      <xs:enumeration value="en établissement socioculturel"/>
+      <xs:enumeration value="en bibliothèque médiathèque"/>
+      <xs:enumeration value="en musée"/>
+      <xs:enumeration value="hors établissement"/>
+      <xs:enumeration value="en installation de loisirs"/>
+      <xs:enumeration value="en installation sportive"/>
+      <xs:enumeration value="en laboratoire"/>
+      <xs:enumeration value="en laboratoire de langues"/>
+      <xs:enumeration value="en milieu familial"/>
+      <xs:enumeration value="en milieu professionnel"/>
+      <xs:enumeration value="en entreprise"/>
+      <xs:enumeration value="non précisé"/>
+      <xs:enumeration value="en salle informatique"/>
+      <xs:enumeration value="en salle multimédia"/>
+      <!-- SCOLOMFR v1.1 -->
+      <xs:enumeration value="en mobilité"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <!-- 5.15 EducationalMethod -->
+  <xs:simpleType name="educationalMethodValues">
+    <xs:restriction base="xs:token">
+      <!-- SCOLOMFR v1.0 -->
+      <xs:enumeration value="PAC"/>
+      <xs:enumeration value="partenariat électronique interécoles"/>
+      <xs:enumeration value="projets interétablissement"/>
+      <xs:enumeration value="liaison primaire-collège"/>
+      <xs:enumeration value="liaison collège-lycée"/>
+      <xs:enumeration value="séjour pédagogique"/>
+      <xs:enumeration value="sortie culturelle"/>
+      <xs:enumeration value="spectacle"/>
+      <xs:enumeration value="sortie pédagogique"/>
+      <xs:enumeration value="TIPE"/>
+      <xs:enumeration value="TPE"/>
+      <xs:enumeration value="travail de recherche"/>
+      <xs:enumeration value="travail en interdisciplinarité"/>
+      <xs:enumeration value="IDD"/>
+      <xs:enumeration value="PPCP"/>
+      <xs:enumeration value="travaux dirigés"/>
+      <xs:enumeration value="travaux pratiques"/>
+      <xs:enumeration value="à distance"/>
+      <xs:enumeration value="aide didactique"/>
+      <xs:enumeration value="aide didactique individualisée"/>
+      <xs:enumeration value="échange pédagogique de classes"/>
+      <xs:enumeration value="en alternance"/>
+      <xs:enumeration value="en autonomie"/>
+      <xs:enumeration value="en classe entière"/>
+      <xs:enumeration value="en collaboration"/>
+      <xs:enumeration value="en entreprise"/>
+      <xs:enumeration value="PFMP (CAP)"/>
+      <xs:enumeration value="PFE (BTS)"/>
+      <xs:enumeration value="visite d'entreprise"/>
+      <xs:enumeration value="en groupe"/>
+      <xs:enumeration value="en groupe de compétences"/>
+      <xs:enumeration value="en ligne"/>
+      <xs:enumeration value="étude dirigée"/>
+      <xs:enumeration value="modalité mixte"/>
+      <!-- SCOLOMFR v1.1 -->
+      <xs:enumeration value="en milieu professionel"/>
+      <xs:enumeration value="en tutorat"/>
+    </xs:restriction>
+  </xs:simpleType> 
+  
+  <!-- 5.16 Tool -->  
+  <xs:simpleType name="toolValues">
+    <xs:restriction base="xs:token">
+      <!-- SCOLOMFR v1.0-->
+      <xs:enumeration value="logiciels RIP"/>
+      <xs:enumeration value="logiciel système et de programmation"/>
+      <xs:enumeration value="système d'exploitation"/>
+      <xs:enumeration value="logiciel de développement d'application"/>
+      <xs:enumeration value="navigateurs Web"/>
+      <xs:enumeration value="logiciel d'application"/>
+      <xs:enumeration value="didacticiel"/>
+      <xs:enumeration value="exerciseur"/>
+      <xs:enumeration value="suite bureautique"/>
+      <xs:enumeration value="logiciel d'aide à l'orientation"/>
+      <xs:enumeration value="logiciel d'animation 2D"/>
+      <xs:enumeration value="logiciel d'animation 3D"/>
+      <xs:enumeration value="logiciel de communication et d'échange"/>
+      <xs:enumeration value="logiciel de dessin assisté par ordinateur"/>
+      <xs:enumeration value="logiciel de gestion de contenu"/>
+      <xs:enumeration value="logiciel de gestion de projet"/>
+      <xs:enumeration value="logiciel de messagerie"/>
+      <xs:enumeration value="logiciel de montage vidéo"/>
+      <xs:enumeration value="logiciel de présentation"/>
+      <xs:enumeration value="logiciel de recherche documentaire"/>
+      <xs:enumeration value="logiciel de traitement de son"/>
+      <xs:enumeration value="logiciel de traitement de tableaux et calculs"/>
+      <xs:enumeration value="logiciel de traitement de texte"/>
+      <xs:enumeration value="logiciel de traitement d'enquête"/>
+      <xs:enumeration value="logiciel de traitement d'image fixe"/>
+      <xs:enumeration value="logiciel de traitement vidéo"/>
+      <xs:enumeration value="logiciel de travail collaboratif"/>
+      <xs:enumeration value="logiciel d'édition Web"/>
+      <xs:enumeration value="logiciel d'image de synthèse"/>
+      <xs:enumeration value="logiciel organisateur des idées"/>
+      <xs:enumeration value="logiciel ou application de lecture"/>
+      <xs:enumeration value="logiciel PAO"/>
+      <xs:enumeration value="logiciel d’édition et de gestion d’exercices"/>
+      <xs:enumeration value="logiciel text-to-speech"/>
+      <xs:enumeration value="moteur de recherche"/>
+      <xs:enumeration value="outil blogue"/>
+      <xs:enumeration value="outil de mise en ligne"/>
+      <xs:enumeration value="outil de modélisation"/>
+      <xs:enumeration value="outil d'encodage"/>
+      <xs:enumeration value="SGBD"/>
+      <xs:enumeration value="SIG"/>
+      <xs:enumeration value="matériel"/>
+      <xs:enumeration value="appareil photographique"/>
+      <xs:enumeration value="baladeur"/>
+      <xs:enumeration value="borne informatique"/>
+      <xs:enumeration value="calculatrice"/>
+      <xs:enumeration value="camescope"/>
+      <xs:enumeration value="classe mobile"/>
+      <xs:enumeration value="écran tactile"/>
+      <xs:enumeration value="machine à commande numérique"/>
+      <xs:enumeration value="matériel de lecture livre numérique"/>
+      <xs:enumeration value="ordinateur"/>
+      <xs:enumeration value="outil de microscopie"/>
+      <xs:enumeration value="PDA"/>
+      <xs:enumeration value="rétroprojecteur"/>
+      <xs:enumeration value="tablette informatique"/>
+      <xs:enumeration value="TBI"/>
+      <xs:enumeration value="vidéoprojecteur"/>
+      <xs:enumeration value="outil de compensation"/>
+      <xs:enumeration value="ressource d'information"/>
+      <xs:enumeration value="atlas"/>
+      <xs:enumeration value="base de données"/>
+      <xs:enumeration value="carte heuristique"/>
+      <xs:enumeration value="cédérom"/>
+      <xs:enumeration value="dictionnaire, glossaire"/>
+      <xs:enumeration value="documentation technique"/>
+      <xs:enumeration value="encyclopédie"/>
+      <xs:enumeration value="ENT"/>
+      <xs:enumeration value="podcast"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  
+  <!-- Extended vocabularies -->
+  
+  <!-- Source -->
+  <xs:simpleType name="sourceValues">
+    <xs:restriction base="xs:token">
+      <!-- SCOLOMFR v1.0-->
+      <xs:enumeration value="SCOLOMFRv1.0"/>
+      <!-- SCOLOMFR v1.1-->
+      <xs:enumeration value="SCOLOMFRv1.1"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <!-- 2.3.1 Role -->
+  <xs:simpleType name="roleValues">
+    <xs:restriction base="xs:token">
+      <!-- SCOLOMFR v1.0-->
+      <xs:enumeration value="diffuseur/distributeur"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <!-- 5.2 Learning Resource Type -->
+  <xs:simpleType name="learningResourceTypeValues">
+    <xs:restriction base="xs:token">
+      <!-- SCOLOMFR v1.0-->
+      <xs:enumeration value="étude de cas"/>
+      <xs:enumeration value="jeu éducatif"/>
+      <xs:enumeration value="manuel d'enseignement"/>
+      <xs:enumeration value="production d'élève"/>
+      <!-- SCOLOMFR v1.1-->
+      <xs:enumeration value="annales"/>
+      <xs:enumeration value="cyberquête"/>
+      <xs:enumeration value="méthode de langues"/>
+      <xs:enumeration value="témoignage pédagogique"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <!-- 7.1 Kind -->
+  <xs:simpleType name="kindValues">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="a pour vignette"/>
+      <xs:enumeration value="a pour logo"/>
+      <xs:enumeration value="a pour aperçu"/>
+      <xs:enumeration value="est l'aperçu de"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <!-- 9.1 Purpose -->
+  <xs:simpleType name="purposeValues">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="enseignement"/>
+      <xs:enumeration value="public cible détaillé"/>
+      <xs:enumeration value="label"/>
+      <xs:enumeration value="type de diffusion"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+</xs:schema>

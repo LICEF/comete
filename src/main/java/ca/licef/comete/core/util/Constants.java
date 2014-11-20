@@ -26,7 +26,6 @@ public class Constants {
     public static final String IEEE_LOM_NAMESPACE = "http://ltsc.ieee.org/xsd/LOM";
     public static final String VDEX_NAMESPACE = "http://www.imsglobal.org/xsd/imsvdex_v1p0";
 
-
     public static final String OAI_ID = "http://www.openarchives.org/OAI/2.0/oai-identifier";
 
     //Mimetypes
@@ -57,6 +56,59 @@ public class Constants {
     public static final String DATASTREAM_EXPOSED_DATA_DC = "exposed_dc";
     //public static final String DATASTREAM_VDEX = "vdex";
     //public static final String DATASTREAM_SKOS = "skos";
+
+    public static final String DATASTREAM_VALIDATION_ERRORS_LOM_STRICT = "ValidationReportLomStrict";
+    public static final String DATASTREAM_VALIDATION_ERRORS_LOM_LOOSE = "ValidationReportLomLoose";
+    public static final String DATASTREAM_VALIDATION_ERRORS_LOM_FR = "ValidationReportLomFR";
+    public static final String DATASTREAM_VALIDATION_ERRORS_SCO_LOM_FR_1_0 = "ValidationReportScoLomFR_1_0";
+    public static final String DATASTREAM_VALIDATION_ERRORS_SCO_LOM_FR_1_1 = "ValidationReportScoLomFR_1_1";
+    public static final String DATASTREAM_VALIDATION_ERRORS_LOM_NORMETIC_1_2 = "ValidationReportLomNormetic_1_2";
+    public static final String DATASTREAM_VALIDATION_ERRORS_OAI_DC = "ValidationReportOAIDC";
+
+    //Application profiles
+    public static final String APPL_PROF_LOM_STRICT = "http://ltsc.ieee.org/xsd/LOM/strict";
+    public static final String APPL_PROF_LOM_LOOSE = "http://ltsc.ieee.org/xsd/LOM/loose";
+    public static final String APPL_PROF_LOM_FR_1_0 = "http://lom-fr.fr/validation/LomFRv1.0/core";
+    public static final String APPL_PROF_SCO_LOM_FR_1_0 = "http://lom-fr.fr/validation/ScoLomFRv1.0/core";
+    public static final String APPL_PROF_SCO_LOM_FR_1_1 = "http://lom-fr.fr/validation/ScoLomFRv1.1/core";
+    public static final String APPL_PROF_LOM_NORMETIC_1_2 = "http://www.normetic.org/LomNormeticv1.2";
+    
+    public static final String APPL_PROF_OAI_DC = "http://www.openarchives.org/OAI/2.0/";
+
+    public static final String APPL_PROF_ABBR_LOM_STRICT = "LomStrict";
+    public static final String APPL_PROF_ABBR_LOM_LOOSE = "LomLoose";
+    public static final String APPL_PROF_ABBR_LOM_FR_1_0 = "LomFR";
+    public static final String APPL_PROF_ABBR_SCO_LOM_FR_1_0 = "ScoLomFR_1_0";
+    public static final String APPL_PROF_ABBR_SCO_LOM_FR_1_1 = "ScoLomFR_1_1";
+    public static final String APPL_PROF_ABBR_LOM_NORMETIC_1_2 = "LomNormetic_1_2";
+    
+    public static final String APPL_PROF_ABBR_OAI_DC = "OAIDC";
+
+    public static final String[] lomApplProfiles = {
+        APPL_PROF_LOM_STRICT,
+        APPL_PROF_LOM_LOOSE,
+        APPL_PROF_LOM_FR_1_0,
+        APPL_PROF_SCO_LOM_FR_1_0,
+        APPL_PROF_SCO_LOM_FR_1_1,
+        APPL_PROF_LOM_NORMETIC_1_2
+    };
+
+    public static final String[] dcApplProfiles = {
+        APPL_PROF_OAI_DC
+    };
+
+    public static final String[] lomApplProfAbbrevs = {
+        APPL_PROF_ABBR_LOM_STRICT,
+        APPL_PROF_ABBR_LOM_LOOSE,
+        APPL_PROF_ABBR_LOM_FR_1_0,
+        APPL_PROF_ABBR_SCO_LOM_FR_1_0,
+        APPL_PROF_ABBR_SCO_LOM_FR_1_1,
+        APPL_PROF_ABBR_LOM_NORMETIC_1_2
+    };
+
+    public static final String[] dcApplProfAbbrevs = {
+        APPL_PROF_ABBR_OAI_DC
+    };
 
     //Namespace Sets
     static final String[] _LITERAL_PREDICATES = new String[] {

@@ -1,0 +1,59 @@
+<xs:schema targetNamespace="http://www.lom-fr.fr/xsd/SCOLOMFR"
+           xmlns="http://www.lom-fr.fr/xsd/SCOLOMFR"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           version="SCOLOMFR v1.1 10/2011">
+   
+   <!-- Element declarations -->
+
+   <!-- 1.10 GeneralResourceType -->
+   <xs:group name="generalResourceType">
+      <xs:sequence>
+         <xs:element name="generalResourceType" type="generalResourceType">
+            <xs:unique name="generalResourceTypeUnique">
+               <xs:selector xpath="*"/>
+               <xs:field xpath="@uniqueElementName"/>
+            </xs:unique>
+         </xs:element>
+      </xs:sequence>
+   </xs:group>
+   
+   
+   <!-- 5.14 Place -->
+   <xs:group name="place">
+      <xs:sequence>
+         <xs:element name="place" type="place">
+            <xs:unique name="placeUnique">
+               <xs:selector xpath="*"/>
+               <xs:field xpath="@uniqueElementName"/>
+            </xs:unique>
+         </xs:element>
+      </xs:sequence>
+   </xs:group>
+   
+   
+   <!-- 5.15 EducationalMethod -->
+   <xs:group name="educationalMethod">
+      <xs:sequence>
+         <xs:element name="educationalMethod" type="educationalMethod">
+            <xs:unique name="educationalMethodUnique">
+               <xs:selector xpath="*"/>
+               <xs:field xpath="@uniqueElementName"/>
+            </xs:unique>
+         </xs:element>
+      </xs:sequence>
+   </xs:group>
+   
+   <!-- 5.16 Tool  -->
+   <xs:group name="tool">
+      <xs:sequence>
+         <xs:element name="tool" type="tool">
+            <xs:unique name="toolUnique">
+               <xs:selector xpath="*"/>
+               <xs:field xpath="@uniqueElementName"/>
+            </xs:unique>
+         </xs:element>
+      </xs:sequence>
+   </xs:group>
+   
+</xs:schema>

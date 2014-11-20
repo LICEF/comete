@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.lom-fr.fr/xsd/SCOLOMFR" 
+	   xmlns:scoag="http://www.lom-fr.fr/xsd/SCOLOMFR/unique"
+	   xmlns:lom="http://ltsc.ieee.org/xsd/LOM" 
+	   xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	   targetNamespace="http://www.lom-fr.fr/xsd/SCOLOMFR" 
+	   elementFormDefault="qualified">
+
+  <xs:import namespace="http://ltsc.ieee.org/xsd/LOM"/>
+  <xs:import namespace="http://www.lom-fr.fr/xsd/SCOLOMFR/unique"/>
+
+
+  <!-- 1.10 GeneralResourceType -->
+  <xs:complexType name="generalResourceType">
+    <xs:complexContent>
+      <xs:extension base="generalResourceTypeVocab">
+        <xs:attributeGroup ref="scoag:generalResourceType"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  
+  <!-- 5.14 Place -->
+  <xs:complexType name="place">
+    <xs:complexContent>
+      <xs:extension base="placeVocab">
+        <xs:attributeGroup ref="scoag:place"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <!-- 5.15 EducationalMethod -->
+  <xs:complexType name="educationalMethod">
+    <xs:complexContent>
+      <xs:extension base="educationalMethodVocab">
+        <xs:attributeGroup ref="scoag:educationalMethod"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <!-- 5.16 Tool -->
+  <xs:complexType name="tool">
+    <xs:complexContent>
+      <xs:extension base="toolVocab">
+        <xs:attributeGroup ref="scoag:tool"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+</xs:schema>
+
+
