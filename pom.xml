@@ -131,7 +131,7 @@
         <dependency>
             <groupId>licef</groupId>
             <artifactId>licef-tsapi</artifactId>
-            <version>0.1.5</version>
+            <version>0.1.6</version>
             <exclusions>
                 <exclusion>
                     <groupId>xalan</groupId>

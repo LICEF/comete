@@ -28,6 +28,7 @@ public class Core {
     private String version;
     private String cometeUrl;
     private String uriPrefix;
+    private String sparqlEndpoint;
     private String smtpHost;
 
     private String fedoraUrl;
@@ -51,6 +52,7 @@ public class Core {
             cometeUrl = resBundle.getString("comete.url");
             adminEmail = resBundle.getString("comete.admin.email");
             version = resBundle.getString("comete.version");
+            sparqlEndpoint = resBundle.getString("sparql.endpoint");
             smtpHost = resBundle.getString("smtp.host");
             fedoraUrl = resBundle.getString("fedora.url");
             fedoraUsername = resBundle.getString("fedora.username");
@@ -99,6 +101,10 @@ public class Core {
         return( uriPrefix );
     }
 
+    public String getSparqlEndpoint() {
+        return sparqlEndpoint;
+    }
+
     public String getSmtpHost() {
         return smtpHost;
     }
@@ -130,9 +136,12 @@ public class Core {
         return tripleStore;
     }
 
-    private static void waitTripleStoreUp() {
+    private void waitTripleStoreUp() {
         try {
-            URL server = new URL("http://localhost:3030");
+            URL endpoint = new URL(sparqlEndpoint);
+            String host = endpoint.getHost();
+            int port = endpoint.getPort();
+            URL server = new URL("http://" + host + ((port != -1)?":"+port:""));
             boolean up = false;
             while (!up) {
                 try {
