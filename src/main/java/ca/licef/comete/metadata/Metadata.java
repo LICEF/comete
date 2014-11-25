@@ -15,6 +15,7 @@ import licef.DateUtil;
 import licef.IOUtil;
 import licef.StringUtil;
 import licef.XMLUtil;
+import licef.ZipUtil;
 import licef.tsapi.model.Triple;
 import licef.tsapi.model.Tuple;
 import licef.tsapi.TripleStore;
@@ -161,10 +162,8 @@ public class Metadata {
     }
 
     public String getRecordURI( String oaiID, String namespace ) throws Exception {
-System.out.println( "getRecordURI oaiID="+oaiID+" namespace="+namespace );        
         TripleStore tripleStore = Core.getInstance().getTripleStore();
         String query = Util.getQuery( "getMetadataRecordWith-oai-id.sparql", namespace, oaiID );
-System.out.println( "query="+query );        
         Tuple[] tuples = tripleStore.sparqlSelect(query);
         if( tuples.length > 0 )
             return( tuples[ 0 ].getValue( "s" ).getContent() );
@@ -182,7 +181,6 @@ System.out.println( "query="+query );
         File record = null;
         File resource = null;
 
-System.out.println( "fileDetail.fn="+fileDetail.getFileName() );        
         if ("".equals(fileDetail.getFileName()))
             errorMessage = "No file.";
         else {
@@ -218,27 +216,25 @@ System.out.println( "fileDetail.fn="+fileDetail.getFileName() );
         Object[] results;
         String extension = record.getName().substring(record.getName().lastIndexOf('.') + 1).toLowerCase();
         if ("zip".equals(extension)) {
-System.out.println( "handle zip" ); results = new Object[]{"No valid record inside ZIP archive."};
-
-            //File uploadedRecords = new File(tmpFolder, "uploadedRecords");
-            //ZipUtil.unzipFile(record.toString(), uploadedRecords.toString());
-            //String[] records = uploadedRecords.list();
-            //ArrayList<String[]> uris = new ArrayList<String[]>();
-            //for (String _record : records) {
-            //    File rec = new File(uploadedRecords, _record);
-            //    String[] res = storeUploadedRecord(rec, null);
-            //    if (res[1] != null)
-            //        uris.add(new String[]{res[1], res[2]});
-            //    rec.delete();
-            //}
-            //if (uris.isEmpty())
-            //    results = new Object[]{"No valid record inside ZIP archive."};
-            //else {
-            //    String[][] loUris = new String[uris.size()][];
-            //    for (int i = 0; i < uris.size(); i++)
-            //        loUris[i] = new String[]{uris.get(i)[0], uris.get(i)[1]};
-            //    results = new Object[]{loUris, null};
-            //}
+            File uploadedRecords = new File(tmpFolder, "uploadedRecords");
+            ZipUtil.unzipFile(record.toString(), uploadedRecords.toString());
+            String[] records = uploadedRecords.list();
+            ArrayList<String[]> uris = new ArrayList<String[]>();
+            for (String _record : records) {
+                File rec = new File(uploadedRecords, _record);
+                String[] res = storeUploadedRecord(rec, null);
+                if (res[1] != null)
+                    uris.add(new String[]{res[1], res[2]});
+                rec.delete();
+            }
+            if (uris.isEmpty())
+                results = new Object[]{"No valid record inside ZIP archive."};
+            else {
+                String[][] loUris = new String[uris.size()][];
+                for (int i = 0; i < uris.size(); i++)
+                    loUris[i] = new String[]{uris.get(i)[0], uris.get(i)[1]};
+                results = new Object[]{loUris, null};
+            }
         }
         else {
             //possible physical associated resource
@@ -298,9 +294,6 @@ System.out.println( "handle zip" ); results = new Object[]{"No valid record insi
     public String[] storeUploadedRecord(File file, File resource) throws Exception {
         String[] values = parseMetadataRecord(file);
 
-for( int i = 0; i < values.length; i++ ) 
-System.out.println( "values["+i+"]="+values[i]);
-
         String errorMessage = values[0];
 
         String content = values[1];
@@ -325,21 +318,16 @@ System.out.println( "values["+i+"]="+values[i]);
             try {
                 TripleStore tripleStore = Core.getInstance().getTripleStore();
                 String recordURI = getRecordURI(pseudoOaiID, namespace);
-System.out.println( "recordURI="+recordURI );                
                 if (recordURI == null) {
                     loURI = Util.makeURI(COMETE.LearningObject.getURI());
-System.out.println( "loURI="+loURI );       
                     List<Triple> triples = new ArrayList<Triple>();
                     triples.add( new Triple( loURI, RDF.type, COMETE.LearningObject.getURI()) );
                     triples.add( new Triple( loURI, COMETE.added, DateUtil.toISOString(new Date(), null, null) ) );
                     tripleStore.insertTriples( triples );
                     state = "created";
-System.out.println( "Created" );                    
                 }
                 else {
-System.out.println( "BEFORE recordURI="+recordURI );                    
                     loURI = getLearningObjectURI(recordURI);
-System.out.println( "AFTER loURI="+loURI );                    
                     resetLearningObjectNonPersistentTriples(recordURI);
                     state = "updated";
                 }
@@ -583,7 +571,6 @@ System.out.println( "AFTER loURI="+loURI );
         TripleStore tripleStore = Core.getInstance().getTripleStore();
 
         Map<String,Boolean> applProfToValidate = Settings.getValidatedApplicationProfiles();
-System.out.println( "validateRecord applProfToValidate="+applProfToValidate );
 
         String[] applProfiles = null;
         if( Constants.IEEE_LOM_NAMESPACE.equals( namespace ) )
@@ -602,21 +589,16 @@ System.out.println( "validateRecord applProfToValidate="+applProfToValidate );
             System.out.println( "Validating record " + recordURI + " against " + profileUri );
             String reportDataStream = Util.getReportDataStream( profileUri );
             if( fedora.isDatastreamExists( fedoraId, reportDataStream ) )
-                fedora.purgeDatastream( fedoraId, reportDataStream, logMessage );
+                fedora.purgeDatastream( fedoraId, reportDataStream );
             try {
                 getValidator().validateMetadata( record, profileUri );
                 tripleStore.insertTriple( new Triple( recordURI, COMETE.applicationProfile, profileUri ) ); 
             } 
-catch( FileNotFoundException e2 ) {
-    e2.printStackTrace();
-}
             catch( ValidationException e ) {
-e.printStackTrace();
                 isValid = false;
                 String errorReport = JDomUtils.parseXml2string(ValidationUtils.collectErrorsAsXml(e.getMessage()),null);
                 if( !fedora.isDatastreamExists( fedoraId, reportDataStream ) )
                     fedora.addDatastream( fedoraId, reportDataStream, errorReport, "text/xml", null);
-                    //fedora.addDatastream( fedoraId, reportDataStream, reportDataStream, false, errorReport, "text/xml", namespace, "M", logMessage);
             }
             finally {
                 long timeTaken = System.currentTimeMillis() - startTime;

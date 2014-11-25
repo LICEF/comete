@@ -162,7 +162,6 @@ public class Core {
     public Fedora getFedora() {
         if (fedora == null) {
             fedora = new Fedora();
-System.out.println( "fedoraUrl="+fedoraUrl+" un="+fedoraUsername+" pw="+fedoraPassword );            
             fedora.setUrl(fedoraUrl);
             fedora.setUsername(fedoraUsername);
             fedora.setPassword(fedoraPassword);

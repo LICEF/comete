@@ -105,13 +105,12 @@ public class Fedora {
         if( checksum != null )
             fc.setChecksum( new URI( checksum ) );
 
-        FedoraDatastream ds = getRepository().createDatastream( path, fc );
-System.out.println( "ds="+ds+" hasContent="+ds.hasContent()+" name="+ds.getName()+" contentSize="+ds.getContentSize()+" fn="+ds.getFilename()+" contentType="+ds.getContentType()+" path="+ds.getPath()+" size="+ds.getSize() );        
+        getRepository().createDatastream( path, fc );
     }
 
     public void purgeDatastream(String id, String dataStream) throws Exception {
         String path = id + "/" + dataStream;
-        FedoraDatastream ds = getRepository().createDatastream( path );
+        FedoraDatastream ds = getRepository().getDatastream( path );
         if( ds != null ) 
             ds.delete();
         // If the parent object (i.e. folder) has no children, should I delete it and all its empty ancerstors as well? - FB
