@@ -233,7 +233,7 @@ public class Metadata {
                 String[][] loUris = new String[uris.size()][];
                 for (int i = 0; i < uris.size(); i++)
                     loUris[i] = new String[]{uris.get(i)[0], uris.get(i)[1]};
-                results = new Object[]{loUris, null};
+                results = new Object[]{null, loUris};
             }
         }
         else {

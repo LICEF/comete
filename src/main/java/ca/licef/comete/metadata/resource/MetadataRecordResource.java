@@ -19,10 +19,12 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.Path;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import javax.ws.rs.PUT;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -40,6 +42,7 @@ public class MetadataRecordResource {
     @Consumes( MediaType.MULTIPART_FORM_DATA )
     @Produces( MediaType.TEXT_HTML ) //!important for ExtJS see Ext.form.Basic.hasUpload() description -AM
     public Response newUploadedRecord(@Context HttpServletRequest request,
+                                      @DefaultValue( "false" ) @QueryParam( "validation" ) String validation,
                                       @FormDataParam("file") InputStream uploadedInputStream,
                                       @FormDataParam("file") FormDataContentDisposition fileDetail,
                                       @FormDataParam("res") InputStream uploadedInputStreamRes,
@@ -52,13 +55,17 @@ public class MetadataRecordResource {
         Object[] files = Metadata.getInstance().storeUploadedContentTmp(uploadedInputStream, fileDetail, uploadedInputStreamRes, fileDetailRes);
         String errorMessage = (String)files[0];
         Object[] res = null;
-        if (errorMessage == null) {
+
+        File record = (File)files[1];
+        String extension = record.getName().substring(record.getName().lastIndexOf('.') + 1).toLowerCase();
+        boolean isZip = "zip".equals(extension);
+
+        if (errorMessage == null && "true".equals(validation) && !isZip) {
             res = Metadata.getInstance().isRecordExists((File)files[1]);
             errorMessage = (String)res[0];
         }
 
-        if (errorMessage != null || (Boolean)res[1]) {
-
+        if (errorMessage != null || (res != null && res.length > 0 && (Boolean)res[1]) ) {
             StringWriter out = new StringWriter();
             try {
                 JSONWriter json = new JSONWriter( out ).object();
