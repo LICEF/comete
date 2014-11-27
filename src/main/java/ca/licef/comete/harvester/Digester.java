@@ -25,22 +25,6 @@ public class Digester {
     }
 
     public int addOrUpdateHarvestedRecord( String oaiID, String namespace, String datestamp, String repoId, String record ) throws Exception {
-
-        /*WebResource webResource = Core.getInstance().getRestClient().resource( harvestRestURL + URLEncoder.encode(oaiID) );
-        MultivaluedMap queryParams = new MultivaluedMapImpl();
-        queryParams.add( "namespace", namespace );
-        queryParams.add( "datestamp", datestamp );
-        queryParams.add( "repoId", repoId );
-        ClientResponse response = webResource.queryParams( queryParams ).put(ClientResponse.class, record);
-        int status = response.getStatus();
-        String res = response.getEntity(String.class);
-        if ("added".equals(res))
-            return ADDED;
-        else if ("updated".equals(res))
-            return UPDATED;
-        else
-            return IGNORED;*/
-
         String repoUri = Util.makeURI(repoId, COMETE.Repository );
         String res = Metadata.getInstance().storeHarvestedRecord(oaiID, namespace, repoUri, record, datestamp, false);
         if ("added".equals(res))

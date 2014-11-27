@@ -259,28 +259,27 @@ public class Util {
     }
 
 
-    public static String applyXslToDocument( String xsltBaseFilename, StreamSource doc, Properties transformerProps, HashMap<String,String> params, Locale locale ) throws IOException, TransformerConfigurationException, TransformerException {
+    public static String applyXslToDocument( String xsltBaseFilename, StreamSource doc, Properties transformerProps, HashMap<String,String> params, Locale locale ) throws ClassNotFoundException, IllegalAccessException, InstantiationException, IOException, NoSuchMethodException, TransformerConfigurationException, TransformerException {
         if( locale != null ) {
             if( "fr".equals( locale.getLanguage() ) )
                 xsltBaseFilename = xsltBaseFilename + "_" + locale.getLanguage();
         }
         String xsltFile = "/xslt/" + xsltBaseFilename + ".xsl";
         StreamSource xslt = new StreamSource( Util.class.getResourceAsStream( xsltFile ) );
-        return( XMLUtil.applyXslToDocument( xslt, doc, resolver, transformerProps, params ) ); 
+        return( XMLUtil.applyXslToDocument( xslt, doc, resolver, transformerProps, params, "net.sf.saxon.TransformerFactoryImpl" ) ); 
     }
 
-    public static String applyXslToDocument( String xsltBaseFilename, StreamSource doc, HashMap<String,String> params, Locale locale ) throws IOException, TransformerConfigurationException, TransformerException {
+    public static String applyXslToDocument( String xsltBaseFilename, StreamSource doc, HashMap<String,String> params, Locale locale ) throws ClassNotFoundException, IllegalAccessException, InstantiationException, IOException, NoSuchMethodException, TransformerConfigurationException, TransformerException {
         return( applyXslToDocument( xsltBaseFilename, doc, null, params, locale ) ); 
     }
 
-    public static String applyXslToDocument( String xsltBaseFilename, StreamSource doc, HashMap<String,String> params ) throws IOException, TransformerConfigurationException, TransformerException {
+    public static String applyXslToDocument( String xsltBaseFilename, StreamSource doc, HashMap<String,String> params ) throws ClassNotFoundException, IllegalAccessException, InstantiationException, IOException, NoSuchMethodException, TransformerConfigurationException, TransformerException {
         return( applyXslToDocument( xsltBaseFilename, doc, null, params, null ) );
     }
 
-    public static String applyXslToDocument( String xsltBaseFilename, StreamSource doc ) throws IOException, TransformerConfigurationException, TransformerException {
+    public static String applyXslToDocument( String xsltBaseFilename, StreamSource doc ) throws ClassNotFoundException, IllegalAccessException, InstantiationException, IOException, NoSuchMethodException, TransformerConfigurationException, TransformerException {
         return( applyXslToDocument( xsltBaseFilename, doc, null, null, null ) );
     }
-
 
     private static URIResolver resolver = new URIResolver() {
         public Source resolve( String href, String base ) {
@@ -392,7 +391,7 @@ public class Util {
         return keywordsFormattedForRegex;
     }
 
-    public static String getSyntaxHighlightedCode( String language, String code ) throws IOException, TransformerConfigurationException, ParserConfigurationException, TransformerException {
+    public static String getSyntaxHighlightedCode( String language, String code ) throws ClassNotFoundException, IllegalAccessException, InstantiationException, IOException, NoSuchMethodException, TransformerConfigurationException, ParserConfigurationException, TransformerException {
         File tempSyntaxHighlighterFile = createSyntaxHighlighterFile( language, code );
 
         HashMap<String,String> params = new HashMap<String,String>();

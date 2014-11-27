@@ -10,6 +10,7 @@ import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.Util;
 import ca.licef.comete.metadata.deployment.ResourceDeployer;
 import ca.licef.comete.vocabularies.COMETE;
+import ca.licef.comete.vocabularies.OAI;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import licef.DateUtil;
 import licef.IOUtil;
@@ -63,50 +64,52 @@ public class Metadata {
     }
 
     public String storeHarvestedRecord(String oaiID, String namespace, String repoUri, String record, String datestamp, boolean isUpdate) throws Exception {
-        /*if (datestamp != null) {
-            String recordURI = getRecordURI(oaiID, namespace);
-            if (recordURI != null) {
-                isUpdate = true;
-                TripleStore tripleStore = Core.getInstance().getTripleStore();
-                Triple[] triples = tripleStore.getTriplesWithSubjectPredicate(recordURI, Constants.OAI_DATESTAMP);
-                if (triples.length > 0) {
-                    Date d1 = DateUtil.toDate(triples[0].getObject());
-                    Date d2 = DateUtil.toDate(datestamp);
-                    if (d2.after(d1))
-                        tripleStore.deleteTriples(triples);
-                    else
-                        return "ignored";
-                }
-            }
-        }*/
+System.out.println( "TRACE: storeHarvestedRecord oaiID="+oaiID+" namespace="+namespace+" repoUri="+repoUri+" datestamp="+datestamp );        
+        //if (datestamp != null) {
+        //    String recordURI = getRecordURI(oaiID, namespace);
+        //    if (recordURI != null) {
+        //        isUpdate = true;
+        //        TripleStore tripleStore = Core.getInstance().getTripleStore();
+        //        Triple[] triples = tripleStore.getTriplesWithSubjectPredicate(recordURI, Constants.OAI_DATESTAMP);
+        //        if (triples.length > 0) {
+        //            Date d1 = DateUtil.toDate(triples[0].getObject());
+        //            Date d2 = DateUtil.toDate(datestamp);
+        //            if (d2.after(d1))
+        //                tripleStore.deleteTriples(triples);
+        //            else
+        //                return "ignored";
+        //        }
+        //    }
+        //}
 
         return storeHarvestedRecordEff(oaiID, namespace, repoUri, record, datestamp, isUpdate);
     }
 
     public String storeHarvestedRecordEff(String oaiID, String namespace, String repoUri, String record, String datestamp, boolean isUpdate ) throws Exception {
-        //MetadataFormat metadataFormat = MetadataFormats.getMetadataFormat(namespace);
-        /*System.out.println("storeHarvestedRecord: " +  oaiID + " (" + metadataFormat.getName() + " format)");
+        MetadataFormat metadataFormat = MetadataFormats.getMetadataFormat(namespace);
+        System.out.println("storeHarvestedRecord: " +  oaiID + " (" + metadataFormat.getName() + " format)");
         TripleStore tripleStore = Core.getInstance().getTripleStore();
 
         String loURI = null;
 
         //Retrieve of metadata record with metadata format and oaiID
         String recordURI = getRecordURI(oaiID, namespace);
+System.out.println( "recordURI="+recordURI );
 
         if (recordURI == null) {
             isUpdate = false; //to force new MetadataRecord creation context
 
-            //Is there another metadata record with the same oai-id ?
-            //if yes, retrieve of the described resource
-            Hashtable<String, String>[] res = tripleStore.getResults("getLearningObjectFromOtherMetadataRecord.sparql", oaiID);
-            if (res.length > 0)
-                loURI = res[0].get("res");
+            ////Is there another metadata record with the same oai-id ?
+            ////if yes, retrieve of the described resource
+            //Hashtable<String, String>[] res = tripleStore.getResults("getLearningObjectFromOtherMetadataRecord.sparql", oaiID);
+            //if (res.length > 0)
+            //    loURI = res[0].get("res");
 
             //creation of new one
             if (loURI == null) {
-                loURI = Util.makeURI(Constants.TYPE_LEARNING_OBJECT);
-                tripleStore.addTriple(loURI, Constants.TYPE, Constants.TYPE_LEARNING_OBJECT);
-                tripleStore.addTriple(loURI, Constants.METAMODEL_ADDED, DateUtil.toISOString(new Date(), null, null));
+                loURI = Util.makeURI(COMETE.LearningObject.getURI());
+                tripleStore.insertTriple( new Triple( loURI, RDF.type, COMETE.LearningObject.getURI() ) );
+                tripleStore.insertTriple( new Triple( loURI, COMETE.added, DateUtil.toISOString(new Date(), null, null) ) );
             }
         }
         else {
@@ -114,14 +117,13 @@ public class Metadata {
             resetLearningObjectNonPersistentTriples(recordURI);
         }
 
-        recordURI = digestRecord(loURI, recordURI, record, namespace, repoUri, logMessage, oaiID);
+        recordURI = digestRecord(loURI, recordURI, record, namespace, repoUri, oaiID);
 
         //oai-pmh properties
         if (!isUpdate)
-            tripleStore.addTriple(recordURI, Constants.OAI_ID, oaiID);
+            tripleStore.insertTriple( new Triple( recordURI, OAI.identifier, oaiID ) );
         if (datestamp != null)
-            tripleStore.addTriple(recordURI, Constants.OAI_DATESTAMP, datestamp); //always set. also for previous cases. -AM
-*/
+            tripleStore.insertTriple( new Triple( recordURI, OAI.datestamp, datestamp ) ); //always set. also for previous cases. -AM
 
         if (isUpdate)
             return "updated";
@@ -332,7 +334,7 @@ public class Metadata {
                     state = "updated";
                 }
 
-                recordURI = digestRecord(loURI, recordURI, content, namespace, null, "localRecord", pseudoOaiID);
+                recordURI = digestRecord(loURI, recordURI, content, namespace, "localRecord", pseudoOaiID);
                 tripleStore.insertTriple(new Triple( recordURI, Constants.OAI_ID, pseudoOaiID, true ) );
 
             } catch (Exception e) {
@@ -363,7 +365,7 @@ public class Metadata {
      * Record's digest
      */
 
-    String digestRecord(String loURI, String recordURI, String record, String namespace, String repoURI, String logMessage, String oaiId) throws Exception {
+    String digestRecord(String loURI, String recordURI, String record, String namespace, String repoURI, String oaiId) throws Exception {
         ArrayList<Triple> triples = new ArrayList<Triple>();
         String fedoraId;
         MetadataFormat metadataFormat = MetadataFormats.getMetadataFormat(namespace);
@@ -413,7 +415,7 @@ public class Metadata {
             //    fedora.modifyDatastream(fedoraId, Constants.DATASTREAM_DATA, record, logMessage);
         }
 
-        validateRecord( fedoraId, loURI, recordURI, record, namespace, logMessage );
+        validateRecord( fedoraId, loURI, recordURI, record, namespace );
 
         String extractedTriplesAsXml = processMetadataRecord( record, loURI, recordURI, namespace );
 
@@ -566,7 +568,7 @@ public class Metadata {
     }
 
 
-    private void validateRecord( String fedoraId, String loURI, String recordURI, String record, String namespace, String logMessage ) throws Exception {
+    private void validateRecord( String fedoraId, String loURI, String recordURI, String record, String namespace ) throws Exception {
         Fedora fedora = Core.getInstance().getFedora();
         TripleStore tripleStore = Core.getInstance().getTripleStore();
 

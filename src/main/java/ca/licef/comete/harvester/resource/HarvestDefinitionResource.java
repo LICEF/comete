@@ -20,8 +20,8 @@ import java.io.StringWriter;
 
 
 @Singleton
-@Path( "/definitions" )
-public class DefinitionResource {
+@Path( "/harvestDefinitions" )
+public class HarvestDefinitionResource {
 
     @GET
     @Produces( MediaType.TEXT_PLAIN )

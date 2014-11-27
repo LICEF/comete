@@ -117,13 +117,13 @@ public class Worker implements Runnable {
         return report;
     }
 
-    public Node postProcessMetadata( Node metadata ) throws TransformerConfigurationException, IOException, TransformerException {
+    public Node postProcessMetadata( Node metadata ) throws ClassNotFoundException, IllegalAccessException, InstantiationException, TransformerConfigurationException, IOException, NoSuchMethodException, TransformerException {
         if( getXslt() == null )
             return( metadata );
             
         StreamSource xsltSource = new StreamSource( new BufferedReader( new StringReader( getXslt() ) ) );
         DOMSource docSource = new DOMSource( metadata );
-        Node transformedMetadata = XMLUtil.applyXslToDocument2( xsltSource, docSource, null, null, null );
+        Node transformedMetadata = XMLUtil.applyXslToDocument2( xsltSource, docSource, null, null, null, "net.sf.saxon.TransformerFactoryImpl" );
         return( transformedMetadata );
     }
 

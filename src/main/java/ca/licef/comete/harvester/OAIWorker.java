@@ -20,6 +20,7 @@ public class OAIWorker extends Worker {
     @Override
     public void run() {
         startDate = new Date();
+System.out.println( "OAIWorker.run() startDate="+startDate );        
         report = new Report(getId(), startDate, getFrom());
         Throwable throwable = null;
         try {

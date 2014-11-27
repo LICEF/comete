@@ -118,6 +118,7 @@ public class Harvester {
     }
 
     public String startHarvest( String defId, String from ) throws Exception {
+System.out.println( "startHarvest defId="+defId+" from="+from );        
         if (isHarvest(defId))
             throw new Exception( "A harvest is already in progress with this definition." );
 
