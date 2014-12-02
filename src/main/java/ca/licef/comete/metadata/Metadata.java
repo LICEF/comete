@@ -64,23 +64,24 @@ public class Metadata {
     }
 
     public String storeHarvestedRecord(String oaiID, String namespace, String repoUri, String record, String datestamp, boolean isUpdate) throws Exception {
-System.out.println( "TRACE: storeHarvestedRecord oaiID="+oaiID+" namespace="+namespace+" repoUri="+repoUri+" datestamp="+datestamp );        
-        //if (datestamp != null) {
-        //    String recordURI = getRecordURI(oaiID, namespace);
-        //    if (recordURI != null) {
-        //        isUpdate = true;
-        //        TripleStore tripleStore = Core.getInstance().getTripleStore();
-        //        Triple[] triples = tripleStore.getTriplesWithSubjectPredicate(recordURI, Constants.OAI_DATESTAMP);
-        //        if (triples.length > 0) {
-        //            Date d1 = DateUtil.toDate(triples[0].getObject());
-        //            Date d2 = DateUtil.toDate(datestamp);
-        //            if (d2.after(d1))
-        //                tripleStore.deleteTriples(triples);
-        //            else
-        //                return "ignored";
-        //        }
-        //    }
-        //}
+        if (datestamp != null) {
+            String recordURI = getRecordURI(oaiID, namespace);
+            if (recordURI != null) {
+                isUpdate = true;
+                TripleStore tripleStore = Core.getInstance().getTripleStore();
+                Triple[] triples = tripleStore.getTriplesWithSubjectPredicate(recordURI, OAI.datestamp);
+                if (triples.length > 0) {
+                    Date d1 = DateUtil.toDate(triples[0].getObject());
+                    Date d2 = DateUtil.toDate(datestamp);
+                    if (d2.after(d1)) {
+                        String query = Util.getQuery( "deleteOAIDatestampTriples.sparql", recordURI, OAI.datestamp.getURI() );
+                        tripleStore.sparqlUpdate( query );
+                    }
+                    else
+                        return "ignored";
+                }
+            }
+        }
 
         return storeHarvestedRecordEff(oaiID, namespace, repoUri, record, datestamp, isUpdate);
     }
@@ -145,13 +146,6 @@ System.out.println( "recordURI="+recordURI );
 
         return null;
     }
-
-    //public String getLearningObjectURI( String metadataRecordUri ) throws Exception {
-    //    Hashtable<String, String>[] res = Core.getInstance().getTripleStore().getResults("getLearningObject.sparql", metadataRecordUri);
-    //    if (res.length > 0)
-    //        return( res[0].get("res") );
-    //    return( null );
-    //}
 
     public String getLearningObjectURI( String metadataRecordUri ) throws Exception {
         TripleStore tripleStore = Core.getInstance().getTripleStore();
@@ -360,6 +354,52 @@ System.out.println( "recordURI="+recordURI );
         }
         return new Object[]{errorMessage, isExists};
     }
+
+    /*****
+     * Deletion
+     */
+
+    //public void deleteRepositoryRecords(String repoUri) throws Exception {
+    //    String[][] records = getRepositoryRecords(repoUri);
+    //    for( int i = 0; i < records.length; i++ )
+    //        setState(records[i][1], "D");
+
+    //    //itql enhanced
+    //    Core.getInstance().getTripleStoreService().
+    //            processTQLQueries("deleteRepositoryRecords.tql", repoUri);
+    //}
+
+    public void deleteRecord(String recordURI) throws Exception {
+    //    String loURI = getLearningObjectURI(recordURI);
+    //    deleteLearningObject(loURI);
+    }
+
+    public void deleteLearningObject(String loUri) throws Exception {
+    //    //associated metadata records
+    //    Hashtable<String, String>[] results =
+    //            Core.getInstance().getTripleStoreService().getResults( "getMetadataRecords.sparql", loUri );
+    //    for( int i = 0; i < results.length; i++ ) {
+    //        String recordUri = results[i].get("s");
+    //        String doId = results[i].get("doId");
+    //        deleteMetadataRecord(recordUri, doId);
+    //    }
+    //    Core.getInstance().getTripleStoreService().deleteResource(loUri);
+    }
+
+    //void deleteMetadataRecord(String recordURI, String doId) throws Exception {
+    //    setState(doId, "D");
+    //    Core.getInstance().getTripleStoreService().deleteResource(recordURI);
+    //}
+
+    ///**
+    // * set fedora digital object state as "deleted" for oaiprovider exposition
+    // * @param doId fedora digital object ID
+    // * @throws Exception
+    // */
+    //void setState(String doId, String state) throws Exception {
+    //    FedoraService fedora = Core.getInstance().getFedoraService();
+    //    fedora.modifyDigitalObjectState(doId, state, "change state");
+    //}
 
     /****
      * Record's digest

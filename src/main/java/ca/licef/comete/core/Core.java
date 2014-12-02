@@ -24,6 +24,7 @@ public class Core {
     private TripleStore tripleStore;
 
     private String cometeHome;
+    private String repositoryName;
     private String adminEmail;
     private String version;
     private String cometeUrl;
@@ -50,6 +51,7 @@ public class Core {
             cometeHome = resBundle.getString("comete.home");
             uriPrefix = resBundle.getString("comete.uri.prefix");
             cometeUrl = resBundle.getString("comete.url");
+            repositoryName = resBundle.getString("comete.repositoryName");
             adminEmail = resBundle.getString("comete.admin.email");
             version = resBundle.getString("comete.version");
             sparqlEndpoint = resBundle.getString("sparql.endpoint");
@@ -83,6 +85,14 @@ public class Core {
 
     public String getCometeHome() {
         return cometeHome;
+    }
+
+    public String getCometeReportsHome() {
+        return getCometeHome() + "/reports";
+    }
+
+    public String getRepositoryName() {
+        return( repositoryName );
     }
 
     public String getAdminEmail() {

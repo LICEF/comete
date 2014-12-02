@@ -1,0 +1,10 @@
+PREFIX comete: <http://comete.licef.ca/reference#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+DELETE '{'
+    <{0}> <{1}> ?o
+'}'
+WHERE '{'
+    <{0}> <{1}> ?o .
+    <{0}> rdf:type comete:MetadataRecord .
+'}'

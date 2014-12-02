@@ -18,7 +18,7 @@ import org.json.JSONObject;
  */
 public class Harvester {
 
-    static File HARVESTER_FOLDER = new File(Core.getInstance().getCometeHome() + "/harvester2/");
+    static File HARVESTER_FOLDER = new File(Core.getInstance().getCometeHome() + "/harvester/");
 
     public static File getLastHarvestFile( String defId ) {
         File defFolder = new File( Harvester.HARVESTER_FOLDER, defId );
@@ -118,7 +118,6 @@ public class Harvester {
     }
 
     public String startHarvest( String defId, String from ) throws Exception {
-System.out.println( "startHarvest defId="+defId+" from="+from );        
         if (isHarvest(defId))
             throw new Exception( "A harvest is already in progress with this definition." );
 

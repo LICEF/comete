@@ -112,6 +112,8 @@ public class Util {
             typeVal = Constants.OBJ_TYPE_METADATA_RECORD;
         else if (COMETE.LearningObject.getURI().equals(type))
             typeVal = Constants.OBJ_TYPE_LEARNING_OBJECT;
+        else if (COMETE.Repository.getURI().equals(type))
+            typeVal = Constants.OBJ_TYPE_REPOSITORY;
         else if (COMETE.VocContext.getURI().equals(type))
             typeVal = Constants.OBJ_TYPE_VOC_CONTEXT;
         return typeVal;
