@@ -70,6 +70,16 @@
                         </resource>
                     </webResources>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>war</goal>
+                        </goals>
+                        <configuration>
+                            <warName>comete</warName>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -131,7 +141,7 @@
         <dependency>
             <groupId>licef</groupId>
             <artifactId>licef-tsapi</artifactId>
-            <version>0.1.6</version>
+            <version>0.1.7</version>
         </dependency>
         <dependency>
             <groupId>org.dspace</groupId>
