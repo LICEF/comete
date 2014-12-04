@@ -20,7 +20,6 @@ import java.util.ResourceBundle;
 public class Core {
     private static Core core;
 
-    private Fedora fedora;
     private TripleStore tripleStore;
 
     private String cometeHome;
@@ -32,9 +31,6 @@ public class Core {
     private String sparqlEndpoint;
     private String smtpHost;
 
-    private String fedoraUrl;
-    private String fedoraUsername;
-    private String fedoraPassword;
     private static boolean initProcess = false;
 
     public static Core getInstance() {
@@ -56,9 +52,6 @@ public class Core {
             version = resBundle.getString("comete.version");
             sparqlEndpoint = resBundle.getString("sparql.endpoint");
             smtpHost = resBundle.getString("smtp.host");
-            fedoraUrl = resBundle.getString("fedora.url");
-            fedoraUsername = resBundle.getString("fedora.username");
-            fedoraPassword = resBundle.getString("fedora.password");
 
             initTripleStore();
 
@@ -119,14 +112,6 @@ public class Core {
         return smtpHost;
     }
 
-    public String getFedoraUrl() {
-        return fedoraUrl;
-    }
-
-    public String getFedoraRestUrl() {
-        return fedoraUrl + "/rest";
-    }
-
     /*
      * Triple Store services
      */
@@ -166,16 +151,4 @@ public class Core {
         }
     }
 
-    /*
-     * Fedora services
-     */
-    public Fedora getFedora() {
-        if (fedora == null) {
-            fedora = new Fedora();
-            fedora.setUrl(fedoraUrl);
-            fedora.setUsername(fedoraUsername);
-            fedora.setPassword(fedoraPassword);
-        }
-        return fedora;
-    }
 }

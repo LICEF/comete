@@ -1,14 +1,13 @@
 package ca.licef.comete.metadata;
 
 import ca.licef.comete.core.Core;
-import ca.licef.comete.core.Fedora;
 import ca.licef.comete.core.metadataformat.MetadataFormat;
 import ca.licef.comete.core.metadataformat.MetadataFormats;
 import ca.licef.comete.core.metadataformat.OAI_DC;
 import ca.licef.comete.core.Settings;
 import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.Util;
-import ca.licef.comete.metadata.deployment.ResourceDeployer;
+import ca.licef.comete.store.Store;
 import ca.licef.comete.vocabularies.COMETE;
 import ca.licef.comete.vocabularies.OAI;
 import com.sun.jersey.core.header.FormDataContentDisposition;
@@ -296,17 +295,17 @@ System.out.println( "recordURI="+recordURI );
         String namespace = values[2];
         String pseudoOaiID = values[3]; //mapping of oai-id for local records
 
-        //deploy resource here if present
-        if (resource != null) {
-            String error;
-            try {
-                error = deployer.deploy(resource, content);
-            } catch (Exception e) {
-                error = e.toString();
-            }
-            if (error != null)
-                errorMessage = "Cannot deploy resource : " + error;
-        }
+        ////deploy resource here if present
+        //if (resource != null) {
+        //    String error;
+        //    try {
+        //        error = deployer.deploy(resource, content);
+        //    } catch (Exception e) {
+        //        error = e.toString();
+        //    }
+        //    if (error != null)
+        //        errorMessage = "Cannot deploy resource : " + error;
+        //}
 
         String loURI = null;
         String state = null;
@@ -407,12 +406,12 @@ System.out.println( "recordURI="+recordURI );
 
     String digestRecord(String loURI, String recordURI, String record, String namespace, String repoURI, String oaiId) throws Exception {
         ArrayList<Triple> triples = new ArrayList<Triple>();
-        String fedoraId;
+        String storeId;
         MetadataFormat metadataFormat = MetadataFormats.getMetadataFormat(namespace);
-        Fedora fedora = Core.getInstance().getFedora();
+        Store store = Store.getInstance();
         TripleStore tripleStore = Core.getInstance().getTripleStore();
         if (recordURI == null) {
-            String recordId = fedora.createDigitalObject();
+            String recordId = store.createDigitalObject();
 
             //if (record == null) { //case used for new record from metadata editor. -AM
             //    if (namespace.equals(Constants.IEEE_LOM_NAMESPACE))
@@ -421,20 +420,21 @@ System.out.println( "recordURI="+recordURI );
             //        record = Util.getNewDcXml( recordId );
             //}
 
-            fedoraId = recordId; 
+            storeId = recordId; 
             // We remove the leading / beforehand.
             recordURI = Util.makeURI(recordId.substring( 1 ), COMETE.MetadataRecord.getURI());
 
             triples.add(new Triple(recordURI, RDF.type, COMETE.MetadataRecord.getURI()));
             triples.add(new Triple(recordURI, COMETE.metadataFormat, namespace));
 
-            triples.add(new Triple(recordURI, COMETE.fedoraDigitalObject, fedoraId));
+            triples.add(new Triple(recordURI, COMETE.storeDigitalObject, storeId));
             if( repoURI != null && !"".equals( repoURI ) )
                 triples.add(new Triple(recordURI, COMETE.repository, repoURI));
 
             //format datastream creation
-            fedora.addDatastream(fedoraId, Constants.DATASTREAM_DATA, record, "text/xml", null);
-            triples.add(new Triple(recordURI, FOAF.page, Core.getInstance().getFedoraRestUrl() + recordId + "/data/fcr:content"));
+            store.addDatastream(storeId, Constants.DATASTREAM_DATA, record, "text/xml", null);
+            //triples.add(new Triple(recordURI, FOAF.page, Core.getInstance().getFedoraRestUrl() + recordId + "/data/fcr:content"));
+            triples.add(new Triple(recordURI, FOAF.page, recordId + "/data"));
 
             //Resource association
             triples.add(new Triple(loURI, COMETE.hasMetadataRecord, recordURI));
@@ -443,19 +443,19 @@ System.out.println( "recordURI="+recordURI );
             //Fix the future oai identifier for oai-pmh exposition with oaiprovider (via Fedora RELS-EXT)
             //SHA of harvested oai id to keep a trace of source in our oai come from
             //String _oaiId = DigestUtils.shaHex(oaiId);
-            //fedora.addRelationship(fedoraId, Constants.OAI_ID,
+            //fedora.addRelationship(storeId, Constants.OAI_ID,
             //        "oai:" + Core.getInstance().getRepositoryNamespace()+ ":" + _oaiId, true);
         }
         else {
-            fedoraId = getFedoraIdFromURI(recordURI);
+            storeId = getFedoraIdFromURI(recordURI);
 
             ////format datastream update
-            //String previous = fedora.getDatastream(fedoraId, Constants.DATASTREAM_DATA);
+            //String previous = fedora.getDatastream(storeId, Constants.DATASTREAM_DATA);
             //if (!record.equals(previous))
-            //    fedora.modifyDatastream(fedoraId, Constants.DATASTREAM_DATA, record, logMessage);
+            //    fedora.modifyDatastream(storeId, Constants.DATASTREAM_DATA, record, logMessage);
         }
 
-        validateRecord( fedoraId, loURI, recordURI, record, namespace );
+        validateRecord( storeId, loURI, recordURI, record, namespace );
 
         String extractedTriplesAsXml = processMetadataRecord( record, loURI, recordURI, namespace );
 
@@ -500,10 +500,10 @@ System.out.println( "recordURI="+recordURI );
         tripleStore.insertTriples(triples);
 
         ////Identity and vocabulary referencement management
-        //recordToInternalFormat(loURI, recordURI, fedoraId, metadataFormat);
+        //recordToInternalFormat(loURI, recordURI, storeId, metadataFormat);
 
         ////automatic exposition to harvesting
-        //internalFormatToExposedRecords(loURI, fedoraId, metadataFormat);
+        //internalFormatToExposedRecords(loURI, storeId, metadataFormat);
 
         return recordURI;
     }
@@ -521,7 +521,7 @@ System.out.println( "recordURI="+recordURI );
 
     //public String processMetadataRecord( String recordId ) throws Exception {
     //    String metadataRecordUri = Util.makeURI( recordId, Constants.TYPE_METADATA_RECORD );
-    //    String fedoraId = Core.getInstance().getTripleStore().getFedoraIdFromURI( metadataRecordUri );
+    //    String storeId = Core.getInstance().getTripleStore().getFedoraIdFromURI( metadataRecordUri );
     //    String applicationProfile = null;
     //    String learningObjectUri = null;
     //    Triple[] metadataRecordTriples = Core.getInstance().getTripleStore().getTriplesWithSubject( metadataRecordUri );
@@ -533,7 +533,7 @@ System.out.println( "recordURI="+recordURI );
     //            learningObjectUri = triple.getObject();
     //    }
 
-    //    String recordXml = Core.getInstance().getFedora().getDatastream( fedoraId, Constants.DATASTREAM_DATA );
+    //    String recordXml = Core.getInstance().getFedora().getDatastream( storeId, Constants.DATASTREAM_DATA );
 
     //    return( processMetadataRecord( recordXml, learningObjectUri, metadataRecordUri, applicationProfile ) );
     //}
@@ -608,8 +608,8 @@ System.out.println( "recordURI="+recordURI );
     }
 
 
-    private void validateRecord( String fedoraId, String loURI, String recordURI, String record, String namespace ) throws Exception {
-        Fedora fedora = Core.getInstance().getFedora();
+    private void validateRecord( String storeId, String loURI, String recordURI, String record, String namespace ) throws Exception {
+        Store store = Store.getInstance();
         TripleStore tripleStore = Core.getInstance().getTripleStore();
 
         Map<String,Boolean> applProfToValidate = Settings.getValidatedApplicationProfiles();
@@ -630,8 +630,8 @@ System.out.println( "recordURI="+recordURI );
             long startTime = System.currentTimeMillis();
             System.out.println( "Validating record " + recordURI + " against " + profileUri );
             String reportDataStream = Util.getReportDataStream( profileUri );
-            if( fedora.isDatastreamExists( fedoraId, reportDataStream ) )
-                fedora.purgeDatastream( fedoraId, reportDataStream );
+            if( store.isDatastreamExists( storeId, reportDataStream ) )
+                store.purgeDatastream( storeId, reportDataStream );
             try {
                 getValidator().validateMetadata( record, profileUri );
                 tripleStore.insertTriple( new Triple( recordURI, COMETE.applicationProfile, profileUri ) ); 
@@ -639,8 +639,8 @@ System.out.println( "recordURI="+recordURI );
             catch( ValidationException e ) {
                 isValid = false;
                 String errorReport = JDomUtils.parseXml2string(ValidationUtils.collectErrorsAsXml(e.getMessage()),null);
-                if( !fedora.isDatastreamExists( fedoraId, reportDataStream ) )
-                    fedora.addDatastream( fedoraId, reportDataStream, errorReport, "text/xml", null);
+                if( !store.isDatastreamExists( storeId, reportDataStream ) )
+                    store.addDatastream( storeId, reportDataStream, errorReport, "text/xml", null);
             }
             finally {
                 long timeTaken = System.currentTimeMillis() - startTime;
@@ -692,19 +692,19 @@ System.out.println( "recordURI="+recordURI );
     }
 
     /*
-    * URI Fedora conversion
+    * URI Store conversion
     */
 
-    private String getURIFromFedoraId(String fedoraId) {
+    private String getURIFromStoreId(String storeId) {
         String uri = null;
-        if (fedoraId.startsWith("http://"))
-            return fedoraId;
+        if (storeId.startsWith("http://"))
+            return storeId;
         else {
-            if (!fedoraId.startsWith("info:fedora/"))
-                fedoraId = "info:fedora/" + fedoraId;
+            if (!storeId.startsWith("info:fedora/"))
+                storeId = "info:fedora/" + storeId;
             try {
                 Triple[] triples = Core.getInstance().getTripleStore().getTriplesWithPredicateObject(
-                        COMETE.fedoraDigitalObject, fedoraId, false, null);
+                        COMETE.storeDigitalObject, storeId, false, null);
                 if (triples.length > 0)
                     uri = triples[0].getSubject();
             } catch (Exception e) {
@@ -721,7 +721,7 @@ System.out.println( "recordURI="+recordURI );
         else {
             try {
                 Triple[] triples = Core.getInstance().getTripleStore().getTriplesWithSubjectPredicate(
-                        uri, COMETE.fedoraDigitalObject);
+                        uri, COMETE.storeDigitalObject);
                 if (triples.length > 0)
                     id = triples[0].getObject();
             } catch (Exception e) {
@@ -732,7 +732,5 @@ System.out.println( "recordURI="+recordURI );
     }
 
     private boolean isValidatorInitialized = false;
-
-    private ResourceDeployer deployer;
 
 }

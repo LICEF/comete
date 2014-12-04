@@ -35,8 +35,8 @@ public class COMETE {
     /** <p>describes learning object</p> */
     public static final ObjectProperty describes = m_model.createObjectProperty( "http://comete.licef.ca/reference#describes" );
     
-    /** <p>Link to local Fedora persistent digital object identifier</p> */
-    public static final DatatypeProperty fedoraDigitalObject = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#fedoraDigitalObject" );
+    /** <p>Link to local Store persistent digital object identifier</p> */
+    public static final DatatypeProperty storeDigitalObject = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#storeDigitalObject" );
     
     /** <p>an associated metadata record</p> */
     public static final ObjectProperty hasMetadataRecord = m_model.createObjectProperty( "http://comete.licef.ca/reference#hasMetadataRecord" );

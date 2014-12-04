@@ -1,7 +1,7 @@
 package ca.licef.comete.vocabulary;
 
 import ca.licef.comete.core.Core;
-import ca.licef.comete.core.Fedora;
+//import ca.licef.comete.core.Fedora;
 import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.vocabularies.COMETE;
 import ca.licef.comete.vocabulary.util.Util;
