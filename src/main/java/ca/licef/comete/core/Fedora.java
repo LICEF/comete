@@ -32,8 +32,10 @@ public class Fedora {
     private FedoraRepository repo;
 
     public FedoraRepository getRepository() {
-        if( repo == null )
+        if( repo == null ) {
+System.out.println( "first call to getRepository url="+url );            
             repo = new FedoraRepositoryImpl( url + "/rest", username, password );
+        }
         return( repo );
     }
 

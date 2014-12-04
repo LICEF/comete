@@ -41,8 +41,11 @@ public class Constants {
     //********************
     public static final String OBJ_TYPE_LEARNING_OBJECT = "learningobject";
     public static final String OBJ_TYPE_METADATA_RECORD = "metadatarecord";
+    public static final String OBJ_TYPE_PERSON = "person";
+    public static final String OBJ_TYPE_ORGANIZATION = "organization";
     public static final String OBJ_TYPE_REPOSITORY = "repository";
     public static final String OBJ_TYPE_VOC_CONTEXT = "voccontext";
+    public static final String OBJ_TYPE_VOCABULARY = "vocabulary";
     
     //********
     // Fedora
