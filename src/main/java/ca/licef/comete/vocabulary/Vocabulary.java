@@ -34,7 +34,7 @@ public class Vocabulary {
 
     public String getVocabularyUri(String source) throws Exception {
         String uri = null;
-        String query = CoreUtil.getQuery("getVocUri.sparql", source);
+        String query = CoreUtil.getQuery("vocabulary/getVocUri.sparql", source);
         Tuple[] tuples = Core.getInstance().getTripleStore().sparqlSelect(query);
         if (tuples.length > 0)
             uri = tuples[0].getValue("vocUri").getContent();

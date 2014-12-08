@@ -8,6 +8,7 @@ import ca.licef.comete.vocabulary.util.Util;
 import com.hp.hpl.jena.rdf.model.Property;
 import licef.IOUtil;
 import licef.XMLUtil;
+import licef.reflection.Invoker;
 import licef.tsapi.TripleStore;
 import licef.tsapi.model.Triple;
 import licef.tsapi.model.Tuple;
@@ -42,6 +43,9 @@ public class VocabularyManager {
     TripleStore tripleStore;
     static ca.licef.comete.core.util.Util CoreUtil;
 
+    static Property[] indexPredicates = new Property[]{SKOS.prefLabel};
+    static HashSet indexLanguages = new HashSet(Arrays.asList(new String[]{"fr", "en"}));
+
     public void initVocabularyModule() throws Exception {
         System.out.println("Vocabulary Module initialization...");
 
@@ -49,8 +53,10 @@ public class VocabularyManager {
         tripleStore = Core.getInstance().getTripleStore();
 
         //init SKOS ontology
-        tripleStore.loadContent(getClass().getResourceAsStream("/skos.rdf"),
-                licef.tsapi.Constants.RDFXML, SKOS_ONTOLOGY_GRAPH);
+        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore",
+                "loadContent", new Object[]{ getClass().getResourceAsStream("/skos.rdf"),
+                    licef.tsapi.Constants.RDFXML, new String[]{SKOS_ONTOLOGY_GRAPH}} );
+        tripleStore.transactionalCall(inv);
 
         //vocs definition folder
         if (vocabulariesSourceDir == null)
@@ -73,7 +79,9 @@ public class VocabularyManager {
         String[] vocs = vocabulariesDir.list();
         if (vocs != null) {
             for (String voc : vocs) {
-                String uri = initVocabulary(voc, false);
+                Invoker invk = new Invoker(this, "ca.licef.comete.vocabulary.VocabularyManager",
+                        "initVocabulary", new Object[]{voc, false});
+                String uri = (String)tripleStore.transactionalCall(invk);
                 if (uri != null)
                     newUris.add(uri);
             }
@@ -88,7 +96,7 @@ public class VocabularyManager {
         System.out.println("Vocabulary Module initialization done.");
     }
 
-    private String initVocabulary(String voc, boolean forceUpdate) throws Exception {
+    public String initVocabulary(String voc, boolean forceUpdate) throws Exception {
         File vocDir = new File(vocabulariesDir, voc);
         if (!vocDir.isDirectory())
             return null;
@@ -136,7 +144,7 @@ public class VocabularyManager {
         //set vocUri as local URI (default value for new records). reset later
         String vocUri = Core.getInstance().getUriPrefix() + "/voc/" + source.toLowerCase() + "/" + cat;
         String fedoraId = null;
-        String query = CoreUtil.getQuery("getVocContext.sparql", voc);
+        String query = CoreUtil.getQuery("vocabulary/getVocContext.sparql", voc);
         Tuple[] tuples = tripleStore.sparqlSelect(query);
         if (tuples.length > 0) {
             uri = tuples[0].getValue("s").getContent();
@@ -180,8 +188,8 @@ public class VocabularyManager {
             //clean voc uri
             Triple[] triples = tripleStore.getTriplesWithSubjectPredicate(uri, COMETE.vocUri);
             tripleStore.removeTriples(Arrays.asList(triples));
-            if (isNavigable) //todo clear text indexing
-                tripleStore.clearWithTextIndexing(new Property[]{SKOS.prefLabel}, new String[]{"fr", "en"}, null, vocUri);
+            if (isNavigable)
+                tripleStore.clearWithTextIndexing(indexPredicates, indexLanguages, null, vocUri);
             else
                 tripleStore.clear(vocUri);
         }
@@ -213,9 +221,9 @@ public class VocabularyManager {
         vocUri = newVocUri;
 
         //load content
-        if (isNavigable) //todo load with text indexing
+        if (isNavigable)
             tripleStore.loadContentWithTextIndexing(new ByteArrayInputStream(skosContent.getBytes()),
-                new Property[]{SKOS.prefLabel}, new String[]{"fr", "en"}, null, licef.tsapi.Constants.RDFXML, vocUri);
+                indexPredicates, indexLanguages, null, licef.tsapi.Constants.RDFXML, vocUri);
         else
             tripleStore.loadContent(new ByteArrayInputStream(skosContent.getBytes()),
                     licef.tsapi.Constants.RDFXML, vocUri);
