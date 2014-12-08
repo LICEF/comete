@@ -432,7 +432,7 @@ System.out.println( "recordURI="+recordURI );
                 triples.add(new Triple(recordURI, COMETE.repository, repoURI));
 
             //format datastream creation
-            store.addDatastream(storeId, Constants.DATASTREAM_DATA, record, "text/xml", null);
+            store.addDatastream(storeId, Constants.DATASTREAM_DATA, record, "text/xml");
             //triples.add(new Triple(recordURI, FOAF.page, Core.getInstance().getFedoraRestUrl() + recordId + "/data/fcr:content"));
             triples.add(new Triple(recordURI, FOAF.page, recordId + "/data"));
 
@@ -640,7 +640,7 @@ System.out.println( "recordURI="+recordURI );
                 isValid = false;
                 String errorReport = JDomUtils.parseXml2string(ValidationUtils.collectErrorsAsXml(e.getMessage()),null);
                 if( !store.isDatastreamExists( storeId, reportDataStream ) )
-                    store.addDatastream( storeId, reportDataStream, errorReport, "text/xml", null);
+                    store.addDatastream( storeId, reportDataStream, errorReport, "text/xml");
             }
             finally {
                 long timeTaken = System.currentTimeMillis() - startTime;
