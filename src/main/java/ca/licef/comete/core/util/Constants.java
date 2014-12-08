@@ -55,7 +55,7 @@ public class Constants {
     //public static final String DATASTREAM_DO_METADATA = "DC";
     //public static final String DATASTREAM_RELS_EXT = "RELS-EXT";
     public static final String DATASTREAM_DATA = "data";
-    //public static final String DATASTREAM_INTERNAL_DATA = "internal_data";
+    public static final String DATASTREAM_INTERNAL_DATA = "internal_data";
     public static final String DATASTREAM_EXPOSED_DATA_LOM = "exposed_lom";
     public static final String DATASTREAM_EXPOSED_DATA_DC = "exposed_dc";
     //public static final String DATASTREAM_VDEX = "vdex";

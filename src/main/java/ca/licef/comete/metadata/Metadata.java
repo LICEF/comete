@@ -94,7 +94,6 @@ public class Metadata {
 
         //Retrieve of metadata record with metadata format and oaiID
         String recordURI = getRecordURI(oaiID, namespace);
-System.out.println( "recordURI="+recordURI );
 
         if (recordURI == null) {
             isUpdate = false; //to force new MetadataRecord creation context
@@ -499,11 +498,11 @@ System.out.println( "recordURI="+recordURI );
         //triples insertions
         tripleStore.insertTriples(triples);
 
-        ////Identity and vocabulary referencement management
-        //recordToInternalFormat(loURI, recordURI, storeId, metadataFormat);
+        //Identity and vocabulary referencement management
+        recordToInternalFormat(loURI, recordURI, storeId, metadataFormat);
 
-        ////automatic exposition to harvesting
-        //internalFormatToExposedRecords(loURI, storeId, metadataFormat);
+        //automatic exposition to harvesting
+        internalFormatToExposedRecords(loURI, storeId, metadataFormat);
 
         return recordURI;
     }
@@ -607,6 +606,138 @@ System.out.println( "recordURI="+recordURI );
         tripleStore.sparqlUpdate( query );
     }
 
+    /*****
+     * Internal/exposed format management
+     */
+
+    private void recordToInternalFormat( String loURI, String recordURI, String storeId, MetadataFormat metadataFormat ) throws Exception {
+        if( !Store.getInstance().isDatastreamExists( storeId, Constants.DATASTREAM_DATA ) )
+            return;
+
+        String xml = Store.getInstance().getDatastream( storeId, Constants.DATASTREAM_DATA );
+
+        HashMap<String,String> parameters = new HashMap<String,String>();
+        parameters.put( "loURI", loURI );
+        parameters.put( "recordURI", recordURI );
+
+        String stylesheet = null;
+        if( metadataFormat.getNamespace().equals( Constants.OAI_DC_NAMESPACE ))
+            stylesheet = "convertDcToInternalFormat";
+        else if( metadataFormat.getNamespace().equals( Constants.IEEE_LOM_NAMESPACE) )
+            stylesheet = "convertLomToInternalFormat";
+
+        StreamSource source = new StreamSource( new StringReader( xml ) );
+        String newXml = Util.applyXslToDocument( stylesheet, source, parameters );
+
+        updateInternalFormat(storeId, newXml, metadataFormat);
+    }
+
+    public void internalFormatToExposedRecords(String loURI, String fedoraId, MetadataFormat metadataFormat) throws Exception {
+        if( !Store.getInstance().isDatastreamExists( fedoraId, Constants.DATASTREAM_INTERNAL_DATA ) )
+            return;
+        String recordUri = Util.makeURI(Util.getIdNumberValue(fedoraId), Constants.OBJ_TYPE_METADATA_RECORD);
+
+        System.out.println("Expose record : " + recordUri + "...");
+        String xml = Store.getInstance().getDatastream( fedoraId, Constants.DATASTREAM_INTERNAL_DATA );
+
+        HashMap<String,String> parameters = new HashMap<String,String>();
+        parameters.put( "loURI", loURI );
+
+        String stylesheet = null;
+        if( metadataFormat.getNamespace().equals( Constants.OAI_DC_NAMESPACE ))
+            stylesheet = "convertInternalFormatToDc";
+        else if( metadataFormat.getNamespace().equals( Constants.IEEE_LOM_NAMESPACE) )
+            stylesheet = "convertInternalFormatToLom";
+
+        StreamSource source = new StreamSource( new StringReader( xml ) );
+        String newXml = Util.applyXslToDocument( stylesheet, source, parameters );
+
+        updateExposedFormat(fedoraId, newXml, metadataFormat, recordUri, "exposeRecord");
+
+        // Generate exposed record for other metadata formats.
+        stylesheet = null;
+        MetadataFormat exposedMetadataFormat = null;
+        if( metadataFormat.getNamespace().equals( Constants.OAI_DC_NAMESPACE )) {
+            stylesheet = "convertFromInternalFormatDcToLom";
+            exposedMetadataFormat = MetadataFormats.getMetadataFormat( Constants.IEEE_LOM_NAMESPACE ); 
+        }
+        else if( metadataFormat.getNamespace().equals( Constants.IEEE_LOM_NAMESPACE) ) {
+            stylesheet = "convertFromInternalFormatLomToDc";
+            exposedMetadataFormat = MetadataFormats.getMetadataFormat( Constants.OAI_DC_NAMESPACE );
+        }
+
+        if( stylesheet != null ) {
+            parameters.put( "recordURI", recordUri );
+            source = new StreamSource( new StringReader( xml ) );
+            newXml = Util.applyXslToDocument( stylesheet, source, parameters );
+
+            updateExposedFormat(fedoraId, newXml, exposedMetadataFormat, recordUri, "exposeRecord");
+        }
+    }
+
+    /**
+     *  Update the internal datastream.
+     *  @param id Record to update.
+     *  @param record Content of the record or URL pointing to the content of the record.
+     *  @param metadataFormat Metadata format of the record.
+     */
+    void updateInternalFormat(String id, String record, MetadataFormat metadataFormat) throws Exception{
+        if (Store.getInstance().isDatastreamExists(id, Constants.DATASTREAM_INTERNAL_DATA)) {
+            String previous = Store.getInstance().getDatastream(id, Constants.DATASTREAM_INTERNAL_DATA);
+            if (!record.equals(previous))
+                Store.getInstance().modifyDatastream(id, Constants.DATASTREAM_INTERNAL_DATA, record);
+        }
+        else
+            addInternalFormat(id, record, metadataFormat);
+    }
+
+    /**
+     *  Add an internal datastream.
+     *  @param id Record to update.
+     *  @param record Content of the record or URL pointing to the content of the record.
+     *  @param metadataFormat Metadata format of the record.
+     */
+    private void addInternalFormat(String id, String record, MetadataFormat metadataFormat) throws Exception{
+        Store.getInstance().addDatastream(id, Constants.DATASTREAM_INTERNAL_DATA, record, "text/xml");
+    }
+
+    /**
+     *  Update the exposed datastream.
+     *  @param id Record to update.
+     *  @param record Content to update.
+     *  @param metadataFormat Metadata format of the record.
+     *  @param logMessage Message that will be logged in the Digital Object after performing the update.
+     */
+    void updateExposedFormat(String id, String record, MetadataFormat metadataFormat, String recordUri, String logMessage) throws Exception{
+        String datastream = metadataFormat.getExposedDatastream();
+        boolean b = true;
+        if (Store.getInstance().isDatastreamExists(id, datastream)) {
+            String previous = Store.getInstance().getDatastream(id, datastream);
+            if (!record.equals(previous))
+                Store.getInstance().modifyDatastream(id, datastream, record);
+            else {
+                b = false;
+                System.out.println("-> no change on : " + recordUri + ".");
+            }
+        }
+        else
+            addExposedFormat(id, record, metadataFormat, logMessage);
+
+        if (b)
+            System.out.println("-> " + recordUri + " exposed (" + metadataFormat.getName() + " format)");
+    }
+
+    /**
+     *  Add the exposed datastream.
+     *  @param id Record to update.
+     *  @param record Content to expose
+     *  @param metadataFormat Metadata format of the record.
+     *  @param logMessage Message that will be logged in the Digital Object after performing the update.
+     */
+    private void addExposedFormat(String id, String record, MetadataFormat metadataFormat, String logMessage) throws Exception{
+        String datastream = metadataFormat.getExposedDatastream();
+        Store.getInstance().addDatastream(id, datastream, record, "text/xml");
+    }
 
     private void validateRecord( String storeId, String loURI, String recordURI, String record, String namespace ) throws Exception {
         Store store = Store.getInstance();

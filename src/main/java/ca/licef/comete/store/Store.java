@@ -27,13 +27,12 @@ public class Store {
     }
 
     public String createDigitalObject() throws IOException {
-        return( createDigitalObject( "/" ) );
+        return( createDigitalObject( "" ) );
     }
 
     public String createDigitalObject( String path ) throws IOException {
         UUID uuid = UUID.randomUUID();
-        File pathDir = new File( location, path );
-        File doDir = new File( pathDir, uuid.toString() );
+        File doDir = new File( location + path + "/" + uuid );
         if( !doDir.mkdir() )
             throw( new IOException( "Cannot make directory " + doDir + "." ) );
         return( path + "/" + uuid );
@@ -50,14 +49,24 @@ public class Store {
         return( path + "/" + encodedContentType ); 
     }
 
-    public void addDatastream( String parentId, String datastream, Object content, String mimetype ) throws Exception {
-        File doLoc = new File( location, parentId );
-        File loc = new File( doLoc, datastream );
+    public String getDatastream( String path, String datastream ) throws IOException {
+        File loc = new File( location + path + "/" + datastream );
+        File[] files = loc.listFiles();
+        if( files == null || files.length != 1 )
+            throw( new IOException( "Inconsistent store.  Should contain only one file in directory " + loc + "." ) );
+
+        String escapedMimeType = files[ 0 ].getName(); 
+        File dsLoc = new File( loc, escapedMimeType ); 
+        return( IOUtil.readStringFromFile( dsLoc ) );
+    }
+
+    public void addDatastream( String path, String datastream, Object content, String mimetype ) throws Exception {
+        File loc = new File( location + path + "/" + datastream );
         if( !loc.mkdir() ) 
             throw( new IOException( "Cannot make directory " + loc + "." ) );
 
-        String encodedMimeType = mimetype.replaceAll( "/", "_" );
-        File dsLoc = new File( loc, encodedMimeType );
+        String escapedMimeType = mimetype.replaceAll( "/", "_" );
+        File dsLoc = new File( loc, escapedMimeType );
         if( content instanceof File ) {
             File contentFile = (File)content;
             Files.copy( contentFile.toPath(), dsLoc.toPath() );
@@ -69,7 +78,31 @@ public class Store {
             else 
                 IOUtil.writeStringToFile( contentString, dsLoc );
         }
+    }
 
+    public void modifyDatastream( String path, String datastream, Object content ) throws Exception {
+        File loc = new File( location + path + "/" + datastream );
+        File[] files = loc.listFiles();
+        if( files == null || files.length != 1 )
+            throw( new IOException( "Inconsistent store.  Should contain only one file in directory " + loc + "." ) );
+
+        // Assume that the mimetype do not change when we modify a datastream.
+        String escapedMimeType = files[ 0 ].getName(); 
+        File dsLoc = new File( loc, escapedMimeType ); 
+        if( !files[ 0 ].delete() )
+            throw( new IOException( "Cannot delete file " + files[ 0 ] + "." ) );
+
+        if( content instanceof File ) {
+            File contentFile = (File)content;
+            Files.copy( contentFile.toPath(), dsLoc.toPath() );
+        }
+        else if( content instanceof String ) {
+            String contentString = (String)content;
+            if( IOUtil.isURL( contentString ) )
+                IOUtil.getFile( contentString, dsLoc );
+            else 
+                IOUtil.writeStringToFile( contentString, dsLoc );
+        }
     }
 
     public void purgeDatastream(String path, String datastream) throws IOException {
@@ -80,7 +113,7 @@ public class Store {
     }
 
     public boolean isDatastreamExists(String path, String datastream) {
-        File dsLoc = new File( path, datastream );
+        File dsLoc = new File( location + path + "/" + datastream );
         return( dsLoc.exists() );
     }
 
