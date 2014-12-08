@@ -73,7 +73,7 @@ public class Metadata {
                     Date d1 = DateUtil.toDate(triples[0].getObject());
                     Date d2 = DateUtil.toDate(datestamp);
                     if (d2.after(d1)) {
-                        String query = Util.getQuery( "deleteOAIDatestampTriples.sparql", recordURI, OAI.datestamp.getURI() );
+                        String query = Util.getQuery( "metadata/deleteOAIDatestampTriples.sparql", recordURI, OAI.datestamp.getURI() );
                         tripleStore.sparqlUpdate( query );
                     }
                     else
@@ -147,7 +147,7 @@ public class Metadata {
 
     public String getLearningObjectURI( String metadataRecordUri ) throws Exception {
         TripleStore tripleStore = Core.getInstance().getTripleStore();
-        String query = Util.getQuery( "getLearningObject.sparql", metadataRecordUri );
+        String query = Util.getQuery( "metadata/getLearningObject.sparql", metadataRecordUri );
         Tuple[] tuples = tripleStore.sparqlSelect( query );
         if( tuples.length > 0 )
             return( tuples[ 0 ].getValue( "res" ).getContent() );
@@ -157,7 +157,7 @@ public class Metadata {
 
     public String getRecordURI( String oaiID, String namespace ) throws Exception {
         TripleStore tripleStore = Core.getInstance().getTripleStore();
-        String query = Util.getQuery( "getMetadataRecordWith-oai-id.sparql", namespace, oaiID );
+        String query = Util.getQuery( "metadata/getMetadataRecordWith-oai-id.sparql", namespace, oaiID );
         Tuple[] tuples = tripleStore.sparqlSelect(query);
         if( tuples.length > 0 )
             return( tuples[ 0 ].getValue( "s" ).getContent() );
@@ -602,7 +602,7 @@ public class Metadata {
 
     private void resetLearningObjectNonPersistentTriples(String recordURI) throws Exception {
         TripleStore tripleStore = Core.getInstance().getTripleStore();
-        String query = Util.getQuery( "deleteLOTriplesToReset.sparql", recordURI );
+        String query = Util.getQuery( "metadata/deleteLOTriplesToReset.sparql", recordURI );
         tripleStore.sparqlUpdate( query );
     }
 

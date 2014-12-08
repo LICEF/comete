@@ -26,7 +26,7 @@ public class RepositoryManager {
     licef.tsapi.TripleStore tripleStore = Core.getInstance().getTripleStore();
 
     public String[][] getRepositories() throws Exception {
-        String query = Util.getQuery("getRepositories.sparql");
+        String query = Util.getQuery("metadata/getRepositories.sparql");
         Tuple[] tuples = tripleStore.sparqlSelect(query);
         String[][] res = new String[tuples.length][2];
         for( int i = 0; i < tuples.length; i++ ) {
