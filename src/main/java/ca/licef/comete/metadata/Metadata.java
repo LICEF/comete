@@ -431,7 +431,7 @@ public class Metadata {
                 triples.add(new Triple(recordURI, COMETE.repository, repoURI));
 
             //format datastream creation
-            store.addDatastream(storeId, Constants.DATASTREAM_DATA, record, "text/xml");
+            store.addDatastream(storeId, Constants.DATASTREAM_DATA, record);
             //triples.add(new Triple(recordURI, FOAF.page, Core.getInstance().getFedoraRestUrl() + recordId + "/data/fcr:content"));
             triples.add(new Triple(recordURI, FOAF.page, recordId + "/data"));
 
@@ -698,7 +698,7 @@ public class Metadata {
      *  @param metadataFormat Metadata format of the record.
      */
     private void addInternalFormat(String id, String record, MetadataFormat metadataFormat) throws Exception{
-        Store.getInstance().addDatastream(id, Constants.DATASTREAM_INTERNAL_DATA, record, "text/xml");
+        Store.getInstance().addDatastream(id, Constants.DATASTREAM_INTERNAL_DATA, record);
     }
 
     /**
@@ -736,7 +736,7 @@ public class Metadata {
      */
     private void addExposedFormat(String id, String record, MetadataFormat metadataFormat, String logMessage) throws Exception{
         String datastream = metadataFormat.getExposedDatastream();
-        Store.getInstance().addDatastream(id, datastream, record, "text/xml");
+        Store.getInstance().addDatastream(id, datastream, record);
     }
 
     private void validateRecord( String storeId, String loURI, String recordURI, String record, String namespace ) throws Exception {
@@ -771,7 +771,7 @@ public class Metadata {
                 isValid = false;
                 String errorReport = JDomUtils.parseXml2string(ValidationUtils.collectErrorsAsXml(e.getMessage()),null);
                 if( !store.isDatastreamExists( storeId, reportDataStream ) )
-                    store.addDatastream( storeId, reportDataStream, errorReport, "text/xml");
+                    store.addDatastream( storeId, reportDataStream, errorReport);
             }
             finally {
                 long timeTaken = System.currentTimeMillis() - startTime;
