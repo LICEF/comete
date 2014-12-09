@@ -1,5 +1,6 @@
 package ca.licef.comete.vocabulary.util;
 
+import ca.licef.comete.core.Core;
 import ca.licef.comete.core.util.Constants;
 import licef.IOUtil;
 import licef.StringUtil;
@@ -43,4 +44,11 @@ public class Util {
             return -1;
     }
 
+    public static boolean isGraphExists(String uri) throws Exception {
+        String[] names = Core.getInstance().getTripleStore().getNamedGraphs();
+        for (String name : names)
+            if (uri.equals(name))
+                return true;
+        return false;
+    }
 }

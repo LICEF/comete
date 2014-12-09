@@ -5,31 +5,18 @@
     'Search': 'Recherche',
     'Adding': 'Ajout',
     'Administration': 'Administration',
-    'ABOUT': 'À PROPOS',
+    'About': 'A propos',
     'Security': 'Sécurité',
     'Unauthorized access.':'Accès non autorisé.',
 
-    'Home': 'Accueil',
-    'Images': 'Images',
-    'Videos': 'Vidéos',
-    'Audios': 'Audios',
-    'Texts': 'Textes',
-    'Tools': 'Outils',
-    'Activities': 'Activités',
-    'MOOCs': 'MOOCs',
-    'Courses': 'Cours',
-  
-    'result': 'résultat',
-    'No result': 'Aucun résultat',
-
-    'Quick Search': 'Recherche rapide',
+    'Simple Search': 'Recherche simple',
     'Advanced Search': 'Recherche avancée',
     'Thematic Navigation': 'Navigation thématique',
     'Collections': 'Collections',
     'Id': 'Identifiant',
     'Title': 'Titre',
     'Details': 'Détails',
-    'Resource': 'Ressource',
+    'Resources': 'Ressources',
     'Edit DC': 'Éditer DC',
     'Edit LOM': 'Éditer LOM',
     'New DC': 'Nouvelle fiche DC',
@@ -55,7 +42,7 @@
     'Select contributor': 'Sélectionner un contributeur',     
     'Select organization': 'Sélectionner une organisation',     
     'Include subcategories': 'Inclure les sous-catégories',
-    'Include equivalent categories from':'Inclure les catégories équivalentes dans',
+    'Include equivalent categories from :':'Inclure les catégories équivalentes dans :',
     'Show category IDs': 'Voir les cotes des catégories',
     'Automatic Query': 'Requête automatique',
     'Warning': 'Avertissement',
@@ -114,6 +101,11 @@
     'Reset Metamodel': 'Réinitialisation du métamodèle',
     'Reset Learning Object': 'Réinitialisation de la ressource',
     'Are you sure that you want to reset metamodel?': 'Voulez-vous vraiment réinitialiser le métamodèle?',
+    'Are you sure that you want to reset this learning object ?': 'Voulez-vous vraiment réinialiser le métamodèle de cette ressource?',
+    'Reinitialization': 'Réinitialisation',
+    'Are you sure that you want to delete this learning object ?': 'Voulez-vous vraiment supprimer cette ressource?',
+    'Delete Learning Object': 'Supprimer une ressource',
+    'Record URI': 'URI de la fiche',
 
     'Person Editor': 'Editeur de personne',
     'Organization Editor': 'Editeur d\'organisation',
@@ -162,10 +154,6 @@
     'is the': 'est le',
     'is before the': 'est avant le',
     'is after the': 'est après le',
-
-    'Add condition': 'Ajouter une condition',
-    'Remove condition': 'Supprimer la condition',
-
 
     'Persons': 'Personnes',
     'Organizations': 'Organisations',
@@ -219,19 +207,9 @@
     'Question': 'Question',
     'Not implemented yet.': 'Non implanté',
     'All': 'Tout',
-    'All ': 'Toutes',
 
     'Failure': 'Échec',
     'To update the Validation Report, the metamodel must be resetted.': 'Pour mettre à jour le rapport de validation, le métamodèle doit être réinitialisé.',
-
-    'SORT BY': 'TRIER PAR',
-    'Relevance': 'Pertinence',
-    'Date added': 'Date d\'ajout',
-    'LANGUAGES': 'LANGUES',
-
-
-    'Enter your request here':'Entrez votre requête ici',
-    'Search by keyword':'Recherche par mot-clé',
 
     'Select LOM or zip of LOMs.<br/>Metametadata identifier (field 3.1) <b>must be present</b>.': 'Sélectionner un LOM ou un zip de LOMs.<br/>Le champ metametadata identifier (3.1) <b>doit être présent</b>.'
 

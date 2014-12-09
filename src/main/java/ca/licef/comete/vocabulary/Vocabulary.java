@@ -2,8 +2,12 @@ package ca.licef.comete.vocabulary;
 
 import ca.licef.comete.core.Core;
 import ca.licef.comete.core.util.Constants;
+import ca.licef.comete.vocabulary.util.Util;
+import licef.reflection.Invoker;
 import licef.tsapi.TripleStore;
 import licef.tsapi.model.Tuple;
+import licef.tsapi.vocabulary.RDFS;
+import licef.tsapi.vocabulary.SKOS;
 import org.json.JSONArray;
 
 import javax.xml.transform.stream.StreamSource;
@@ -32,6 +36,10 @@ public class Vocabulary {
         return vocabularyManager;
     }
 
+    public String getRestUrl(String uri) throws Exception{
+        return CoreUtil.getRestUrl(SKOS.ConceptScheme.getURI()) + "/" + URLEncoder.encode(uri);
+    }
+
     public String getVocabularyUri(String source) throws Exception {
         String uri = null;
         String query = CoreUtil.getQuery("vocabulary/getVocUri.sparql", source);
@@ -40,4 +48,45 @@ public class Vocabulary {
             uri = tuples[0].getValue("vocUri").getContent();
         return uri;
     }
+
+
+    public String[] getNavigableVocabularies() throws Exception{
+        TripleStore ts = Core.getInstance().getTripleStore();
+        String query = CoreUtil.getQuery("vocabulary/getNavigableVocabularies.sparql");
+        Invoker inv = new Invoker(ts, "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
+        Tuple[] tuples = (Tuple[])ts.transactionalCall(inv);
+        String[] res = new String[tuples.length];
+        for (int i = 0; i < tuples.length; i++)
+            res[i] = tuples[i].getValue("vocUri").getContent();
+        return res;
+    }
+
+    public String getVocabularyTitle(String uri, String lang, boolean forceConceptScheme) throws Exception {
+        if (!forceConceptScheme) //check and/or retrieve scheme uri first
+            uri = getConceptScheme(uri);
+        TripleStore ts = Core.getInstance().getTripleStore();
+        Invoker inv = new Invoker(ts, "licef.tsapi.TripleStore",
+                "getBestLocalizedLiteralObject", new Object[]{uri, RDFS.label, lang, new String[]{uri}});
+        String[] label = (String[])ts.transactionalCall(inv);
+        if (label == null || label[ 0 ] == null || "".equals(label[ 0 ]))
+            label = new String[] { uri, null } ;
+        return label[0];
+    }
+
+    public String getConceptScheme(String uri) throws Exception{
+        if (uri.startsWith("http://dewey.info/class/")) //should be generalized with sparql query -AM
+            return "http://dewey.info/scheme/ddc/";
+
+        String vocUri;
+        if (uri.contains("#")) //hash uri case, skos concept
+            vocUri = uri.substring(0, uri.lastIndexOf('#'));
+        else {
+            if (Util.isGraphExists(uri)) //uri is a skos conceptScheme)
+                vocUri = uri;
+            else //2nd pass with end truncation
+                vocUri = uri.substring(0, uri.lastIndexOf('/'));
+        }
+        return vocUri;
+    }
+
 }

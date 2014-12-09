@@ -1,0 +1,118 @@
+﻿.aboutContent {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    background-color: #FFFFFF;
+    color: #383C83;
+}
+
+.blueContent {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    background-color: #FFFFFF;
+    color: #383C83;
+    width: 500px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.language {
+    text-align: right;
+    margin-right: 20px;
+    font-size: 14px;
+}
+
+.x-tbar-goBackwardQuery {
+    background-image: url(images/goBackwardQuery.png) !important;
+}
+
+.x-tbar-goForwardQuery {
+    background-image: url(images/goForwardQuery.png) !important;
+}
+
+.resourceTitle {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    font-family: arial,verdana,sans-serif;
+    font-size: 13px;
+}
+
+.resourceDesc {
+    padding-top: 2px;
+    white-space: normal;
+    font-family: arial,verdana,sans-serif;
+}
+
+.lo-grid .x-grid-cell {    
+    padding-top: 14px ;
+    padding-left: 8px;
+    margin-bottom: 12px;    
+}
+
+.x-grid-row-over .x-grid-cell, .x-grid-row-over .x-grid-rowwrap-div {
+    background-color: #F1F6FF;
+}
+
+
+.comete-icon { 
+    background-image: url(images/cometeIcon16.gif) !important; 
+}
+
+.x-btn-icon .atom-button { 
+    background-image: url(images/atom.png) !important; 
+    width: 45px;
+}
+
+.x-btn-icon .rss-button { 
+    background-image: url(images/rss.png) !important; 
+    width: 45px;
+}
+
+.sectionTitle {
+    font-size: 18px;
+    font-style: italic;
+    color: #332659;
+}
+
+.intro {
+    font-size: 13px;
+    color: #04408C;
+}
+
+.results {
+    font-size: 14px;
+    color: #04408C;
+}
+
+.choice {
+    font-size: 14px;
+    color: #04408C;
+    text-decoration:underline;
+}
+
+.selectedChoice {
+    font-size: 14px;
+    color: #04408C;    
+}
+
+.x-tree-icon { 
+    background-image: url(images/blueBullet.gif) !important; 
+    background-repeat: no-repeat; 
+    margin: 6px 0px 0px 0px;
+}
+
+
+.queryCondData {
+    color: #04408C;
+}
+
+.conceptCond {
+    margin: 0px 0px 0px 3px !important;
+}
+
+.x-border-layout-ct {
+    background-color: #ffffff;
+}
+
+.rootButton.x-btn-default-toolbar-small-over .x-btn-split-right {
+    background-image: url("extjs-4.1.1/resources/themes/images/default/button/s-arrow-noline.gif");
+}

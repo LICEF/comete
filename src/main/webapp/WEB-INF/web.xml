@@ -29,7 +29,8 @@
             <param-name>com.sun.jersey.config.property.packages</param-name>
             <param-value>ca.licef.comete.metadata.resource,
                          ca.licef.comete.harvester.resource,
-                         ca.licef.comete.security.resource</param-value>
+                         ca.licef.comete.security.resource,
+                         ca.licef.comete.vocabulary.resource</param-value>
         </init-param>
         <init-param>
             <param-name>com.sun.jersey.config.feature.XmlRootElementProcessing</param-name>

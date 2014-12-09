@@ -6,6 +6,7 @@ import com.hp.hpl.jena.ontology.OntClass;
 import licef.IOUtil;
 import licef.StringUtil;
 import licef.XMLUtil;
+import licef.tsapi.vocabulary.SKOS;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -121,8 +122,17 @@ public class Util {
 
     public static String getRestUrl(String type) {
         String url = null;
-        if (COMETE.VocContext.getURI().equals(type))
+        if (COMETE.MetadataRecord.getURI().equals(type))
+            url = "/rest/metadataRecords";
+        else if (COMETE.LearningObject.getURI().equals(type))
+            url = "/rest/learningObjects";
+        else if (COMETE.Repository.getURI().equals(type))
+            url = "/rest/repositories";
+        else if (COMETE.VocContext.getURI().equals(type))
             url = "/rest/vocContexts";
+        else if (SKOS.ConceptScheme.getURI().equals(type))
+            url = "/rest/voc";
+
         return url;
     }
 
@@ -137,33 +147,27 @@ public class Util {
         if( vals.length < 2 )
             return( null );
         String label = vals[1];
-/*
         if( "voc".equals( label ) ) {
             if( vals.length == 4 )
-                return( Constants.TYPE_VOCABULARY );
+                return( SKOS.ConceptScheme.getURI() );
             else if( vals.length == 5 )
-                return( Constants.TYPE_VOCABULARY_CONCEPT );
+                return( SKOS.Concept.getURI() );
             else
                 return( null );
         }
-*/
         return getTypeFromLabel(label);
     }
 
     public static String getTypeFromLabel(String label) {
         String type = null;
-/*
         if ("metadatarecord".equals(label))
-            type = Constants.TYPE_METADATA_RECORD;
+            type = COMETE.MetadataRecord.getURI();
         else if ("learningobject".equals(label))
-            type = Constants.TYPE_LEARNING_OBJECT;
-        else if ("person".equals(label))
-            type = Constants.TYPE_PERSON;
-        else if ("organization".equals(label))
-            type = Constants.TYPE_ORGANIZATION;
+            type = COMETE.LearningObject.getURI();
+        else if ("repository".equals(label))
+            type = COMETE.Repository.getURI();
         else if ("voccontext".equals(label))
-            type = Constants.TYPE_VOCABULARY_CONTEXT;
-*/
+            type = SKOS.ConceptScheme.getURI();
         return type;
     }
 

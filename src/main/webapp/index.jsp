@@ -1,18 +1,35 @@
-﻿<%@ page language="java" contentType="text/html; charset=UTF-8" %>
-<%
-    String protocol = request.getScheme();
-    String server = request.getServerName();
-    int port = request.getServerPort();
-    String webapp = request.getContextPath();
-    String portalUrl = protocol + "://" + server + ( port == 80 ? "" : ":" + port ) + webapp;
-%>
+﻿<%@ page language="java" contentType="text/html; charset=utf-8" %>
 <!doctype html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+    <link rel="shortcut icon" href="images/comete.ico" type="image/x-icon">
+
+    <link rel="stylesheet" type="text/css" href="ext-5.0.1/build/packages/ext-theme-crisp/build/resources/ext-theme-crisp-all.css" />
+    <link rel="stylesheet" type="text/css" href="default.css">    
+
+    <script type="text/javascript" src="ext-5.0.1/build/ext-all.js"></script>
+
+    <script type="text/javascript" src="js/i18n.js"></script>
+    <% if( request.getParameter( "lang" ) != null && !"en".equals( request.getParameter( "lang" ) ) ) { %>
+        <script type="text/javascript" src="js/i18n_<%= request.getParameter( "lang" ) %>.js"></script>
+    <% } %>
+    <% if( request.getParameter( "lang" ) == null ) { %>
+        <script type="text/javascript" src="js/i18n_en.js"></script>
+    <% } %>
     <title>Comète</title>
+    <script type="text/javascript" src="js/utils.js"></script>
+    <script type="text/javascript" src="js/Toolbar.js"></script>
+    <script type="text/javascript" src="js/Viewer.js"></script>
+    <script type="text/javascript" src="js/LearningObjectTable.js"></script>
+    <script type="text/javascript" src="js/LearningObjectManager.js"></script>
+    <script type="text/javascript" src="js/SearchSimple.js"></script>
+    <script type="text/javascript" src="js/SearchAdvanced.js"></script>
+    <script type="text/javascript" src="js/SearchThematic.js"></script>
+    <script type="text/javascript" src="js/SearchCollection.js"></script>
+    <script type="text/javascript" src="js/Search.js"></script>
 </head>
 <body>
-Welcome to Comète
 </body>
 </html>
