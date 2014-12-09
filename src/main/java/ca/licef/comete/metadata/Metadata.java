@@ -16,6 +16,7 @@ import licef.IOUtil;
 import licef.StringUtil;
 import licef.XMLUtil;
 import licef.ZipUtil;
+import licef.reflection.Invoker;
 import licef.tsapi.model.Triple;
 import licef.tsapi.model.Tuple;
 import licef.tsapi.TripleStore;
@@ -63,11 +64,22 @@ public class Metadata {
     }
 
     public String storeHarvestedRecord(String oaiID, String namespace, String repoUri, String record, String datestamp, boolean isUpdate) throws Exception {
+        Invoker inv = new Invoker(this, "ca.licef.comete.metadata.Metadata",
+                "storeHarvestedRecordEff", new Object[]{ oaiID, namespace, repoUri, record, datestamp, isUpdate } );
+        Object resp = Core.getInstance().getTripleStore().transactionalCall(inv);
+        return( (String)resp );
+    }
+
+    /*
+     * This method must be transactionally called. - FB
+     */
+    public String storeHarvestedRecordEff(String oaiID, String namespace, String repoUri, String record, String datestamp, boolean isUpdate ) throws Exception {
+        TripleStore tripleStore = Core.getInstance().getTripleStore();
+
         if (datestamp != null) {
             String recordURI = getRecordURI(oaiID, namespace);
             if (recordURI != null) {
                 isUpdate = true;
-                TripleStore tripleStore = Core.getInstance().getTripleStore();
                 Triple[] triples = tripleStore.getTriplesWithSubjectPredicate(recordURI, OAI.datestamp);
                 if (triples.length > 0) {
                     Date d1 = DateUtil.toDate(triples[0].getObject());
@@ -82,13 +94,8 @@ public class Metadata {
             }
         }
 
-        return storeHarvestedRecordEff(oaiID, namespace, repoUri, record, datestamp, isUpdate);
-    }
-
-    public String storeHarvestedRecordEff(String oaiID, String namespace, String repoUri, String record, String datestamp, boolean isUpdate ) throws Exception {
         MetadataFormat metadataFormat = MetadataFormats.getMetadataFormat(namespace);
         System.out.println("storeHarvestedRecord: " +  oaiID + " (" + metadataFormat.getName() + " format)");
-        TripleStore tripleStore = Core.getInstance().getTripleStore();
 
         String loURI = null;
 
@@ -207,6 +214,7 @@ public class Metadata {
     }
 
     public Object[] storeUploadedContent(File record, File resource) throws Exception {
+        TripleStore tripleStore = Core.getInstance().getTripleStore();
         Object[] results;
         String extension = record.getName().substring(record.getName().lastIndexOf('.') + 1).toLowerCase();
         if ("zip".equals(extension)) {
@@ -216,7 +224,9 @@ public class Metadata {
             ArrayList<String[]> uris = new ArrayList<String[]>();
             for (String _record : records) {
                 File rec = new File(uploadedRecords, _record);
-                String[] res = storeUploadedRecord(rec, null);
+
+                Invoker inv = new Invoker(this, "ca.licef.comete.metadata.Metadata", "storeUploadedRecord", new Object[]{ rec, null} );
+                String[] res = (String[])tripleStore.transactionalCall(inv);
                 if (res[1] != null)
                     uris.add(new String[]{res[1], res[2]});
                 rec.delete();
@@ -232,7 +242,8 @@ public class Metadata {
         }
         else {
             //possible physical associated resource
-            String[] res = storeUploadedRecord(record, resource);
+            Invoker inv = new Invoker(this, "ca.licef.comete.metadata.Metadata", "storeUploadedRecord", new Object[]{ record, resource} );
+            String[] res = (String[])tripleStore.transactionalCall(inv);
             if (res[1] == null)
                 results = new Object[]{res[0], null};
             else {
@@ -249,7 +260,7 @@ public class Metadata {
         return results;
     }
 
-    String[] parseMetadataRecord(File file) {
+    private String[] parseMetadataRecord(File file) {
         String errorMessage = null;
         String content = null;
         String namespace = null;
@@ -285,6 +296,9 @@ public class Metadata {
         return new String[] {errorMessage, content, namespace, pseudoOaiID};
     }
 
+    /*
+     * This method must be transactionally called. - FB
+     */
     public String[] storeUploadedRecord(File file, File resource) throws Exception {
         String[] values = parseMetadataRecord(file);
 
@@ -403,7 +417,7 @@ public class Metadata {
      * Record's digest
      */
 
-    String digestRecord(String loURI, String recordURI, String record, String namespace, String repoURI, String oaiId) throws Exception {
+    private String digestRecord(String loURI, String recordURI, String record, String namespace, String repoURI, String oaiId) throws Exception {
         ArrayList<Triple> triples = new ArrayList<Triple>();
         String storeId;
         MetadataFormat metadataFormat = MetadataFormats.getMetadataFormat(namespace);
@@ -507,7 +521,7 @@ public class Metadata {
         return recordURI;
     }
 
-    public String processMetadataRecord( String xml, String loURI, String recordURI, String namespace ) throws Exception {
+    private String processMetadataRecord( String xml, String loURI, String recordURI, String namespace ) throws Exception {
         String format = MetadataFormats.getMetadataFormat( namespace ).getName();
 
         StreamSource xmlSource = new StreamSource( new BufferedReader( new StringReader( xml ) ) );
@@ -518,7 +532,7 @@ public class Metadata {
         return( triplesAsXml );
     }
 
-    //public String processMetadataRecord( String recordId ) throws Exception {
+    //private String processMetadataRecord( String recordId ) throws Exception {
     //    String metadataRecordUri = Util.makeURI( recordId, Constants.TYPE_METADATA_RECORD );
     //    String storeId = Core.getInstance().getTripleStore().getFedoraIdFromURI( metadataRecordUri );
     //    String applicationProfile = null;
@@ -632,7 +646,7 @@ public class Metadata {
         updateInternalFormat(storeId, newXml, metadataFormat);
     }
 
-    public void internalFormatToExposedRecords(String loURI, String fedoraId, MetadataFormat metadataFormat) throws Exception {
+    private void internalFormatToExposedRecords(String loURI, String fedoraId, MetadataFormat metadataFormat) throws Exception {
         if( !Store.getInstance().isDatastreamExists( fedoraId, Constants.DATASTREAM_INTERNAL_DATA ) )
             return;
         String recordUri = Util.makeURI(Util.getIdNumberValue(fedoraId), Constants.OBJ_TYPE_METADATA_RECORD);
