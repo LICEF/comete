@@ -82,7 +82,7 @@
     addQueryCond: function(cond) {    
         this.condPanel.add(cond); 
         var elems = this.condPanel.items.length;
-        setQueryPanelHeight(Math.max(22*elems + 5*(elems - 1) + 115, ADVANCED_HEIGHT), true);
+        setQueryPanelHeight(Math.max(24*elems + 5*(elems - 1) + 135, ADVANCED_HEIGHT), true);
     },
     removeQueryCond: function(cond) {
         this.condPanel.remove(cond);
@@ -99,7 +99,7 @@
         this.firstCond.removeSpace.setVisible(elems > 1);
         this.firstCond.firstSpacer.setVisible(elems > 1);
         
-        setQueryPanelHeight(Math.max(22*elems + 5*(elems - 1) + 115, ADVANCED_HEIGHT), true);
+        setQueryPanelHeight(Math.max(24*elems + 5*(elems - 1) + 135, ADVANCED_HEIGHT), true);
     },
     setNextAnd: function(cond) {
         var i = 0;
@@ -251,7 +251,7 @@ Ext.define( 'Comete.QueryCondition', {
                 valueField: 'id',
                 displayField: 'label',
                 store: this.andOrStore,
-                width: 50,
+                width: 65,
                 editable: false,
                 value: 'AND',
                 hidden: this.isFirst
@@ -277,7 +277,7 @@ Ext.define( 'Comete.QueryCondition', {
             });
 
         this.firstSpacer = Ext.create('Ext.toolbar.Spacer', {
-                width: 55,
+                width: 70,
                 hidden: true
             });
 

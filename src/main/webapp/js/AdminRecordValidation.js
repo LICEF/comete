@@ -80,7 +80,7 @@
                 root: 'records',
                 totalProperty: 'totalCount'
             },
-            url: metadataUrl + '/rest/metadataRecords/applicationProfilesByColumns',
+            //url: 'rest/metadataRecords/applicationProfilesByColumns',
             extraParams: {
                 showOnlyColumn: this.showOnlyColumn,
                 showOnlyInvalid: this.showOnlyInvalid

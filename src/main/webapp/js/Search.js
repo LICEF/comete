@@ -1,8 +1,12 @@
-﻿window.currentSearchQueryItem = 0;
+﻿function getPageLocation(lg) {
+    return "index.jsp?lang=" + lg;         
+}
+
+window.currentSearchQueryItem = 0;
 
 SIMPLE_HEIGHT = 110;
-ADVANCED_HEIGHT = 145;
-THEMATIC_HEIGHT = 180;
+ADVANCED_HEIGHT = 150;
+THEMATIC_HEIGHT = 200;
 COLLECTION_HEIGHT = 90;
 var currentAdvancedHeight = ADVANCED_HEIGHT;
 
@@ -111,7 +115,7 @@ Ext.define( 'Comete.SearchManager', {
             layout: 'hbox',                     
             border: false,
             height: 40, 
-            margin: '10 0 0 0',            
+            margin: '10 0 0 0',
             items: [ {xtype: 'tbspacer', width: 10}, this.simpleLabel, {xtype: 'tbspacer', width: 10}, 
                       this.advancedLabel, {xtype: 'tbspacer', width: 10}, this.thematicLabel, {xtype: 'tbspacer', width: 10}, this.collectionLabel  ]
         });    
@@ -234,7 +238,7 @@ function init() {
             layout: 'border',
             border: false,
             region: 'center',
-            tbar: tbarSearch,
+            tbar: tbar,
             items: [ searchManager ]
         } ]    
     } );

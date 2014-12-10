@@ -73,17 +73,17 @@
 
 
         this.learningObjectTable = Ext.create('Comete.LearningObjectTable', {
-            region: 'center',
+            region: 'west',
             lang: this.lang,
+            split: true,
+            width: 500,
             editable: this.editable,
             _query: this._query,
             loManager: this
         } );
 
         this.viewer = Ext.create('Comete.Viewer', {
-            region: 'east',
-            width: Ext.getBody().getWidth() - 500,
-            split: true,
+            region: 'center',
             lang: this.lang
         } );
 

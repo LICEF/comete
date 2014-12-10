@@ -16,51 +16,21 @@ var logo = Ext.create('Ext.Img', {
     }
 } );
 
+var adminLabel = Ext.create('Ext.form.Label', {
+        text: tr( 'Administration' ),
+        cls: 'sectionTitle'
+    } );
+
 var frenchButton = Ext.create('Ext.button.Button', {
     text: '&nbsp;Français',
-    handler: function() { window.location = "index.jsp?lang=fr"; },
+    handler: function() { window.location = getPageLocation('fr'); },
     hidden: 'fr' == lang
 } );
 
 var englishButton = Ext.create('Ext.button.Button', {
     text: '&nbsp;English',
-    handler: function() { window.location = "index.jsp?lang=en"; },
+    handler: function() { window.location = getPageLocation('en'); },
     hidden: 'en' == lang
-} );
-
-var searchButton = Ext.create('Ext.button.Button', {
-    icon: 'images/search.gif',
-    text: '&nbsp;' + tr( 'Search' ),
-    textAlign: 'left',
-    handler: function() { window.location = "Search.jsp?lang=" + lang; }
-} );
-
-var addButton = Ext.create('Ext.button.Button', {
-    text: '&nbsp;' + tr( 'Adding' ),
-    icon: 'images/pencil.png',
-    textAlign: 'left',
-    handler: function() { 
-        if (!authorized) {
-            Ext.MessageBox.alert(tr('Security'), tr('Unauthorized access.'));
-            return;
-        }
-    
-        window.location = "AddRecords.jsp?lang=" + lang;  
-    }
-} );
-    
-var adminButton = Ext.create('Ext.button.Button', {
-    text: '&nbsp;' + tr( 'Administration' ),
-    icon: 'images/gear.png',
-    textAlign: 'left',
-    handler: function() { 
-        if (!authorized) {
-            Ext.MessageBox.alert(tr('Security'), tr('Unauthorized access.'));
-            return;
-        }
-
-        window.location = "Admin.jsp?lang=" + lang; 
-   }
 } );
 
 var aboutButton = Ext.create('Ext.button.Button', {
@@ -70,7 +40,7 @@ var aboutButton = Ext.create('Ext.button.Button', {
     handler: function() { showAbout(); }
 } );
 
-var tbarSearch = {
+var tbar = {
     xtype: 'toolbar',
     height: 40,   
     items: [ logo, '->',  englishButton, frenchButton, aboutButton, {xtype: 'tbspacer', width: 2} ]
@@ -78,9 +48,9 @@ var tbarSearch = {
 
 var tbarAdmin = {
     xtype: 'toolbar',
-    height: 40,
-    items: [ logo, {xtype: 'tbspacer', width: 5}, {xtype: 'tbseparator', height: 30}, {xtype: 'tbspacer', width: 2}, 
-             addButton, adminButton, '->', englishButton, frenchButton, aboutButton, {xtype: 'tbspacer', width: 2} ]
+    height: 40,   
+    items: [ logo, {xtype: 'tbspacer', width: 5}, {xtype: 'tbseparator', height: 30}, 
+             adminLabel, '->',  englishButton, frenchButton, aboutButton, {xtype: 'tbspacer', width: 2} ]
 };
 
 function showAbout() {

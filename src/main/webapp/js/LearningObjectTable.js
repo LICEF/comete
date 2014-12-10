@@ -53,6 +53,7 @@
         cfg = {
             store: this.loStore,
             cls: 'lo-grid',
+            scroll: 'vertical',
             columns: [ 
                 { width: 60, dataIndex: 'image', sortable: true, renderer: this.renderImage},
                 { text: tr( 'Id' ), width: 100,  dataIndex: 'id', hidden: !this.editable },
