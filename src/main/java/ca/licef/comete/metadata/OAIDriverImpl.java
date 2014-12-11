@@ -15,6 +15,13 @@ import proai.driver.impl.RecordImpl;
 import proai.driver.impl.RemoteIteratorImpl;
 import proai.driver.impl.SetInfoImpl;
 
+import ca.licef.comete.core.Core;
+import ca.licef.comete.core.util.Util;
+import licef.tsapi.model.Tuple;
+import licef.reflection.Invoker;
+import licef.tsapi.TripleStore;
+
+
 /**
  * An simple OAIDriver for testing/demonstration purposes.
  *
@@ -39,11 +46,9 @@ public class OAIDriverImpl implements OAIDriver {
 
     public static final String RECORDS_DIRNAME   = "records";
     public static final String SETS_DIRNAME      = "sets";
-    public static final String FORMATS_DIRNAME   = "formats";
 
     private File m_recordsDir;
     private File m_setsDir;
-    private File m_formatsDir;
 
     public OAIDriverImpl() {
     }
@@ -63,7 +68,6 @@ public class OAIDriverImpl implements OAIDriver {
         File dir = new File(baseDir);
         m_recordsDir   = new File(dir, RECORDS_DIRNAME);
         m_setsDir      = new File(dir, SETS_DIRNAME);
-        m_formatsDir   = new File(dir, FORMATS_DIRNAME);
         if (!dir.exists()) {
             throw new RepositoryException("Base directory does not exist: " 
                     + dir.getPath());
@@ -75,10 +79,6 @@ public class OAIDriverImpl implements OAIDriver {
         if (!m_setsDir.exists()) {
             throw new RepositoryException("Sets directory does not exist: " 
                     + m_setsDir.getPath());
-        }
-        if (!m_formatsDir.exists()) {
-            throw new RepositoryException("Formats directory does not exist: " 
-                    + m_formatsDir.getPath());
         }
     }
 
@@ -99,29 +99,28 @@ public class OAIDriverImpl implements OAIDriver {
     }
 
     public Date getLatestDate() {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
-        long latest = 0;
-        String[] names = m_recordsDir.list();
-        for (int i = 0; i < names.length; i++) {
-            String[] temp = names[i].replaceFirst("-", " ")
-                                    .replaceFirst("-", " ")
-                                    .split(" ");
-            if (temp.length == 3 && temp[2].indexOf(".") != -1) {
-                try {
-                    long recDate = df.parse(temp[2].substring(0, temp[2].indexOf("."))).getTime();
-                    if (recDate > latest) latest = recDate;
-                } catch (Exception e) { 
-                    System.out.println("WARNING: Ignoring unparsable filename: " 
-                                       + names[i]);
-                }
+        Date datestamp = new Date( 0 );
+        TripleStore tripleStore = Core.getInstance().getTripleStore();
+        try {
+            String query = Util.getQuery( "oai/getLatestDatestamp.sparql" );
+            Invoker inv = new Invoker( tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[] { query } );
+            Object resp = tripleStore.transactionalCall( inv );
+
+            Tuple[] tuples = (Tuple[])resp;
+            if( tuples.length > 0 ) {
+                String strDatestamp = tuples[ 0 ].getValue( "latestDatestamp" ).getContent().toString();
+                datestamp = datestampFormat.parse( strDatestamp );
             }
         }
-        return new Date(latest);
+        catch( Exception e ) {
+            System.out.println( "Cannot retrieve latest datestamp." );
+            e.printStackTrace();
+        }
+        return( datestamp );
     }
 
     public RemoteIterator<MetadataFormat> listMetadataFormats() {
-        return new RemoteIteratorImpl<MetadataFormat>(
-                getMetadataFormatCollection().iterator());
+        return new RemoteIteratorImpl<MetadataFormat>(getMetadataFormatCollection().iterator());
     }
 
     public RemoteIterator<SetInfo> listSetInfo() {
@@ -186,34 +185,12 @@ public class OAIDriverImpl implements OAIDriver {
     }
 
     private Collection<MetadataFormat> getMetadataFormatCollection() {
-        try {
-            List<MetadataFormat> list = new ArrayList<MetadataFormat>();
-            String[] names = m_formatsDir.list();
-            for (int i = 0; i < names.length; i++) {
-                if (names[i].endsWith(".txt")) {
-                    String prefix = names[i].split("\\.")[0];
-                    BufferedReader reader = 
-                            new BufferedReader(
-                                new InputStreamReader(
-                                    new FileInputStream(new File(m_formatsDir, names[i])),
-                                    "UTF-8"));
-                    String uri = reader.readLine();
-                    if (uri == null) {
-                        throw new RepositoryException("Error reading first "
-                                + "line of format file: " + names[i]);
-                    }
-                    String loc = reader.readLine();
-                    if (loc == null) {
-                        throw new RepositoryException("Error reading second "
-                                + "line of format file: " + names[i]);
-                    }
-                    list.add(new MetadataFormatImpl(prefix, uri, loc));
-                }
-            }
-            return list;
-        } catch (Exception e) {
-            throw new RepositoryException("Error getting metadata formats", e);
-        }
+        List<MetadataFormat> list = new ArrayList<MetadataFormat>();
+        MetadataFormat oaiDc = new MetadataFormatImpl( "oai_dc", "http://www.openarchives.org/OAI/2.0/oai_dc/", "http://www.openarchives.org/OAI/2.0/oai_dc.xsd" );
+        MetadataFormat lom = new MetadataFormatImpl( "lom", "http://ltsc.ieee.org/xsd/LOM", "http://ltsc.ieee.org/xsd/lomv1.0/lom.xsd" );
+        list.add( oaiDc );
+        list.add( lom );
+        return( list );
     }
 
     private Collection<Record> getRecordCollection(Date from, 
@@ -248,5 +225,7 @@ public class OAIDriverImpl implements OAIDriver {
         }
         return list;
     }
+
+    private DateFormat datestampFormat = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss'Z'" );
 
 }

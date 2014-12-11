@@ -169,11 +169,6 @@
             <version>2.0.2</version>
         </dependency>
         <dependency>
-            <groupId>licef</groupId>
-            <artifactId>fcrepo-client-impl</artifactId>
-            <version>4.0.0-beta-05-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging-api</artifactId>
             <version>1.1</version>

@@ -1,0 +1,9 @@
+PREFIX comete: <http://comete.licef.ca/reference#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX oai: <http://www.openarchives.org/OAI/2.0/>
+
+SELECT (MAX(?datestamp) AS ?latestDatestamp)
+WHERE {
+    ?s rdf:type comete:MetadataRecord .
+    ?s oai:oai-datestamp ?datestamp .
+}
