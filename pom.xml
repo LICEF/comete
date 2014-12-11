@@ -218,6 +218,16 @@
             <artifactId>rendersnake</artifactId>
             <version>1.7.2</version>
         </dependency>
+        <dependency>
+            <groupId>licef</groupId>
+            <artifactId>proai</artifactId>
+            <version>1.1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.34</version>
+        </dependency>
     </dependencies>
 
     <!-- More Project Information -->

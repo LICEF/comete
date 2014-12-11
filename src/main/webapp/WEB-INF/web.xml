@@ -48,6 +48,16 @@
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>oai</servlet-name>
+        <servlet-class>proai.service.ProviderServlet</servlet-class>
+        <!--    <load-on-startup>0</load-on-startup> -->
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>oai</servlet-name>
+        <url-pattern>/oai</url-pattern>
+    </servlet-mapping>
 
 </web-app>
 
