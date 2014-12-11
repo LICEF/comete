@@ -1,0 +1,11 @@
+core.properties
+proai.properties
+.classpath
+.project
+.directory
+.idea
+*.class
+*.bak
+tags
+target
+sample-*
