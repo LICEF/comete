@@ -66,7 +66,7 @@ public class Metadata {
     public String storeHarvestedRecord(String oaiID, String namespace, String repoUri, String record, String datestamp, boolean isUpdate) throws Exception {
         Invoker inv = new Invoker(this, "ca.licef.comete.metadata.Metadata",
                 "storeHarvestedRecordEff", new Object[]{ oaiID, namespace, repoUri, record, datestamp, isUpdate } );
-        Object resp = Core.getInstance().getTripleStore().transactionalCall(inv);
+        Object resp = Core.getInstance().getTripleStore().transactionalCall(inv, TripleStore.WRITE_MODE);
         return( (String)resp );
     }
 
@@ -226,7 +226,7 @@ public class Metadata {
                 File rec = new File(uploadedRecords, _record);
 
                 Invoker inv = new Invoker(this, "ca.licef.comete.metadata.Metadata", "storeUploadedRecord", new Object[]{ rec, null} );
-                String[] res = (String[])tripleStore.transactionalCall(inv);
+                String[] res = (String[])tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
                 if (res[1] != null)
                     uris.add(new String[]{res[1], res[2]});
                 rec.delete();
@@ -243,7 +243,7 @@ public class Metadata {
         else {
             //possible physical associated resource
             Invoker inv = new Invoker(this, "ca.licef.comete.metadata.Metadata", "storeUploadedRecord", new Object[]{ record, resource} );
-            String[] res = (String[])tripleStore.transactionalCall(inv);
+            String[] res = (String[])tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
             if (res[1] == null)
                 results = new Object[]{res[0], null};
             else {

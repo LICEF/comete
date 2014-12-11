@@ -2,10 +2,12 @@ package ca.licef.comete.core;
 
 import ca.licef.comete.vocabularies.COMETE;
 import ca.licef.comete.vocabulary.Vocabulary;
-import ca.licef.comete.vocabulary.VocabularyManager;
+
 import licef.reflection.Invoker;
 import licef.reflection.ThreadInvoker;
 import licef.tsapi.TripleStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
@@ -43,6 +45,10 @@ public class Core {
 
     private Core() {
         try {
+            //to hide all Jena debug traces
+            Logger logger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME) ;
+            ((ch.qos.logback.classic.Logger)logger).setLevel(ch.qos.logback.classic.Level.INFO);
+
             ResourceBundle resBundle = ResourceBundle.getBundle("core");
             cometeHome = resBundle.getString("comete.home");
             uriPrefix = resBundle.getString("comete.uri.prefix");
@@ -55,8 +61,8 @@ public class Core {
 
             initTripleStore();
 
-            (new ThreadInvoker(new Invoker(Vocabulary.getInstance().getVocabularyManager(),
-                    "ca.licef.comete.vocabulary.VocabularyManager",
+            (new ThreadInvoker(new Invoker(Vocabulary.getInstance(),
+                    "ca.licef.comete.vocabulary.Vocabulary",
                         "initVocabularyModule", new Object[]{}))).start();
         } catch (Exception e) {
             e.printStackTrace();
@@ -120,7 +126,6 @@ public class Core {
             tripleStore = new TripleStore(cometeHome + "/database", cometeHome, getUriPrefix() + "/");
             tripleStore.registerVocabulary("http://comete.licef.ca/reference#", COMETE.class);
             tripleStore.startServer(false);
-
             waitTripleStoreUp();
         }
     }

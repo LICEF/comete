@@ -56,7 +56,7 @@ public class VocabularyManager {
         Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore",
                 "loadContent", new Object[]{ getClass().getResourceAsStream("/skos.rdf"),
                     licef.tsapi.Constants.RDFXML, new String[]{SKOS_ONTOLOGY_GRAPH}} );
-        tripleStore.transactionalCall(inv);
+        tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
 
         //vocs definition folder
         if (vocabulariesSourceDir == null)
@@ -81,7 +81,7 @@ public class VocabularyManager {
             for (String voc : vocs) {
                 Invoker invk = new Invoker(this, "ca.licef.comete.vocabulary.VocabularyManager",
                         "initVocabulary", new Object[]{voc, false});
-                String uri = (String)tripleStore.transactionalCall(invk);
+                String uri = (String)tripleStore.transactionalCall(invk, TripleStore.WRITE_MODE);
                 if (uri != null)
                     newUris.add(uri);
             }
@@ -100,8 +100,6 @@ public class VocabularyManager {
         File vocDir = new File(vocabulariesDir, voc);
         if (!vocDir.isDirectory())
             return null;
-
-        System.out.println("init vocabulary : " + voc);
 
         File descriptor = new File(vocDir, "description.xml");
         String source = null;

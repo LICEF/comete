@@ -5,6 +5,7 @@ import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.vocabulary.util.Util;
 import licef.reflection.Invoker;
 import licef.tsapi.TripleStore;
+import licef.tsapi.model.Triple;
 import licef.tsapi.model.Tuple;
 import licef.tsapi.vocabulary.RDFS;
 import licef.tsapi.vocabulary.SKOS;
@@ -22,6 +23,7 @@ public class Vocabulary {
     private static Vocabulary instance;
     private VocabularyManager vocabularyManager;
     static ca.licef.comete.core.util.Util CoreUtil;
+    TripleStore tripleStore;
 
     public static Vocabulary getInstance() {
         if (instance == null) {
@@ -36,6 +38,11 @@ public class Vocabulary {
         return vocabularyManager;
     }
 
+    public void initVocabularyModule() throws Exception {
+        tripleStore = Core.getInstance().getTripleStore();
+        getVocabularyManager().initVocabularyModule();
+    }
+
     public String getRestUrl(String uri) throws Exception{
         return CoreUtil.getRestUrl(SKOS.ConceptScheme.getURI()) + "/" + URLEncoder.encode(uri);
     }
@@ -43,18 +50,16 @@ public class Vocabulary {
     public String getVocabularyUri(String source) throws Exception {
         String uri = null;
         String query = CoreUtil.getQuery("vocabulary/getVocUri.sparql", source);
-        Tuple[] tuples = Core.getInstance().getTripleStore().sparqlSelect(query);
+        Tuple[] tuples = tripleStore.sparqlSelect(query);
         if (tuples.length > 0)
             uri = tuples[0].getValue("vocUri").getContent();
         return uri;
     }
 
-
     public String[] getNavigableVocabularies() throws Exception{
-        TripleStore ts = Core.getInstance().getTripleStore();
         String query = CoreUtil.getQuery("vocabulary/getNavigableVocabularies.sparql");
-        Invoker inv = new Invoker(ts, "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
-        Tuple[] tuples = (Tuple[])ts.transactionalCall(inv);
+        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
+        Tuple[] tuples = (Tuple[])tripleStore.transactionalCall(inv);
         String[] res = new String[tuples.length];
         for (int i = 0; i < tuples.length; i++)
             res[i] = tuples[i].getValue("vocUri").getContent();
@@ -64,10 +69,13 @@ public class Vocabulary {
     public String getVocabularyTitle(String uri, String lang, boolean forceConceptScheme) throws Exception {
         if (!forceConceptScheme) //check and/or retrieve scheme uri first
             uri = getConceptScheme(uri);
-        TripleStore ts = Core.getInstance().getTripleStore();
-        Invoker inv = new Invoker(ts, "licef.tsapi.TripleStore",
-                "getBestLocalizedLiteralObject", new Object[]{uri, RDFS.label, lang, new String[]{uri}});
-        String[] label = (String[])ts.transactionalCall(inv);
+        Invoker inv = new Invoker(this, "ca.licef.comete.vocabulary.Vocabulary",
+                "getBestTitle", new Object[]{uri, lang});
+        return (String)tripleStore.transactionalCall(inv);
+    }
+
+    public String getBestTitle(String uri, String lang) throws Exception {
+        String[] label = tripleStore.getBestLocalizedLiteralObject(uri, RDFS.label, lang, uri);
         if (label == null || label[ 0 ] == null || "".equals(label[ 0 ]))
             label = new String[] { uri, null } ;
         return label[0];
