@@ -95,22 +95,6 @@ public class LearningObjectResource {
         return (Response.ok().build());
     }
 
-    @GET
-    @Path( "count" )
-    @Produces( MediaType.TEXT_PLAIN )
-    public Response getLearningObjectsCount() throws Exception {
-        //String res = Integer.toString(Core.getInstance().getTripleStore().getResultsCount("getLearningObjects.sparql"));
-        String res = "0";
-        return Response.ok(res).build();
-    }
-
-    @GET
-    @Path( "mimetypeIcon" )
-    @Produces( MediaType.TEXT_PLAIN )
-    public Response getMimetypeIcon( @QueryParam( "mimetype" ) String mimetype ) throws Exception {
-        return Response.ok(Util.getMimeTypeIcon(mimetype, context)).build();
-    }
-
     @Context
     private ServletContext context;
 }

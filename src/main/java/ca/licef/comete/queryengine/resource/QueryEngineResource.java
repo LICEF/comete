@@ -6,6 +6,7 @@ import ca.licef.comete.queryengine.QueryCache;
 import ca.licef.comete.queryengine.QueryEngine;
 import ca.licef.comete.queryengine.ResultEntry;
 import ca.licef.comete.queryengine.util.FeedUtil;
+import ca.licef.comete.queryengine.util.Util;
 import com.sun.jersey.spi.container.servlet.PerSession;
 import com.sun.syndication.feed.synd.SyndFeed;
 import licef.StringUtil;
@@ -16,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONWriter;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -71,7 +73,9 @@ public class QueryEngineResource implements Serializable {
         try {
             if (cache == null)
                 cache = new QueryCache();
-            rs = QueryEngine.getInstance().search( query, filters, lang, "json", start, limit, style, cache );
+            Util.setWebappPath(context.getRealPath(""));
+            rs = QueryEngine.getInstance().search(
+                    query, filters, lang, "json", start, limit, style, cache);
         }
         catch( Exception e ) {
             throw( new WebApplicationException( e, HttpServletResponse.SC_INTERNAL_SERVER_ERROR ) );
@@ -257,5 +261,5 @@ public class QueryEngineResource implements Serializable {
     }
 
     @Context private transient UriInfo uriInfo;
-
+    @Context private ServletContext context;
 }

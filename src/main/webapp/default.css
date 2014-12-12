@@ -42,10 +42,10 @@
     font-family: arial,verdana,sans-serif;
 }
 
-.lo-grid .x-grid-cell {    
+.lo-grid .x-grid-cell-inner {    
     padding-top: 14px ;
     padding-left: 8px;
-    margin-bottom: 12px;    
+    margin-bottom: 12px;
 }
 
 .x-grid-row-over .x-grid-cell, .x-grid-row-over .x-grid-rowwrap-div {
@@ -55,16 +55,6 @@
 
 .comete-icon { 
     background-image: url(images/cometeIcon16.gif) !important; 
-}
-
-.x-btn-icon .atom-button { 
-    background-image: url(images/atom.png) !important; 
-    width: 45px;
-}
-
-.x-btn-icon .rss-button { 
-    background-image: url(images/rss.png) !important; 
-    width: 45px;
 }
 
 .sectionTitle {

@@ -23,28 +23,6 @@ public class Util {
 
     static ca.licef.comete.core.util.Util CoreUtil;
 
-    public static String getMimeTypeIcon( String mimeType, ServletContext context ) {
-        //String iconFileBaseLocation = "/images/mimeTypeIcons";
-        //String path = context.getRealPath( iconFileBaseLocation );
-        //String iconFileStr = mimeType.replaceAll( "/", "_" ) + ".png";
-        //File iconFile = new File( path + "/" + iconFileStr );
-        //String effectiveIconFile = iconFileStr;
-        //if( !iconFile.exists() ) {
-        //    int indexOfFirstUnderscore = iconFileStr.indexOf( "_" );
-        //    if( indexOfFirstUnderscore == -1 )
-        //        effectiveIconFile = "default.png";
-        //    else {
-        //        String iconFileStr2 = iconFileStr.substring( 0, indexOfFirstUnderscore + 1 ) + "default.png";
-        //        File iconFile2 = new File( path + "/" + iconFileStr2 );
-        //        effectiveIconFile = iconFileStr2;
-        //        if( !iconFile2.exists() )
-        //            effectiveIconFile = "default.png";
-        //    }
-        //}
-        //return( Core.getInstance().getMetadataUrl() + iconFileBaseLocation + "/" + effectiveIconFile );
-        return( null );
-    }
-
     public static String[] getIdentity(String content, MetadataFormat metadataFormat) {
         //String url = CoreUtil.getRestUrl(Constants.TYPE_IDENTITY) + "?format=" + metadataFormat.getIdentityMimetypeFormat();
         //WebResource webResource = Core.getInstance().getRestClient().resource( url );

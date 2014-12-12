@@ -8,6 +8,8 @@ import licef.tsapi.TripleStore;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.servlet.ServletContext;
+import java.io.File;
 import java.util.*;
 
 /**
@@ -41,9 +43,13 @@ public class Util {
 
     public static HashMap<String,String> relOpTable;
 
-    static TripleStore tripleStore = Core.getInstance().getTripleStore();
     static ca.licef.comete.core.util.Util CoreUtil;
 
+    public static String webappPath;
+
+    public static void setWebappPath(String path) {
+        webappPath = path;
+    }
 
     /**
      * @return clause element and pre compute size
@@ -465,5 +471,26 @@ public class Util {
             relOpTable.put( REL_OP_EQ, "=" );
         }
         return( relOpTable.get( relOp ) );
+    }
+
+    public static String getMimeTypeIcon( String mimeType ) {
+        String imagesPath = "images/mimeTypeIcons/";
+        String path = webappPath + "/" + imagesPath;
+        String iconFileStr = mimeType.replaceAll( "/", "_" ) + ".png";
+        File iconFile = new File( path + iconFileStr );
+        String effectiveIconFile = iconFileStr;
+        if( !iconFile.exists() ) {
+            int indexOfFirstUnderscore = iconFileStr.indexOf( "_" );
+            if( indexOfFirstUnderscore == -1 )
+                effectiveIconFile = "default.png";
+            else {
+                String iconFileStr2 = iconFileStr.substring( 0, indexOfFirstUnderscore + 1 ) + "default.png";
+                File iconFile2 = new File( path + iconFileStr2 );
+                effectiveIconFile = iconFileStr2;
+                if( !iconFile2.exists() )
+                    effectiveIconFile = "default.png";
+            }
+        }
+        return imagesPath + effectiveIconFile;
     }
 }

@@ -31,10 +31,10 @@
         } );
 
         this.resultAtomButton = Ext.create('Ext.button.Button', {
-            iconCls: 'atom-button',
-            width: 52,
+            icon: 'images/rss.png',
+            text: 'Atom',
             handler: function() { 
-                url = '/rest/queryEngine/searchAtom?lang=' + this.lang + '&q=' + encodeURIComponent(JSON.stringify(this.getCurrentQuery().query));
+                url = 'rest/queryEngine/searchAtom?lang=' + this.lang + '&q=' + encodeURIComponent(JSON.stringify(this.getCurrentQuery().query));
                 window.open(url); 
             },
             scope: this            
@@ -42,10 +42,10 @@
         this.resultAtomButton.setVisible(false); 
 
         this.resultRssButton = Ext.create('Ext.button.Button', {
-            iconCls: 'rss-button',
-            width: 52,
+            icon: 'images/rss.png',
+            text: 'RSS',
             handler: function() { 
-                url = '/rest/queryEngine/searchRss?lang=' + this.lang + '&q=' + encodeURIComponent(JSON.stringify(this.getCurrentQuery().query));
+                url = 'rest/queryEngine/searchRss?lang=' + this.lang + '&q=' + encodeURIComponent(JSON.stringify(this.getCurrentQuery().query));
                 window.open(url); 
             },
             scope: this            

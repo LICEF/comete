@@ -2,6 +2,7 @@ package ca.licef.comete.queryengine;
 
 import ca.licef.comete.core.Core;
 import ca.licef.comete.core.util.ResultSet;
+import ca.licef.comete.queryengine.util.Util;
 import licef.IOUtil;
 import licef.reflection.Invoker;
 import licef.tsapi.TripleStore;
@@ -36,7 +37,8 @@ public class QueryEngine {
         return collection;
     }
 
-    public ResultSet search( String query, String filters, String lang, String outputFormat, int start, int limit, String style, QueryCache cache ) throws Exception {
+    public ResultSet search( String query, String filters, String lang, String outputFormat,
+                             int start, int limit, String style, QueryCache cache) throws Exception {
 
         JSONArray queryArray = new JSONArray(query);
 
@@ -79,13 +81,13 @@ public class QueryEngine {
 
         if (isSimpleSearch) {
             Invoker inv = new Invoker(this, "ca.licef.comete.queryengine.QueryEngine",
-                    "simpleSearch", new Object[]{firstCond.getString("value"), lang, start, limit, style, outputFormat});
+                    "simpleSearch", new Object[]{firstCond.getString("value"), lang, start, limit, outputFormat});
             rs = (ResultSet)tripleStore.transactionalCall(inv);
         }
 
         if (isExplicitLORequested) {
             Invoker inv = new Invoker(this, "ca.licef.comete.queryengine.QueryEngine",
-                    "singleSearch", new Object[]{firstCond.getString("value"), lang, start, limit, style});
+                    "singleSearch", new Object[]{firstCond.getString("value"), lang, start, limit});
             rs = (ResultSet)tripleStore.transactionalCall(inv);
         }
 
@@ -93,7 +95,7 @@ public class QueryEngine {
 
     }
 
-    public ResultSet simpleSearch(String keywords, String lang, int start, int limit, String style, String outputFormat) throws Exception {
+    public ResultSet simpleSearch(String keywords, String lang, int start, int limit, String outputFormat) throws Exception {
         ResultSet rs = new ResultSet();
         int count;
         String keywordsFormattedForRegex = null;
@@ -118,7 +120,7 @@ public class QueryEngine {
             Tuple[] results = tripleStore.sparqlSelect(_query);
             count = Integer.parseInt(res[0].getValue("count").getContent());
 
-            rs = buildResultSet(results, count, lang, style);
+            rs = buildResultSet(results, count, lang);
         }
 
         ResourceBundle bundle = ResourceBundle.getBundle( "translations/Strings", new Locale( lang ) );
@@ -132,10 +134,10 @@ public class QueryEngine {
         return rs;
     }
 
-    public ResultSet singleSearch(String uri, String lang, int start, int limit, String style) throws Exception {
+    public ResultSet singleSearch(String uri, String lang, int start, int limit) throws Exception {
         String _query = CoreUtil.getQuery("queryengine/getLearningObject.sparql", uri);
         Tuple[] results = tripleStore.sparqlSelect(_query);
-        ResultSet rs = buildResultSet(results, 1, lang, style);
+        ResultSet rs = buildResultSet(results, 1, lang);
         rs.setAdditionalData("selectFirstRecord", "true");
         rs.setStart( start );
         rs.setLimit( limit );
@@ -165,7 +167,7 @@ public class QueryEngine {
         return null;
     }
 
-    private ResultSet buildResultSet( Tuple[] results, int count, String lang, String style) throws Exception {
+    private ResultSet buildResultSet( Tuple[] results, int count, String lang) throws Exception {
         ResultSet rs = new ResultSet();
         for( Tuple tuple : results) {
             String objId = tuple.containsVar("sWithScore")?
@@ -185,12 +187,7 @@ public class QueryEngine {
                     mimetype = IOUtil.getMimeType(location);
                 else
                     mimetype = format.substring( "http://purl.org/NET/mediatypes/".length() );
-                /*String url = CoreUtil.getRestUrl(COMETE.LearningObject.getURI()) + "/mimetypeIcon?mimetype=" + mimetype;
-                WebResource webResource = Core.getInstance().getRestClient().resource( url );
-                ClientResponse response = webResource.accept(MediaType.TEXT_PLAIN).get( ClientResponse.class);
-                int status = response.getStatus();
-                if( status == 200 )
-                    image = response.getEntity( String.class );*/
+                image = Util.getMimeTypeIcon(mimetype);
             }
             //
 
