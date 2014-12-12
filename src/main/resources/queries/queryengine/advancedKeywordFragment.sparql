@@ -1,0 +1,1 @@
+GRAPH <server:main-fullTextView_{1}> '{' ?s comete:keyword "\"{0}\"" '}'

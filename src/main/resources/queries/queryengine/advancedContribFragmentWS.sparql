@@ -1,0 +1,3 @@
+'{' ?sWithScore dct:creator <{0}> '}'
+UNION
+'{' ?sWithScore dct:publisher <{0}> '}'

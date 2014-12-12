@@ -1,0 +1,3 @@
+'{' ?s dct:creator <{0}> '}'
+UNION
+'{' ?s dct:publisher <{0}> '}'

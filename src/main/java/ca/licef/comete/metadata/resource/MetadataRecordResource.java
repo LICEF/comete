@@ -56,9 +56,12 @@ public class MetadataRecordResource {
         String errorMessage = (String)files[0];
         Object[] res = null;
 
-        File record = (File)files[1];
-        String extension = record.getName().substring(record.getName().lastIndexOf('.') + 1).toLowerCase();
-        boolean isZip = "zip".equals(extension);
+        boolean isZip = false;
+        if (errorMessage == null) {
+            File record = (File) files[1];
+            String extension = record.getName().substring(record.getName().lastIndexOf('.') + 1).toLowerCase();
+            isZip = "zip".equals(extension);
+        }
 
         if (errorMessage == null && "true".equals(validation) && !isZip) {
             res = Metadata.getInstance().isRecordExists((File)files[1]);

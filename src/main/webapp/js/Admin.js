@@ -91,6 +91,11 @@ function init() {
                  {xtype: 'tbspacer', width: 10}, miscLabel ]
     });    
 
+    var importerPanel = Ext.create('Comete.RecordImporter', {
+        border: false,
+        lang: lang
+    } );
+
     var adminIdentityPanel = Ext.create('Comete.AdminIdentity', {
         border: false,
         lang: lang
@@ -116,7 +121,7 @@ function init() {
         layout: 'card',
         region: 'center',
         border: false,
-        items: [ importer, adminIdentityPanel, adminVocPanel, adminRecordValidationPanel, brokenLinksPanel, otherPanel ]
+        items: [ importerPanel, adminIdentityPanel, adminVocPanel, adminRecordValidationPanel, brokenLinksPanel, otherPanel ]
     });
 
     var contentPanel = Ext.create('Ext.panel.Panel', {

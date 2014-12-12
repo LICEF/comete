@@ -371,7 +371,7 @@ Ext.define( 'Comete.QueryCondition', {
             items: [ { xtype: 'textfield', width: 250 },
                      { xtype: 'tbspacer', width: 5 },
                      { xtype: 'combo', valueField: 'id', displayField: 'label', store: this.langStore,
-                       editable: false, width: 80, value: this.topPane.lang } ] 
+                       editable: false, width: 100, value: this.topPane.lang } ] 
         });
         return panel;
     },    

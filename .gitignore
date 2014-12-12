@@ -1,4 +1,6 @@
 core.properties
+authorized.ini
+collections.ini
 proai.properties
 .classpath
 .project

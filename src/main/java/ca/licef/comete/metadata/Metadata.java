@@ -181,7 +181,6 @@ public class Metadata {
         String errorMessage = null;
         File record = null;
         File resource = null;
-
         if ("".equals(fileDetail.getFileName()))
             errorMessage = "No file.";
         else {

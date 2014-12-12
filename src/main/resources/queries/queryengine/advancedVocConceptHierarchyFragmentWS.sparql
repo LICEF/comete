@@ -1,0 +1,4 @@
+'{' ?sWithScore dct:subject <{1}> '}'
+UNION
+'{' ?sWithScore dct:subject ?c .
+    GRAPH <server:{0}> '{' <{1}> skos:narrowerTransitive ?c '}' '}'

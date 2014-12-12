@@ -1,0 +1,17 @@
+'{' GRAPH <server:main-fullTextView_{1}> '{' ?sWithScore dct:title "{0}" '}' '}'
+UNION
+'{' GRAPH <server:main-fullTextView_{1}> '{' ?sWithScore dct:description "{0}" '}' '}'
+UNION
+'{' GRAPH <server:main-fullTextView_{1}> '{' ?sWithScore comete:keyword "{0}" '}' '}'
+UNION
+'{' GRAPH <server:main-fullTextView_{1}> '{' ?sWithScore comete:extraInfo "{0}" '}' '}'
+UNION
+'{' ?sWithScore dct:creator ?authorWithScore .
+    GRAPH <server:main-fullTextView_{1}> '{' ?authorWithScore foaf:name "{0}" '}' '}'
+UNION
+'{' ?sWithScore dct:publisher ?publisherWithScore .
+    GRAPH <server:main-fullTextView_{1}> '{' ?publisherWithScore foaf:name "{0}" '}' '}'
+UNION
+'{' ?sWithScore dct:subject ?conceptWithScore .
+    GRAPH <server:voc-fullTextView_{1}> '{' ?conceptWithScore skos:prefLabel "{0}" '}' '}'
+

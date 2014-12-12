@@ -1,0 +1,2 @@
+?s dct:language ?lg .
+FILTER REGEX(?lg, "^{0}")

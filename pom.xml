@@ -141,7 +141,7 @@
         <dependency>
             <groupId>licef</groupId>
             <artifactId>licef-tsapi</artifactId>
-            <version>0.2.1</version>
+            <version>0.2.2</version>
         </dependency>
         <dependency>
             <groupId>org.dspace</groupId>
@@ -187,7 +187,22 @@
             <groupId>org.apache.tika</groupId>     
             <artifactId>tika-core</artifactId>     
             <version>1.6</version>     
-        </dependency> 
+        </dependency>
+        <dependency>
+            <groupId>rome</groupId>
+            <artifactId>rome</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>rome</groupId>
+            <artifactId>opensearch</artifactId>
+            <version>0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>rome</groupId>
+            <artifactId>comete</artifactId>
+            <version>0.1</version>
+        </dependency>
         <dependency>
             <groupId>ca.licef.comete</groupId>
             <artifactId>validator</artifactId>
@@ -222,6 +237,11 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.34</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.1.2</version>
         </dependency>
     </dependencies>
 

@@ -1,0 +1,9 @@
+PREFIX comete: <http://comete.licef.ca/reference#>
+
+SELECT DISTINCT ?o
+WHERE '{'
+    ?s comete:keyword ?o .
+    FILTER ( lang( ?o ) = "{0}" ) .
+    FILTER ( regex( ?o, "^{1}", "i" ) ).
+'}'
+ORDER BY ?o

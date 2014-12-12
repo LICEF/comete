@@ -2,7 +2,7 @@
     extend: 'Ext.grid.Panel',
     initComponent: function (config) { 
 
-        this.queryUrl = '/rest/queryEngine/searchJson?lang=' + this.lang;
+        this.queryUrl = 'rest/queryEngine/searchJson?lang=' + this.lang;
 
         this.isFirstLoad = true;
 

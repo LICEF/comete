@@ -1,0 +1,8 @@
+PREFIX comete: <http://comete.licef.ca/reference#>
+PREFIX dct: <http://purl.org/dc/terms/>
+
+SELECT ?o
+WHERE '{'
+    <{0}> dct:subject ?o
+    FILTER regex( STR(?o), "^http://cegepadistance.ca/ns/typesrea#" )
+'}'
