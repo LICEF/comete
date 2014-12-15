@@ -17,69 +17,18 @@ import proai.driver.impl.SetInfoImpl;
 
 import ca.licef.comete.core.Core;
 import ca.licef.comete.core.util.Util;
+import ca.licef.comete.store.Store;
+import licef.DateUtil;
 import licef.tsapi.model.Tuple;
 import licef.reflection.Invoker;
 import licef.tsapi.TripleStore;
 
-
-/**
- * An simple OAIDriver for testing/demonstration purposes.
- *
- * The directory should contain the following files:
- *
- * identity.xml
- * records/
- *   item1-oai_dc-2005-01-01T08-50-44.xml
- * sets/
- *   abovetwo.xml
- *   abovetwo-even.xml
- *   abovetwo-odd.xml
- *   prime.xml
- * formats/
- *   oai_dc.txt
- *     line1: ns
- *     line2: loc
- */
 public class OAIDriverImpl implements OAIDriver {
-
-    public static final String BASE_DIR_PROPERTY = "proai.driver.simple.baseDir";
-
-    public static final String RECORDS_DIRNAME   = "records";
-    public static final String SETS_DIRNAME      = "sets";
-
-    private File m_recordsDir;
-    private File m_setsDir;
 
     public OAIDriverImpl() {
     }
 
-    public OAIDriverImpl(File dir) throws RepositoryException {
-        Properties props = new Properties();
-        props.setProperty(BASE_DIR_PROPERTY, dir.getPath());
-        init(props);
-    }
-
     public void init(Properties props) throws RepositoryException {
-        String baseDir = props.getProperty(BASE_DIR_PROPERTY);
-        if (baseDir == null) {
-            throw new RepositoryException("Required property is not set: " 
-                    + BASE_DIR_PROPERTY);
-        }
-        File dir = new File(baseDir);
-        m_recordsDir   = new File(dir, RECORDS_DIRNAME);
-        m_setsDir      = new File(dir, SETS_DIRNAME);
-        if (!dir.exists()) {
-            throw new RepositoryException("Base directory does not exist: " 
-                    + dir.getPath());
-        }
-        if (!m_recordsDir.exists()) {
-            throw new RepositoryException("Records directory does not exist: " 
-                    + m_recordsDir.getPath());
-        }
-        if (!m_setsDir.exists()) {
-            throw new RepositoryException("Sets directory does not exist: " 
-                    + m_setsDir.getPath());
-        }
     }
 
     public void write(PrintWriter out) throws RepositoryException {
@@ -124,34 +73,59 @@ public class OAIDriverImpl implements OAIDriver {
     }
 
     public RemoteIterator<SetInfo> listSetInfo() {
-        return new RemoteIteratorImpl<SetInfo>(
-                getSetInfoCollection().iterator());
+        return new RemoteIteratorImpl<SetInfo>( getSetInfoCollection().iterator());
     }
 
-    public RemoteIterator<Record> listRecords(Date from, 
-                                      Date until, 
-                                      String mdPrefix) {
-        return new RemoteIteratorImpl<Record>(getRecordCollection(from,
-                                                          until,
-                                                          mdPrefix).iterator());
+    public RemoteIterator<Record> listRecords(Date from, Date until, String mdPrefix) {
+        return new RemoteIteratorImpl<Record>(getRecordCollection(from, until, mdPrefix).iterator());
     }
 
     // In this case, sourceInfo is the full path to the source file.
-    public void writeRecordXML(String itemID,
-                               String mdPrefix,
-                               String sourceInfo,
-                               PrintWriter writer) throws RepositoryException {
+    public void writeRecordXML(String itemID, String mdPrefix, String sourceInfo, PrintWriter writer) throws RepositoryException {
+        TripleStore tripleStore = Core.getInstance().getTripleStore();
+        MetadataFormat format = formats.get( mdPrefix );
+        if( format != null ) {
+            String oaiIdentifier = null;
+            String datestamp = null;
+            try {
+                String query = Util.getQuery( "oai/getRecordHeaderData.sparql", itemID, format.getNamespaceURI() );
+                Invoker inv = new Invoker( tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[] { query } );
+                Object resp = tripleStore.transactionalCall( inv );
 
-        File file = new File(sourceInfo);
-        writeFromFile(file, writer);
+                Tuple[] tuples = (Tuple[])resp;
+                if( tuples.length > 0 ) {
+                    oaiIdentifier = tuples[ 0 ].getValue( "exposedOaiId" ).getContent().toString();
+                    if( "local".equals( oaiIdentifier ) )
+                        oaiIdentifier = getLocalOaiIdentifier( itemID );
+                    datestamp = tuples[ 0 ].getValue( "datestamp" ).getContent().toString();
+                }
+
+                writer.print( "<record>\n" );
+                writer.print( "<header>\n" ); 
+                writer.print( "<identifier>" + oaiIdentifier + "</identifier>" );
+                writer.print( "<datestamp>" + datestamp + "</datestamp>\n" );
+                writer.print( "</header>\n" ); 
+                writer.print( "<metadata>\n" ); 
+
+                File file = new File(sourceInfo);
+                writeFromFile(file, writer);
+
+                writer.print( "</metadata>\n" ); 
+                writer.print( "</record>\n" );
+            }
+            catch( Exception e ) {
+                System.out.println( "Cannot retrieve record header data.  The record will not be generated." );
+                e.printStackTrace();
+            }
+
+        }
     }
 
     public void close() {
         // do nothing (this impl doesn't tie up any resources)
     }
 
-    public static void writeFromFile(File file, 
-                                     PrintWriter out) throws RepositoryException {
+    public static void writeFromFile(File file, PrintWriter out) throws RepositoryException {
         try {
             BufferedReader reader = new BufferedReader(
                                         new InputStreamReader(
@@ -170,14 +144,14 @@ public class OAIDriverImpl implements OAIDriver {
     private Collection<SetInfo> getSetInfoCollection() {
         try {
             List<SetInfo> list = new ArrayList<SetInfo>();
-            String[] names = m_setsDir.list();
-            for (int i = 0; i < names.length; i++) {
-                if (names[i].endsWith(".xml")) {
-                    String spec = names[i].split("\\.")[0].replaceAll("-", ":");
-                    list.add(new SetInfoImpl(spec, new File(m_setsDir, 
-                                                            names[i])));
-                }
-            }
+            //String[] names = m_setsDir.list();
+            //for (int i = 0; i < names.length; i++) {
+            //    if (names[i].endsWith(".xml")) {
+            //        String spec = names[i].split("\\.")[0].replaceAll("-", ":");
+            //        list.add(new SetInfoImpl(spec, new File(m_setsDir, 
+            //                                                names[i])));
+            //    }
+            //}
             return list;
         } catch (Exception e) {
             throw new RepositoryException("Error getting set information", e);
@@ -186,46 +160,60 @@ public class OAIDriverImpl implements OAIDriver {
 
     private Collection<MetadataFormat> getMetadataFormatCollection() {
         List<MetadataFormat> list = new ArrayList<MetadataFormat>();
+
         MetadataFormat oaiDc = new MetadataFormatImpl( "oai_dc", "http://www.openarchives.org/OAI/2.0/oai_dc/", "http://www.openarchives.org/OAI/2.0/oai_dc.xsd" );
+        formats.put( "oai_dc", oaiDc );
+
         MetadataFormat lom = new MetadataFormatImpl( "lom", "http://ltsc.ieee.org/xsd/LOM", "http://ltsc.ieee.org/xsd/lomv1.0/lom.xsd" );
+        formats.put( "lom", lom );
+
         list.add( oaiDc );
         list.add( lom );
+
         return( list );
     }
 
-    private Collection<Record> getRecordCollection(Date from, 
-                                           Date until, 
-                                           String mdPrefix) {
+    private Collection<Record> getRecordCollection(Date from, Date until, String mdPrefix) {
         List<Record> list = new ArrayList<Record>();
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
-        String[] names = m_recordsDir.list();
-        for (int i = 0; i < names.length; i++) {
-            String[] temp = names[i].replaceFirst("-", " ")
-                                    .replaceFirst("-", " ")
-                                    .split(" ");
-            if (temp.length == 3 && temp[2].indexOf(".") != -1) {
-                String[] parts = names[i].split("-");
-                if (parts[1].equals(mdPrefix)) {
-                    try {
-                        long recDate = df.parse(temp[2].substring(0, temp[2].indexOf("."))).getTime();
-                        if ( (from == null || from.getTime() < recDate)
-                                && (until.getTime() >= recDate) ) {
-                            String itemID = "oai:example.org:" + parts[0];
-                            list.add(new RecordImpl(itemID,
-                                                    mdPrefix,
-                                                    new File(m_recordsDir,
-                                                             names[i])));
-                        }
-                    } catch (Exception e) { 
-                        System.out.println("WARNING: Ignoring unparsable filename: " 
-                                           + names[i]);
-                    }
+        TripleStore tripleStore = Core.getInstance().getTripleStore();
+        MetadataFormat format = formats.get( mdPrefix );
+        if( format != null ) {
+            String formatNamespace = format.getNamespaceURI();
+            Date effectiveFromDate = ( from == null ? new Date( 0 ) : from );
+            Date effectiveUntilDate = ( until == null ? new Date( Long.MAX_VALUE ) : until ); 
+            String strFrom = DateUtil.toISOString( effectiveFromDate, null, null );
+            String strUntil = DateUtil.toISOString( effectiveUntilDate, null, null );
+            try {
+                String query = Util.getQuery( "oai/getRecords.sparql", formatNamespace, strFrom, strUntil );
+                Invoker inv = new Invoker( tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[] { query } );
+                Object resp = tripleStore.transactionalCall( inv );
+
+                Tuple[] tuples = (Tuple[])resp;
+                for( int i = 0; i < tuples.length; i++ ) {
+                    String recordId = tuples[ i ].getValue( "s" ).getContent().toString();
+                    String oaiId = tuples[ i ].getValue( "exposedOaiId" ).getContent().toString();
+                    if( "local".equals( oaiId ) )
+                        oaiId = getLocalOaiIdentifier( recordId );
+                    String location = tuples[ i ].getValue( "location" ).getContent().toString();
+                    File sourceInfo = new File( Store.getInstance().getLocation() + location );
+                    Record record = new RecordImpl( recordId, mdPrefix, sourceInfo );
+                    list.add( record );
                 }
+            }
+            catch( Exception e ) {
+                System.out.println( "Cannot retrieve records data." );
+                e.printStackTrace();
             }
         }
         return list;
     }
 
+    private String getLocalOaiIdentifier( String recordId ) {
+        String recordUid = recordId.substring( recordId.lastIndexOf( "/" ) + 1 ); 
+        return( "oai:" + Core.getInstance().getRepositoryName() + ":" + recordUid );
+    }
+
     private DateFormat datestampFormat = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss'Z'" );
+    private Map<String,MetadataFormat> formats = new HashMap<String,MetadataFormat>();
 
 }

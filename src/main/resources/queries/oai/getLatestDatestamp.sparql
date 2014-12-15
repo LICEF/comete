@@ -1,6 +1,6 @@
 PREFIX comete: <http://comete.licef.ca/reference#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX oai: <http://www.openarchives.org/OAI/2.0/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 SELECT (MAX(?datestamp) AS ?latestDatestamp)
 WHERE {
