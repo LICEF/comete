@@ -1,7 +1,9 @@
 package ca.licef.comete.queryengine;
 
 import ca.licef.comete.core.Core;
+import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.ResultSet;
+import ca.licef.comete.metadata.Metadata;
 import ca.licef.comete.queryengine.util.Util;
 import licef.IOUtil;
 import licef.reflection.Invoker;
@@ -12,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.MessageFormat;
+import java.util.Hashtable;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -58,6 +61,8 @@ public class QueryEngine {
                 (isWithScore ||  //previous comete's simple search compatibility
                         "ss".equals(firstCond.getString("key"))) );
 
+        boolean isAdvancedSearch = !isSimpleSearch && !isExplicitLORequested;
+
         String orderByVariable = "?added";
         if (filtersArray != null && filtersArray.length() > 0) {
             JSONObject firstFilter = (JSONObject)filtersArray.get(0);
@@ -66,22 +71,11 @@ public class QueryEngine {
                 orderByVariable = "?score";
         }
 
-        if (!isSimpleSearch && !isExplicitLORequested) {
-            Object[] elements = ca.licef.comete.queryengine.util.Util.buildQueryElements(queryArray, lang, isWithScore, cache);
-            String clauses = (String)elements[0];
-            int count = ((Integer)elements[1]).intValue();
-            ResultSet rs = advancedSearch(clauses, count, lang, orderByVariable, start, limit, isWithScore, style );
-            String[] titleAndDesc = ca.licef.comete.queryengine.util.Util.buildTitleAndDescription( queryArray, lang, outputFormat );
-            rs.setTitle( titleAndDesc[ 0 ] );
-            rs.setDescription( titleAndDesc[ 1 ] );
-            return( rs );
-        }
-
         ResultSet rs = null;
 
         if (isSimpleSearch) {
             Invoker inv = new Invoker(this, "ca.licef.comete.queryengine.QueryEngine",
-                    "simpleSearch", new Object[]{firstCond.getString("value"), lang, start, limit, outputFormat});
+                    "simpleSearch", new Object[]{firstCond.getString("value"), lang, orderByVariable, start, limit, outputFormat});
             rs = (ResultSet)tripleStore.transactionalCall(inv);
         }
 
@@ -91,45 +85,65 @@ public class QueryEngine {
             rs = (ResultSet)tripleStore.transactionalCall(inv);
         }
 
-        return rs;
+        if (isAdvancedSearch) {
+            Invoker inv = new Invoker(this, "ca.licef.comete.queryengine.QueryEngine",
+                    "advancedSearch", new Object[]{queryArray, lang, orderByVariable,
+                        start, limit, isWithScore, style, cache, outputFormat});
+            rs = (ResultSet)tripleStore.transactionalCall(inv);
+        }
 
+        rs.setStart( start );
+        rs.setLimit( limit );
+        return rs;
     }
 
-    public ResultSet simpleSearch(String keywords, String lang, int start, int limit, String outputFormat) throws Exception {
-        ResultSet rs = new ResultSet();
+    public ResultSet simpleSearch(String keywords, String lang, String orderByVariable, int start, int limit, String outputFormat) throws Exception {
+        ResultSet rs = null;
         int count;
         String keywordsFormattedForRegex = null;
         boolean showAllRecords = (keywords == null || keywords.trim().equals(""));
         String _query;
-        if (showAllRecords)
+
+        //count
+        Tuple[] res;
+        if (showAllRecords) {
             _query = CoreUtil.getQuery("queryengine/getLearningObjectsCount.sparql");
+            res = tripleStore.sparqlSelect(_query);
+        }
         else {
             keywordsFormattedForRegex = ca.licef.comete.core.util.Util.formatKeywords(keywords);
             _query = CoreUtil.getQuery("queryengine/getLearningObjectsByKeywordsCount.sparql", lang, keywordsFormattedForRegex);
+            res = tripleStore.sparqlSelectWithTextIndex(_query,
+                    Metadata.indexMetadataPredicates, Constants.INDEX_LANGUAGES, null);
         }
-        Tuple[] res = tripleStore.sparqlSelect(_query);
         count = Integer.parseInt(res[0].getValue("count").getContent());
+        System.out.println("count = " + count);
 
+        //query
         if (count != 0) {
-            if (showAllRecords)
+            Tuple[] results;
+            if (showAllRecords) {
                 _query = CoreUtil.getQuery("queryengine/getLearningObjects.sparql", start, limit);
-            else {
-                keywordsFormattedForRegex = ca.licef.comete.core.util.Util.formatKeywords(keywords);
-                _query = CoreUtil.getQuery("queryengine/getLearningObjectsByKeywords.sparql", lang, keywordsFormattedForRegex, start, limit);
+                results = tripleStore.sparqlSelect(_query);
             }
-            Tuple[] results = tripleStore.sparqlSelect(_query);
-            count = Integer.parseInt(res[0].getValue("count").getContent());
-
+            else {
+                _query = CoreUtil.getQuery("queryengine/getLearningObjectsByKeywords.sparql", lang, keywordsFormattedForRegex, orderByVariable, start, limit);
+                System.out.println("_query = " + _query);
+                results = tripleStore.sparqlSelectWithTextIndex(_query,
+                        Metadata.indexMetadataPredicates, Constants.INDEX_LANGUAGES, null);
+                for (Tuple t : results)
+                    System.out.println("t = " + t);
+            }
             rs = buildResultSet(results, count, lang);
         }
+        else
+            rs = new ResultSet();
 
         ResourceBundle bundle = ResourceBundle.getBundle( "translations/Strings", new Locale( lang ) );
         String title = MessageFormat.format(bundle.getString("rs.simpleSearch.title"), outputFormat.toUpperCase());
         String description = MessageFormat.format(bundle.getString("rs.simpleSearch.description"), keywords);
         rs.setTitle(title);
         rs.setDescription(description);
-        rs.setStart( start );
-        rs.setLimit( limit );
 
         return rs;
     }
@@ -139,32 +153,34 @@ public class QueryEngine {
         Tuple[] results = tripleStore.sparqlSelect(_query);
         ResultSet rs = buildResultSet(results, 1, lang);
         rs.setAdditionalData("selectFirstRecord", "true");
-        rs.setStart( start );
-        rs.setLimit( limit );
 
         return rs;
     }
 
-    private ResultSet advancedSearch( String clauses, int count, String lang, String orderByVariable, int start, int limit, boolean isWithScore, String style ) throws Exception {
+    private ResultSet advancedSearch( JSONArray queryArray, String lang, String orderByVariable,
+                                      int start, int limit, boolean isWithScore, String style,
+                                      QueryCache cache, String outputFormat) throws Exception {
+        ResultSet rs = null;
+        Object[] elements = ca.licef.comete.queryengine.util.Util.buildQueryElements(queryArray, lang, isWithScore, cache);
+        String clauses = (String)elements[0];
+        int count = ((Integer)elements[1]).intValue();
+
 //suffix by WS when needed -AM
-        ResultSet rs;
-        /*if( count > 0 ) {
-            String varScore = orderByVariable;
+        if( count > 0 ) {
+            /*String varScore = orderByVariable;
             if (!"?score".equals(orderByVariable))
                 varScore = "";
             Hashtable<String, String>[] results =
                     tripleStore.getResults("getLearningObjectsAdvancedQuery" + (isWithScore?"WS":"") + ".sparql", clauses, orderByVariable, start, limit, varScore);
-            rs = buildResultSet(results, count, lang, style);
+            rs = buildResultSet(results, count, lang, style);*/
         }
         else
             rs = new ResultSet();
 
-        rs.setStart( start );
-        rs.setLimit( limit );
-
-        return rs; */
-
-        return null;
+        String[] titleAndDesc = ca.licef.comete.queryengine.util.Util.buildTitleAndDescription( queryArray, lang, outputFormat );
+        rs.setTitle( titleAndDesc[ 0 ] );
+        rs.setDescription( titleAndDesc[ 1 ] );
+        return rs;
     }
 
     private ResultSet buildResultSet( Tuple[] results, int count, String lang) throws Exception {

@@ -1,68 +1,54 @@
-PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX text: <http://jena.apache.org/text#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX comete: <http://comete.licef.ca/reference#>
-PREFIX server: <#>
 
-SELECT DISTINCT ?sWithScore ?location ?format ?added ?updated ?score
+SELECT DISTINCT ?s ?location ?format ?added ?updated ?score
 WHERE '{'
-    ?sWithScore rdf:type comete:LearningObject .
+    ?s rdf:type comete:LearningObject .
     OPTIONAL '{'
-        ?sWithScore foaf:page ?location
-    '}'
-    OPTIONAL '{'
-        ?sWithScore dct:format ?format
+        ?s foaf:page ?location
     '}'
     OPTIONAL '{'
-        ?sWithScore comete:added ?added
+        ?s dcterms:format ?format
     '}'
     OPTIONAL '{'
-        ?sWithScore comete:updated ?updated
+        ?s comete:added ?added
+    '}'
+    OPTIONAL '{'
+        ?s comete:updated ?updated
     '}'
     '{'
-        GRAPH <server:main-fullTextView_{0}> '{'
-            ?sWithScore dct:title "{1}"
-        '}'
-    '}'
-    UNION
-    '{'
-        GRAPH <server:main-fullTextView_{0}> '{'
-            ?sWithScore dct:description "{1}"
-        '}'
+        (?s ?score) text:query ( dcterms:title "{1}" "lang:{0}" )
     '}'
     UNION
     '{'
-        GRAPH <server:main-fullTextView_{0}> '{'
-            ?sWithScore comete:keyword "{1}"
-        '}'
+        (?s ?score) text:query ( dcterms:description "{1}" "lang:{0}" )
     '}'
     UNION
     '{'
-        GRAPH <server:main-fullTextView_{0}> '{'
-            ?sWithScore comete:extraInfo "{1}"
-        '}'
+        (?s ?score) text:query ( comete:keyword "{1}" "lang:{0}" )
     '}'
     UNION
     '{'
-        ?sWithScore dct:creator ?authorWithScore .
-        GRAPH <server:main-fullTextView_{0}> '{'
-            ?authorWithScore foaf:name "{1}"
-        '}'
+        (?s ?score) text:query ( comete:extraInfo "{1}" "lang:{0}" )
+    '}'
+     UNION
+    '{'
+        (?author ?score) text:query ( foaf:name "{1}" "lang:{0}" ) .
+        ?s dcterms:creator ?author
     '}'
     UNION
     '{'
-        ?sWithScore dct:publisher ?publisherWithScore .
-        GRAPH <server:main-fullTextView_{0}> '{'
-            ?publisherWithScore foaf:name "{1}"
-        '}'
+        (?publisher ?score) text:query ( foaf:name "{1}" "lang:{0}" ) .
+        ?s dcterms:publisher ?publisher
     '}'
     UNION
     '{'
-        ?sWithScore dct:subject ?conceptWithScore .
-        GRAPH <server:voc-fullTextView_{0}> '{'
-            ?conceptWithScore skos:prefLabel "{1}"
-        '}'
+        (?concept ?score) text:query ( skos:prefLabel "{1}" "lang:{0}" ) .
+        ?s dcterms:subject ?concept
     '}'
 '}'
 ORDER BY DESC({2})

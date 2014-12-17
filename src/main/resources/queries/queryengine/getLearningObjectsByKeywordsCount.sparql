@@ -1,4 +1,5 @@
-PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX text: <http://jena.apache.org/text#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
@@ -8,47 +9,33 @@ SELECT (count(DISTINCT ?s) as ?count)
 WHERE '{'
     ?s rdf:type comete:LearningObject .
     '{'
-        GRAPH <server:main-fullTextView_{0}> '{'
-            ?s dct:title "{1}"
-        '}'
+        ?s text:query ( dcterms:title "{1}" "lang:{0}" )
     '}'
     UNION
     '{'
-        GRAPH <server:main-fullTextView_{0}> '{'
-            ?s dct:description "{1}"
-        '}'
+        ?s text:query ( dcterms:description "{1}" "lang:{0}" )
     '}'
     UNION
     '{'
-        GRAPH <server:main-fullTextView_{0}> '{'
-            ?s comete:keyword "{1}"
-        '}'
+        ?s text:query ( comete:keyword "{1}" "lang:{0}" )
     '}'
     UNION
     '{'
-        GRAPH <server:main-fullTextView_{0}> '{'
-            ?s comete:extraInfo "{1}"
-        '}'
+        ?s text:query ( comete:extraInfo "{1}" "lang:{0}" )
+    '}'
+     UNION
+    '{'
+        ?author text:query ( foaf:name "{1}" "lang:{0}" ) .
+        ?s dcterms:creator ?author
     '}'
     UNION
     '{'
-        ?s dct:creator ?author .
-        GRAPH <server:main-fullTextView_{0}> '{'
-            ?author foaf:name "{1}"
-        '}'
+        ?publisher text:query ( foaf:name "{1}" "lang:{0}" ) .
+        ?s dcterms:publisher ?publisher
     '}'
     UNION
     '{'
-        ?s dct:publisher ?publisher .
-        GRAPH <server:main-fullTextView_{0}> '{'
-            ?publisher foaf:name "{1}"
-        '}'
-    '}'
-    UNION
-    '{'
-        ?s dct:subject ?concept .
-        GRAPH <server:voc-fullTextView_{0}> '{'
-            ?concept skos:prefLabel "{1}"
-        '}'
+        ?concept text:query ( skos:prefLabel "{1}" "lang:{0}" ) .
+        ?s dcterms:subject ?concept
     '}'
 '}'
