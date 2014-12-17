@@ -26,6 +26,9 @@ public class Constants {
     public static final String IEEE_LOM_NAMESPACE = "http://ltsc.ieee.org/xsd/LOM";
     public static final String VDEX_NAMESPACE = "http://www.imsglobal.org/xsd/imsvdex_v1p0";
 
+    public static final String OAI_DC_SCHEMA = "";
+    public static final String IEEE_LOM_SCHEMA = "";
+
     public static final String OAI_ID = "http://www.openarchives.org/OAI/2.0/oai-identifier";
 
     //Mimetypes

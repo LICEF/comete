@@ -26,6 +26,10 @@ public class Store {
         this.location = location;
     }
 
+    public String getLocation() {
+        return( location );
+    }
+
     public synchronized String createDigitalObject() throws IOException {
         return( createDigitalObject( "" ) );
     }
