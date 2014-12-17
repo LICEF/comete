@@ -1,0 +1,14 @@
+PREFIX comete: <http://comete.licef.ca/reference#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX oai: <http://www.openarchives.org/OAI/2.0/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema>
+
+SELECT ?datestamp
+WHERE '{'
+    ?s rdf:type comete:MetadataRecord .
+    ?s comete:metadataFormat <{1}> .
+    ?s oai:oai-identifier "{0}" .
+    ?s oai:oai-datestamp ?datestamp .
+'}'
+

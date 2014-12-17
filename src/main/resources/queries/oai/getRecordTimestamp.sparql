@@ -4,13 +4,9 @@ PREFIX oai: <http://www.openarchives.org/OAI/2.0/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema>
 
-SELECT ?exposedOaiId ?datestamp
+SELECT ?datestamp
 WHERE '{'
     <{0}> rdf:type comete:MetadataRecord .
     <{0}> comete:metadataFormat <{1}> .
-    OPTIONAL '{'
-        <{0}> oai:oai-identifier ?oaiId .
-    '}' .
-    BIND ( IF (bound( ?oaiId ), ?oaiId, "local") AS ?exposedOaiId ) .
     <{0}> oai:oai-datestamp ?datestamp .
 '}'

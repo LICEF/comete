@@ -88,21 +88,24 @@ public class OAIDriverImpl implements OAIDriver {
             String oaiIdentifier = null;
             String datestamp = null;
             try {
-                String query = Util.getQuery( "oai/getRecordHeaderData.sparql", itemID, format.getNamespaceURI() );
+                String query = null;
+                if( itemID.startsWith( localOaiIdentifierPrefix ) ) {
+                    String recordId = Core.getInstance().getUriPrefix() + "/" + itemID.substring( localOaiIdentifierPrefix.length() );
+                    query = Util.getQuery( "oai/getRecordTimestamp.sparql", recordId, format.getNamespaceURI() );
+                }
+                else
+                    query = Util.getQuery( "oai/getRecordTimestampFromOaiIdentifier.sparql", itemID, format.getNamespaceURI() );
+
                 Invoker inv = new Invoker( tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[] { query } );
                 Object resp = tripleStore.transactionalCall( inv );
 
                 Tuple[] tuples = (Tuple[])resp;
-                if( tuples.length > 0 ) {
-                    oaiIdentifier = tuples[ 0 ].getValue( "exposedOaiId" ).getContent().toString();
-                    if( "local".equals( oaiIdentifier ) )
-                        oaiIdentifier = getLocalOaiIdentifier( itemID );
+                if( tuples.length > 0 )
                     datestamp = tuples[ 0 ].getValue( "datestamp" ).getContent().toString();
-                }
 
                 writer.print( "<record>\n" );
                 writer.print( "<header>\n" ); 
-                writer.print( "<identifier>" + oaiIdentifier + "</identifier>" );
+                writer.print( "<identifier>" + itemID + "</identifier>" );
                 writer.print( "<datestamp>" + datestamp + "</datestamp>\n" );
                 writer.print( "</header>\n" ); 
                 writer.print( "<metadata>\n" ); 
@@ -144,14 +147,9 @@ public class OAIDriverImpl implements OAIDriver {
     private Collection<SetInfo> getSetInfoCollection() {
         try {
             List<SetInfo> list = new ArrayList<SetInfo>();
-            //String[] names = m_setsDir.list();
-            //for (int i = 0; i < names.length; i++) {
-            //    if (names[i].endsWith(".xml")) {
-            //        String spec = names[i].split("\\.")[0].replaceAll("-", ":");
-            //        list.add(new SetInfoImpl(spec, new File(m_setsDir, 
-            //                                                names[i])));
-            //    }
-            //}
+
+            // Not implemented yet.
+           
             return list;
         } catch (Exception e) {
             throw new RepositoryException("Error getting set information", e);
@@ -196,7 +194,7 @@ public class OAIDriverImpl implements OAIDriver {
                         oaiId = getLocalOaiIdentifier( recordId );
                     String location = tuples[ i ].getValue( "location" ).getContent().toString();
                     File sourceInfo = new File( Store.getInstance().getLocation() + location );
-                    Record record = new RecordImpl( recordId, mdPrefix, sourceInfo );
+                    Record record = new RecordImpl( oaiId, mdPrefix, sourceInfo );
                     list.add( record );
                 }
             }
@@ -210,10 +208,11 @@ public class OAIDriverImpl implements OAIDriver {
 
     private String getLocalOaiIdentifier( String recordId ) {
         String recordUid = recordId.substring( recordId.lastIndexOf( "/" ) + 1 ); 
-        return( "oai:" + Core.getInstance().getRepositoryName() + ":" + recordUid );
+        return( localOaiIdentifierPrefix + recordUid );
     }
 
     private DateFormat datestampFormat = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss'Z'" );
     private Map<String,MetadataFormat> formats = new HashMap<String,MetadataFormat>();
+    private String localOaiIdentifierPrefix = "oai:" + Core.getInstance().getRepositoryName() + ":";
 
 }
