@@ -49,7 +49,7 @@ public class OAIDriverImpl implements OAIDriver {
     }
 
     public void write(PrintWriter out) throws RepositoryException {
-        writeFromResourceStream(out, "/identity.xml", false );
+        writeFromResourceStream(out, "/conf/oai/identity.xml", false );
     }
 
     public Date getLatestDate() {
