@@ -1,2 +1,0 @@
-?sWithScore comete:added ?added .
-FILTER ( ?added {0} "{1}"^^xsd:date )

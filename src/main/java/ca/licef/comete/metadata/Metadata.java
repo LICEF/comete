@@ -3,13 +3,13 @@ package ca.licef.comete.metadata;
 import ca.licef.comete.core.Core;
 import ca.licef.comete.core.metadataformat.MetadataFormat;
 import ca.licef.comete.core.metadataformat.MetadataFormats;
-import ca.licef.comete.core.metadataformat.OAI_DC;
 import ca.licef.comete.core.Settings;
 import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.Util;
 import ca.licef.comete.store.Store;
 import ca.licef.comete.vocabularies.COMETE;
 import ca.licef.comete.vocabularies.OAI;
+import com.hp.hpl.jena.rdf.model.Property;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import licef.DateUtil;
 import licef.IOUtil;
@@ -509,7 +509,7 @@ public class Metadata {
         manageLanguages( recordLanguages, loLanguages, recordURI, loURI, titles, descriptions, triples );
 
         //triples insertions
-        tripleStore.insertTriples(triples);
+        tripleStore.insertTriplesWithTextIndex(triples, Constants.indexMetadataPredicates, Constants.INDEX_LANGUAGES, null);
 
         //Identity and vocabulary referencement management
         recordToInternalFormat(loURI, recordURI, storeId, metadataFormat);

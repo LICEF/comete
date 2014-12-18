@@ -7,7 +7,6 @@ PREFIX comete: <http://comete.licef.ca/reference#>
 
 SELECT (count(DISTINCT ?s) as ?count) 
 WHERE '{'
-    ?s rdf:type comete:LearningObject .
     '{'
         ?s text:query ( dcterms:title "{1}" "lang:{0}" )
     '}'
@@ -23,7 +22,7 @@ WHERE '{'
     '{'
         ?s text:query ( comete:extraInfo "{1}" "lang:{0}" )
     '}'
-     UNION
+    UNION
     '{'
         ?author text:query ( foaf:name "{1}" "lang:{0}" ) .
         ?s dcterms:creator ?author
@@ -38,4 +37,5 @@ WHERE '{'
         ?concept text:query ( skos:prefLabel "{1}" "lang:{0}" ) .
         ?s dcterms:subject ?concept
     '}'
+    ?s rdf:type comete:LearningObject
 '}'

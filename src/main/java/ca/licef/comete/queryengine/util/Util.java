@@ -92,46 +92,46 @@ public class Util {
                 if (FULLTEXT.equals(condType)) {
                     String text = obj.getString("value");
                     if( !text.trim().equals( "" ) )
-                        clause = makeFulltextClause(CoreUtil.formatKeywords(text), lg);
+                        clause = CoreUtil.getQuery("advancedFulltextFragment.sparql",
+                                    CoreUtil.formatKeywords(text), lg);
                 }
                 else if (LANGUAGE.equals(condType)) {
                     String lang = obj.getString("value");
-                    clause = makeLanguageClause(lang, isWithScore);
+                    clause = CoreUtil.getQuery("advancedLanguageFragment.sparql", lang);
                 }
                 else if (TITLE_PREFIX.equals(condType)) {
                     String text = obj.getString("value");
                     String lang = obj.getString("lang");
-                    clause = makeTitleClause(CoreUtil.formatKeywords(text), lang, isWithScore);
+                    clause = CoreUtil.getQuery("advancedTitleFragment.sparql",
+                                CoreUtil.formatKeywords(text), lang);
                 }
                 else if (DESCRIPTION_PREFIX.equals(condType)) {
                     String text = obj.getString("value");
                     String lang = obj.getString("lang");
-                    clause = makeDescriptionClause(CoreUtil.formatKeywords(text), lang, isWithScore);
+                    clause = CoreUtil.getQuery("advancedDescriptionFragment.sparql",
+                                CoreUtil.formatKeywords(text), lang);
                 }
                 else if (KEYWORD_PREFIX.equals(condType)) {
                     String text = obj.getString("value");
                     String lang = obj.getString("lang");
-                    clause = makeKeywordClause(CoreUtil.formatKeywords(text), lang, isWithScore);
+                    clause = CoreUtil.getQuery("advancedKeywordFragment.sparql",
+                                CoreUtil.formatKeywords(text), lang);
                 }
                 else if (CONTRIBUTE_PREFIX.equals(condType)) {
                     String uri = obj.getString("value");
-                    clause = makeContribClause(uri, isWithScore);
-                }
-                else if (CONTRIBUTE_PREFIX.equals(condType)) {
-                    String uri = obj.getString("value");
-                    clause = makeContribClause(uri, isWithScore);
+                    clause = CoreUtil.getQuery("advancedContribFragment.sparql", uri);
                 }
                 else if (NOT_CONTRIBUTE_PREFIX.equals(condType)) {
                     String uri = obj.getString("value");
-                    negationClause = makeContribClause(uri, isWithScore);
+                    negationClause = CoreUtil.getQuery("advancedContribFragment.sparql", uri);
                 }
                 else if (ORGANIZATION_PREFIX.equals(condType)) {
                     String uri = obj.getString("value");
-                    clause = makeOrgClause(uri, isWithScore);
+                    clause = CoreUtil.getQuery("advancedOrgFragment.sparql", uri);
                 }
                 else if (NOT_ORGANIZATION_PREFIX.equals(condType)) {
                     String uri = obj.getString("value");
-                    negationClause = makeOrgClause(uri, isWithScore);
+                    negationClause = CoreUtil.getQuery("advancedOrgFragment.sparql", uri);
                 }
                 else if (condType.startsWith(CONCEPT_PREFIX)) {
                     /*String uri = obj.getString("value");
@@ -181,12 +181,12 @@ public class Util {
                 else if (ADDED_DATE.equals(condType)) {
                     String relOp = obj.getString( "relOp" );
                     String date = obj.getString( "value" );
-                    clause = makeAddedDateClause( relOp, date, isWithScore );
+                    clause = makeAddedDateClause( relOp, date );
                 }
                 else if (FROM_HARVESTED_REPO.equals(condType)) {
                     isFromHarvestedRepoClause = true;
                     String uri = obj.getString("value");
-                    clause = makeFromHarvestedRepoClause(uri);
+                    clause = CoreUtil.getQuery("advancedFromHarvestedRepoFragment.sparql", uri);
                 }
 
                 if (clause != null) {
@@ -262,64 +262,24 @@ public class Util {
         return new Object[]{clauses, count};
     }
 
-    public static String makeFulltextClause( String text, String lang ) throws Exception{
-        return CoreUtil.getQuery("advancedFulltextFragmentWS.sparql", text, lang);
-    }
-
-    public static String makeLanguageClause( String lang, boolean isWithScore ) throws Exception{
-        return CoreUtil.getQuery("advancedLanguageFragment" + (isWithScore?"WS":"") + ".sparql", lang);
-    }
-
-    public static String makeTitleClause( String text, String lang, boolean isWithScore ) throws Exception{
-        return CoreUtil.getQuery("advancedTitleFragment" + (isWithScore?"WS":"") + ".sparql", text, lang);
-    }
-
-    public static String makeDescriptionClause( String text, String lang, boolean isWithScore ) throws Exception{
-        return CoreUtil.getQuery("advancedDescriptionFragment" + (isWithScore?"WS":"") + ".sparql", text, lang);
-    }
-
-    public static String makeKeywordClause( String text, String lang, boolean isWithScore ) throws Exception{
-        return CoreUtil.getQuery("advancedKeywordFragment" + (isWithScore?"WS":"") + ".sparql", text, lang);
-    }
-
-    public static String makeContribClause( String contribUri, boolean isWithScore ) throws Exception{
-        return CoreUtil.getQuery("advancedContribFragment" + (isWithScore?"WS":"") + ".sparql", contribUri);
-    }
-
-    public static String makeOrgClause( String orgUri, boolean isWithScore ) throws Exception {
-        return CoreUtil.getQuery("advancedOrgFragment" + (isWithScore?"WS":"") + ".sparql", orgUri);
-    }
-
-    public static String makeVocConceptClause( String conceptUri, boolean isWithScore ) throws Exception {
-        return CoreUtil.getQuery("advancedVocConceptFragment" + (isWithScore?"WS":"") + ".sparql", conceptUri);
-    }
-
-    public static String makeVocConceptHierarchyClause( String graph, String conceptUri, boolean isWithScore ) throws Exception {
-        return CoreUtil.getQuery("advancedVocConceptHierarchyFragment" + (isWithScore?"WS":"") + ".sparql", graph, conceptUri);
-    }
-
-    public static String makeAddedDateClause( String relOpStr, String date, boolean isWithScore ) throws Exception{
+    public static String makeAddedDateClause( String relOpStr, String date ) throws Exception{
         String dateWithoutTime = date;
         int indexOfTimeDelimiter = dateWithoutTime.indexOf( "T" );
         if( indexOfTimeDelimiter != -1 ) 
             dateWithoutTime = dateWithoutTime.substring( 0, indexOfTimeDelimiter );
         String dateClause;
         if (REL_OP_GT.equals(relOpStr)) {
-            dateClause = CoreUtil.getQuery("advancedAddedDateFragment" + (isWithScore?"WS":"") + ".sparql", getRelOp( relOpStr ),
+            dateClause = CoreUtil.getQuery("advancedAddedDateFragment.sparql", getRelOp( relOpStr ),
                     DateUtil.nextDay(dateWithoutTime));
         }
         else if (REL_OP_EQ.equals(relOpStr)) {
-            dateClause = CoreUtil.getQuery("advancedAddedDateFragment" + (isWithScore?"WS":"") + ".sparql", getRelOp( REL_OP_GTE), dateWithoutTime);
-            dateClause += "\n" + CoreUtil.getQuery("advancedAddedDateFragment" + (isWithScore?"WS":"") + ".sparql", getRelOp( REL_OP_LT ),
+            dateClause = CoreUtil.getQuery("advancedAddedDateFragment.sparql", getRelOp( REL_OP_GTE), dateWithoutTime);
+            dateClause += "\n" + CoreUtil.getQuery("advancedAddedDateFragment.sparql", getRelOp( REL_OP_LT ),
                     DateUtil.nextDay(dateWithoutTime));
         }
         else
-            dateClause = CoreUtil.getQuery("advancedAddedDateFragment" + (isWithScore?"WS":"") + ".sparql", getRelOp( relOpStr ), dateWithoutTime);
+            dateClause = CoreUtil.getQuery("advancedAddedDateFragment.sparql", getRelOp( relOpStr ), dateWithoutTime);
         return dateClause;
-    }
-
-    public static String makeFromHarvestedRepoClause( String repoUri ) throws Exception {
-        return CoreUtil.getQuery("advancedFromHarvestedRepoFragment.sparql", repoUri);
     }
 
 

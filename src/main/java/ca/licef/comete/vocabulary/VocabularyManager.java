@@ -41,8 +41,6 @@ public class VocabularyManager {
     TripleStore tripleStore;
     static ca.licef.comete.core.util.Util CoreUtil;
 
-    static Property[] indexVocPredicates = new Property[]{SKOS.prefLabel};
-
     public void initVocabularyModule() throws Exception {
         System.out.println("Vocabulary Module initialization...");
 
@@ -51,7 +49,7 @@ public class VocabularyManager {
 
         //init SKOS ontology
         Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore",
-                "loadContent", new Object[]{ getClass().getResourceAsStream("/skos.rdf"),
+                "loadContent", new Object[]{ getClass().getResourceAsStream("/vocabularies/skos.rdf"),
                     licef.tsapi.Constants.RDFXML, new String[]{SKOS_ONTOLOGY_GRAPH}} );
         tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
 
@@ -184,7 +182,7 @@ public class VocabularyManager {
             Triple[] triples = tripleStore.getTriplesWithSubjectPredicate(uri, COMETE.vocUri);
             tripleStore.removeTriples(Arrays.asList(triples));
             if (isNavigable)
-                tripleStore.clearWithTextIndex(indexVocPredicates, Constants.INDEX_LANGUAGES, null, vocUri);
+                tripleStore.clearWithTextIndex(Constants.indexVocPredicates, Constants.INDEX_LANGUAGES, null, vocUri);
             else
                 tripleStore.clear(vocUri);
         }
@@ -218,7 +216,7 @@ public class VocabularyManager {
         //load content
         if (isNavigable)
             tripleStore.loadContentWithTextIndex(new ByteArrayInputStream(skosContent.getBytes()),
-                    indexVocPredicates, Constants.INDEX_LANGUAGES, null, licef.tsapi.Constants.RDFXML, vocUri);
+                    Constants.indexVocPredicates, Constants.INDEX_LANGUAGES, null, licef.tsapi.Constants.RDFXML, vocUri);
         else
             tripleStore.loadContent(new ByteArrayInputStream(skosContent.getBytes()),
                     licef.tsapi.Constants.RDFXML, vocUri);

@@ -5,21 +5,8 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX comete: <http://comete.licef.ca/reference#>
 
-SELECT DISTINCT ?s ?location ?format ?added ?updated ?score
+SELECT DISTINCT ?s ?location ?format ?added ?updated
 WHERE '{'
-    ?s rdf:type comete:LearningObject .
-    OPTIONAL '{'
-        ?s foaf:page ?location
-    '}'
-    OPTIONAL '{'
-        ?s dcterms:format ?format
-    '}'
-    OPTIONAL '{'
-        ?s comete:added ?added
-    '}'
-    OPTIONAL '{'
-        ?s comete:updated ?updated
-    '}'
     '{'
         (?s ?score) text:query ( dcterms:title "{1}" "lang:{0}" )
     '}'
@@ -50,6 +37,19 @@ WHERE '{'
         (?concept ?score) text:query ( skos:prefLabel "{1}" "lang:{0}" ) .
         ?s dcterms:subject ?concept
     '}'
+    OPTIONAL '{'
+        ?s foaf:page ?location
+    '}'
+    OPTIONAL '{'
+        ?s dcterms:format ?format
+    '}'
+    OPTIONAL '{'
+        ?s comete:added ?added
+    '}'
+    OPTIONAL '{'
+        ?s comete:updated ?updated
+    '}'
+    ?s rdf:type comete:LearningObject
 '}'
 ORDER BY DESC({2})
 OFFSET {3,number,#}

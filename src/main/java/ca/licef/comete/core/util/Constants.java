@@ -1,5 +1,10 @@
 package ca.licef.comete.core.util;
 
+import ca.licef.comete.vocabularies.COMETE;
+import com.hp.hpl.jena.rdf.model.Property;
+import licef.tsapi.vocabulary.DCTERMS;
+import licef.tsapi.vocabulary.SKOS;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -10,7 +15,18 @@ import java.util.List;
  */
 public class Constants {
 
+    //Indexation
     public static final String[] INDEX_LANGUAGES = { "en", "fr", "es" };
+    public static Property[] indexVocPredicates = new Property[]{ SKOS.prefLabel };
+    public static Property[] indexMetadataPredicates = new Property[] {
+        DCTERMS.title, DCTERMS.description, COMETE.keyword, COMETE.extraInfo
+    };
+    public static Property[] indexQueryPredicates = new Property[] {
+        DCTERMS.title, DCTERMS.description, COMETE.keyword, COMETE.extraInfo,
+        SKOS.prefLabel
+    };
+
+
 
     public static final String[] UI_LANGUAGES = { "en", "fr" };
 

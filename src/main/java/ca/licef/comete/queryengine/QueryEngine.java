@@ -114,7 +114,7 @@ public class QueryEngine {
             keywordsFormattedForRegex = ca.licef.comete.core.util.Util.formatKeywords(keywords);
             _query = CoreUtil.getQuery("queryengine/getLearningObjectsByKeywordsCount.sparql", lang, keywordsFormattedForRegex);
             res = tripleStore.sparqlSelectWithTextIndex(_query,
-                    Metadata.indexMetadataPredicates, Constants.INDEX_LANGUAGES, null);
+                    Constants.indexQueryPredicates, Constants.INDEX_LANGUAGES, null);
         }
         count = Integer.parseInt(res[0].getValue("count").getContent());
         System.out.println("count = " + count);
@@ -130,7 +130,7 @@ public class QueryEngine {
                 _query = CoreUtil.getQuery("queryengine/getLearningObjectsByKeywords.sparql", lang, keywordsFormattedForRegex, orderByVariable, start, limit);
                 System.out.println("_query = " + _query);
                 results = tripleStore.sparqlSelectWithTextIndex(_query,
-                        Metadata.indexMetadataPredicates, Constants.INDEX_LANGUAGES, null);
+                        Constants.indexQueryPredicates, Constants.INDEX_LANGUAGES, null);
                 for (Tuple t : results)
                     System.out.println("t = " + t);
             }
@@ -186,9 +186,7 @@ public class QueryEngine {
     private ResultSet buildResultSet( Tuple[] results, int count, String lang) throws Exception {
         ResultSet rs = new ResultSet();
         for( Tuple tuple : results) {
-            String objId = tuple.containsVar("sWithScore")?
-                    tuple.getValue("sWithScore").getContent():
-                    tuple.getValue("s").getContent();
+            String objId = tuple.getValue("s").getContent();
             String location = tuple.getValue( "location").getContent();
             String format = tuple.getValue("format").getContent();
             String id = CoreUtil.getIdNumberValue( objId );

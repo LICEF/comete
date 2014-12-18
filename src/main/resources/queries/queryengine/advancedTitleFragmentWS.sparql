@@ -1,2 +1,0 @@
-GRAPH <server:main-fullTextView_{1}> '{' ?s dct:title "{0}" '}'
-FILTER (?s = ?sWithScore)
