@@ -29,22 +29,27 @@ public class OAIDriverImpl implements OAIDriver {
     }
 
     public void init(Properties props) throws RepositoryException {
+        if( "com.mckoi.JDBCDriver".equals( props.getProperty( "proai.db.driverClassName" ) ) ) {
+            File oaiDir = new File( Core.getInstance().getCometeHome() + "/oai" );
+            if( !oaiDir.exists() )
+                oaiDir.mkdir();
+
+            File mckoiConfigFile = new File( oaiDir, "proaidb.conf" );
+            if( !mckoiConfigFile.exists() ) {
+                try {
+                    PrintWriter writer = new PrintWriter( new FileWriter( mckoiConfigFile ) );
+                    writeFromResourceStream( writer, "/proaidb.conf", true );
+                }
+                catch( IOException e ) {
+                    System.out.println( "Cannot write proaidb.conf file: " + e );
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public void write(PrintWriter out) throws RepositoryException {
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader( new InputStreamReader( getClass().getResourceAsStream( "/identity.xml" ), "UTF-8"));
-            String line = reader.readLine();
-            while (line != null) {
-                out.println(line);
-                line = reader.readLine();
-            }
-            reader.close();
-        } 
-        catch (Exception e) {
-            throw new RepositoryException("Error reading identity file.", e);
-        }
+        writeFromResourceStream(out, "/identity.xml", false );
     }
 
     public Date getLatestDate() {
@@ -141,6 +146,26 @@ public class OAIDriverImpl implements OAIDriver {
             reader.close();
         } catch (Exception e) {
             throw new RepositoryException("Error reading from file: " + file.getPath(), e);
+        }
+    }
+
+    private static void writeFromResourceStream(PrintWriter out, String path, boolean closeOutputStream) throws RepositoryException {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader( new InputStreamReader( OAIDriverImpl.class.getResourceAsStream( path ), "UTF-8"));
+            String line = reader.readLine();
+            while (line != null) {
+                out.println(line);
+                line = reader.readLine();
+            }
+            reader.close();
+            if( closeOutputStream ) {
+                out.flush();
+                out.close();
+            }
+        } 
+        catch (Exception e) {
+            throw new RepositoryException("Error reading resource file " + path + ".", e);
         }
     }
 
