@@ -38,7 +38,7 @@ public class OAIDriverImpl implements OAIDriver {
             if( !mckoiConfigFile.exists() ) {
                 try {
                     PrintWriter writer = new PrintWriter( new FileWriter( mckoiConfigFile ) );
-                    writeFromResourceStream( writer, "/proaidb.conf", true );
+                    writeFromResourceStream( writer, "/conf/oai/proaidb.conf", true );
                 }
                 catch( IOException e ) {
                     System.out.println( "Cannot write proaidb.conf file: " + e );
