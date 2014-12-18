@@ -31,7 +31,7 @@ public class Security {
         //check on the trusted list
         Vector v;
         try {
-            v = IOUtil.readLines(this.getClass().getResourceAsStream("/authorized.ini"));
+            v = IOUtil.readLines(this.getClass().getResourceAsStream("/conf/authorized.ini"));
         } catch (Exception e) {
             return false;
         }

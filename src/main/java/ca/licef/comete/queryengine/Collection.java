@@ -36,7 +36,7 @@ public class Collection {
             IOUtil.createDirectory(settingDir.getAbsolutePath());
 
         if (!definitions.exists()) {
-            InputStream is = getClass().getResourceAsStream("/sample-collections.ini");
+            InputStream is = getClass().getResourceAsStream("/conf/collections/sample-collections.ini");
             OutputStream os = new FileOutputStream(definitions);
             IOUtil.copy(is, os);
             is.close();
