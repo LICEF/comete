@@ -24,6 +24,8 @@ public class Core {
 
     private TripleStore tripleStore;
 
+    private ResourceView defaultView;
+
     private String cometeHome;
     private String repositoryName;
     private String adminEmail;
@@ -145,6 +147,15 @@ public class Core {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /*
+    * Default implementation of ResourceView
+    */
+    public ResourceView getDefaultView() {
+        if (defaultView == null)
+            defaultView = new DefaultView();
+        return defaultView;
     }
 
 }

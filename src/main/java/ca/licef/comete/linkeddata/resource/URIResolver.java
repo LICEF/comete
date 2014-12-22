@@ -7,6 +7,7 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.sun.jersey.spi.resource.Singleton;
+import licef.tsapi.vocabulary.SKOS;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -226,7 +227,7 @@ public class URIResolver {
     @Produces( "application/rdf+xml" )
     public Response getVocabularyAsRdf( @PathParam( "source" ) String source, @PathParam( "cat" ) String cat ) throws Exception {
         String uri = Core.getInstance().getUriPrefix() + "voc/" + source + "/" + cat;
-        String url = Util.getRestUrl( Constants.OBJ_TYPE_VOCABULARY ) + "/" + source + "/" + cat + "/rdf";
+        String url = Util.getRestUrl(SKOS.ConceptScheme) + "/" + source + "/" + cat + "/rdf";
         return( getResourceAsRdfWithRestUrl( url, "false", "false", "false", uri ) );
     }
 
@@ -245,7 +246,7 @@ public class URIResolver {
     public Response getVocabularyAsRdf( @PathParam( "source" ) String source, @PathParam( "cat" ) String cat, @PathParam( "concept" ) String concept, @DefaultValue( "false" ) @QueryParam( "incomingLinks" ) String incomingLinks, @DefaultValue( "true" ) @QueryParam( "rdfMetadataInfos" ) String rdfMetadataInfos, @DefaultValue( "false" ) @QueryParam( "humanReadable" ) String humanReadable ) throws Exception {
         concept = concept.replaceAll(" ", "%20");
         concept = concept.replaceAll("/", "%2F");
-        String url = Util.getRestUrl( Constants.OBJ_TYPE_VOCABULARY ) + "/" + source + "/" + cat + "/" + concept + "/rdf";
+        String url = Util.getRestUrl(SKOS.ConceptScheme) + "/" + source + "/" + cat + "/" + concept + "/rdf";
         String uri = Core.getInstance().getUriPrefix() + "/voc/" + source + "/" + cat + "/" + concept;
         return( getResourceAsRdfWithRestUrl( url, incomingLinks, rdfMetadataInfos, humanReadable, uri ) );
     }
@@ -256,7 +257,7 @@ public class URIResolver {
     public Response getVocabularyIncomingLinks( @PathParam( "source" ) String source, @PathParam( "cat" ) String cat, @PathParam( "concept" ) String concept, @DefaultValue( "false" ) @QueryParam( "humanReadable" ) String humanReadable, @DefaultValue( "0" ) @QueryParam( "offset" ) String strOffset, @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit, @DefaultValue( "rdf" ) @QueryParam( "format" ) String format ) throws Exception {
         concept = concept.replaceAll(" ", "%20");
         concept = concept.replaceAll("/", "%2F");
-        String url = Util.getRestUrl( Constants.OBJ_TYPE_VOCABULARY ) + "/" + source + "/" + cat + "/" + concept + "/incomingLinks/rdf";
+        String url = Util.getRestUrl(SKOS.ConceptScheme) + "/" + source + "/" + cat + "/" + concept + "/incomingLinks/rdf";
         String uri = Core.getInstance().getUriPrefix() + "/voc/" + source + "/" + cat + "/" + concept;
         return( getResourceIncomingLinksAsRdfWithRestUrl( url, humanReadable, uri, strOffset, strLimit, format ) );
     }

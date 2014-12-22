@@ -2,12 +2,12 @@ package ca.licef.comete.queryengine.util;
 
 import ca.licef.comete.core.util.ResultSet;
 import ca.licef.comete.vocabularies.COMETE;
-import com.hp.hpl.jena.vocabulary.RDFS;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.feed.synd.SyndFeedImpl;
 import licef.StringUtil;
 import licef.tsapi.model.Triple;
 import licef.tsapi.vocabulary.DCTERMS;
+import licef.tsapi.vocabulary.RDFS;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

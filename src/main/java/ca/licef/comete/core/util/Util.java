@@ -2,10 +2,20 @@ package ca.licef.comete.core.util;
 
 import ca.licef.comete.core.Core;
 import ca.licef.comete.vocabularies.COMETE;
+import ca.licef.comete.vocabulary.Vocabulary;
 import com.hp.hpl.jena.ontology.OntClass;
-import licef.IOUtil;
-import licef.StringUtil;
-import licef.XMLUtil;
+import licef.*;
+import licef.jrdf.JRDFFactory;
+import licef.jrdf.SortedMemoryJRDFFactory;
+import licef.jrdf.collection.MemMapFactory;
+import licef.jrdf.graph.Graph;
+import licef.jrdf.graph.TripleFactory;
+import licef.jrdf.writer.*;
+import licef.jrdf.writer.rdfxml.RdfXmlWriter;
+import licef.tsapi.model.Triple;
+import licef.tsapi.vocabulary.DCTERMS;
+import licef.tsapi.vocabulary.FOAF;
+import licef.tsapi.vocabulary.RDFS;
 import licef.tsapi.vocabulary.SKOS;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
@@ -23,6 +33,8 @@ import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
 import java.awt.*;
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.*;
@@ -120,12 +132,22 @@ public class Util {
         return typeVal;
     }
 
+    public static String getRestUrl(OntClass type) {
+        return getRestUrl(type.getURI());
+    }
+
     public static String getRestUrl(String type) {
         String url = null;
         if (COMETE.MetadataRecord.getURI().equals(type))
             url = "/rest/metadataRecords";
         else if (COMETE.LearningObject.getURI().equals(type))
             url = "/rest/learningObjects";
+        else if (COMETE.Identity.getURI().equals(type))
+            url =  "/rest/identities";
+        else if (COMETE.Person.getURI().equals(type))
+            url = "/rest/persons";
+        else if (COMETE.Organization.getURI().equals(type))
+            url = "/rest/organizations";
         else if (COMETE.Repository.getURI().equals(type))
             url = "/rest/repositories";
         else if (COMETE.VocContext.getURI().equals(type))
@@ -244,6 +266,57 @@ public class Util {
         return( query );
     }
 
+    public static String buildRange( int offset, int limit ) {
+        StringBuilder str = new StringBuilder();
+        if( offset != -1 )
+            str.append( "OFFSET " ).append( offset ).append( " " );
+        if( limit != -1 )
+            str.append( "LIMIT " ).append( limit );
+        return( str.toString() );
+    }
+
+    public static String[] getResourceLabel(String uri) throws Exception {
+        return getResourceLabel(uri, null, false);
+    }
+
+    public static String[] getResourceLabel(String uri, String lang) throws Exception {
+        return getResourceLabel(uri, lang, false);
+    }
+
+    public static String[] getResourceLabel(String uri, String lang, boolean forceVocType) throws Exception {
+        lang = LangUtil.convertLangToISO2(lang);
+        String predicate = RDFS.label.getURI(); //default case
+        String graph = null;
+        //vocabulary concept case
+        String type = Util.getURIType(uri);
+        if (type == null && !forceVocType)
+            return( new String[] { uri, null } );
+
+        if (forceVocType ||
+                SKOS.ConceptScheme.getURI().equals(type) ||
+                    SKOS.Concept.getURI().equals(type) ) {
+            //predicate = SKOS.prefLabel.getURI();
+            predicate = RDFS.label.getURI(); //preferred
+            graph = Vocabulary.getInstance().getConceptScheme(uri);
+        }
+        else if (type.equals(COMETE.LearningObject.getURI()))
+            predicate = DCTERMS.title.getURI();
+        else if (type.equals(COMETE.Person.getURI()))
+            predicate = FOAF.name.getURI();
+        else if (type.equals(COMETE.Organization.getURI()))
+            predicate = FOAF.name.getURI();
+        else if (type.equals(COMETE.Repository.getURI()))
+            predicate = FOAF.name.getURI();
+
+        String[] label = Core.getInstance().getTripleStore().
+                getBestLocalizedLiteralObject(uri, predicate, lang, graph);
+
+        if (label == null || label[ 0 ] == null || "".equals(label[ 0 ]))
+            return( new String[] { uri, null } );
+        return label;
+    }
+
+
     /*
      * Metadatas
      */
@@ -285,6 +358,84 @@ public class Util {
 
     public static String applyXslToDocument( String xsltBaseFilename, StreamSource doc ) throws ClassNotFoundException, IllegalAccessException, InstantiationException, IOException, NoSuchMethodException, TransformerConfigurationException, TransformerException {
         return( applyXslToDocument( xsltBaseFilename, doc, null, null, null ) );
+    }
+
+    public static String getTriplesAsRdf( Collection<Triple> triples ) throws Exception {
+        Triple[] tripleArray = triples.toArray( new Triple[ triples.size() ] );
+        return( getTriplesAsRdf( tripleArray ) );
+    }
+
+    public static String getTriplesAsRdf( Triple[] tripleArray ) throws Exception {
+        Graph graph = makeJrdfGraph( tripleArray );
+
+        BlankNodeRegistry nodeRegistry = new MappedBlankNodeRegistry( new MemMapFactory() );
+        RdfWriter writer = new RdfXmlWriter( nodeRegistry, getRdfNamespaceMap() );
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        BufferedOutputStream bos = new BufferedOutputStream( os );
+        try {
+            try {
+                writer.write( graph, bos );
+            } finally {
+                writer.close();
+            }
+        } finally {
+            bos.close();
+        }
+        String rdf = os.toString( "UTF-8" );
+        StreamSource source = new StreamSource( new BufferedReader( new StringReader( rdf ) ) );
+        String prettyRdf = applyXslToDocument( "removeUnusedNamespaces", source );
+
+        return( prettyRdf );
+    }
+
+    private static RdfNamespaceMap rdfNamespaceMap;
+
+    private static RdfNamespaceMap getRdfNamespaceMap() {
+        if( rdfNamespaceMap == null ) {
+            MemMapFactory mapFactory = new MemMapFactory();
+            rdfNamespaceMap = new RdfNamespaceMapImpl( mapFactory );
+            System.setProperty( RdfXmlWriter.WRITE_LOCAL_NAMESPACE, "true" );
+            for( Iterator it = CommonNamespaceContext.getInstance().getAllPrefixes(); it.hasNext(); ) {
+                String prefix = (String)it.next();
+                String namespace = CommonNamespaceContext.getInstance().getNamespaceURI( prefix );
+                try {
+                    rdfNamespaceMap.addNamespace( prefix, namespace );
+                }
+                catch( NamespaceException ignore ) {
+                    // Ignore namespace that we cannot add.
+                }
+            }
+        }
+        return( rdfNamespaceMap );
+    }
+
+    private static Graph makeJrdfGraph( Triple[] tripleArray ) {
+        JRDFFactory jrdfFactory = SortedMemoryJRDFFactory.getFactory();
+        Graph graph = jrdfFactory.getGraph();
+        TripleFactory tripleFactory = graph.getTripleFactory();
+
+        for( Triple triple : tripleArray ) {
+            try {
+                URI subject = new URI( triple.getSubject() );
+                URI predicate = new URI( triple.getPredicate() );
+                if( triple.isObjectLiteral() ) {
+                    String literal = triple.getObject();
+                    if( triple.getLanguage() == null )
+                        tripleFactory.addTriple( subject, predicate, literal );
+                    else
+                        tripleFactory.addTriple( subject, predicate, literal, triple.getLanguage() );
+                }
+                else {
+                    URI object = new URI( triple.getObject() );
+                    tripleFactory.addTriple( subject, predicate, object );
+                }
+            }
+            catch( URISyntaxException ignore ) {
+                // The invalid triple is not added to the graph.
+            }
+        }
+
+        return( graph );
     }
 
     private static URIResolver resolver = new URIResolver() {

@@ -1,0 +1,18 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX comete: <http://comete.licef.ca/reference#>
+
+SELECT ?identity ?mbox
+WHERE '{'
+    '{' 
+        ?identity rdf:type comete:Person
+    '}'
+    UNION
+    '{'
+        ?identity rdf:type comete:Organization 
+    '}'
+    OPTIONAL '{'
+        ?identity foaf:mbox ?mbox 
+    '}'
+    FILTER( {0} )
+'}'

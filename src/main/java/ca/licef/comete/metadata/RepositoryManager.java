@@ -1,14 +1,8 @@
 package ca.licef.comete.metadata;
 
 import ca.licef.comete.core.Core;
-import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.Util;
-import com.hp.hpl.jena.graph.impl.TripleStore;
 import licef.tsapi.model.Tuple;
-
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
 
 /**
  * Created by amiara on 2014-11-03.

@@ -1,0 +1,10 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX comete: <http://comete.licef.ca/reference#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+SELECT (count(DISTINCT ?s) as ?count)
+WHERE '{'
+    ?s rdf:type comete:Organization .
+    ?s foaf:name ?name .
+    FILTER ( regex( ?name, "{0}", "i" ) )
+'}'

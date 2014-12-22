@@ -44,7 +44,7 @@ public class Vocabulary {
     }
 
     public String getRestUrl(String uri) throws Exception{
-        return CoreUtil.getRestUrl(SKOS.ConceptScheme.getURI()) + "/" + URLEncoder.encode(uri);
+        return CoreUtil.getRestUrl(SKOS.ConceptScheme) + "/" + URLEncoder.encode(uri);
     }
 
     public String getVocabularyUri(String source) throws Exception {
@@ -69,15 +69,13 @@ public class Vocabulary {
     public String getVocabularyTitle(String uri, String lang, boolean forceConceptScheme) throws Exception {
         if (!forceConceptScheme) //check and/or retrieve scheme uri first
             uri = getConceptScheme(uri);
-        Invoker inv = new Invoker(this, "ca.licef.comete.vocabulary.Vocabulary",
-                "getBestTitle", new Object[]{uri, lang});
-        return (String)tripleStore.transactionalCall(inv);
-    }
 
-    public String getBestTitle(String uri, String lang) throws Exception {
-        String[] label = tripleStore.getBestLocalizedLiteralObject(uri, RDFS.label, lang, uri);
+        Invoker inv = new Invoker(null, "ca.licef.comete.core.util.Util",
+                "getResourceLabel", new Object[]{uri, lang, true});
+        String[] label = (String[])tripleStore.transactionalCall(inv);
         if (label == null || label[ 0 ] == null || "".equals(label[ 0 ]))
             label = new String[] { uri, null } ;
+
         return label[0];
     }
 

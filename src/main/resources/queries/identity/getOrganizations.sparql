@@ -1,0 +1,11 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX comete: <http://comete.licef.ca/reference#>
+
+SELECT ?s ?name
+WHERE '{'
+    ?s rdf:type <comete:Organization> .
+    ?s foaf:name ?name
+'}'
+OFFSET {0,number,#}
+LIMIT {1,number,#}

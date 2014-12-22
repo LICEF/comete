@@ -3,6 +3,7 @@ package ca.licef.comete.core.util;
 import ca.licef.comete.vocabularies.COMETE;
 import com.hp.hpl.jena.rdf.model.Property;
 import licef.tsapi.vocabulary.DCTERMS;
+import licef.tsapi.vocabulary.FOAF;
 import licef.tsapi.vocabulary.SKOS;
 
 import java.util.Arrays;
@@ -17,12 +18,25 @@ public class Constants {
 
     //Indexation
     public static final String[] INDEX_LANGUAGES = { "en", "fr", "es" };
-    public static Property[] indexVocPredicates = new Property[]{ SKOS.prefLabel };
+
+    public static Property[] indexVocPredicates = new Property[]{
+        SKOS.prefLabel
+    };
+
     public static Property[] indexMetadataPredicates = new Property[] {
         DCTERMS.title, DCTERMS.description, COMETE.keyword, COMETE.extraInfo
     };
+
+    public static Property[] indexIdentityPredicates = new Property[] {
+        FOAF.name, FOAF.givenName, FOAF.familyName, COMETE.formattedAddress,
+        COMETE.altName, COMETE.altGivenName, COMETE.altFamilyName, COMETE.altFormattedAddress
+    };
+
+    //Union of all precedent
     public static Property[] indexQueryPredicates = new Property[] {
         DCTERMS.title, DCTERMS.description, COMETE.keyword, COMETE.extraInfo,
+        FOAF.name, FOAF.givenName, FOAF.familyName, COMETE.formattedAddress,
+        COMETE.altName, COMETE.altGivenName, COMETE.altFamilyName, COMETE.altFormattedAddress,
         SKOS.prefLabel
     };
 
@@ -150,8 +164,67 @@ public class Constants {
 //        METAMODEL_ADDED, METAMODEL_UPDATED, METAMODEL_CREATED
     };
 
+    static final String[] _IDENTITY_PREDICATES = new String[] {
+        FOAF.name.getURI(), FOAF.givenName.getURI(), FOAF.familyName.getURI(),
+        FOAF.mbox.getURI(), FOAF.phone.getURI(), FOAF.homepage.getURI(),
+        COMETE.formattedAddress.getURI(), FOAF.img.getURI(), FOAF.logo.getURI()
+    };
+
+    static final String[] _IDENTITY_ALT_PREDICATES = new String[] {
+        COMETE.altName.getURI(), COMETE.altGivenName.getURI(), COMETE.altFamilyName.getURI(),
+        COMETE.altMbox.getURI(), COMETE.altPhone.getURI(), COMETE.altHomepage.getURI(),
+        COMETE.altFormattedAddress.getURI(), COMETE.altImg.getURI(), COMETE.altLogo.getURI()
+    };
+
     public static final List LITERAL_PREDICATES = Arrays.asList(_LITERAL_PREDICATES);
     public static final List FULL_TEXT_PREDICATES = Arrays.asList(_FULL_TEXT_PREDICATES);
     public static final List DATE_PREDICATES = Arrays.asList(_DATE_PREDICATES);
+    public static final List IDENTITY_PREDICATES = Arrays.asList(_IDENTITY_PREDICATES);
+    public static final List IDENTITY_ALT_PREDICATES = Arrays.asList(_IDENTITY_ALT_PREDICATES);
 
+    public static String getMainPredicate(String altpred) {
+        String pred = null;
+        if (altpred.equals(COMETE.altName.getURI()))
+            pred = FOAF.name.getURI();
+        else if (altpred.equals(COMETE.altGivenName.getURI()))
+            pred = FOAF.givenName.getURI();
+        else if (altpred.equals(COMETE.altFamilyName.getURI()))
+            pred = FOAF.familyName.getURI();
+        else if (altpred.equals(COMETE.altMbox.getURI()))
+            pred = FOAF.mbox.getURI();
+        else if (altpred.equals(COMETE.altPhone.getURI()))
+            pred = FOAF.phone.getURI();
+        else if (altpred.equals(COMETE.altHomepage.getURI()))
+            pred = FOAF.homepage.getURI();
+        else if (altpred.equals(COMETE.altFormattedAddress.getURI()))
+            pred = COMETE.formattedAddress.getURI();
+        else if (altpred.equals(COMETE.altImg.getURI()))
+            pred = FOAF.img.getURI();
+        else if (altpred.equals(COMETE.altLogo.getURI()))
+            pred = FOAF.logo.getURI();
+
+        return pred;
+    }
+
+    public static Property getPredicate(String key, boolean alt) {
+        if ("name".equals(key))
+            return alt?COMETE.altName:FOAF.name;
+        else if ("firstname".equals(key))
+            return alt?COMETE.altGivenName:FOAF.givenName;
+        else if ("lastname".equals(key))
+            return alt?COMETE.altFamilyName:FOAF.familyName;
+        else if ("email".equals(key))
+            return alt?COMETE.altMbox:FOAF.mbox;
+        else if ("tel".equals(key) || "fax".equals(key))
+            return alt?COMETE.altPhone:FOAF.phone;
+        else if ("url".equals(key))
+            return alt?COMETE.altHomepage:FOAF.homepage;
+        else if ("address".equals(key))
+            return alt?COMETE.altFormattedAddress:COMETE.formattedAddress;
+        else if ("photo".equals(key))
+            return alt?COMETE.altImg:FOAF.img;
+        else if ("logo".equals(key))
+            return alt?COMETE.altLogo:FOAF.logo;
+        return null;
+    }
 }

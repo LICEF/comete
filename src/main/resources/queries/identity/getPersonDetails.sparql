@@ -1,0 +1,24 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX comete: <http://comete.licef.ca/reference#>
+
+SELECT ?name ?firstname ?lastname ?email ?url ?address ?photo ?tel ?fax
+WHERE '{'
+    '{' ?s rdf:type comete:Person '}'
+    UNION '{' ?s foaf:name ?name '}'
+    UNION '{' ?s foaf:givenName ?firstname '}'
+    UNION '{' ?s foaf:familyName ?lastname '}'
+    UNION '{' ?s foaf:mbox ?email '}'
+    UNION '{' ?s foaf:homepage ?url '}'
+    UNION '{' ?s comete:formattedAddress ?address '}'
+    UNION '{' ?s foaf:img ?photo '}'
+    UNION  '{'
+        ?s foaf:phone ?tel
+        FILTER (regex(?tel, "^tel:"))
+    '}'
+    UNION '{'
+        ?s foaf:phone ?fax
+        FILTER (regex(?fax, "^fax:"))
+    '}'    
+    FILTER ( ?s = <{0}> )    
+'}'

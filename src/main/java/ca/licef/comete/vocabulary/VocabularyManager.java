@@ -1,11 +1,9 @@
 package ca.licef.comete.vocabulary;
 
 import ca.licef.comete.core.Core;
-//import ca.licef.comete.core.Fedora;
 import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.vocabularies.COMETE;
 import ca.licef.comete.vocabulary.util.Util;
-import com.hp.hpl.jena.rdf.model.Property;
 import licef.IOUtil;
 import licef.XMLUtil;
 import licef.reflection.Invoker;
@@ -13,7 +11,6 @@ import licef.tsapi.TripleStore;
 import licef.tsapi.model.Triple;
 import licef.tsapi.model.Tuple;
 import licef.tsapi.vocabulary.RDF;
-import licef.tsapi.vocabulary.SKOS;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -22,9 +19,14 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.stream.StreamSource;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Hashtable;
+
+//import ca.licef.comete.core.Fedora;
 
 /**
  * Created with IntelliJ IDEA.
@@ -150,7 +152,7 @@ public class VocabularyManager {
             //vocabulary DO creation
             //fedoraId = fedora.createDigitalObject(graph, "Vocabulary:initVocabulary");
             uri = CoreUtil.makeURI(voc, COMETE.VocContext);
-            list.add(new Triple(uri, RDF.type, COMETE.VocContext.getURI()));
+            list.add(new Triple(uri, RDF.type, COMETE.VocContext));
             //list.add(new Triple(newUri, Constants.DO_PID, "info:fedora/" + fedoraId));
             list.add(new Triple(uri, COMETE.vocId, voc));
             list.add(new Triple(uri, COMETE.vocSource, source));
@@ -271,12 +273,12 @@ public class VocabularyManager {
 
     public String convertVdexToSkos( String vdexContent ) throws Exception {
         StreamSource source = new StreamSource( new ByteArrayInputStream( vdexContent.getBytes() ) );
-        return( CoreUtil.applyXslToDocument( "convertVDEXToSKOS", source ) );
+        return( CoreUtil.applyXslToDocument( "vocabulary/convertVDEXToSKOS", source ) );
     }
 
     public String convertVdexRelationshipsToSkos( String vdexContent ) throws Exception {
         StreamSource source = new StreamSource( new ByteArrayInputStream( vdexContent.getBytes() ) );
-        return( CoreUtil.applyXslToDocument( "convertVDEXRelationshipsToSKOS", source ) );
+        return( CoreUtil.applyXslToDocument( "vocablary/convertVDEXRelationshipsToSKOS", source ) );
     }
 
     /*boolean hasVocabularyChanged(String id, String location) throws Exception {

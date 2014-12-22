@@ -1,0 +1,21 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX comete: <http://comete.licef.ca/reference#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+SELECT DISTINCT ?s ?n ?gid
+WHERE '{'
+    ?s rdf:type comete:Organization .
+    ?s foaf:name ?n .
+    GRAPH <server:main-fullText> '{'
+        '{' ?s foaf:name "{0}" '}'
+        UNION
+        '{' ?s comete:altName "{0}" '}'
+    '}'
+    OPTIONAL '{'
+        GRAPH <server:identity-similarity> '{'
+            ?s dct:identifier ?gid
+        '}'
+    '}'
+'}'
+

@@ -92,7 +92,7 @@ public class Util {
                 if (FULLTEXT.equals(condType)) {
                     String text = obj.getString("value");
                     if( !text.trim().equals( "" ) )
-                        clause = CoreUtil.getQuery("advancedFulltextFragment.sparql",
+                        clause = CoreUtil.getQuery("queryengine/advancedFulltextFragment.sparql",
                                     CoreUtil.formatKeywords(text), lg);
                 }
                 else if (LANGUAGE.equals(condType)) {
@@ -102,36 +102,36 @@ public class Util {
                 else if (TITLE_PREFIX.equals(condType)) {
                     String text = obj.getString("value");
                     String lang = obj.getString("lang");
-                    clause = CoreUtil.getQuery("advancedTitleFragment.sparql",
+                    clause = CoreUtil.getQuery("queryengine/advancedTitleFragment.sparql",
                                 CoreUtil.formatKeywords(text), lang);
                 }
                 else if (DESCRIPTION_PREFIX.equals(condType)) {
                     String text = obj.getString("value");
                     String lang = obj.getString("lang");
-                    clause = CoreUtil.getQuery("advancedDescriptionFragment.sparql",
+                    clause = CoreUtil.getQuery("queryengine/advancedDescriptionFragment.sparql",
                                 CoreUtil.formatKeywords(text), lang);
                 }
                 else if (KEYWORD_PREFIX.equals(condType)) {
                     String text = obj.getString("value");
                     String lang = obj.getString("lang");
-                    clause = CoreUtil.getQuery("advancedKeywordFragment.sparql",
+                    clause = CoreUtil.getQuery("queryengine/advancedKeywordFragment.sparql",
                                 CoreUtil.formatKeywords(text), lang);
                 }
                 else if (CONTRIBUTE_PREFIX.equals(condType)) {
                     String uri = obj.getString("value");
-                    clause = CoreUtil.getQuery("advancedContribFragment.sparql", uri);
+                    clause = CoreUtil.getQuery("queryengine/advancedContribFragment.sparql", uri);
                 }
                 else if (NOT_CONTRIBUTE_PREFIX.equals(condType)) {
                     String uri = obj.getString("value");
-                    negationClause = CoreUtil.getQuery("advancedContribFragment.sparql", uri);
+                    negationClause = CoreUtil.getQuery("queryengine/advancedContribFragment.sparql", uri);
                 }
                 else if (ORGANIZATION_PREFIX.equals(condType)) {
                     String uri = obj.getString("value");
-                    clause = CoreUtil.getQuery("advancedOrgFragment.sparql", uri);
+                    clause = CoreUtil.getQuery("queryengine/advancedOrgFragment.sparql", uri);
                 }
                 else if (NOT_ORGANIZATION_PREFIX.equals(condType)) {
                     String uri = obj.getString("value");
-                    negationClause = CoreUtil.getQuery("advancedOrgFragment.sparql", uri);
+                    negationClause = CoreUtil.getQuery("queryengine/advancedOrgFragment.sparql", uri);
                 }
                 else if (condType.startsWith(CONCEPT_PREFIX)) {
                     /*String uri = obj.getString("value");
@@ -186,7 +186,7 @@ public class Util {
                 else if (FROM_HARVESTED_REPO.equals(condType)) {
                     isFromHarvestedRepoClause = true;
                     String uri = obj.getString("value");
-                    clause = CoreUtil.getQuery("advancedFromHarvestedRepoFragment.sparql", uri);
+                    clause = CoreUtil.getQuery("queryengine/advancedFromHarvestedRepoFragment.sparql", uri);
                 }
 
                 if (clause != null) {
@@ -269,16 +269,16 @@ public class Util {
             dateWithoutTime = dateWithoutTime.substring( 0, indexOfTimeDelimiter );
         String dateClause;
         if (REL_OP_GT.equals(relOpStr)) {
-            dateClause = CoreUtil.getQuery("advancedAddedDateFragment.sparql", getRelOp( relOpStr ),
+            dateClause = CoreUtil.getQuery("queryengine/advancedAddedDateFragment.sparql", getRelOp( relOpStr ),
                     DateUtil.nextDay(dateWithoutTime));
         }
         else if (REL_OP_EQ.equals(relOpStr)) {
-            dateClause = CoreUtil.getQuery("advancedAddedDateFragment.sparql", getRelOp( REL_OP_GTE), dateWithoutTime);
-            dateClause += "\n" + CoreUtil.getQuery("advancedAddedDateFragment.sparql", getRelOp( REL_OP_LT ),
+            dateClause = CoreUtil.getQuery("queryengine/advancedAddedDateFragment.sparql", getRelOp( REL_OP_GTE), dateWithoutTime);
+            dateClause += "\n" + CoreUtil.getQuery("queryengine/advancedAddedDateFragment.sparql", getRelOp( REL_OP_LT ),
                     DateUtil.nextDay(dateWithoutTime));
         }
         else
-            dateClause = CoreUtil.getQuery("advancedAddedDateFragment.sparql", getRelOp( relOpStr ), dateWithoutTime);
+            dateClause = CoreUtil.getQuery("queryengine/advancedAddedDateFragment.sparql", getRelOp( relOpStr ), dateWithoutTime);
         return dateClause;
     }
 

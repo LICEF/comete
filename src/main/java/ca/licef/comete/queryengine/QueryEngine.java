@@ -117,7 +117,6 @@ public class QueryEngine {
                     Constants.indexQueryPredicates, Constants.INDEX_LANGUAGES, null);
         }
         count = Integer.parseInt(res[0].getValue("count").getContent());
-        System.out.println("count = " + count);
 
         //query
         if (count != 0) {
@@ -128,11 +127,8 @@ public class QueryEngine {
             }
             else {
                 _query = CoreUtil.getQuery("queryengine/getLearningObjectsByKeywords.sparql", lang, keywordsFormattedForRegex, orderByVariable, start, limit);
-                System.out.println("_query = " + _query);
                 results = tripleStore.sparqlSelectWithTextIndex(_query,
                         Constants.indexQueryPredicates, Constants.INDEX_LANGUAGES, null);
-                for (Tuple t : results)
-                    System.out.println("t = " + t);
             }
             rs = buildResultSet(results, count, lang);
         }

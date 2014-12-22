@@ -1,0 +1,4 @@
+#keep synonym lines
+college;cegep;
+saint;sainte;st;ste;
+

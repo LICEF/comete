@@ -9,7 +9,6 @@ import ca.licef.comete.core.util.Util;
 import ca.licef.comete.store.Store;
 import ca.licef.comete.vocabularies.COMETE;
 import ca.licef.comete.vocabularies.OAI;
-import com.hp.hpl.jena.rdf.model.Property;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import licef.DateUtil;
 import licef.IOUtil;
@@ -113,8 +112,8 @@ public class Metadata {
 
             //creation of new one
             if (loURI == null) {
-                loURI = Util.makeURI(COMETE.LearningObject.getURI());
-                tripleStore.insertTriple( new Triple( loURI, RDF.type, COMETE.LearningObject.getURI() ) );
+                loURI = Util.makeURI(COMETE.LearningObject);
+                tripleStore.insertTriple( new Triple( loURI, RDF.type, COMETE.LearningObject ) );
                 tripleStore.insertTriple( new Triple( loURI, COMETE.added, DateUtil.toISOString(new Date(), null, null) ) );
             }
         }
@@ -326,9 +325,9 @@ public class Metadata {
                 TripleStore tripleStore = Core.getInstance().getTripleStore();
                 String recordURI = getRecordURI(pseudoOaiID, namespace);
                 if (recordURI == null) {
-                    loURI = Util.makeURI(COMETE.LearningObject.getURI());
+                    loURI = Util.makeURI(COMETE.LearningObject);
                     List<Triple> triples = new ArrayList<Triple>();
-                    triples.add( new Triple( loURI, RDF.type, COMETE.LearningObject.getURI()) );
+                    triples.add( new Triple( loURI, RDF.type, COMETE.LearningObject) );
                     triples.add( new Triple( loURI, COMETE.added, DateUtil.toISOString(new Date(), null, null) ) );
                     tripleStore.insertTriples( triples );
                     state = "created";
@@ -436,7 +435,7 @@ public class Metadata {
             // We remove the leading / beforehand.
             recordURI = Util.makeURI(recordId.substring( 1 ), COMETE.MetadataRecord.getURI());
 
-            triples.add(new Triple(recordURI, RDF.type, COMETE.MetadataRecord.getURI()));
+            triples.add(new Triple(recordURI, RDF.type, COMETE.MetadataRecord));
             triples.add(new Triple(recordURI, COMETE.metadataFormat, namespace));
 
             triples.add(new Triple(recordURI, COMETE.storeDigitalObject, storeId));
@@ -527,7 +526,7 @@ public class Metadata {
         HashMap<String,String> params = new HashMap<String,String>();
         params.put( "loURI", loURI );
         params.put( "recordURI", recordURI );
-        String triplesAsXml = Util.applyXslToDocument( "process" + StringUtil.capitalize( format ) + "Record", xmlSource, params );
+        String triplesAsXml = Util.applyXslToDocument( "metadata/process" + StringUtil.capitalize( format ) + "Record", xmlSource, params );
         return( triplesAsXml );
     }
 
@@ -635,9 +634,9 @@ public class Metadata {
 
         String stylesheet = null;
         if( metadataFormat.getNamespace().equals( Constants.OAI_DC_NAMESPACE ))
-            stylesheet = "convertDcToInternalFormat";
+            stylesheet = "metadata/convertDcToInternalFormat";
         else if( metadataFormat.getNamespace().equals( Constants.IEEE_LOM_NAMESPACE) )
-            stylesheet = "convertLomToInternalFormat";
+            stylesheet = "metadata/convertLomToInternalFormat";
 
         StreamSource source = new StreamSource( new StringReader( xml ) );
         String newXml = Util.applyXslToDocument( stylesheet, source, parameters );
@@ -658,9 +657,9 @@ public class Metadata {
 
         String stylesheet = null;
         if( metadataFormat.getNamespace().equals( Constants.OAI_DC_NAMESPACE ))
-            stylesheet = "convertInternalFormatToDc";
+            stylesheet = "metadata/convertInternalFormatToDc";
         else if( metadataFormat.getNamespace().equals( Constants.IEEE_LOM_NAMESPACE) )
-            stylesheet = "convertInternalFormatToLom";
+            stylesheet = "metadata/convertInternalFormatToLom";
 
         StreamSource source = new StreamSource( new StringReader( xml ) );
         String newXml = Util.applyXslToDocument( stylesheet, source, parameters );
@@ -671,11 +670,11 @@ public class Metadata {
         stylesheet = null;
         MetadataFormat exposedMetadataFormat = null;
         if( metadataFormat.getNamespace().equals( Constants.OAI_DC_NAMESPACE )) {
-            stylesheet = "convertFromInternalFormatDcToLom";
+            stylesheet = "metadata/convertFromInternalFormatDcToLom";
             exposedMetadataFormat = MetadataFormats.getMetadataFormat( Constants.IEEE_LOM_NAMESPACE ); 
         }
         else if( metadataFormat.getNamespace().equals( Constants.IEEE_LOM_NAMESPACE) ) {
-            stylesheet = "convertFromInternalFormatLomToDc";
+            stylesheet = "metadata/convertFromInternalFormatLomToDc";
             exposedMetadataFormat = MetadataFormats.getMetadataFormat( Constants.OAI_DC_NAMESPACE );
         }
 
@@ -793,6 +792,21 @@ public class Metadata {
         }
     }
 
+    /**
+     * re expose record for modified identities
+     * @param uri
+     */
+    public void exposeRecordsOfIdentity(String uri) throws Exception {
+        /*Hashtable<String, String>[] results =
+                Core.getInstance().getTripleStoreService().getResults( "getMetadataRecordsOfIdentity.sparql", uri );
+        for( int i = 0; i < results.length; i++ ) {
+            MetadataFormat metadataFormat = MetadataFormats.getMetadataFormat(Util.manageQuotes(results[i].get("metadataFormat")));
+            String fedoraId = results[ i ].get( "doId" );
+            String loUri = results[ i ].get( "lo" );
+            internalFormatToExposedRecords(loUri, fedoraId, metadataFormat);
+        }*/
+    }
+
     private Validator getValidator() throws IOException, FileNotFoundException, ClassNotFoundException, InstantiationException, IllegalAccessException, InitialisationException {
         if( !isValidatorInitialized ) {
             BufferedReader bis = null;
@@ -848,7 +862,7 @@ public class Metadata {
                 storeId = "info:fedora/" + storeId;
             try {
                 Triple[] triples = Core.getInstance().getTripleStore().getTriplesWithPredicateObject(
-                        COMETE.storeDigitalObject, storeId, false, null);
+                        COMETE.storeDigitalObject, storeId, null);
                 if (triples.length > 0)
                     uri = triples[0].getSubject();
             } catch (Exception e) {
