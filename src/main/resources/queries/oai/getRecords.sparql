@@ -2,7 +2,7 @@ PREFIX comete: <http://comete.licef.ca/reference#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX oai: <http://www.openarchives.org/OAI/2.0/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 SELECT ?s ?exposedOaiId ?location
 WHERE '{'
@@ -14,8 +14,8 @@ WHERE '{'
     BIND ( IF (bound( ?oaiId ), ?oaiId, "local") AS ?exposedOaiId ) .
     ?s foaf:page ?page .
     BIND ( STR( ?page ) AS ?location ) .
-    ?s oai:oai-datestamp ?datestamp .
-    FILTER ( ?datestamp > "{1}" && ?datestamp < "{2}" )
+    ?s oai:oai-datestamp ?strDatestamp .
+    BIND ( xsd:dateTime( ?strDatestamp ) AS ?datestamp ) .
+    FILTER ( ?datestamp > "{1}"^^xsd:dateTime && ?datestamp < "{2}"^^xsd:dateTime )
 '}'
 ORDER BY ?datestamp
-
