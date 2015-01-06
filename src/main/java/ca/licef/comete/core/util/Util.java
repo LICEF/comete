@@ -125,6 +125,10 @@ public class Util {
             typeVal = Constants.OBJ_TYPE_METADATA_RECORD;
         else if (COMETE.LearningObject.getURI().equals(type))
             typeVal = Constants.OBJ_TYPE_LEARNING_OBJECT;
+        else if (COMETE.Person.getURI().equals(type))
+            typeVal = Constants.OBJ_TYPE_PERSON;
+        else if (COMETE.Organization.getURI().equals(type))
+            typeVal = Constants.OBJ_TYPE_ORGANIZATION;
         else if (COMETE.Repository.getURI().equals(type))
             typeVal = Constants.OBJ_TYPE_REPOSITORY;
         else if (COMETE.VocContext.getURI().equals(type))
@@ -186,10 +190,14 @@ public class Util {
             type = COMETE.MetadataRecord.getURI();
         else if ("learningobject".equals(label))
             type = COMETE.LearningObject.getURI();
+        else if ("person".equals(label))
+            type = COMETE.Person.getURI();
+        else if ("organization".equals(label))
+            type = COMETE.Organization.getURI();
         else if ("repository".equals(label))
             type = COMETE.Repository.getURI();
         else if ("voccontext".equals(label))
-            type = SKOS.ConceptScheme.getURI();
+            type = COMETE.VocContext.getURI();
         return type;
     }
 

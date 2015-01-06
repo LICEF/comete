@@ -1,0 +1,91 @@
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT DISTINCT ?concept ?scheme
+WHERE '{'
+    ?concept skos:inScheme ?scheme 
+    '{' <{0}> skos:closeMatch ?concept '}'
+    UNION    
+    '{' <{0}> skos:narrowMatch ?concept '}'
+
+
+    UNION    
+    '{' <{0}> skos:narrowerTransitive ?child .
+        ?child skos:closeMatch ?concept '}'
+    UNION    
+    '{' <{0}> skos:narrowerTransitive ?child .
+        ?child skos:narrowMatch ?concept '}'
+
+
+    UNION
+    '{' <{0}> skos:closeMatch ?pivot .
+        ?pivot skos:closeMatch ?concept '}'
+    UNION
+    '{' <{0}> skos:closeMatch ?pivot .
+        ?pivot skos:narrowMatch ?concept '}'
+    UNION
+    '{' <{0}> skos:narrowMatch ?pivot .
+        ?pivot skos:closeMatch ?concept '}'
+    UNION
+    '{' <{0}> skos:narrowMatch ?pivot .
+        ?pivot skos:narrowMatch ?concept '}'
+
+
+    UNION
+    '{' <{0}> skos:closeMatch ?pivot .
+        ?pivot skos:narrowerTransitive ?pivotChild .
+        ?pivotChild skos:closeMatch ?concept '}'
+    UNION
+    '{' <{0}> skos:closeMatch ?pivot .
+        ?pivot skos:narrowerTransitive ?pivotChild .
+        ?pivotChild skos:narrowMatch ?concept '}'
+    UNION
+    '{' <{0}> skos:narrowMatch ?pivot .
+        ?pivot skos:narrowerTransitive ?pivotChild .
+        ?pivotChild skos:closeMatch ?concept '}'
+    UNION
+    '{' <{0}> skos:narrowMatch ?pivot .
+        ?pivot skos:narrowerTransitive ?pivotChild .
+        ?pivotChild skos:narrowMatch ?concept '}'
+
+
+    UNION    
+    '{' <{0}> skos:narrowerTransitive ?conceptChild .
+        ?conceptChild skos:closeMatch ?pivot .
+        ?pivot skos:closeMatch ?concept '}'
+    UNION    
+    '{' <{0}> skos:narrowerTransitive ?conceptChild .
+        ?conceptChild skos:closeMatch ?pivot .
+        ?pivot skos:narrowMatch ?concept '}'
+    UNION    
+    '{' <{0}> skos:narrowerTransitive ?conceptChild .
+        ?conceptChild skos:narrowMatch ?pivot .
+        ?pivot skos:closeMatch ?concept '}'
+    UNION    
+    '{' <{0}> skos:narrowerTransitive ?conceptChild .
+        ?conceptChild skos:narrowMatch ?pivot .
+        ?pivot skos:narrowMatch ?concept '}'
+
+
+    UNION
+    '{' <{0}> skos:narrowerTransitive ?conceptChild .
+        ?conceptChild skos:closeMatch ?pivot .
+        ?pivot skos:narrowerTransitive ?pivotChild .
+        ?pivotChild skos:closeMatch ?concept '}'
+    UNION
+    '{' <{0}> skos:narrowerTransitive ?conceptChild .
+        ?conceptChild skos:closeMatch ?pivot .
+        ?pivot skos:narrowerTransitive ?pivotChild .
+        ?pivotChild skos:narrowMatch ?concept '}'
+    UNION
+    '{' <{0}> skos:narrowerTransitive ?conceptChild .
+        ?conceptChild skos:narrowMatch ?pivot .
+        ?pivot skos:narrowerTransitive ?pivotChild .
+        ?pivotChild skos:closeMatch ?concept '}'
+    UNION
+    '{' <{0}> skos:narrowerTransitive ?conceptChild .
+        ?conceptChild skos:narrowMatch ?pivot .
+        ?pivot skos:narrowerTransitive ?pivotChild .
+        ?pivotChild skos:narrowMatch ?concept '}'
+
+    FILTER( {1} )    
+'}'

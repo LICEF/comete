@@ -4,7 +4,7 @@ PREFIX comete: <http://comete.licef.ca/reference#>
 
 SELECT ?s ?name
 WHERE '{'
-    ?s rdf:type <comete:Organization> .
+    ?s rdf:type comete:Organization .
     ?s foaf:name ?name
 '}'
 OFFSET {0,number,#}

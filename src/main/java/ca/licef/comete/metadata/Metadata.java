@@ -56,6 +56,8 @@ public class Metadata {
 
     public static File tmpFolder = new File(System.getProperty("java.io.tmpdir"));
 
+    TripleStore tripleStore = Core.getInstance().getTripleStore();
+
     public static Metadata getInstance() {
         if (instance == null)
             instance = new Metadata();
@@ -73,8 +75,6 @@ public class Metadata {
      * This method must be transactionally called. - FB
      */
     public String storeHarvestedRecordEff(String oaiID, String namespace, String repoUri, String record, String datestamp, boolean isUpdate ) throws Exception {
-        TripleStore tripleStore = Core.getInstance().getTripleStore();
-
         if (datestamp != null) {
             String recordURI = getRecordURI(oaiID, namespace);
             if (recordURI != null) {
@@ -152,7 +152,6 @@ public class Metadata {
     }
 
     public String getLearningObjectURI( String metadataRecordUri ) throws Exception {
-        TripleStore tripleStore = Core.getInstance().getTripleStore();
         String query = Util.getQuery( "metadata/getLearningObject.sparql", metadataRecordUri );
         Tuple[] tuples = tripleStore.sparqlSelect( query );
         if( tuples.length > 0 )
@@ -162,9 +161,8 @@ public class Metadata {
     }
 
     public String getRecordURI( String oaiID, String namespace ) throws Exception {
-        TripleStore tripleStore = Core.getInstance().getTripleStore();
         String query = Util.getQuery( "metadata/getMetadataRecordWith-oai-id.sparql", namespace, oaiID );
-        Tuple[] tuples = tripleStore.sparqlSelect(query);
+        Tuple[] tuples = Core.getInstance().getTripleStore().sparqlSelect(query);
         if( tuples.length > 0 )
             return( tuples[ 0 ].getValue( "s" ).getContent() );
         else
@@ -212,7 +210,6 @@ public class Metadata {
     }
 
     public Object[] storeUploadedContent(File record, File resource) throws Exception {
-        TripleStore tripleStore = Core.getInstance().getTripleStore();
         Object[] results;
         String extension = record.getName().substring(record.getName().lastIndexOf('.') + 1).toLowerCase();
         if ("zip".equals(extension)) {
@@ -250,7 +247,7 @@ public class Metadata {
                 results = new Object[]{null, uri};
             }
 
-            record.delete();
+            boolean b = record.delete();
             if (resource != null)
                 resource.delete();
         }
@@ -322,7 +319,6 @@ public class Metadata {
         String state = null;
         if (errorMessage == null) {
             try {
-                TripleStore tripleStore = Core.getInstance().getTripleStore();
                 String recordURI = getRecordURI(pseudoOaiID, namespace);
                 if (recordURI == null) {
                     loURI = Util.makeURI(COMETE.LearningObject);
@@ -337,7 +333,6 @@ public class Metadata {
                     resetLearningObjectNonPersistentTriples(recordURI);
                     state = "updated";
                 }
-
                 recordURI = digestRecord(loURI, recordURI, content, namespace, "localRecord", pseudoOaiID);
                 tripleStore.insertTriple(new Triple( recordURI, Constants.OAI_ID, pseudoOaiID, true ) );
 
@@ -358,8 +353,7 @@ public class Metadata {
         String pseudoOaiID = values[3];
         boolean isExists = false;
         if (errorMessage == null) {
-            //String recordURI = getRecordURI(pseudoOaiID, namespace);
-            String recordURI = null;
+            String recordURI = getRecordURI(pseudoOaiID, namespace);
             isExists = (recordURI != null);
         }
         return new Object[]{errorMessage, isExists};
@@ -420,7 +414,7 @@ public class Metadata {
         String storeId;
         MetadataFormat metadataFormat = MetadataFormats.getMetadataFormat(namespace);
         Store store = Store.getInstance();
-        TripleStore tripleStore = Core.getInstance().getTripleStore();
+
         if (recordURI == null) {
             String recordId = store.createDigitalObject();
 
@@ -458,12 +452,8 @@ public class Metadata {
             //        "oai:" + Core.getInstance().getRepositoryNamespace()+ ":" + _oaiId, true);
         }
         else {
-            storeId = getFedoraIdFromURI(recordURI);
-
-            ////format datastream update
-            //String previous = fedora.getDatastream(storeId, Constants.DATASTREAM_DATA);
-            //if (!record.equals(previous))
-            //    fedora.modifyDatastream(storeId, Constants.DATASTREAM_DATA, record, logMessage);
+            storeId = getStoreIdFromURI(recordURI);
+            store.updateDatastream(storeId, Constants.DATASTREAM_DATA, record);
         }
 
         validateRecord( storeId, loURI, recordURI, record, namespace );
@@ -613,9 +603,8 @@ public class Metadata {
      */
 
     private void resetLearningObjectNonPersistentTriples(String recordURI) throws Exception {
-        TripleStore tripleStore = Core.getInstance().getTripleStore();
         String query = Util.getQuery( "metadata/deleteLOTriplesToReset.sparql", recordURI );
-        tripleStore.sparqlUpdate( query );
+        tripleStore.sparqlUpdateWithTextIndex(query, Constants.indexMetadataPredicates, Constants.INDEX_LANGUAGES, null);
     }
 
     /*****
@@ -641,16 +630,16 @@ public class Metadata {
         StreamSource source = new StreamSource( new StringReader( xml ) );
         String newXml = Util.applyXslToDocument( stylesheet, source, parameters );
 
-        updateInternalFormat(storeId, newXml, metadataFormat);
+        Store.getInstance().updateDatastream(storeId, Constants.DATASTREAM_INTERNAL_DATA, newXml);
     }
 
-    private void internalFormatToExposedRecords(String loURI, String fedoraId, MetadataFormat metadataFormat) throws Exception {
-        if( !Store.getInstance().isDatastreamExists( fedoraId, Constants.DATASTREAM_INTERNAL_DATA ) )
+    private void internalFormatToExposedRecords(String loURI, String storeId, MetadataFormat metadataFormat) throws Exception {
+        if( !Store.getInstance().isDatastreamExists( storeId, Constants.DATASTREAM_INTERNAL_DATA ) )
             return;
-        String recordUri = Util.makeURI(Util.getIdNumberValue(fedoraId), Constants.OBJ_TYPE_METADATA_RECORD);
+        String recordUri = Util.makeURI(Util.getIdNumberValue(storeId), COMETE.MetadataRecord);
 
         System.out.println("Expose record : " + recordUri + "...");
-        String xml = Store.getInstance().getDatastream( fedoraId, Constants.DATASTREAM_INTERNAL_DATA );
+        String xml = Store.getInstance().getDatastream( storeId, Constants.DATASTREAM_INTERNAL_DATA );
 
         HashMap<String,String> parameters = new HashMap<String,String>();
         parameters.put( "loURI", loURI );
@@ -664,7 +653,7 @@ public class Metadata {
         StreamSource source = new StreamSource( new StringReader( xml ) );
         String newXml = Util.applyXslToDocument( stylesheet, source, parameters );
 
-        updateExposedFormat(fedoraId, newXml, metadataFormat, recordUri, "exposeRecord");
+        updateExposedFormat(storeId, newXml, metadataFormat, recordUri);
 
         // Generate exposed record for other metadata formats.
         stylesheet = null;
@@ -683,34 +672,8 @@ public class Metadata {
             source = new StreamSource( new StringReader( xml ) );
             newXml = Util.applyXslToDocument( stylesheet, source, parameters );
 
-            updateExposedFormat(fedoraId, newXml, exposedMetadataFormat, recordUri, "exposeRecord");
+            updateExposedFormat(storeId, newXml, exposedMetadataFormat, recordUri);
         }
-    }
-
-    /**
-     *  Update the internal datastream.
-     *  @param id Record to update.
-     *  @param record Content of the record or URL pointing to the content of the record.
-     *  @param metadataFormat Metadata format of the record.
-     */
-    void updateInternalFormat(String id, String record, MetadataFormat metadataFormat) throws Exception{
-        if (Store.getInstance().isDatastreamExists(id, Constants.DATASTREAM_INTERNAL_DATA)) {
-            String previous = Store.getInstance().getDatastream(id, Constants.DATASTREAM_INTERNAL_DATA);
-            if (!record.equals(previous))
-                Store.getInstance().modifyDatastream(id, Constants.DATASTREAM_INTERNAL_DATA, record);
-        }
-        else
-            addInternalFormat(id, record, metadataFormat);
-    }
-
-    /**
-     *  Add an internal datastream.
-     *  @param id Record to update.
-     *  @param record Content of the record or URL pointing to the content of the record.
-     *  @param metadataFormat Metadata format of the record.
-     */
-    private void addInternalFormat(String id, String record, MetadataFormat metadataFormat) throws Exception{
-        Store.getInstance().addDatastream(id, Constants.DATASTREAM_INTERNAL_DATA, record);
     }
 
     /**
@@ -718,9 +681,8 @@ public class Metadata {
      *  @param id Record to update.
      *  @param record Content to update.
      *  @param metadataFormat Metadata format of the record.
-     *  @param logMessage Message that will be logged in the Digital Object after performing the update.
      */
-    void updateExposedFormat(String id, String record, MetadataFormat metadataFormat, String recordUri, String logMessage) throws Exception{
+    void updateExposedFormat(String id, String record, MetadataFormat metadataFormat, String recordUri) throws Exception{
         String datastream = metadataFormat.getExposedDatastream();
         boolean b = true;
         if (Store.getInstance().isDatastreamExists(id, datastream)) {
@@ -733,7 +695,7 @@ public class Metadata {
             }
         }
         else
-            addExposedFormat(id, record, metadataFormat, logMessage);
+            addExposedFormat(id, record, metadataFormat);
 
         if (b)
             System.out.println("-> " + recordUri + " exposed (" + metadataFormat.getName() + " format)");
@@ -744,16 +706,14 @@ public class Metadata {
      *  @param id Record to update.
      *  @param record Content to expose
      *  @param metadataFormat Metadata format of the record.
-     *  @param logMessage Message that will be logged in the Digital Object after performing the update.
      */
-    private void addExposedFormat(String id, String record, MetadataFormat metadataFormat, String logMessage) throws Exception{
+    private void addExposedFormat(String id, String record, MetadataFormat metadataFormat) throws Exception{
         String datastream = metadataFormat.getExposedDatastream();
         Store.getInstance().addDatastream(id, datastream, record);
     }
 
     private void validateRecord( String storeId, String loURI, String recordURI, String record, String namespace ) throws Exception {
         Store store = Store.getInstance();
-        TripleStore tripleStore = Core.getInstance().getTripleStore();
 
         Map<String,Boolean> applProfToValidate = Settings.getValidatedApplicationProfiles();
 
@@ -872,7 +832,7 @@ public class Metadata {
         return uri;
     }
 
-    private String getFedoraIdFromURI(String uri) {
+    private String getStoreIdFromURI(String uri) {
         String id = null;
         if (!uri.startsWith("http://"))
             return uri;

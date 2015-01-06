@@ -24,37 +24,6 @@ import java.util.Map;
 @Path( "/identities" )
 public class IdentityResource {
 
-    @POST
-    @Produces( MediaType.APPLICATION_JSON )
-    public Response digest(@Context HttpServletRequest request, @QueryParam("format") String format, String content) throws Exception {
-
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-
-        String[] uris = Identity.getInstance().digest(format, content);
-        StringWriter out = new StringWriter();
-        try {
-            JSONWriter json = new JSONWriter( out ).object();
-            if (uris[0] != null)
-                json.key("personUri").value(uris[0]);
-            if (uris[1] != null)
-                json.key("orgUri").value(uris[1]);
-            json.endObject();
-        }
-        catch( JSONException e ) {
-            e.printStackTrace();
-        }
-
-        try {
-            out.close();
-        }
-        catch( IOException e ) {
-            e.printStackTrace();
-        }
-
-        return Response.ok(out.toString()).build();
-    }
-
     @GET
     @Path("photo/{filename}")
     public Response getPhoto(@PathParam("filename") String filename) throws Exception {

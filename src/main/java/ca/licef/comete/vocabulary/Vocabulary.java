@@ -47,12 +47,64 @@ public class Vocabulary {
         return CoreUtil.getRestUrl(SKOS.ConceptScheme) + "/" + URLEncoder.encode(uri);
     }
 
+    public String getConcept(String source, String concept) throws Exception {
+        return getConcept(source, null, concept);
+    }
+
+    public String getConcept(String source, String cat, String concept) throws Exception {
+        concept = concept.replaceAll(" ", "%20");
+        concept = concept.replaceAll( "/", "%2F" );
+        String uri = null;
+        String vocUri = null;
+        if (cat == null)
+            vocUri = getVocabularyUri(source);
+        else {
+            source = getRealVocabularySource(source);
+            if (source != null)
+                vocUri = Core.getInstance().getUriPrefix() + "/voc/" + source.toLowerCase() + "/" + cat;
+        }
+
+        //Just lonely case where scheme is not prefix of concepts
+        //Should be generalized when other cases
+        boolean isDeweyInfo = "http://dewey.info/scheme/ddc/".equals(vocUri);
+
+        if (vocUri != null && Util.isGraphExists(vocUri)) {
+            String vocConceptPrefix = vocUri;
+
+            if (isDeweyInfo)
+                vocConceptPrefix = "http://dewey.info/class";
+
+            uri = vocConceptPrefix + "/" + concept; //'/' uri case
+
+            if (isDeweyInfo)
+                uri += "/";
+
+            if (!tripleStore.isResourceExists(uri, vocUri)) {
+                uri = vocConceptPrefix + "#" + concept; // or '#' uri
+                if (!tripleStore.isResourceExists(uri, vocUri))
+                    uri = null;
+            }
+        }
+        return uri;
+    }
+
+    public String getRealVocabularySource(String source) throws Exception {
+        String realSource = null; //because source may be the alias
+        String query = CoreUtil.getQuery("vocabulary/getVocSource.sparql", source);
+        Tuple[] tuples = tripleStore.sparqlSelect(query);
+        if (tuples.length > 0)
+            realSource = tuples[0].getValue("vocSource").getContent();
+        return realSource;
+    }
+
     public String getVocabularyUri(String source) throws Exception {
         String uri = null;
         String query = CoreUtil.getQuery("vocabulary/getVocUri.sparql", source);
         Tuple[] tuples = tripleStore.sparqlSelect(query);
         if (tuples.length > 0)
             uri = tuples[0].getValue("vocUri").getContent();
+        if (uri == null)
+            uri = source;
         return uri;
     }
 
@@ -80,7 +132,9 @@ public class Vocabulary {
     }
 
     public String getConceptScheme(String uri) throws Exception{
-        if (uri.startsWith("http://dewey.info/class/")) //should be generalized with sparql query -AM
+        //Just lonely case where scheme is not prefix of concepts
+        //Should be generalized when other cases with Sparql -AM
+        if (uri.startsWith("http://dewey.info/class/"))
             return "http://dewey.info/scheme/ddc/";
 
         String vocUri;

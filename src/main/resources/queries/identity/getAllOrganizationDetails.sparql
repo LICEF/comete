@@ -4,7 +4,7 @@ PREFIX comete: <http://comete.licef.ca/reference#>
 
 SELECT DISTINCT ?name ?email ?url ?address ?logo ?tel ?fax ?altname ?altemail ?alturl ?altaddress ?altlogo ?alttel ?altfax
 WHERE '{'
-    '{' ?s rdf:type <comete:Organization> '}'
+    '{' ?s rdf:type comete:Organization '}'
     UNION '{' ?s foaf:name ?name '}' UNION '{' ?s comete:altName ?altname '}'
     UNION '{' ?s foaf:mbox ?email '}' UNION '{' ?s comete:altMbox ?altemail '}'
     UNION '{' ?s foaf:homepage ?url '}' UNION '{' ?s comete:altHomepage ?alturl '}'

@@ -5,7 +5,7 @@ PREFIX comete: <http://comete.licef.ca/reference#>
 SELECT ?s ?p ?o
 WHERE '{'
     ?s ?p ?o .
-    ?s rdf:type <comete:Person> .
+    ?s rdf:type comete:Person .
     FILTER ( ?s = <{0}> &&
              ( ?p = foaf:name || ?p = comete:altName ||
                ?p = foaf:givenName || ?p = comete:altGivenName ||

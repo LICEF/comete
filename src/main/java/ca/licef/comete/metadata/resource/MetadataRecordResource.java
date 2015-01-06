@@ -109,26 +109,22 @@ public class MetadataRecordResource {
     @Path( "completeUpload" )
     @Produces( MediaType.TEXT_HTML )
     public Response completeUpload( @Context HttpServletRequest request) throws Exception {
-        //Object[] filesData = fileCache.get(request.getSession().getId());
-        //String val = doUploadEff((File)filesData[0], (File)filesData[1]);
-        //fileCache.remove(request.getSession().getId());
-        //return Response.ok(val).build();
-        System.out.println( "completeUpload" );
-        return( null );
+        Object[] filesData = fileCache.get(request.getSession().getId());
+        String val = doUploadEff((File)filesData[0], (File)filesData[1]);
+        fileCache.remove(request.getSession().getId());
+        return Response.ok(val).build();
     }
 
     @PUT
     @Path( "clearUpload" )
     @Produces( MediaType.TEXT_HTML )
     public Response clearUpload( @Context HttpServletRequest request) throws Exception {
-        //Object[] filesData = fileCache.get(request.getSession().getId());
-        //((File)filesData[0]).delete();
-        //if (filesData[1] != null)
-        //    ((File)filesData[1]).delete();
-        //fileCache.remove(request.getSession().getId());
-        //return Response.ok().build();
-        System.out.println( "clearUpload" );
-        return( null );
+        Object[] filesData = fileCache.get(request.getSession().getId());
+        ((File)filesData[0]).delete();
+        if (filesData[1] != null)
+            ((File)filesData[1]).delete();
+        fileCache.remove(request.getSession().getId());
+        return Response.ok().build();
     }
 
     String doUploadEff(File record, File resource) throws Exception {

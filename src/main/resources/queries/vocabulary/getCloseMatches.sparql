@@ -1,0 +1,15 @@
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT DISTINCT ?concept ?scheme
+WHERE '{'
+    ?concept skos:inScheme ?scheme 
+    '{'
+        <{0}> skos:closeMatch ?concept .
+    '}'
+    UNION
+    '{'
+        <{0}> skos:closeMatch ?pivot .
+        ?pivot skos:closeMatch ?concept
+    '}'
+    FILTER( {1} )    
+'}'

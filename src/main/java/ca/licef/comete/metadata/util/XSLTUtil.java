@@ -2,9 +2,12 @@ package ca.licef.comete.metadata.util;
 
 import java.util.ArrayList;
 import ca.licef.comete.core.Core;
+import ca.licef.comete.core.metadataformat.MetadataFormat;
 import ca.licef.comete.core.metadataformat.MetadataFormats;
 import ca.licef.comete.core.util.Constants;
+import ca.licef.comete.identity.Identity;
 import ca.licef.comete.vocabularies.COMETE;
+import ca.licef.comete.vocabulary.Vocabulary;
 import licef.IOUtil;
 import licef.LangUtil;
 import licef.StringUtil;
@@ -127,7 +130,8 @@ public class XSLTUtil {
 
         String marker = null;
 
-        String[] identityUris = Util.getIdentity(entityData, MetadataFormats.getMetadataFormat(metadataFormatNamespace));
+        MetadataFormat mf = MetadataFormats.getMetadataFormat(metadataFormatNamespace);
+        String[] identityUris = Identity.getInstance().digest(mf.getIdentityMimetypeFormat(), entityData);
         if (identityUris == null)
             return( null );
 
@@ -169,7 +173,7 @@ public class XSLTUtil {
         if (value == null || "".equals(value))
             return null;
 
-        String conceptUri = Util.getVocabularyConcept(source, element, value);
+        String conceptUri = Vocabulary.getInstance().getConcept(source, element, value);
         String predicate = DCTERMS.subject.getURI();
         if ("5.2_learning_resource_type".equals(element))
             predicate = COMETE.learningResourceType.getURI();
@@ -179,19 +183,21 @@ public class XSLTUtil {
             Triple triple = new Triple(loURI, predicate, conceptUri, false);
             Core.getInstance().getTripleStore().insertTriple(triple);
         }
+        else
+            System.out.println("-> no concept URI found for " + source + ", " + value);
         return "";
     }
 
     public static String getVCard( String identityURI, String loURI ) throws Exception {
         if (identityURI == null)
             return null;
-        return Util.getVCard(identityURI, loURI);
+        return Identity.getInstance().getVCard(identityURI, loURI);
     }
 
     public static String getFN( String identityURI, String loURI ) throws Exception {
         if (identityURI == null)
             return null;
-        return Util.getFN(identityURI, loURI);
+        return Identity.getInstance().getFN(identityURI, loURI);
     }
 
 }

@@ -1,10 +1,8 @@
 package ca.licef.comete.metadata.resource;
 
-import ca.licef.comete.core.Core;
 import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.security.Security;
 import ca.licef.comete.metadata.Metadata;
-import ca.licef.comete.metadata.util.Util;
 import com.sun.jersey.spi.resource.Singleton;
 
 import javax.servlet.ServletContext;

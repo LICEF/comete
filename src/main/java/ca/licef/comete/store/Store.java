@@ -67,17 +67,17 @@ public class Store {
         if( dsLoc.delete() )
             throw( new IOException( "Cannot delete file " + dsLoc + "." ) );
 
-        if( content instanceof File ) {
-            File contentFile = (File)content;
-            Files.copy( contentFile.toPath(), dsLoc.toPath() );
+        addDatastream(path, datastream, content);
+    }
+
+    public synchronized void updateDatastream( String path, String datastream, Object content ) throws Exception{
+        if (isDatastreamExists(path, datastream)) {
+            String previous = getDatastream(path, datastream);
+            if (!content.equals(previous))
+                modifyDatastream(path, datastream, content);
         }
-        else if( content instanceof String ) {
-            String contentString = (String)content;
-            if( IOUtil.isURL( contentString ) )
-                IOUtil.getFile( contentString, dsLoc );
-            else 
-                IOUtil.writeStringToFile( contentString, dsLoc );
-        }
+        else
+            addDatastream(path, datastream, content);
     }
 
     public synchronized void purgeDatastream(String path, String datastream) throws IOException {

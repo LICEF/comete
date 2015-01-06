@@ -5,7 +5,7 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 SELECT ?s
 WHERE '{'
     ?s rdf:type comete:Person .
-    ?s foaf:mbox "{2}" .
+    ?s foaf:mbox <{2}> .
     '{' ?s foaf:givenName "{0}" '}'
     UNION
     '{' ?s comete:altGivenName "{0}" '}'
