@@ -1,0 +1,37 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>
+#if ($head_title)
+      $head_title
+#else
+      $title
+#end
+#if ($project_name)
+      | $project_name
+#end
+    </title>
+#if ($rdf_link)
+    <link rel="alternate" type="application/rdf+xml" href="$rdf_link" title="RDF" />
+#end
+    <link rel="stylesheet" type="text/css" href="${server_base}static/style.css" />
+    <script type="text/javascript" src="${server_base}static/script.js"></script>
+  </head>
+  <body onLoad="init();">
+    <div id="header">
+      <div>
+        <h1 id="title">$title</h1>
+#if ($project_name)
+#if ($project_link)
+        <div id="homelink">at <a href="$project_link">$project_name</a></div>
+#else
+        <div id="homelink">at <a href="$server_base">$project_name</a></div>
+#end
+#end
+      </div>
+#if ($uri)
+      <div class="page-resource-uri"><a href="$uri">$uri</a></div>
+#end
+#if ($rdf_link)
+      <div id="rdficon"><a href="$rdf_link" title="RDF data"><img src="${server_base}static/rdf-icon.gif" alt="[This page as RDF]" /></a></div>
+#end
+    </div>

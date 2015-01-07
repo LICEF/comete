@@ -10,6 +10,7 @@ import ca.licef.comete.store.Store;
 import ca.licef.comete.vocabularies.COMETE;
 import ca.licef.comete.vocabularies.OAI;
 import com.sun.jersey.core.header.FormDataContentDisposition;
+import licef.CommonNamespaceContext;
 import licef.DateUtil;
 import licef.IOUtil;
 import licef.StringUtil;
@@ -333,7 +334,7 @@ public class Metadata {
                     resetLearningObjectNonPersistentTriples(recordURI);
                     state = "updated";
                 }
-                recordURI = digestRecord(loURI, recordURI, content, namespace, "localRecord", pseudoOaiID);
+                recordURI = digestRecord(loURI, recordURI, content, namespace, CommonNamespaceContext.cometeNSURI + "localRecord", pseudoOaiID);
                 tripleStore.insertTriple(new Triple( recordURI, Constants.OAI_ID, pseudoOaiID, true ) );
 
             } catch (Exception e) {
@@ -436,8 +437,8 @@ public class Metadata {
             if( repoURI != null && !"".equals( repoURI ) )
                 triples.add(new Triple(recordURI, COMETE.repository, repoURI));
 
-            //triples.add(new Triple(recordURI, FOAF.page, Core.getInstance().getFedoraRestUrl() + recordId + "/data/fcr:content"));
-            triples.add(new Triple(recordURI, FOAF.page, recordId + "/data"));
+            String recordLink = Core.getInstance().getCometeUrl() + "/rest/metadataRecords" + recordId + "/xml";
+            triples.add(new Triple(recordURI, COMETE.originalData, recordLink));
 
             //Resource association
             triples.add(new Triple(loURI, COMETE.hasMetadataRecord, recordURI));
