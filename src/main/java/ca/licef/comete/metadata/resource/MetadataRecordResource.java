@@ -2,11 +2,13 @@ package ca.licef.comete.metadata.resource;
 
 //import ca.licef.comete.core.Core;
 //import ca.licef.comete.core.FedoraService;
-//import ca.licef.comete.core.util.Constants;
+import ca.licef.comete.core.util.Constants;
 //import ca.licef.comete.core.util.ResultSet;
 import ca.licef.comete.metadata.Metadata;
 import ca.licef.comete.security.Security;
-//import ca.licef.comete.core.util.Util;
+import ca.licef.comete.core.util.Util;
+import ca.licef.comete.store.Store;
+import ca.licef.comete.vocabularies.COMETE;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 import com.sun.jersey.spi.resource.Singleton;
@@ -20,7 +22,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import javax.ws.rs.PUT;
@@ -161,6 +165,21 @@ public class MetadataRecordResource {
         }
 
         return out.toString();
+    }
+
+    @GET
+    @Path( "{id}/xml" )
+    @Produces( { MediaType.TEXT_HTML, MediaType.APPLICATION_XML } )
+    public Response getMetadataRecordAsXml( @PathParam( "id" ) String id, @DefaultValue( "false" ) @QueryParam( "syntaxHighlighted" ) String strIsSyntaxHighlighted ) throws Exception {
+        Store store = Store.getInstance();
+        String xml = store.getDatastream( "/" + id, Constants.DATASTREAM_DATA );
+
+        if( "true".equals( strIsSyntaxHighlighted ) ) {
+            String html = ( xml == null ? "" : Util.getSyntaxHighlightedCode( "xml", xml ) );
+            return( Response.status( HttpServletResponse.SC_OK ).entity( html ).type( MediaType.TEXT_HTML ).build() );
+        }
+        else
+            return( Response.status( HttpServletResponse.SC_OK ).entity( xml ).type( MediaType.APPLICATION_XML ).build() );
     }
 
     private transient Hashtable<String, Object[]> fileCache = new Hashtable<String, Object[]>();

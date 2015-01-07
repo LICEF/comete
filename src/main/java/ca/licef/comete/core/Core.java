@@ -51,7 +51,7 @@ public class Core {
             Logger logger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME) ;
             ((ch.qos.logback.classic.Logger)logger).setLevel(ch.qos.logback.classic.Level.INFO);
 
-            ResourceBundle resBundle = ResourceBundle.getBundle("conf/core");
+            ResourceBundle resBundle = ResourceBundle.getBundle("/conf/core");
             cometeHome = resBundle.getString("comete.home");
             uriPrefix = resBundle.getString("comete.uri.prefix");
             cometeUrl = resBundle.getString("comete.url");
