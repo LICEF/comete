@@ -1,0 +1,29 @@
+<project name="pubby" default="war">
+
+    <property name="res" location="res" />
+    <property name="build" location="build" />
+
+    <target name="clean">
+        <delete dir="${build}"/>
+        <delete file="ROOT.war"/>
+    </target>
+    
+    <target name="build">
+        <mkdir dir="${build}"/>
+        <copy todir="${build}">
+            <fileset dir="${res}/ROOT"/>
+        </copy>
+        <replace file="${build}/WEB-INF/config.ttl" propertyFile="../../src/main/resources/conf/core.properties">
+            <replacefilter token="PROJECT_NAME" property="project.name"/>
+            <replacefilter token="PROJECT_HOMEPAGE" property="project.homepage"/>
+            <replacefilter token="WEB_BASE" property="pubby.webBase"/>
+            <replacefilter token="SPARQL_ENDPOINT" property="sparql.endpoint"/>
+            <replacefilter token="URI_PREFIX" property="comete.uri.prefix"/>
+        </replace>
+    </target>
+
+    <target name="war" depends="build">
+        <war destfile="ROOT.war" basedir="build"/>
+    </target>
+
+</project>
