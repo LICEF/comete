@@ -436,8 +436,6 @@ public class Metadata {
             if( repoURI != null && !"".equals( repoURI ) )
                 triples.add(new Triple(recordURI, COMETE.repository, repoURI));
 
-            //format datastream creation
-            store.addDatastream(storeId, Constants.DATASTREAM_DATA, record);
             //triples.add(new Triple(recordURI, FOAF.page, Core.getInstance().getFedoraRestUrl() + recordId + "/data/fcr:content"));
             triples.add(new Triple(recordURI, FOAF.page, recordId + "/data"));
 
@@ -451,10 +449,11 @@ public class Metadata {
             //fedora.addRelationship(storeId, Constants.OAI_ID,
             //        "oai:" + Core.getInstance().getRepositoryNamespace()+ ":" + _oaiId, true);
         }
-        else {
+        else
             storeId = getStoreIdFromURI(recordURI);
-            store.updateDatastream(storeId, Constants.DATASTREAM_DATA, record);
-        }
+
+        //store content
+        store.setDatastream(storeId, Constants.DATASTREAM_DATA, record);
 
         validateRecord( storeId, loURI, recordURI, record, namespace );
 
@@ -630,7 +629,7 @@ public class Metadata {
         StreamSource source = new StreamSource( new StringReader( xml ) );
         String newXml = Util.applyXslToDocument( stylesheet, source, parameters );
 
-        Store.getInstance().updateDatastream(storeId, Constants.DATASTREAM_INTERNAL_DATA, newXml);
+        Store.getInstance().setDatastream(storeId, Constants.DATASTREAM_INTERNAL_DATA, newXml);
     }
 
     private void internalFormatToExposedRecords(String loURI, String storeId, MetadataFormat metadataFormat) throws Exception {
@@ -684,32 +683,11 @@ public class Metadata {
      */
     void updateExposedFormat(String id, String record, MetadataFormat metadataFormat, String recordUri) throws Exception{
         String datastream = metadataFormat.getExposedDatastream();
-        boolean b = true;
-        if (Store.getInstance().isDatastreamExists(id, datastream)) {
-            String previous = Store.getInstance().getDatastream(id, datastream);
-            if (!record.equals(previous))
-                Store.getInstance().modifyDatastream(id, datastream, record);
-            else {
-                b = false;
-                System.out.println("-> no change on : " + recordUri + ".");
-            }
-        }
-        else
-            addExposedFormat(id, record, metadataFormat);
-
-        if (b)
+        int resp = Store.getInstance().setDatastream(id, datastream, record);
+        if (resp == Store.DATASTREAM_STORED)
             System.out.println("-> " + recordUri + " exposed (" + metadataFormat.getName() + " format)");
-    }
-
-    /**
-     *  Add the exposed datastream.
-     *  @param id Record to update.
-     *  @param record Content to expose
-     *  @param metadataFormat Metadata format of the record.
-     */
-    private void addExposedFormat(String id, String record, MetadataFormat metadataFormat) throws Exception{
-        String datastream = metadataFormat.getExposedDatastream();
-        Store.getInstance().addDatastream(id, datastream, record);
+        else if (resp == Store.DATASTREAM_UNCHANGED)
+            System.out.println("-> no change on : " + recordUri + ".");
     }
 
     private void validateRecord( String storeId, String loURI, String recordURI, String record, String namespace ) throws Exception {
@@ -734,7 +712,7 @@ public class Metadata {
             System.out.println( "Validating record " + recordURI + " against " + profileUri );
             String reportDataStream = Util.getReportDataStream( profileUri );
             if( store.isDatastreamExists( storeId, reportDataStream ) )
-                store.purgeDatastream( storeId, reportDataStream );
+                store.deleteDatastream( storeId, reportDataStream );
             try {
                 getValidator().validateMetadata( record, profileUri );
                 tripleStore.insertTriple( new Triple( recordURI, COMETE.applicationProfile, profileUri ) ); 
@@ -743,7 +721,7 @@ public class Metadata {
                 isValid = false;
                 String errorReport = JDomUtils.parseXml2string(ValidationUtils.collectErrorsAsXml(e.getMessage()),null);
                 if( !store.isDatastreamExists( storeId, reportDataStream ) )
-                    store.addDatastream( storeId, reportDataStream, errorReport);
+                    store.setDatastream( storeId, reportDataStream, errorReport);
             }
             finally {
                 long timeTaken = System.currentTimeMillis() - startTime;

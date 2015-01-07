@@ -9,6 +9,9 @@ import licef.IOUtil;
 
 public class Store {
 
+    public static final int DATASTREAM_UNCHANGED = 0;
+    public static final int DATASTREAM_STORED = 1;
+
     public static Store getInstance() throws IOException {
         if( instance == null ) {
             String strLoc = Core.getInstance().getCometeHome() + "/store";
@@ -42,12 +45,30 @@ public class Store {
         return( path + "/" + uuid );
     }
 
+    public synchronized void deleteDigitalObject(String path) throws IOException {
+        File doDir = new File( location + path );
+        IOUtil.deleteDirectory(doDir);
+    }
+
     public synchronized String getDatastream( String path, String datastream ) throws IOException {
         File dsLoc = new File( location + path + "/" + datastream );
         return( IOUtil.readStringFromFile( dsLoc ) );
     }
 
-    public synchronized void addDatastream( String path, String datastream, Object content ) throws Exception {
+    public synchronized int setDatastream( String path, String datastream, Object content ) throws Exception{
+        if (isDatastreamExists(path, datastream)) {
+            String previous = getDatastream(path, datastream);
+            if (!content.equals(previous))
+                deleteDatastream(path, datastream);
+            else
+                return DATASTREAM_UNCHANGED;
+        }
+
+        addDatastream(path, datastream, content);
+        return DATASTREAM_STORED;
+    }
+
+    private void addDatastream( String path, String datastream, Object content ) throws Exception {
         File dsLoc = new File( location + path + "/" + datastream );
         if( content instanceof File ) {
             File contentFile = (File)content;
@@ -62,31 +83,12 @@ public class Store {
         }
     }
 
-    public synchronized void modifyDatastream( String path, String datastream, Object content ) throws Exception {
-        File dsLoc = new File( location + path + "/" + datastream );
-        if( dsLoc.delete() )
-            throw( new IOException( "Cannot delete file " + dsLoc + "." ) );
-
-        addDatastream(path, datastream, content);
-    }
-
-    public synchronized void updateDatastream( String path, String datastream, Object content ) throws Exception{
-        if (isDatastreamExists(path, datastream)) {
-            String previous = getDatastream(path, datastream);
-            if (!content.equals(previous))
-                modifyDatastream(path, datastream, content);
-        }
-        else
-            addDatastream(path, datastream, content);
-    }
-
-    public synchronized void purgeDatastream(String path, String datastream) throws IOException {
+    public synchronized void deleteDatastream( String path, String datastream ) throws Exception {
         File dsLoc = new File( location + path + "/" + datastream );
         if( !dsLoc.delete() )
-            throw( new IOException( "Cannot delete datastream " + dsLoc + "." ) );
-        // If the parent object (i.e. folder) has no children, 
-        // should I delete it and all its empty ancerstors as well? - FB
+            throw( new IOException( "Cannot delete file " + dsLoc + "." ) );
     }
+
 
     public synchronized boolean isDatastreamExists(String path, String datastream) {
         File dsLoc = new File( location + path + "/" + datastream );

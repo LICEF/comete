@@ -13,5 +13,5 @@ WHERE '{'
     FILTER ( ?p = dct:title || ?p = dct:description || ?p = foaf:page ||
              ?p = dct:creator || ?p = dct:publisher || ?p = dct:publisher ||
              ?p = dct:subject || ?p = comete:extraInfo || ?p = dct:format || 
-             ?p = dct:language || ?p = comete:keyword  )
+             ?p = dct:language || ?p = comete:keyword )
 '}'
