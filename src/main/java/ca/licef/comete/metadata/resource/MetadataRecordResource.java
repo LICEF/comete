@@ -167,14 +167,33 @@ public class MetadataRecordResource {
         return out.toString();
     }
 
+    /*
+     * Possible values for datastreamType are: xml, lom, and dc.
+     */
     @GET
-    @Path( "{id}/xml" )
+    @Path( "{id}/{datastreamType}" )
     @Produces( { MediaType.TEXT_HTML, MediaType.APPLICATION_XML } )
-    public Response getMetadataRecordAsXml( @PathParam( "id" ) String id, @DefaultValue( "false" ) @QueryParam( "syntaxHighlighted" ) String strIsSyntaxHighlighted ) throws Exception {
-        Store store = Store.getInstance();
-        String xml = store.getDatastream( "/" + id, Constants.DATASTREAM_DATA );
+    public Response getMetadataRecordAsXml( @PathParam( "id" ) String id, @PathParam( "datastreamType" ) String datastreamType, @DefaultValue( "false" ) @QueryParam( "syntaxHighlighted" ) String strIsSyntaxHighlighted ) throws Exception {
+        String datastream = null;
+        if( datastreamType.equals( "xml" ) )
+            datastream = Constants.DATASTREAM_ORIGINAL_DATA;
+        else if( datastreamType.equals( "lom" ) )
+            datastream = Constants.DATASTREAM_EXPOSED_DATA_LOM;
+        else if( datastreamType.equals( "dc" ) )
+            datastream = Constants.DATASTREAM_EXPOSED_DATA_DC;
+        else
+            return( Response.status( Response.Status.BAD_REQUEST ).entity( "Invalid datastream type." ).build());
 
-        if( "true".equals( strIsSyntaxHighlighted ) ) {
+        boolean isSyntaxHighlighted = ( "true".equals( strIsSyntaxHighlighted ) );
+
+        return( getXmlDatastream( id, datastream, isSyntaxHighlighted ) );
+    }
+
+    private Response getXmlDatastream( String id, String datastream, boolean isSyntaxHighlighted ) throws Exception {
+        Store store = Store.getInstance();
+        String xml = store.getDatastream( "/" + id, datastream );
+
+        if( isSyntaxHighlighted ) {
             String html = ( xml == null ? "" : Util.getSyntaxHighlightedCode( "xml", xml ) );
             return( Response.status( HttpServletResponse.SC_OK ).entity( html ).type( MediaType.TEXT_HTML ).build() );
         }
