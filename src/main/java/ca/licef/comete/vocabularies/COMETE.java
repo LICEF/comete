@@ -90,7 +90,7 @@ public class COMETE {
     public static final ObjectProperty metadataFormat  = m_model.createObjectProperty( "http://comete.licef.ca/reference#metadataFormat" );
 
     /** <p>Link to original data.</p> */
-    public static final DatatypeProperty originalData = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#originalData" );
+    public static final DatatypeProperty originalDataLink = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#originalDataLink" );
 
     /** <p>Type of repository like OAI or HTML</p> */
     public static final ObjectProperty repository = m_model.createObjectProperty( "http://comete.licef.ca/reference#repository" );

@@ -438,7 +438,7 @@ public class Metadata {
                 triples.add(new Triple(recordURI, COMETE.repository, repoURI));
 
             String recordLink = Core.getInstance().getCometeUrl() + "/rest/metadataRecords" + recordId + "/xml";
-            triples.add(new Triple(recordURI, COMETE.originalData, recordLink));
+            triples.add(new Triple(recordURI, COMETE.originalDataLink, recordLink));
 
             //Resource association
             triples.add(new Triple(loURI, COMETE.hasMetadataRecord, recordURI));
