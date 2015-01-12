@@ -10,7 +10,7 @@
 @prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
 @prefix owl:        <http://www.w3.org/2002/07/owl#> .
 @prefix dc:         <http://purl.org/dc/elements/1.1/> .
-#@prefix dcterms:    <http://purl.org/dc/terms/> .
+@prefix dcterms:    <http://purl.org/dc/terms/> .
 @prefix foaf:       <http://xmlns.com/foaf/0.1/> .
 @prefix skos:       <http://www.w3.org/2004/02/skos/core#> .
 @prefix geo:        <http://www.w3.org/2003/01/geo/wgs84_pos#> .
@@ -24,12 +24,9 @@
 @prefix void:       <http://rdfs.org/ns/void#> .
 @prefix ir:         <http://www.ontologydesignpatterns.org/cp/owl/informationrealization.owl#> .
 
-@prefix comete:     <http://comete.licef.ca/reference#> .
-@prefix dct:        <http://purl.org/dc/terms/> .
 @prefix oai:        <http://www.openarchives.org/OAI/2.0/> .
-@prefix xxx:        <http://localhost:8080/> .
-@prefix yyy:        <http://localhost:8080/resource/> .
-
+@prefix comete-onto:     <http://comete.licef.ca/reference#> .
+@prefix comete:     <URI_PREFIX/> .
 
 # Server configuration section
 <> a conf:Configuration;
@@ -37,7 +34,7 @@
     conf:projectHomepage <PROJECT_HOMEPAGE>;
 
     # The Pubby root, where the webapp is running inside the servlet container.
-    conf:webBase <WEB_BASE>;
+    conf:webBase <WEB_BASE/>;
     
     # URL of an RDF file whose prefix mapping is to be used by the
     # server; defaults to <>, which is *this* file.
@@ -49,7 +46,6 @@
 
     # Will be appended to the conf:webBase to form the public
     # resource URIs; if not present, defaults to ""
-    conf:webResourcePrefix "";
     #conf:webResourcePrefix "resource/";
 
 # Dataset configuration section
@@ -57,7 +53,7 @@
         conf:sparqlEndpoint <SPARQL_ENDPOINT>;
         
         # Common URI prefix of all resource URIs in the SPARQL dataset
-        conf:datasetBase <URI_PREFIX/>;
+        #conf:datasetBase <http://dbpedia.org/resource/>;
         
         # Fixes an issue with the server running behind an Apache proxy;
         # can be disabled otherwise

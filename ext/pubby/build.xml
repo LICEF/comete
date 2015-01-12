@@ -11,14 +11,14 @@
     <target name="build">
         <mkdir dir="${build}"/>
         <copy todir="${build}">
-            <fileset dir="${res}/ROOT"/>
+            <fileset dir="${res}"/>
         </copy>
         <replace file="${build}/WEB-INF/config.ttl" propertyFile="../../src/main/resources/conf/core.properties">
             <replacefilter token="PROJECT_NAME" property="project.name"/>
             <replacefilter token="PROJECT_HOMEPAGE" property="project.homepage"/>
-            <replacefilter token="WEB_BASE" property="pubby.webBase"/>
-            <replacefilter token="SPARQL_ENDPOINT" property="sparql.endpoint"/>
             <replacefilter token="URI_PREFIX" property="comete.uri.prefix"/>
+            <replacefilter token="WEB_BASE" property="comete.hostUrl"/>
+            <replacefilter token="SPARQL_ENDPOINT" property="sparql.endpoint"/>
         </replace>
     </target>
 
