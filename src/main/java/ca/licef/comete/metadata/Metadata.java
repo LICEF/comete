@@ -438,7 +438,7 @@ public class Metadata {
                 triples.add(new Triple(recordURI, COMETE.repository, repoURI));
 
             String recordLink = Core.getInstance().getCometeUrl() + "/rest/metadataRecords" + recordId + "/xml";
-            triples.add(new Triple(recordURI, COMETE.originalData, recordLink));
+            triples.add(new Triple(recordURI, COMETE.originalDataLink, recordLink));
 
             //Resource association
             triples.add(new Triple(loURI, COMETE.hasMetadataRecord, recordURI));
@@ -454,7 +454,7 @@ public class Metadata {
             storeId = getStoreIdFromURI(recordURI);
 
         //store content
-        store.setDatastream(storeId, Constants.DATASTREAM_DATA, record);
+        store.setDatastream(storeId, Constants.DATASTREAM_ORIGINAL_DATA, record);
 
         validateRecord( storeId, loURI, recordURI, record, namespace );
 
@@ -534,7 +534,7 @@ public class Metadata {
     //            learningObjectUri = triple.getObject();
     //    }
 
-    //    String recordXml = Core.getInstance().getFedora().getDatastream( storeId, Constants.DATASTREAM_DATA );
+    //    String recordXml = Core.getInstance().getFedora().getDatastream( storeId, Constants.DATASTREAM_ORIGINAL_DATA );
 
     //    return( processMetadataRecord( recordXml, learningObjectUri, metadataRecordUri, applicationProfile ) );
     //}
@@ -612,10 +612,10 @@ public class Metadata {
      */
 
     private void recordToInternalFormat( String loURI, String recordURI, String storeId, MetadataFormat metadataFormat ) throws Exception {
-        if( !Store.getInstance().isDatastreamExists( storeId, Constants.DATASTREAM_DATA ) )
+        if( !Store.getInstance().isDatastreamExists( storeId, Constants.DATASTREAM_ORIGINAL_DATA ) )
             return;
 
-        String xml = Store.getInstance().getDatastream( storeId, Constants.DATASTREAM_DATA );
+        String xml = Store.getInstance().getDatastream( storeId, Constants.DATASTREAM_ORIGINAL_DATA );
 
         HashMap<String,String> parameters = new HashMap<String,String>();
         parameters.put( "loURI", loURI );
