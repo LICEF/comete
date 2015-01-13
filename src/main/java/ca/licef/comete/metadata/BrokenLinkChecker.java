@@ -4,6 +4,8 @@ import ca.licef.comete.core.Core;
 import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.Util;
 import licef.IOUtil;
+import licef.reflection.Invoker;
+import licef.tsapi.model.Tuple;
 import licef.tsapi.TripleStore;
 import org.rendersnake.DocType;
 import org.rendersnake.HtmlCanvas;
@@ -62,23 +64,28 @@ public class BrokenLinkChecker implements Runnable {
 
             learningObjectLinks.clear();
             linksToProcess.clear();
+System.out.println( "Je suis la!" );
 
-            //TripleStore tripleStore = Core.getInstance().getTripleStore();
-            //Hashtable<String, String>[] results = tripleStore.getResults( "getRecordLinks.sparql" );
-            //for( int i = 0; i < results.length; i++ ) {
-            //    String loUri = results[ i ].get( "s" );
-            //    String url = Util.manageQuotes( results[ i ].get( "url" ) );
-            //    List<String> links = learningObjectLinks.get( loUri );
-            //    if( links == null ) {
-            //        links = new ArrayList<String>();
-            //        learningObjectLinks.put( loUri, links );
-            //    }
-            //    
-            //    links.add( url );
-            //    linksToProcess.add( url );
-            //}
+            TripleStore tripleStore = Core.getInstance().getTripleStore();
+            String query = Util.getQuery( "metadata/getRecordLinks.sparql" );
+            Invoker inv = new Invoker( tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[] { query } );
+            Tuple[] tuples = (Tuple[])tripleStore.transactionalCall( inv );
+            for( int i = 0; i < tuples.length; i++ ) {
+                String loUri = tuples[ i ].getValue( "s" ).getContent();
+                //String url = Util.manageQuotes( results[ i ].get( "url" ) );
+                String url = tuples[ i ].getValue( "url" ).getContent();
+                List<String> links = learningObjectLinks.get( loUri );
+                if( links == null ) {
+                    links = new ArrayList<String>();
+                    learningObjectLinks.put( loUri, links );
+                }
+                
+                links.add( url );
+                linksToProcess.add( url );
+            }
             totalLinkCount = linksToProcess.size(); 
             brokenLinkCount = 0;
+System.out.println( "loLinks="+learningObjectLinks );
 
             master = new Thread( this, "BrokenLinkChecker" );
             master.start();
@@ -225,7 +232,7 @@ public class BrokenLinkChecker implements Runnable {
         if( !( new File( Core.getInstance().getCometeReportsHome() ).exists() ) )
             IOUtil.createDirectory( Core.getInstance().getCometeReportsHome() );
 
-        ResourceBundle bundle = ResourceBundle.getBundle( "Strings", new Locale( lang ) );
+        ResourceBundle bundle = ResourceBundle.getBundle( "translations/Strings", new Locale( lang ) );
 
         PrintWriter writer = null;
         try {
@@ -236,7 +243,7 @@ public class BrokenLinkChecker implements Runnable {
                 .html()
                     .head()
                         .title().content( bundle.getString( "BrokenLinkReport.HeadTitle" ) )
-                        .style().render( new StringResource( "BrokenLinkReport.css" ) )
+                        .style().render( new StringResource( "/BrokenLinkReport.css" ) )
                         ._style()
                     ._head()
                     .body()
