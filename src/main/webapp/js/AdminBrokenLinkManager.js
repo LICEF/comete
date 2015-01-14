@@ -8,11 +8,11 @@ Ext.define( 'Comete.BrokenLinkManager', {
         this.updateDataForReport = function() {
             Ext.Ajax.request( {
                 method: 'HEAD',
-                url: metadataUrl + '/rest/brokenLinkManager/report?lang=' + lang,
+                url: 'rest/brokenLinkManager/report?lang=' + lang,
                 success: function( response ) {
                     var reportLocation = response.getAllResponseHeaders()[ 'report-location' ];
                     var html = Ext.String.format( tr( 'Browse the <a href="{0}" target="_blank">last report</a>'), reportLocation );
-                    this.browseReportPanel.body.update( html );
+                    this.browseReportPanel.update( html );
                     this.reportPanel.setVisible( true );
                     this.launcherPanel.setVisible( true );
                     this.progressPanel.setVisible( false );
@@ -53,7 +53,7 @@ Ext.define( 'Comete.BrokenLinkManager', {
 
         this.doStartVerification = function() {
             Ext.Ajax.request( {
-                url: metadataUrl + '/rest/brokenLinkManager/verification',
+                url: 'rest/brokenLinkManager/verification',
                 params: {
                     notifEmail: this.emailField.getValue()
                 },
@@ -70,7 +70,7 @@ Ext.define( 'Comete.BrokenLinkManager', {
 
         this.doCancelVerification = function() {
             Ext.Ajax.request( {
-                url: metadataUrl + '/rest/brokenLinkManager/validation',
+                url: 'rest/brokenLinkManager/validation',
                 method: 'DELETE',
                 success: function( response ) {
                     this.updateData();
@@ -142,7 +142,7 @@ Ext.define( 'Comete.BrokenLinkManager', {
     },
     updateData: function() {
         Ext.Ajax.request( {
-            url: metadataUrl + '/rest/brokenLinkManager/verification',
+            url: 'rest/brokenLinkManager/verification',
             method: 'GET',
             success: function( response ) {
                 var progress = response.responseText.substring( 
