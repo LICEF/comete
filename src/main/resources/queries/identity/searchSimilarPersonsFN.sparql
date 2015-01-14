@@ -1,3 +1,4 @@
+PREFIX text: <http://jena.apache.org/text#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX comete: <http://comete.licef.ca/reference#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
@@ -5,13 +6,11 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 SELECT DISTINCT ?s ?gid
 WHERE '{'
     ?s rdf:type comete:Person .
-    GRAPH <server:main-fullText> '{'
-        '{' ?s foaf:name "{0}" '}'
-        UNION
-        '{' ?s comete:altName "{0}" '}'
-    '}'
+    '{' ?s text:query ( foaf:name "{0}" ) '}'
+    UNION
+    '{' ?s text:query ( foaf:altName "{0}" ) '}'
     OPTIONAL '{'
-        GRAPH <server:identity-similarity> '{'
+        GRAPH <{2}/identity-similarity> '{'
             ?s dct:identifier ?gid .                         
         '}'
     '}'

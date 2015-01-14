@@ -1,0 +1,13 @@
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
+WITH <{0}/identity-similarity>
+DELETE '{'
+    ?s ?p ?gid
+'}'
+INSERT '{'
+    ?s ?p "{1}"
+'}'
+WHERE '{'
+    ?s ?p ?gid .
+    FILTER ( (?p = dcterms:identifier) && ( {2} ) )
+'}'

@@ -1,33 +1,32 @@
+PREFIX text: <http://jena.apache.org/text#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX comete: <http://comete.licef.ca/reference#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 
 SELECT DISTINCT ?s ?gid
 WHERE '{'
     ?s rdf:type comete:Person .
-    GRAPH <server:main-fullText> '{'
-        '{'
-            '{' ?s foaf:givenName "{0}" '}'
-            UNION
-            '{' ?s comete:altGivenName "{0}" '}'
-            '{' ?s foaf:familyName "{1}" '}'
-            UNION
-            '{' ?s comete:altFamilyName "{1}" '}'
-        '}'
+    '{'
+        '{' ?s text:query ( foaf:givenName "{0}" ) '}'
         UNION
-        '{'
-            '{' ?s foaf:givenName "{1}" '}'
-            UNION
-            '{' ?s comete:altGivenName "{1}" '}'
-            '{' ?s foaf:familyName "{0}" '}'
-            UNION
-            '{' ?s comete:altFamilyName "{0}" '}'
-        '}'
+        '{' ?s text:query ( comete:altGivenName "{0}" ) '}'
+        '{' ?s text:query ( foaf:familyName "{1}" ) '}'
+        UNION
+        '{' ?s text:query ( comete:altFamilyName "{1}" ) '}'
+    '}'
+    UNION
+    '{'
+        '{' ?s text:query ( foaf:givenName "{1}" ) '}'
+        UNION
+        '{' ?s text:query ( comete:altGivenName "{1}" ) '}'
+        '{' ?s text:query ( foaf:familyName "{0}" ) '}'
+        UNION
+        '{' ?s text:query ( comete:altFamilyName "{0}" ) '}'
     '}'
     OPTIONAL '{'
-        GRAPH <server:identity-similarity> '{'
-            ?s dct:identifier ?gid
+        GRAPH <{2}/identity-similarity> '{'
+            ?s dcterms:identifier ?gid
         '}'
     '}'
 '}'

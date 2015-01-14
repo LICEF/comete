@@ -247,12 +247,12 @@ public class Identity {
             }
         }
 
-        tripleStore.insertTriplesWithTextIndex(list, Constants.indexIdentityPredicates, Constants.INDEX_LANGUAGES, null);
+        tripleStore.insertTriplesWithTextIndex(list, Constants.indexPredicates, Constants.INDEX_LANGUAGES, null);
 
         System.out.println("Person: " + formattedName + " created");
 
         //Search and add marker for similar persons
-        manageSimilarPersons(formattedName, firstname, lastname);
+        manageSimilarPersons(uri, formattedName, firstname, lastname);
 
         return uri;
     }
@@ -282,7 +282,7 @@ public class Identity {
         }
 
         if (!list.isEmpty())
-            tripleStore.insertTriplesWithTextIndex(list, Constants.indexIdentityPredicates, Constants.INDEX_LANGUAGES, null);
+            tripleStore.insertTriplesWithTextIndex(list, Constants.indexPredicates, Constants.INDEX_LANGUAGES, null);
     }
 
     int getIdentityLevel(String firstname, String lastname, String email) {
@@ -374,7 +374,7 @@ public class Identity {
             }
         }
 
-        tripleStore.insertTriplesWithTextIndex(list, Constants.indexIdentityPredicates, Constants.INDEX_LANGUAGES, null);
+        tripleStore.insertTriplesWithTextIndex(list, Constants.indexPredicates, Constants.INDEX_LANGUAGES, null);
 
         System.out.println("Org: " + org + " created");
 
@@ -408,7 +408,7 @@ public class Identity {
         }
 
         if (!list.isEmpty())
-            tripleStore.insertTriplesWithTextIndex(list, Constants.indexIdentityPredicates, Constants.INDEX_LANGUAGES, null);
+            tripleStore.insertTriplesWithTextIndex(list, Constants.indexPredicates, Constants.INDEX_LANGUAGES, null);
     }
 
     void maybeCopyValue(Entity en, Property pred, Property predAlt, String value, List<Triple> list) throws Exception{
@@ -496,14 +496,14 @@ public class Identity {
     /* SIMILARITY MANAGEMENT */
     /*************************/
 
-    void manageSimilarPersons(String formattedName, String firstname, String lastname) throws Exception {
+    void manageSimilarPersons(String uri, String formattedName, String firstname, String lastname) throws Exception {
         int identityLevel = getIdentityLevel(firstname, lastname, null);
         Tuple[] results;
         switch (identityLevel) {
             case IDENTITY_NORMAL:
-                //todo sparql multi-graph
-                String query = CoreUtil.getQuery("identity/searchSimilarPersons.sparql", firstname, lastname);
-                results = tripleStore.sparqlSelect(query);
+                String query = CoreUtil.getQuery("identity/searchSimilarPersons.sparql",
+                        firstname, lastname, Core.getInstance().getUriPrefix());
+                results = tripleStore.sparqlSelectWithTextIndex(query, Constants.indexPredicates, Constants.INDEX_LANGUAGES, null);
                 break;
             default:
                 //avoid braces interpreted within boolean expression (and also wrong balancing) -AM
@@ -523,12 +523,12 @@ public class Identity {
                     formattedName += "\\\"" + terms[i] + "\\\"";
                     delimiter = " AND ";
                 }
-                //todo sparql multi-graph
-                query = CoreUtil.getQuery("identity/searchSimilarPersonsFN.sparql", formattedName);
-                results = tripleStore.sparqlSelect(query);
+                query = CoreUtil.getQuery("identity/searchSimilarPersonsFN.sparql",
+                        formattedName, Core.getInstance().getUriPrefix());
+                results = tripleStore.sparqlSelectWithTextIndex(
+                        query, Constants.indexPredicates, Constants.INDEX_LANGUAGES, null);
         }
-
-        if ( results == null || results.length <= 1 ) //only current uri
+        if ( results == null || results.length == 0 )
             return;
 
         //uuid generation
@@ -539,44 +539,43 @@ public class Identity {
 
         String constraints = "";
         String delimiter = "";
+        boolean insertCurrent = false;
         for (int i = 0; i < results.length; i++) {
             String _uri = results[i].getValue("s").getContent();
-            String _gid = results[i].getValue("gid").getContent();  //keep the quotes for constraints
+            System.out.println("_uri = " + _uri);
+            String _gid = results[i].getValue("gid").getContent();
+            System.out.println("_gid = " + _gid);
             if ( _gid != null && !"".equals(_gid) && !groupIds.contains(_gid)) {
                 constraints += delimiter ;
-                constraints += "?gid = " + _gid;
+                constraints += "?gid = \"" + _gid + "\"";
                 groupIds.add(_gid);
                 delimiter = " || ";
             }
-
-            similarTriples.add(new Triple(_uri, DCTERMS.identifier, uuid));
+            else
+                similarTriples.add(new Triple(_uri, DCTERMS.identifier, uuid));
+            insertCurrent = true;
         }
 
-        //todo faire un delete select maybe
-        //delete and reset the previous common uuid
-/*
         if (!"".equals(constraints)) {
-            Triple[] existentSimilarTriples = tripleStore.getTriplesFromGraph("identity/getSimilarIdentities.sparql", IDENTITY_SIMILARITY_GRAPH, constraints );
-            tripleStore.deleteTriples(existentSimilarTriples, IDENTITY_SIMILARITY_GRAPH);
-            for( Triple exTriple : existentSimilarTriples) {
-                exTriple.setObject(uuid);
-                similarTriples.add(exTriple);
-            }
+            String query = CoreUtil.getQuery("identity/manageSimilarIdentities.sparql",
+                    Core.getInstance().getUriPrefix(), uuid, constraints  );
+            tripleStore.sparqlUpdate(query);
         }
-
-        tripleStore.addTriples(similarTriples, IDENTITY_SIMILARITY_GRAPH);
-*/
+        tripleStore.insertTriples(similarTriples, IDENTITY_SIMILARITY_GRAPH); //to not forget others without gid
+        if (insertCurrent)
+            tripleStore.insertTriple(new Triple(uri, DCTERMS.identifier, uuid), IDENTITY_SIMILARITY_GRAPH); //current uri
     }
 
     void manageSimilarOrganizations(String orgName, String orgUri) throws Exception {
         Object[] res = Util.extractPertinentTermsFromOrg(orgName);
         String[] clearedTerms = (String[])res[0];
         String terms = (String)res[1];
-        //todo sparql multi-graph
-        String query = CoreUtil.getQuery("identity/searchSimilarOrganizations.sparql", terms);
-        Tuple[] results = tripleStore.sparqlSelect(query);
+        String query = CoreUtil.getQuery("identity/searchSimilarOrganizations.sparql",
+                terms, Core.getInstance().getUriPrefix());
+        Tuple[] results = tripleStore.sparqlSelectWithTextIndex(
+                query, Constants.indexPredicates, Constants.INDEX_LANGUAGES, null);
 
-        if ( results == null || results.length <= 1 ) //only current orgUri
+        if ( results == null || results.length == 0 )
             return;
 
         //uuid generation
@@ -587,9 +586,10 @@ public class Identity {
 
         String constraints = "";
         String delimiter = "";
+        boolean insertCurrent = false;
         for (int i = 0; i < results.length; i++) {
             String _uri = results[i].getValue("s").getContent();
-            String _name = CoreUtil.manageQuotes(results[i].getValue("n").getContent());
+            String _name = results[i].getValue("n").getContent();
 
             //check of similarity (no need to check name similarity with orgUri)
             if (!_uri.equals(orgUri) && !Util.isSimilarOrgNames(clearedTerms, Util.clearOrgName(_name).split(" ")))
@@ -598,27 +598,23 @@ public class Identity {
             String _gid = results[i].getValue("gid").getContent();  //keep the quotes for constraints
             if ( _gid != null && !"".equals(_gid) && !groupIds.contains(_gid)) {
                 constraints += delimiter ;
-                constraints += "?gid = " + _gid;
+                constraints += "?gid = \"" + _gid + "\"";
                 groupIds.add(_gid);
                 delimiter = " || ";
             }
-            similarTriples.add(new Triple(_uri, DCTERMS.identifier, uuid));
+            else
+                similarTriples.add(new Triple(_uri, DCTERMS.identifier, uuid));
+            insertCurrent = true;
         }
 
-
-        //todo faire un delete select maybe
-        //delete and reset the previous gids
-        /*if (!"".equals(constraints)) {
-            Triple[] existentSimilarTriples = tripleStore.getTriplesFromGraph("identity/getSimilarIdentities.sparql", IDENTITY_SIMILARITY_GRAPH, constraints );
-            tripleStore.deleteTriples(existentSimilarTriples, IDENTITY_SIMILARITY_GRAPH);
-            for( Triple exTriple : existentSimilarTriples) {
-                exTriple.setObject(uuid);
-                similarTriples.add(exTriple);
-            }
+        if (!"".equals(constraints)) {
+            query = CoreUtil.getQuery("identity/manageSimilarIdentities.sparql",
+                    Core.getInstance().getUriPrefix(), uuid, constraints  );
+            tripleStore.sparqlUpdate(query);
         }
-
-        if (similarTriples.size() > 1)
-            tripleStore.addTriples(similarTriples, IDENTITY_SIMILARITY_GRAPH);*/
+        tripleStore.insertTriples(similarTriples, IDENTITY_SIMILARITY_GRAPH); //to not forget others without gid
+        if (insertCurrent)
+            tripleStore.insertTriple(new Triple(orgUri, DCTERMS.identifier, uuid), IDENTITY_SIMILARITY_GRAPH); //current uri
     }
 
 

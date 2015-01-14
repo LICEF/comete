@@ -184,7 +184,7 @@ public class VocabularyManager {
             Triple[] triples = tripleStore.getTriplesWithSubjectPredicate(uri, COMETE.vocUri);
             tripleStore.removeTriples(Arrays.asList(triples));
             if (isNavigable)
-                tripleStore.clearWithTextIndex(Constants.indexVocPredicates, Constants.INDEX_LANGUAGES, null, vocUri);
+                tripleStore.clearWithTextIndex(Constants.indexPredicates, Constants.INDEX_LANGUAGES, null, vocUri);
             else
                 tripleStore.clear(vocUri);
         }
@@ -218,7 +218,7 @@ public class VocabularyManager {
         //load content
         if (isNavigable)
             tripleStore.loadContentWithTextIndex(new ByteArrayInputStream(skosContent.getBytes()),
-                    Constants.indexVocPredicates, Constants.INDEX_LANGUAGES, null, licef.tsapi.Constants.RDFXML, vocUri);
+                    Constants.indexPredicates, Constants.INDEX_LANGUAGES, null, licef.tsapi.Constants.RDFXML, vocUri);
         else
             tripleStore.loadContent(new ByteArrayInputStream(skosContent.getBytes()),
                     licef.tsapi.Constants.RDFXML, vocUri);

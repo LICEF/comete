@@ -19,28 +19,13 @@ public class Constants {
     //Indexation
     public static final String[] INDEX_LANGUAGES = { "en", "fr", "es" };
 
-    public static Property[] indexVocPredicates = new Property[]{
-        SKOS.prefLabel
-    };
-
-    public static Property[] indexMetadataPredicates = new Property[] {
-        DCTERMS.title, DCTERMS.description, COMETE.keyword, COMETE.extraInfo
-    };
-
-    public static Property[] indexIdentityPredicates = new Property[] {
-        FOAF.name, FOAF.givenName, FOAF.familyName, COMETE.formattedAddress,
-        COMETE.altName, COMETE.altGivenName, COMETE.altFamilyName, COMETE.altFormattedAddress
-    };
-
-    //Union of all precedent
-    public static Property[] indexQueryPredicates = new Property[] {
+    //predicates taken into account for index process
+    public static Property[] indexPredicates = new Property[] {
         DCTERMS.title, DCTERMS.description, COMETE.keyword, COMETE.extraInfo,
         FOAF.name, FOAF.givenName, FOAF.familyName, COMETE.formattedAddress,
         COMETE.altName, COMETE.altGivenName, COMETE.altFamilyName, COMETE.altFormattedAddress,
         SKOS.prefLabel
     };
-
-
 
     public static final String[] UI_LANGUAGES = { "en", "fr" };
 

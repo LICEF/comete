@@ -25,7 +25,7 @@ public class Security {
     public boolean isAuthorized(String ip) throws Exception {
         //trust local address
         if (ip.equals(InetAddress.getLocalHost().getHostAddress()) ||
-            "127.0.0.1".equals(ip))
+            "127.0.0.1".equals(ip) || "0:0:0:0:0:0:0:1".equals(ip))
             return true;
 
         //check on the trusted list

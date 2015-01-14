@@ -5,7 +5,7 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 SELECT DISTINCT ?s ?name
 WHERE '{'
     ?s foaf:name ?name .
-    GRAPH <server:identity-similarity> '{'
+    GRAPH <{1}/identity-similarity> '{'
         ?s dct:identifier "{0}"
     '}'
 '}'
