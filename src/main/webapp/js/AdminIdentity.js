@@ -34,7 +34,7 @@
         this.mainPanel = Ext.create('Ext.tab.Panel', {
             activeTab: 0, 
             plain: true,          
-            margin: '0 10 10 10',
+            margin: '0 10 10 0',
             items: [ 
                      {
                        id: 'managePersons',

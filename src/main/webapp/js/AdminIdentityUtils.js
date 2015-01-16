@@ -265,8 +265,9 @@ Ext.define( 'Comete.IdentityDetail', {
         cfg = {
             border: false,
             width: 350,
+            margin: '0 0 5 0',
             height: (this.mode == 'read' && this.name == 'Address')?80:24,
-            items: [ this.label, {xtype:'tbfill'}, { border: this.mode == 'read', items: this.dataField } ]
+            items: [ this.label, {xtype:'tbfill'}, { layout: 'fit', border: this.mode == 'read', items: this.dataField } ]
         };
         Ext.apply(this, cfg);
         this.callParent(arguments); 

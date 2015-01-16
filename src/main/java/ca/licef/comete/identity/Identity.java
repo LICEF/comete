@@ -642,6 +642,12 @@ public class Identity {
     }
 
     public JSONArray getPersonDetails(String uri) throws Exception {
+        Invoker inv = new Invoker(this, "ca.licef.comete.identity.Identity",
+                "getPersonDetailsEff", new Object[]{uri});
+        return (JSONArray)tripleStore.transactionalCall(inv);
+    }
+
+    public JSONArray getPersonDetailsEff(String uri) throws Exception {
         String query = CoreUtil.getQuery("identity/getPersonDetails.sparql", uri);
         Tuple[] results = tripleStore.sparqlSelect(query);
         JSONArray personDetails = new JSONArray();
@@ -653,6 +659,12 @@ public class Identity {
     }
 
     public JSONArray getOrganizationDetails(String uri) throws Exception {
+        Invoker inv = new Invoker(this, "ca.licef.comete.identity.Identity",
+                "getOrganizationDetailsEff", new Object[]{uri});
+        return (JSONArray)tripleStore.transactionalCall(inv);
+    }
+
+    public JSONArray getOrganizationDetailsEff(String uri) throws Exception {
         String query = CoreUtil.getQuery("identity/getOrganizationDetails.sparql", uri);
         Tuple[] results = tripleStore.sparqlSelect(query);
         JSONArray orgDetails = new JSONArray();
@@ -707,18 +719,31 @@ public class Identity {
     }
 
     public JSONObject getAllPersonDetails(JSONArray uriArray) throws Exception {
+        Invoker inv = new Invoker(this, "ca.licef.comete.identity.Identity",
+                "getAllPersonDetailsEff", new Object[]{uriArray});
+        return (JSONObject)tripleStore.transactionalCall(inv);
+    }
+
+
+    public JSONObject getAllPersonDetailsEff(JSONArray uriArray) throws Exception {
         JSONObject details = new JSONObject();
         String[] vars = new String[]{"name", "firstname", "lastname", "email", "url", "address", "photo", "tel", "fax" };
         //details
-        extractAllDetails(uriArray, "getAllPersonDetails.sparql", vars, details);
+        extractAllDetails(uriArray, "identity/getAllPersonDetails.sparql", vars, details);
         return details;
     }
 
     public JSONObject getAllOrganizationDetails(JSONArray uriArray) throws Exception {
+        Invoker inv = new Invoker(this, "ca.licef.comete.identity.Identity",
+                "getAllOrganizationDetailsEff", new Object[]{uriArray});
+        return (JSONObject)tripleStore.transactionalCall(inv);
+    }
+
+    public JSONObject getAllOrganizationDetailsEff(JSONArray uriArray) throws Exception {
         JSONObject details = new JSONObject();
         String[] vars = new String[]{"name", "email", "url", "address", "logo", "tel", "fax" };
         //details
-        extractAllDetails(uriArray, "getAllOrganizationDetails.sparql", vars, details);
+        extractAllDetails(uriArray, "identity/getAllOrganizationDetails.sparql", vars, details);
         return details;
     }
 
