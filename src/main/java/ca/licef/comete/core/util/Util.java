@@ -143,21 +143,21 @@ public class Util {
     public static String getRestUrl(String type) {
         String url = null;
         if (COMETE.MetadataRecord.getURI().equals(type))
-            url = "/rest/metadataRecords";
+            url = "rest/metadataRecords";
         else if (COMETE.LearningObject.getURI().equals(type))
-            url = "/rest/learningObjects";
+            url = "rest/learningObjects";
         else if (COMETE.Identity.getURI().equals(type))
-            url =  "/rest/identities";
+            url = "rest/identities";
         else if (COMETE.Person.getURI().equals(type))
-            url = "/rest/persons";
+            url = "rest/persons";
         else if (COMETE.Organization.getURI().equals(type))
-            url = "/rest/organizations";
+            url = "rest/organizations";
         else if (COMETE.Repository.getURI().equals(type))
-            url = "/rest/repositories";
+            url = "rest/repositories";
         else if (COMETE.VocContext.getURI().equals(type))
-            url = "/rest/vocContexts";
+            url = "rest/vocContexts";
         else if (SKOS.ConceptScheme.getURI().equals(type))
-            url = "/rest/voc";
+            url = "rest/voc";
 
         return url;
     }

@@ -1,5 +1,5 @@
 ﻿function getPageLocation(lg) {
-    return "Admin.jsp?lang=" + lg;         
+    return "admin.jsp?lang=" + lg;         
 }
 
 var currentElem;

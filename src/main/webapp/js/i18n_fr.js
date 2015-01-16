@@ -206,7 +206,7 @@
     'Please wait': 'Veuillez patienter',
     'Question': 'Question',
     'Not implemented yet.': 'Non implanté',
-    'All': 'Tout',
+    'All': 'Toutes',
 
     'Failure': 'Échec',
     'To update the Validation Report, the metamodel must be resetted.': 'Pour mettre à jour le rapport de validation, le métamodèle doit être réinitialisé.',

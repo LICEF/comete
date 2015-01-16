@@ -99,7 +99,7 @@
 
         this.setUrlPhotoButton = Ext.create('Ext.button.Button', {
             margin: '0 0 0 2',
-            icon: 'images/greenArrow.gif',
+            icon: 'images/whiteArrow.png',
             disabled: !authorized,
             handler: this.setUrlPhoto,
             scope: this
@@ -115,7 +115,7 @@
 
         this.uploadButton = Ext.create('Ext.button.Button', {
             margin: '0 0 0 2',
-            icon: 'images/greenArrow.gif',
+            icon: 'images/whiteArrow.png',
             disabled: !authorized,
             handler: this.uploadPhoto,
             scope: this
@@ -220,7 +220,7 @@
         var photo = this.photo;  
         if (uploadForm.isValid()) {
             uploadForm.submit({ 
-                url: identityUrl + '/rest/identities/photo',
+                url: 'rest/identities/photo',
                 success: function(form, action) {
                    waitDialog.close();
                    photo.setSrc(action.result.data);

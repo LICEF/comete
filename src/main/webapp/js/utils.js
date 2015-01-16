@@ -715,7 +715,7 @@ Ext.define( 'Comete.IdentityFinderPanel', {
     },
     retrieveIdentities: function(unuseText) {
         var text = this.searchField.getValue();
-        var url = this.proxy.url = identityUrl + '/rest/' + ((this.type == 'person')?'persons':'organizations');
+        var url = this.proxy.url = 'rest/' + ((this.type == 'person')?'persons':'organizations');
         if (unuseText != true && text != "")
             url = url + '/search?q=' + text;
         this.proxy.url = url;

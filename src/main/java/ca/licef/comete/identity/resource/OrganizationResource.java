@@ -195,18 +195,13 @@ public class OrganizationResource {
             }
         }
 
-        TripleStore tripleStore = Core.getInstance().getTripleStore();
-
-        int total = tripleStore.getTriplesWithPredicateObject(RDF.type, COMETE.Organization.getURI(), null).length;
-
-        String query = CoreUtil.getQuery("identity/getOrganizations.sparql", start, limit);
-        Tuple[] orgs = tripleStore.sparqlSelect(query);
+        Object[] res = Identity.getInstance().getAllOrganizations(start, limit);
 
         StringWriter out = new StringWriter();
         try {
             JSONWriter json = new JSONWriter( out ).object();
-            json.key( "organizations" ).value( buildOrgJSONArray(orgs) ).
-                 key( "totalCount" ).value( total );
+            json.key( "organizations" ).value( buildOrgJSONArray( (Tuple[])res[1]) ).
+                    key( "totalCount" ).value( res[0] );
             json.endObject();
         }
         catch( JSONException e ) {
@@ -420,7 +415,7 @@ public class OrganizationResource {
             _org.put( "id", id );
             _org.put( "uri", uri );
             _org.put( "label", CoreUtil.manageQuotes(org.getValue("name").getContent()));
-            _org.put( "restUrl", CoreUtil.getRestUrl(COMETE.Organization) + "/" + CoreUtil.getIdNumberValue(uri));
+            _org.put( "restUrl", CoreUtil.getRestUrl(COMETE.Organization) + "/" + id);
             _orgs.put(_org);
         }
         return _orgs;

@@ -80,30 +80,24 @@
             this.similarPerson.initSimilarity();
         else    
             this.similarOrg.initSimilarity();
-    },
-    updateData: function() {
-        var activeItem = this.mainPanel.getLayout().getActiveItem();
-        if( activeItem.id == 'managePersons' )
-            this.persons.updateData();
-        else if( activeItem.id == 'manageOrgs' )
-            this.orgs.updateData();
     }
 } );
 
 Ext.define( 'Comete.Identity', {
     extend: 'Ext.panel.Panel',        
     initComponent: function( config ) {
-        this.isDirty = true;
         
         this.proxy = Ext.create('Ext.data.proxy.Ajax', {
             reader: {
                 type: 'json',
-                root: (this.type == 'person')?'persons':'organizations'
+                root: (this.type == 'person')?'persons':'organizations',
+                totalProperty: 'totalCount'
             }
         });
 
         this.store = Ext.create('Ext.data.JsonStore', {
             model: (this.type == 'person')?'PersonModel':'OrganizationModel',
+            pageSize: 10,
             proxy: this.proxy
         });
 
@@ -112,27 +106,46 @@ Ext.define( 'Comete.Identity', {
 
         this.searchField = Ext.create('Ext.form.field.Text', {
             disabled: !authorized,
-            enableKeyEvents: true
+            enableKeyEvents: true,
+            region: 'center',
+            margin: '10 0 0 10'
         });
  
         this.searchField.on( 'keyup', this.retrieveIdentities, this );
 
         this.allButton = Ext.create('Ext.button.Button', {
             text: tr('All'),
-            width: 40,
+            region: 'east',
+            margin: '10 10 0 10',
             handler: function() { this.retrieveIdentities(true); },
             scope: this
         } );
+
+        this.pageBar = Ext.create('Ext.toolbar.Paging', {
+            store: this.store,
+            firstText: tr('First Page'),
+            prevText: tr('Previous Page'),
+            nextText: tr('Next Page'),
+            lastText: tr('Last Page'),
+            afterPageText: tr('of {0}')
+        } );
+        //modifications of pageBar
+        this.pageBar.remove( this.pageBar.getComponent(10) ); //refresh button
+        this.pageBar.remove( this.pageBar.getComponent(9) ); //separator
 
         var sm = Ext.create('Ext.selection.RowModel', {
             mode: 'MULTI'
         });
 
         var identityContextMenu = Ext.create('Ext.menu.Menu', {
-            items: { text: tr('Merge'),
-                     handler: this.merge,
-                     disabled: !authorized,
-                     scope: this }
+            items: [ { text: tr('Edit'),
+                       handler: this.editIdentity,
+                       disabled: !authorized,
+                       scope: this }, 
+                     { text: tr('Merge'),
+                       handler: this.merge,
+                       disabled: !authorized,
+                       scope: this } ]
         });
 
         if (this.type == 'person') 
@@ -141,16 +154,10 @@ Ext.define( 'Comete.Identity', {
                                        disabled: !authorized,
                                        scope: this } );        
 
-        this.editButton = Ext.create('Ext.button.Button', {
-            text: tr('Edit'),
-            disabled: true,
-            handler: this.editIdentity,
-            scope: this
-        } );
-
+        
         this.identityList = Ext.create('Ext.grid.Panel', {                        
-            margin: '0 10 10 10',
-            store: this.store,             
+            margin: '10 10 10 10',
+            store: this.store,
             columns: [ 
                 { dataIndex: 'label', text: (this.type == 'person')?tr('Persons'):tr('Organizations'), flex: 1 }
             ],  
@@ -161,16 +168,14 @@ Ext.define( 'Comete.Identity', {
                     itemcontextmenu: function(view, rec, node, index, event) {
                         event.stopEvent(); // stops the default event. i.e. Windows Context Menu
                         var oneSelection = il.getSelectionModel().getSelection().length == 1;
-                        if (type == 'org' && oneSelection) 
-                            return;
-                        identityContextMenu.getComponent(0).setDisabled(oneSelection);
+                        identityContextMenu.getComponent(1).setDisabled(oneSelection);
                         identityContextMenu.showAt(event.getXY()); // show context menu where user right clicked
                         return false;
                     }
                 }
             },
             selModel: sm,
-            bbar: [ this.editButton ]
+            bbar: this.pageBar
         });
 
         var il = this.identityList;
@@ -181,10 +186,10 @@ Ext.define( 'Comete.Identity', {
         this.personsPanel = Ext.create('Ext.panel.Panel', {
             layout: 'border',
             border: false,
-            items: [ { layout: 'border', region: 'north', border: false, height: 22, margin: '10',
+            items: [ { layout: 'border', region: 'north', border: false, height: 34, 
                        items: [ { layout: 'fit', region: 'center', border: false, items: this.searchField }, 
-                                { region: 'east', margin: '0 0 0 5', border: false, items: this.allButton } ] }, 
-                     { layout: 'fit', region: 'center', border: false, items: this.identityList} ]
+                                { region: 'east', border: false, items: this.allButton } ] },
+                     { layout: 'fit', region: 'center', border: false, items: this.identityList } ]
         });
 
         this.identityDetails = Ext.create('Comete.IdentityDetails', {
@@ -197,7 +202,7 @@ Ext.define( 'Comete.Identity', {
         this.mainPanel = Ext.create('Ext.panel.Panel', {
             layout: 'border',
             border: false,
-            items: [ {layout: 'fit', region: 'west',  width: 300, border: false,
+            items: [ {layout: 'fit', region: 'west', width: 350, border: false,
                       split: true, items: this.personsPanel }, 
                      {layout: 'fit', region: 'center', border: false,
                       items: this.identityDetails} ]
@@ -211,17 +216,16 @@ Ext.define( 'Comete.Identity', {
     },
     retrieveIdentities: function(unuseText) {
         var text = this.searchField.getValue();
-        var url = this.proxy.url = identityUrl + '/rest/' + ((this.type == 'person')?'persons':'organizations');
+        var url = this.proxy.url = 'rest/' + ((this.type == 'person')?'persons':'organizations');
         if (unuseText != true && text != "")
             url = url + '/search?q=' + text;
         this.proxy.url = url;
-        this.store.load();
+        this.store.loadPage(1);
         if (unuseText == true)
             this.searchField.setValue("");
     },
     identityChanged: function(model, selected) {
         this.identityDetails.clear();
-        this.editButton.setDisabled(!authorized || selected.length != 1)
         if (selected.length == 1 ) {
             Ext.Ajax.request( {
                 url: selected[0].getData().restUrl + '/details',
@@ -262,8 +266,13 @@ Ext.define( 'Comete.Identity', {
         }
     },
     merge: function() {
-        var uris = new Array();
         var records = this.identityList.getSelectionModel().getSelection();
+        if (records.length == 1) { 
+            Ext.Msg.alert(tr('Warning'), tr('Merge need at least two identities.'));
+            return;
+        }
+        
+        var uris = new Array();
         for (i = 0; i < records.length; i++)
             uris[i] = records[i].data.uri;
 
@@ -306,23 +315,17 @@ Ext.define( 'Comete.Identity', {
         for (i = 0; i < records.length; i++)
             uris[i] = records[i].data.uri;
         Ext.Ajax.request( {
-            url: identityUrl + '/rest/persons/convertToOrg',
+            url: 'rest/persons/convertToOrg',
             params: { uris: JSON.stringify(uris) },
             method: 'GET',
             success: function(response, opts) {
                 this.store.load();     
             },
             failure: function(response, opts) {
-                Ext.Msg.alert('Failure', response.responseText);  
+                Ext.Msg.alert('Failure', response.responseText);
             },
             scope: this 
         } );         
-    },
-    updateData: function() {
-        if( this.isDirty ) {
-            this.retrieveIdentities();
-            this.isDirty = false;
-        }
     }
 } );
 
@@ -419,7 +422,7 @@ Ext.define( 'Comete.SimilarIdentity', {
         if (this.similarGroups == null || this.similarGroups.length == 0) {
             type = (this.type == 'person')?'persons':'organizations';     
             Ext.Ajax.request( {
-                url: identityUrl + '/rest/' + type + '/similarGroups',
+                url: 'rest/' + type + '/similarGroups',
                 method: 'GET',
                 success: function(response, opts) {
                     this.similarGroups = Ext.JSON.decode(response.responseText, true).groups;
@@ -444,7 +447,7 @@ Ext.define( 'Comete.SimilarIdentity', {
             this.similarityList.columns[1].setText( tr('Similar group') + ' ' + (this.currentGroup + 1) + '/' + this.similarGroups.length );
         }
         type = (this.type == 'person')?'persons':'organizations';
-        this.proxy.url = identityUrl + '/rest/' + type + '/similar?gid=' + this.similarGroups[this.currentGroup],
+        this.proxy.url = 'rest/' + type + '/similar?gid=' + this.similarGroups[this.currentGroup],
         this.store.load();
     }, 
     identityChanged: function(model, selected) {
@@ -520,7 +523,7 @@ Ext.define( 'Comete.SimilarIdentity', {
         for (i = 0; i < records.length; i++)
             uris[i] = records[i].data.uri;
         Ext.Ajax.request( {
-            url: identityUrl + '/rest/persons/takeOff',
+            url: 'rest/persons/takeOff',
             params: {
                 uris: JSON.stringify(uris),
                 similarGroup: this.similarGroups[this.currentGroup],

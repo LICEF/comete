@@ -93,8 +93,8 @@ Ext.define( 'Comete.IdentityMerger', {
     },
     loadValues: function() {
         var url = (this.type == 'person')?
-            identityUrl + '/rest/persons/preMergeDetails':
-            identityUrl + '/rest/organizations/preMergeDetails';
+            'rest/persons/preMergeDetails':
+            'rest/organizations/preMergeDetails';
         Ext.Ajax.request( {
             url: url,
             params: { uris: JSON.stringify(this.uris) },
@@ -112,8 +112,8 @@ Ext.define( 'Comete.IdentityMerger', {
         waitDialog.wait( tr('Please wait') + '...' );
         var mainValues = this.identityDetails.getMainValues();
         var url = (this.type == 'person')?
-            identityUrl + '/rest/persons/merge':
-            identityUrl + '/rest/organizations/merge'; 
+            'rest/persons/merge':
+            'rest/organizations/merge';
         var params = {
             uris: JSON.stringify(this.uris),
             mainValues: JSON.stringify(mainValues)

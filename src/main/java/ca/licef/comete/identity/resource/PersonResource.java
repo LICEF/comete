@@ -156,17 +156,13 @@ public class PersonResource {
             }
         }
 
-        TripleStore tripleStore = Core.getInstance().getTripleStore();
+        Object[] res = Identity.getInstance().getAllPersons(start, limit);
 
-        int total = tripleStore.getTriplesWithPredicateObject(RDF.type, COMETE.Person.getURI(), null).length;
-
-        String query = CoreUtil.getQuery("identity/getPersons.sparql", start, limit);
-        Tuple[] persons = tripleStore.sparqlSelect(query);
         StringWriter out = new StringWriter();
         try {
             JSONWriter json = new JSONWriter( out ).object();
-            json.key( "persons" ).value( buildPersonJSONArray(persons) ).
-                 key( "totalCount" ).value( total );
+            json.key( "persons" ).value( buildPersonJSONArray( (Tuple[])res[1]) ).
+                 key( "totalCount" ).value( res[0] );
             json.endObject();
         }
         catch( JSONException e ) {

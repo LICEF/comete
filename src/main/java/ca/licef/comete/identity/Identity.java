@@ -11,6 +11,7 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import licef.IOUtil;
 import licef.StringUtil;
+import licef.reflection.Invoker;
 import licef.tsapi.TripleStore;
 import licef.tsapi.model.Triple;
 import licef.tsapi.model.Tuple;
@@ -779,6 +780,30 @@ public class Identity {
 
         Entity identity = Util.getEntity(uri);
         return identity.getFN();
+    }
+
+    public Object[] getAllPersons(int start, int limit) throws Exception {
+        Invoker inv = new Invoker(this, "ca.licef.comete.identity.Identity",
+                "getAllPersonsEff", new Object[]{start, limit});
+        return (Object[])tripleStore.transactionalCall(inv);
+    }
+
+    public Object[] getAllPersonsEff(int start, int limit) throws Exception {
+        int length = tripleStore.getTriplesWithPredicateObject(RDF.type, COMETE.Person.getURI(), null).length;
+        String query = CoreUtil.getQuery("identity/getPersons.sparql", start, limit);
+        return new Object[] {length, tripleStore.sparqlSelect(query)};
+    }
+
+    public Object[] getAllOrganizations(int start, int limit) throws Exception {
+        Invoker inv = new Invoker(this, "ca.licef.comete.identity.Identity",
+                "getAllOrganizationsEff", new Object[]{start, limit});
+        return (Object[])tripleStore.transactionalCall(inv);
+    }
+
+    public Object[] getAllOrganizationsEff(int start, int limit) throws Exception {
+        int length = tripleStore.getTriplesWithPredicateObject(RDF.type, COMETE.Organization.getURI(), null).length;
+        String query = CoreUtil.getQuery("identity/getOrganizations.sparql", start, limit);
+        return new Object[] {length, tripleStore.sparqlSelect(query)};
     }
 }
     
