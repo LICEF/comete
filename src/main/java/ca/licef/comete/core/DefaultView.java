@@ -4,6 +4,7 @@ import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.Util;
 import ca.licef.comete.vocabularies.COMETE;
 import com.hp.hpl.jena.vocabulary.RDF;
+import licef.reflection.Invoker;
 import licef.tsapi.TripleStore;
 import licef.tsapi.model.Triple;
 import licef.tsapi.model.Tuple;
@@ -54,6 +55,16 @@ public class DefaultView implements ResourceView {
     }
 
     public Triple[] getTriples(String uri, String includeIncomingLinks, boolean includeRdfMetadataInfos, boolean isHumanReadable ) throws Exception {
+        Invoker inv = new Invoker( this, "ca.licef.comete.core.DefaultView", "doGetTriples", 
+            new Object[] { uri, includeIncomingLinks, Boolean.valueOf( includeRdfMetadataInfos ), Boolean.valueOf( isHumanReadable ) } ); 
+        Triple[] triples = (Triple[])tripleStore.transactionalCall( inv );
+        return( triples );
+    }
+
+    /*
+     * This method must be transactionally called. - FB
+     */
+    public Triple[] doGetTriples(String uri, String includeIncomingLinks, boolean includeRdfMetadataInfos, boolean isHumanReadable ) throws Exception {
         ArrayList<Triple> listTriples = new ArrayList<Triple>();
         HashMap<String,String[]> labels = new HashMap<String,String[]>();
         String rdfResUri = uri + ".rdf";

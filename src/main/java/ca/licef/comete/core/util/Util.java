@@ -626,7 +626,34 @@ public class Util {
         return( outputFile );
     }
 
-    static private Pattern localizedStringPattern = Pattern.compile( "\".+\"@.+", Pattern.DOTALL );
-    static private String syntaxHighlighterConfigFileLocation = null;
+    public static String getMimeTypeIcon( String mimeType ) {
+        String imagesPath = "images/mimeTypeIcons/";
+        String path = webappPath + "/" + imagesPath;
+        String iconFileStr = mimeType.replaceAll( "/", "_" ) + ".png";
+        File iconFile = new File( path + iconFileStr );
+        String effectiveIconFile = iconFileStr;
+        if( !iconFile.exists() ) {
+            int indexOfFirstUnderscore = iconFileStr.indexOf( "_" );
+            if( indexOfFirstUnderscore == -1 )
+                effectiveIconFile = "default.png";
+            else {
+                String iconFileStr2 = iconFileStr.substring( 0, indexOfFirstUnderscore + 1 ) + "default.png";
+                File iconFile2 = new File( path + iconFileStr2 );
+                effectiveIconFile = iconFileStr2;
+                if( !iconFile2.exists() )
+                    effectiveIconFile = "default.png";
+            }
+        }
+        return imagesPath + effectiveIconFile;
+    }
+
+    public static void setWebappPath(String path) {
+        webappPath = path;
+    }
+
+    public static String webappPath;
+
+    private static Pattern localizedStringPattern = Pattern.compile( "\".+\"@.+", Pattern.DOTALL );
+    private static String syntaxHighlighterConfigFileLocation = null;
 
 }

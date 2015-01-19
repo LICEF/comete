@@ -73,7 +73,6 @@ public class QueryEngineResource implements Serializable {
         try {
             if (cache == null)
                 cache = new QueryCache();
-            Util.setWebappPath(context.getRealPath(""));
             rs = QueryEngine.getInstance().search(
                     query, filters, lang, "json", start, limit, style, cache);
         }

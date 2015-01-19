@@ -54,6 +54,7 @@ import javax.xml.transform.stream.StreamSource;
 public class Metadata {
 
     private static Metadata instance;
+    private LearningObjectView learningObjectView;
 
     public static File tmpFolder = new File(System.getProperty("java.io.tmpdir"));
 
@@ -63,6 +64,12 @@ public class Metadata {
         if (instance == null)
             instance = new Metadata();
         return (instance);
+    }
+
+    public LearningObjectView getLearningObjectView() {
+        if (learningObjectView == null)
+            learningObjectView = new LearningObjectView();
+        return learningObjectView;
     }
 
     public String storeHarvestedRecord(String oaiID, String namespace, String repoUri, String record, String datestamp, boolean isUpdate) throws Exception {
