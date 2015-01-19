@@ -66,11 +66,21 @@ public class LearningObjectView extends DefaultView {
                     for( int j = 0; j < formatElements.getLength(); j++ ) {
                         Element formatElement = (Element)formatElements.item( j );
                         firstFormat = formatElement.getAttributeNS( CommonNamespaceContext.rdfNSURI, "resource" );
+                        break;
+                    }
+                }
+
+                if( firstFormat == null ) {
+                    NodeList formatElements = doc.getElementsByTagNameNS( CommonNamespaceContext.dctNSURI, "format" );
+                    for( int j = 0; j < formatElements.getLength(); j++ ) {
+                        Element formatElement = (Element)formatElements.item( j );
+                        firstFormat = formatElement.getTextContent();
+                        break;
                     }
                 }
 
                 String mimeType = null;
-                if( firstFormat == null )
+                if( firstFormat == null || "".equals( firstFormat ) )
                     mimeType = IOUtil.getMimeType( locationElement.getTextContent() );
                 else
                     mimeType = firstFormat.substring( "http://purl.org/NET/mediatypes/".length() );
