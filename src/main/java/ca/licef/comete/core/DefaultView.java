@@ -13,7 +13,6 @@ import licef.tsapi.vocabulary.FOAF;
 import licef.tsapi.vocabulary.RDFS;
 import org.json.XML;
 
-import javax.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -50,7 +49,7 @@ public class DefaultView implements ResourceView {
         return( null );
     }
 
-    public String getHtml(String uri, Locale locale, String style, ServletContext context) throws Exception {
+    public String getHtml(String uri, Locale locale, String style) throws Exception {
         return "<html><body>n/a</body></html>";
     }
 

@@ -26,7 +26,7 @@ public class LearningObjectResource {
     public String getLearningObjectAsHtml( @PathParam( "id" ) String id, @DefaultValue( "en" ) @QueryParam( "lang" ) String lang, @DefaultValue( "default" ) @QueryParam( "style" ) String style ) throws Exception {
         Locale locale = ( "fr".equals( lang ) ? Locale.FRENCH : Locale.ENGLISH );
         String loUri = ca.licef.comete.core.util.Util.makeURI(id, COMETE.LearningObject.getURI().toString()/*Constants.OBJ_TYPE_LEARNING_OBJECT*/);
-        String html = Metadata.getInstance().getLearningObjectView().getHtml( loUri, locale, style, context );
+        String html = Metadata.getInstance().getLearningObjectView().getHtml( loUri, locale, style );
         return( html );
     }
 
@@ -93,6 +93,4 @@ public class LearningObjectResource {
         return (Response.ok().build());
     }
 
-    @Context
-    private ServletContext context;
 }

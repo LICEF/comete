@@ -18,7 +18,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -38,7 +37,7 @@ import java.util.*;
  */
 public class LearningObjectView extends DefaultView {
 
-    public String getHtml(String uri, Locale locale, String style, ServletContext context) throws Exception {
+    public String getHtml(String uri, Locale locale, String style) throws Exception {
         Set contributes = new HashSet();
         HashMap contribRoles = new HashMap();
         HashMap contribOrganizations = new HashMap();
@@ -70,7 +69,7 @@ public class LearningObjectView extends DefaultView {
                     }
                 }
 
-                if( firstFormat == null ) {
+                if( firstFormat == null || "".equals( firstFormat ) ) {
                     NodeList formatElements = doc.getElementsByTagNameNS( CommonNamespaceContext.dctNSURI, "format" );
                     for( int j = 0; j < formatElements.getLength(); j++ ) {
                         Element formatElement = (Element)formatElements.item( j );
