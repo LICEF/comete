@@ -3,6 +3,7 @@ package ca.licef.comete.metadata.resource;
 import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.security.Security;
 import ca.licef.comete.metadata.Metadata;
+import ca.licef.comete.vocabularies.COMETE;
 import com.sun.jersey.spi.resource.Singleton;
 
 import javax.servlet.ServletContext;
@@ -24,9 +25,8 @@ public class LearningObjectResource {
     @Produces( MediaType.TEXT_HTML )
     public String getLearningObjectAsHtml( @PathParam( "id" ) String id, @DefaultValue( "en" ) @QueryParam( "lang" ) String lang, @DefaultValue( "default" ) @QueryParam( "style" ) String style ) throws Exception {
         Locale locale = ( "fr".equals( lang ) ? Locale.FRENCH : Locale.ENGLISH );
-        String loUri = ca.licef.comete.core.util.Util.makeURI(id, Constants.OBJ_TYPE_LEARNING_OBJECT);
-        //String html = Metadata.getInstance().getLearningObjectView().getHtml( loUri, locale, style, context );
-        String html = null;
+        String loUri = ca.licef.comete.core.util.Util.makeURI(id, COMETE.LearningObject.getURI().toString()/*Constants.OBJ_TYPE_LEARNING_OBJECT*/);
+        String html = Metadata.getInstance().getLearningObjectView().getHtml( loUri, locale, style, context );
         return( html );
     }
 

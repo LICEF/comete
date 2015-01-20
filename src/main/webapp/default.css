@@ -106,3 +106,111 @@
 .rootButton.x-btn-default-toolbar-small-over .x-btn-split-right {
     background-image: url("extjs-4.1.1/resources/themes/images/default/button/s-arrow-noline.gif");
 }
+
+/*
+ * Default stylesheet.
+ */
+
+.SectionHeader {
+    margin-top: 14px;
+    font-size: 14px;
+}
+
+.LearningObject {
+    padding: 14px;
+}
+
+.LearningObjectTitle {
+    font-size: 18px;
+}
+
+.Contributes {
+    border-collapse: collapse;
+    font-family: 'lucida grande', tahoma, arial, sans-serif;
+    font-size: 12px;
+}
+
+.ContributeCell {
+    width: 220px; 
+}
+
+.ContribRole {
+    font-style: italic;
+}
+
+table.Contributes tr td {
+    padding: 0px 6px 2px;
+    vertical-align: top;
+}
+
+.ContributesRow {
+    padding-bottom: 10px !important;
+}
+
+.ContributesColPhoto {
+    width: 100px;
+}
+
+.ContributesColContribInfo {
+    width: auto;
+}
+
+.ContribFullName {
+    font-weight: bold;
+}
+
+.OrganizationName {
+    color: #f6b30c;
+    bottom-margin: 10px;
+}
+
+.WorkAdr {
+    bottom-margin: 10px;
+}
+
+table.MetadataPerson {
+    margin-left: auto;
+    margin-right: auto;
+    font-family: 'lucida grande', tahoma, arial, sans-serif;
+    font-size: 18px;
+}
+
+table.MetadataPerson tr td {
+    padding: 16px;
+    vertical-align: top;
+}
+
+.ContributeImage{
+}
+
+.ContributeImageDetailedView {
+}
+
+.OrganizationImageDetailedView {
+}
+
+table.MetadataOrganization {
+    font-family: 'lucida grande', tahoma, arial, sans-serif;
+    font-size: 18px;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.LinkedDataLink {
+    margin-left: 8px;
+}
+
+.ContributeLink {
+    margin-left: 8px;
+}
+
+.RelatedLearningObjectsLink {
+    margin-left: 8px;
+}
+
+ul li {
+    list-style-type: circle;
+    margin-left: 20px;
+}
+

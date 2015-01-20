@@ -5,6 +5,7 @@ import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.ResultSet;
 import ca.licef.comete.metadata.Metadata;
 import ca.licef.comete.queryengine.util.Util;
+import ca.licef.comete.vocabularies.COMETE;
 import licef.IOUtil;
 import licef.reflection.Invoker;
 import licef.tsapi.TripleStore;
@@ -197,7 +198,7 @@ public class QueryEngine {
                     mimetype = IOUtil.getMimeType(location);
                 else
                     mimetype = format.substring( "http://purl.org/NET/mediatypes/".length() );
-                image = Util.getMimeTypeIcon(mimetype);
+                image = CoreUtil.getMimeTypeIcon(mimetype);
             }
             //
 
@@ -217,8 +218,8 @@ public class QueryEngine {
             entry.setImage(image);
 
             // $lang will be substituted dynamically by client-side.
-            /*String loHtmlLocation = Util.getRestUrl(Constants.TYPE_LEARNING_OBJECT) + "/" + entry.getId() + "/html?lang=$lang";
-            entry.setLoAsHtmlLocation( loHtmlLocation );*/
+            String loHtmlLocation = ca.licef.comete.core.util.Util.getRestUrl(COMETE.LearningObject.getURI().toString()) + "/" + entry.getId() + "/html?lang=$lang";
+            entry.setLoAsHtmlLocation( loHtmlLocation );
 
             //date
             entry.setCreationDate( CoreUtil.manageDateString(tuple.getValue("added").getContent()));

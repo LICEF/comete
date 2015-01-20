@@ -80,7 +80,7 @@
                 root: 'records',
                 totalProperty: 'totalCount'
             },
-            //url: 'rest/metadataRecords/applicationProfilesByColumns',
+            url: 'rest/metadataRecords/applicationProfilesByColumns',
             extraParams: {
                 showOnlyColumn: this.showOnlyColumn,
                 showOnlyInvalid: this.showOnlyInvalid
@@ -181,7 +181,7 @@
 
         this.saveValidations = function() {
             Ext.Ajax.request( {
-                url: metadataUrl + '/rest/settings/validatedApplicationProfiles',
+                url: 'rest/settings/validatedApplicationProfiles',
                 method: 'PUT',
                 success: function() {
                     Ext.Msg.alert( tr( 'Warning' ), tr( 'To update the Validation Report, the metamodel must be resetted.' ) );
@@ -398,7 +398,7 @@
     updateData: function() {
         if( this.isDirty ) {
             Ext.Ajax.request( {
-                url: metadataUrl + '/rest/settings/validatedApplicationProfiles',
+                url: 'rest/settings/validatedApplicationProfiles',
                 method: 'GET',
                 success: function( response ) {
                     var data = Ext.decode( response.responseText );

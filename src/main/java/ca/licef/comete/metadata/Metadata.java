@@ -51,6 +51,7 @@ import javax.xml.transform.stream.StreamSource;
 public class Metadata {
 
     private static Metadata instance;
+    private LearningObjectView learningObjectView;
 
     public static File tmpFolder = new File(System.getProperty("java.io.tmpdir"));
 
@@ -60,6 +61,12 @@ public class Metadata {
         if (instance == null)
             instance = new Metadata();
         return (instance);
+    }
+
+    public LearningObjectView getLearningObjectView() {
+        if (learningObjectView == null)
+            learningObjectView = new LearningObjectView();
+        return learningObjectView;
     }
 
     public String storeHarvestedRecord(String oaiID, String namespace, String repoUri, String record, String datestamp) throws Exception {
@@ -119,12 +126,12 @@ public class Metadata {
         else {
             record = new File(tmpFolder, fileDetail.getFileName());
             FileOutputStream fos = null;
-            try { 
+            try {
                 fos = new FileOutputStream(record);
                 IOUtil.copy(uploadedInputStream, fos);
             }
             finally {
-                if( fos != null ) 
+                if( fos != null )
                     fos.close();
             }
         }
@@ -132,7 +139,7 @@ public class Metadata {
         if (errorMessage == null && fileDetailRes != null && !"".equals(fileDetailRes.getFileName())) {
             resource = new File(tmpFolder, "" + (new Date()).getTime());
             FileOutputStream fos = null;
-            try { 
+            try {
                 fos = new FileOutputStream(resource);
                 IOUtil.copy(uploadedInputStreamRes, fos);
             }
@@ -291,20 +298,20 @@ public class Metadata {
     //}
 
     public void deleteRecord(String recordURI) throws Exception {
-    //    String loURI = getLearningObjectURI(recordURI);
-    //    deleteLearningObject(loURI);
+        //    String loURI = getLearningObjectURI(recordURI);
+        //    deleteLearningObject(loURI);
     }
 
     public void deleteLearningObject(String loUri) throws Exception {
-    //    //associated metadata records
-    //    Hashtable<String, String>[] results =
-    //            Core.getInstance().getTripleStoreService().getResults( "getMetadataRecords.sparql", loUri );
-    //    for( int i = 0; i < results.length; i++ ) {
-    //        String recordUri = results[i].get("s");
-    //        String doId = results[i].get("doId");
-    //        deleteMetadataRecord(recordUri, doId);
-    //    }
-    //    Core.getInstance().getTripleStoreService().deleteResource(loUri);
+        //    //associated metadata records
+        //    Hashtable<String, String>[] results =
+        //            Core.getInstance().getTripleStoreService().getResults( "getMetadataRecords.sparql", loUri );
+        //    for( int i = 0; i < results.length; i++ ) {
+        //        String recordUri = results[i].get("s");
+        //        String doId = results[i].get("doId");
+        //        deleteMetadataRecord(recordUri, doId);
+        //    }
+        //    Core.getInstance().getTripleStoreService().deleteResource(loUri);
     }
 
     //void deleteMetadataRecord(String recordURI, String doId) throws Exception {
@@ -702,8 +709,8 @@ public class Metadata {
                 store.deleteDatastream( storeId, reportDataStream );
             try {
                 getValidator().validateMetadata( record, profileUri );
-                tripleStore.insertTriple( new Triple( recordURI, COMETE.applicationProfile, profileUri ) ); 
-            } 
+                tripleStore.insertTriple( new Triple( recordURI, COMETE.applicationProfile, profileUri ) );
+            }
             catch( ValidationException e ) {
                 isValid = false;
                 String errorReport = JDomUtils.parseXml2string(ValidationUtils.collectErrorsAsXml(e.getMessage()),null);
@@ -738,7 +745,7 @@ public class Metadata {
                     else
                         fixedLine = line.replaceFirst( "( = )(.*)(/validation)", "$1" + Core.getInstance().getCometeUrl() + "$3" );
                     bos.write( fixedLine );
-                    bos.write( "\n" ); 
+                    bos.write( "\n" );
                     bos.flush();
                 }
             }
