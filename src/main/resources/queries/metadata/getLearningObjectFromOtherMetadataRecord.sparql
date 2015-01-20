@@ -1,8 +1,8 @@
 PREFIX comete: <http://comete.licef.ca/reference#>
 PREFIX oai: <http://www.openarchives.org/OAI/2.0/>
 
-SELECT ?s
+SELECT ?res
 WHERE '{'
-    ?s comete:metadataFormat <{0}> .
-    ?s oai:oai-identifier "{1}"
+    ?s oai:oai-identifier "{0}" .
+    ?s comete:describes ?res
 '}'

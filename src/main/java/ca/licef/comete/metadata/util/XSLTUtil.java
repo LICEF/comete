@@ -188,16 +188,16 @@ public class XSLTUtil {
         return "";
     }
 
-    public static String getVCard( String identityURI, String loURI ) throws Exception {
+    /*public static String getVCard( String identityURI, String loURI ) throws Exception {
         if (identityURI == null)
             return null;
         return Identity.getInstance().getVCard(identityURI, loURI);
-    }
+    }*/
 
-    public static String getFN( String identityURI, String loURI ) throws Exception {
+    /*public static String getFN( String identityURI, String loURI ) throws Exception {
         if (identityURI == null)
             return null;
         return Identity.getInstance().getFN(identityURI, loURI);
-    }
+    }*/
 
 }

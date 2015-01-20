@@ -112,7 +112,7 @@ public class Resolver {
         tripleStore.insertTriples(newTriples);
 
         //re expose related records of uri (mainly for merged uris).
-        Metadata.getInstance().exposeRecordsOfIdentity(uri);
+        //Metadata.getInstance().exposeRecordsOfIdentity(uri);
     }
 
     /**
@@ -231,7 +231,7 @@ public class Resolver {
         cleanSimilarityGroup(similarGroup);
 
         //re expose related records of uri (mainly for merged uris).
-        Metadata.getInstance().exposeRecordsOfIdentity(uri);
+        //Metadata.getInstance().exposeRecordsOfIdentity(uri);
 
         return uri;
     }

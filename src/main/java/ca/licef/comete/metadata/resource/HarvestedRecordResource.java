@@ -31,7 +31,7 @@ public class HarvestedRecordResource {
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to post records.").build();
 
         String repoUri = Util.makeURI( repoId, Constants.OBJ_TYPE_REPOSITORY );
-        String res = Metadata.getInstance().storeHarvestedRecord( oaiID, namespace, repoUri, record, datestamp, false );
+        String res = Metadata.getInstance().storeHarvestedRecord( oaiID, namespace, repoUri, record, datestamp );
         return (Response.ok(res).build());
     }
 

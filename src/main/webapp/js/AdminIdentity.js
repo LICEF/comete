@@ -34,7 +34,7 @@
         this.mainPanel = Ext.create('Ext.tab.Panel', {
             activeTab: 0, 
             plain: true,          
-            margin: '0 10 10 0',
+            margin: '0 -1 -1 -1',
             items: [ 
                      {
                        id: 'managePersons',
@@ -202,7 +202,7 @@ Ext.define( 'Comete.Identity', {
         this.mainPanel = Ext.create('Ext.panel.Panel', {
             layout: 'border',
             border: false,
-            items: [ {layout: 'fit', region: 'west', width: 350, border: false,
+            items: [ {layout: 'fit', region: 'west', width: 300, border: false,
                       split: true, items: this.personsPanel }, 
                      {layout: 'fit', region: 'center', border: false,
                       items: this.identityDetails} ]
@@ -399,7 +399,7 @@ Ext.define( 'Comete.SimilarIdentity', {
         this.mainPanel = Ext.create('Ext.panel.Panel', {
             layout: 'border',
             border: false,
-            items: [ {layout: 'fit', region: 'west',  width: 300, border: false,
+            items: [ {layout: 'fit', region: 'west', width: 300, border: false,
                       split: true, items: this.similarityList }, 
                      {layout: 'fit', region: 'center', border: false,
                       items: this.identityDetails} ]
