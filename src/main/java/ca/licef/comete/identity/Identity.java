@@ -126,8 +126,8 @@ public class Identity {
             //person
             if (formattedName != null) {
                 personUri = retrievePerson(formattedName, firstname, lastname, email);
-                String urlPerson = (org == null)?url:"";
-                String adrPerson = (address == null && org == null)?orgAddress:address;
+                String urlPerson = (org == null) ? url : "";
+                String adrPerson = (address == null && org == null) ? orgAddress : address;
                 if (personUri == null)
                     personUri = createPerson(formattedName, firstname, lastname, email, adrPerson, tel, fax, urlPerson, photo);
                 else
@@ -139,10 +139,10 @@ public class Identity {
             //Organization
             if (org != null) {
                 orgUri = retrieveOrganization(org);
-                String emailOrg = isPersonRetrieved?null:email;
-                String telOrg = isPersonRetrieved?null:tel;
-                String faxOrg = isPersonRetrieved?null:fax;
-                String adrOrg = (orgAddress == null && personUri == null)?address:orgAddress;
+                String emailOrg = isPersonRetrieved ? null : email;
+                String telOrg = isPersonRetrieved ? null : tel;
+                String faxOrg = isPersonRetrieved ? null : fax;
+                String adrOrg = (orgAddress == null && personUri == null) ? address : orgAddress;
                 if (!isPersonRetrieved && logo == null && photo != null)
                     logo = photo;
                 if (orgUri == null)
@@ -151,7 +151,7 @@ public class Identity {
                     updateOrganization(orgUri, org, adrOrg, emailOrg, telOrg, faxOrg, url, logo);
 
                 //now, a person may part of more than one org
-                if (personUri != null )
+                if (personUri != null)
                     tripleStore.insertTriple(new Triple(personUri, DCTERMS.isPartOf, orgUri));
             }
         } else if (format.equals(Constants.TEXT_MIMETYPE) && !"".equals(content)) {
@@ -176,8 +176,8 @@ public class Identity {
         int identityLevel = getIdentityLevel(firstname, lastname, email);
         switch (identityLevel) {
             case IDENTITY_FULL:
-                firstname = firstname.replaceAll( "\"", "\\\\\"" );
-                lastname = lastname.replaceAll( "\"", "\\\\\"" );
+                firstname = firstname.replaceAll("\"", "\\\\\"");
+                lastname = lastname.replaceAll("\"", "\\\\\"");
 
                 String query = CoreUtil.getQuery("identity/getIdentityPersonFull.sparql", firstname, lastname, email);
                 Tuple[] tuples = tripleStore.sparqlSelect(query);
@@ -192,7 +192,7 @@ public class Identity {
 
     public String retrievePersonFN(String formattedName) throws Exception {
         String uri = null;
-        formattedName = formattedName.replaceAll( "\"", "\\\\\"" );
+        formattedName = formattedName.replaceAll("\"", "\\\\\"");
 
         String query = CoreUtil.getQuery("identity/getIdentityPersonFN.sparql", formattedName);
         Tuple[] tuples = tripleStore.sparqlSelect(query);
@@ -236,7 +236,7 @@ public class Identity {
         if (isFax)
             list.add(new Triple(uri, FOAF.phone, fax));
         if (isUrl)
-            list.add(new Triple(uri, FOAF.homepage, IOUtil.enforceAbsoluteUrl( url ) ));
+            list.add(new Triple(uri, FOAF.homepage, IOUtil.enforceAbsoluteUrl(url)));
 
         if (isPhoto) {
             try {
@@ -259,7 +259,7 @@ public class Identity {
     }
 
     void updatePerson(String uri, String formattedName, String firstname, String lastname, String email,
-                      String adr, String tel, String fax, String url, String photo) throws Exception{
+                      String adr, String tel, String fax, String url, String photo) throws Exception {
         ArrayList<Triple> list = new ArrayList<Triple>();
         Entity person = Util.getEntity(uri);
         maybeCopyValue(person, FOAF.name, COMETE.altName, formattedName, list);
@@ -315,7 +315,7 @@ public class Identity {
         boolean isEmail = (email != null && !"".equals(email));
         boolean isURL = (url != null && !"".equals(url));
         boolean isOrg = (org != null && !"".equals(org));
-                
+
         //org + email => email of org
         //lonely email without org => email of person
         if (formattedName == null && isEmail && !isOrg)
@@ -328,8 +328,8 @@ public class Identity {
     }
 
     private String retrieveOrganization(String orgName) throws Exception {
-        String uri = null;       
-        orgName = orgName.replaceAll( "\"", "\\\\\"" );
+        String uri = null;
+        orgName = orgName.replaceAll("\"", "\\\\\"");
 
         String query = CoreUtil.getQuery("identity/getIdentityOrganization.sparql", orgName);
         Tuple[] tuples = tripleStore.sparqlSelect(query);
@@ -340,7 +340,7 @@ public class Identity {
     }
 
     private String createOrganization(String org, String orgAddress, String orgEmail,
-                                      String orgTel, String orgFax, String url, String logo) throws Exception{
+                                      String orgTel, String orgFax, String url, String logo) throws Exception {
         boolean isAddr = (orgAddress != null && !"".equals(orgAddress));
         boolean isEmail = (orgEmail != null && !"".equals(orgEmail));
         boolean isTel = (orgTel != null && !"".equals(orgTel));
@@ -412,20 +412,23 @@ public class Identity {
             tripleStore.insertTriplesWithTextIndex(list, Constants.indexPredicates, Constants.INDEX_LANGUAGES, null);
     }
 
-    void maybeCopyValue(Entity en, Property pred, Property predAlt, String value, List<Triple> list) throws Exception{
+    void maybeCopyValue(Entity en, Property pred, Property predAlt, String value, List<Triple> list) throws Exception {
         if (value == null || "".equals(value))
             return;
-        
+
         ArrayList<String> values = en.getList(pred.getURI());
         if (!values.contains(value)) {
-            Property predicate = (values.isEmpty())?pred:predAlt;
+            Property predicate = (values.isEmpty()) ? pred : predAlt;
             list.add(new Triple(en.getUri(), predicate, value));
         }
     }
 
     /********************/
     /* PHOTO MANAGEMENT */
-    /********************/
+
+    /**
+     * ****************
+     */
 
     String setPhoto(String photo) throws Exception {
         //photo format
@@ -464,7 +467,7 @@ public class Identity {
         String filename = localUrl.substring(localUrl.lastIndexOf("/") + 1);
         File file = new File(Core.getInstance().getCometeHome() + "/photos/" + filename);
         if (file.exists() && file.length() > 0) {
-            BufferedImage bim =  ImageIO.read(file);
+            BufferedImage bim = ImageIO.read(file);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write(bim, StringUtil.split(file.getName(), '.')[1], baos);
             return baos.toByteArray();
@@ -495,7 +498,10 @@ public class Identity {
 
     /*************************/
     /* SIMILARITY MANAGEMENT */
-    /*************************/
+
+    /**
+     * *********************
+     */
 
     void manageSimilarPersons(String uri, String formattedName, String firstname, String lastname) throws Exception {
         int identityLevel = getIdentityLevel(firstname, lastname, null);
@@ -529,7 +535,7 @@ public class Identity {
                 results = tripleStore.sparqlSelectWithTextIndex(
                         query, Constants.indexPredicates, Constants.INDEX_LANGUAGES, null);
         }
-        if ( results == null || results.length == 0 )
+        if (results == null || results.length == 0)
             return;
 
         //uuid generation
@@ -546,20 +552,19 @@ public class Identity {
             System.out.println("_uri = " + _uri);
             String _gid = results[i].getValue("gid").getContent();
             System.out.println("_gid = " + _gid);
-            if ( _gid != null && !"".equals(_gid) && !groupIds.contains(_gid)) {
-                constraints += delimiter ;
+            if (_gid != null && !"".equals(_gid) && !groupIds.contains(_gid)) {
+                constraints += delimiter;
                 constraints += "?gid = \"" + _gid + "\"";
                 groupIds.add(_gid);
                 delimiter = " || ";
-            }
-            else
+            } else
                 similarTriples.add(new Triple(_uri, DCTERMS.identifier, uuid));
             insertCurrent = true;
         }
 
         if (!"".equals(constraints)) {
             String query = CoreUtil.getQuery("identity/manageSimilarIdentities.sparql",
-                    Core.getInstance().getUriPrefix(), uuid, constraints  );
+                    Core.getInstance().getUriPrefix(), uuid, constraints);
             tripleStore.sparqlUpdate(query);
         }
         tripleStore.insertTriples(similarTriples, IDENTITY_SIMILARITY_GRAPH); //to not forget others without gid
@@ -569,14 +574,14 @@ public class Identity {
 
     void manageSimilarOrganizations(String orgName, String orgUri) throws Exception {
         Object[] res = Util.extractPertinentTermsFromOrg(orgName);
-        String[] clearedTerms = (String[])res[0];
-        String terms = (String)res[1];
+        String[] clearedTerms = (String[]) res[0];
+        String terms = (String) res[1];
         String query = CoreUtil.getQuery("identity/searchSimilarOrganizations.sparql",
                 terms, Core.getInstance().getUriPrefix());
         Tuple[] results = tripleStore.sparqlSelectWithTextIndex(
                 query, Constants.indexPredicates, Constants.INDEX_LANGUAGES, null);
 
-        if ( results == null || results.length == 0 )
+        if (results == null || results.length == 0)
             return;
 
         //uuid generation
@@ -597,20 +602,19 @@ public class Identity {
                 continue;
 
             String _gid = results[i].getValue("gid").getContent();  //keep the quotes for constraints
-            if ( _gid != null && !"".equals(_gid) && !groupIds.contains(_gid)) {
-                constraints += delimiter ;
+            if (_gid != null && !"".equals(_gid) && !groupIds.contains(_gid)) {
+                constraints += delimiter;
                 constraints += "?gid = \"" + _gid + "\"";
                 groupIds.add(_gid);
                 delimiter = " || ";
-            }
-            else
+            } else
                 similarTriples.add(new Triple(_uri, DCTERMS.identifier, uuid));
             insertCurrent = true;
         }
 
         if (!"".equals(constraints)) {
             query = CoreUtil.getQuery("identity/manageSimilarIdentities.sparql",
-                    Core.getInstance().getUriPrefix(), uuid, constraints  );
+                    Core.getInstance().getUriPrefix(), uuid, constraints);
             tripleStore.sparqlUpdate(query);
         }
         tripleStore.insertTriples(similarTriples, IDENTITY_SIMILARITY_GRAPH); //to not forget others without gid
@@ -621,9 +625,12 @@ public class Identity {
 
     /********************/
     /* Identity details */
-    /********************/
 
-    void loopVars(String[] vars, Tuple[] results, JSONObject detail)  throws Exception {
+    /**
+     * ****************
+     */
+
+    void loopVars(String[] vars, Tuple[] results, JSONObject detail) throws Exception {
         for (int i = 0; i < results.length; i++) {
             for (int j = 0; j < vars.length; j++) {
                 if (!"".equals(results[i].getValue(vars[j]).getContent())) {
@@ -634,7 +641,7 @@ public class Identity {
                         val = val.substring("tel:".length());
                     else if ("fax".equals(vars[j]))
                         val = val.substring("fax:".length());
-                    detail.put( vars[j], val );
+                    detail.put(vars[j], val);
                     break;
                 }
             }
@@ -644,7 +651,7 @@ public class Identity {
     public JSONArray getPersonDetails(String uri) throws Exception {
         Invoker inv = new Invoker(this, "ca.licef.comete.identity.Identity",
                 "getPersonDetailsEff", new Object[]{uri});
-        return (JSONArray)tripleStore.transactionalCall(inv);
+        return (JSONArray) tripleStore.transactionalCall(inv);
     }
 
     public JSONArray getPersonDetailsEff(String uri) throws Exception {
@@ -661,7 +668,7 @@ public class Identity {
     public JSONArray getOrganizationDetails(String uri) throws Exception {
         Invoker inv = new Invoker(this, "ca.licef.comete.identity.Identity",
                 "getOrganizationDetailsEff", new Object[]{uri});
-        return (JSONArray)tripleStore.transactionalCall(inv);
+        return (JSONArray) tripleStore.transactionalCall(inv);
     }
 
     public JSONArray getOrganizationDetailsEff(String uri) throws Exception {
@@ -675,10 +682,10 @@ public class Identity {
         return orgDetails;
     }
 
-    void extractAllDetails(JSONArray uriArray, String queryName, String[] vars, JSONObject details )  throws Exception {
+    void extractAllDetails(JSONArray uriArray, String queryName, String[] vars, JSONObject details) throws Exception {
         ArrayList<String> uris = new ArrayList<String>();
         for (int i = 0; i < uriArray.length(); i++)
-            uris.add((String)uriArray.get(i));
+            uris.add((String) uriArray.get(i));
         String constraints = CoreUtil.buildFilterConstraints(uris, "s", true, "=", "||");
         String query = CoreUtil.getQuery(queryName, constraints);
         Tuple[] results = tripleStore.sparqlSelect(query);
@@ -721,13 +728,13 @@ public class Identity {
     public JSONObject getAllPersonDetails(JSONArray uriArray) throws Exception {
         Invoker inv = new Invoker(this, "ca.licef.comete.identity.Identity",
                 "getAllPersonDetailsEff", new Object[]{uriArray});
-        return (JSONObject)tripleStore.transactionalCall(inv);
+        return (JSONObject) tripleStore.transactionalCall(inv);
     }
 
 
     public JSONObject getAllPersonDetailsEff(JSONArray uriArray) throws Exception {
         JSONObject details = new JSONObject();
-        String[] vars = new String[]{"name", "firstname", "lastname", "email", "url", "address", "photo", "tel", "fax" };
+        String[] vars = new String[]{"name", "firstname", "lastname", "email", "url", "address", "photo", "tel", "fax"};
         //details
         extractAllDetails(uriArray, "identity/getAllPersonDetails.sparql", vars, details);
         return details;
@@ -736,18 +743,18 @@ public class Identity {
     public JSONObject getAllOrganizationDetails(JSONArray uriArray) throws Exception {
         Invoker inv = new Invoker(this, "ca.licef.comete.identity.Identity",
                 "getAllOrganizationDetailsEff", new Object[]{uriArray});
-        return (JSONObject)tripleStore.transactionalCall(inv);
+        return (JSONObject) tripleStore.transactionalCall(inv);
     }
 
     public JSONObject getAllOrganizationDetailsEff(JSONArray uriArray) throws Exception {
         JSONObject details = new JSONObject();
-        String[] vars = new String[]{"name", "email", "url", "address", "logo", "tel", "fax" };
+        String[] vars = new String[]{"name", "email", "url", "address", "logo", "tel", "fax"};
         //details
         extractAllDetails(uriArray, "identity/getAllOrganizationDetails.sparql", vars, details);
         return details;
     }
 
-    public Map getEmails( String[] identities ) throws Exception {
+    public Map getEmails(String[] identities) throws Exception {
         Map emails = new HashMap();
 
         Tuple[] rs = null;
@@ -755,31 +762,32 @@ public class Identity {
             String query = CoreUtil.getQuery("identity/getEmails.sparql",
                     CoreUtil.buildFilterConstraints(identities, "identity", true, "=", "||"));
             rs = tripleStore.sparqlSelect(query);
-        }
-        catch( Exception ignore ) {
+        } catch (Exception ignore) {
             // The table will be empty but it's no big deal.
         }
-        
-        if( rs != null ) {
-            for( int i = 0; i < rs.length; i++ ) {
+
+        if (rs != null) {
+            for (int i = 0; i < rs.length; i++) {
                 Tuple row = rs[i];
-                String uri = row.getValue( "identity" ).getContent();
-                String email = CoreUtil.manageQuotes( row.getValue( "mbox" ).getContent() );
-                int indexOfMailToPrefix = email.indexOf( "mailto:" );
-                if( indexOfMailToPrefix != -1 )
-                    email = email.substring( indexOfMailToPrefix + "mailto:".length() );
-                if( !"".equals( email ) )
-                    emails.put( uri, email );
+                String uri = row.getValue("identity").getContent();
+                String email = CoreUtil.manageQuotes(row.getValue("mbox").getContent());
+                int indexOfMailToPrefix = email.indexOf("mailto:");
+                if (indexOfMailToPrefix != -1)
+                    email = email.substring(indexOfMailToPrefix + "mailto:".length());
+                if (!"".equals(email))
+                    emails.put(uri, email);
             }
         }
 
-        return( emails );
+        return (emails);
     }
 
 
     /**********************/
     /** VCard management **/
-    /**********************/
+    /**
+     * ******************
+     */
 
     public String getVCard(String uri, String loURI) throws Exception {
         //uri is possibly merged previously and replaced by another one.
@@ -791,9 +799,9 @@ public class Identity {
         Entity identity = Util.getEntity(uri);
         boolean isPerson = identity instanceof Person;
         if (isPerson)
-            return ((Person)identity).getVCard(uri, loURI);
+            return ((Person) identity).getVCard(uri, loURI);
         else
-            return ((Organization)identity).getVCard(uri);
+            return ((Organization) identity).getVCard(uri);
     }
 
     public String getFN(String uri, String loURI) throws Exception {
@@ -810,25 +818,37 @@ public class Identity {
     public Object[] getAllPersons(int start, int limit) throws Exception {
         Invoker inv = new Invoker(this, "ca.licef.comete.identity.Identity",
                 "getAllPersonsEff", new Object[]{start, limit});
-        return (Object[])tripleStore.transactionalCall(inv);
+        return (Object[]) tripleStore.transactionalCall(inv);
     }
 
     public Object[] getAllPersonsEff(int start, int limit) throws Exception {
         int length = tripleStore.getTriplesWithPredicateObject(RDF.type, COMETE.Person.getURI(), null).length;
         String query = CoreUtil.getQuery("identity/getPersons.sparql", start, limit);
-        return new Object[] {length, tripleStore.sparqlSelect(query)};
+        return new Object[]{length, tripleStore.sparqlSelect(query)};
     }
 
     public Object[] getAllOrganizations(int start, int limit) throws Exception {
         Invoker inv = new Invoker(this, "ca.licef.comete.identity.Identity",
                 "getAllOrganizationsEff", new Object[]{start, limit});
-        return (Object[])tripleStore.transactionalCall(inv);
+        return (Object[]) tripleStore.transactionalCall(inv);
     }
 
     public Object[] getAllOrganizationsEff(int start, int limit) throws Exception {
         int length = tripleStore.getTriplesWithPredicateObject(RDF.type, COMETE.Organization.getURI(), null).length;
         String query = CoreUtil.getQuery("identity/getOrganizations.sparql", start, limit);
-        return new Object[] {length, tripleStore.sparqlSelect(query)};
+        return new Object[]{length, tripleStore.sparqlSelect(query)};
+    }
+
+    public String getVCardFormattedName(String vcard) throws Exception {
+        Hashtable<String, String> vcardElements = Util.getVCardElements(vcard);
+        String formattedName = vcardElements.get("formattedName");
+        String firstname = vcardElements.get("firstname");
+        String lastname = vcardElements.get("lastname");
+        String email = vcardElements.get("email");
+        String url = vcardElements.get("url");
+        String org = vcardElements.get("org");
+
+        return getFormattedName(formattedName, firstname, lastname, email, url, org);
     }
 }
     
