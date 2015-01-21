@@ -9,44 +9,17 @@
     <xsl:param name="loURI"/>
     <xsl:param name="recordURI"/>
 
-    <xsl:template name="substituteIdentity">
+    <!-- Identity -->
+
+    <xsl:template name="manageIdentity">
         <xsl:param name="loURI"/>
         <xsl:param name="recordURI"/>
         <xsl:param name="entityType"/>
-        <xsl:variable name="identityIdentifier" select="saxon:getURIMarkerForEntity($loURI,$recordURI,$entityType,.,'http://ltsc.ieee.org/xsd/LOM')"/>
-        <xsl:choose>
-            <xsl:when test="$identityIdentifier">
-                <xsl:element name="{name()}" namespace="{namespace-uri()}">
-                    <xsl:element name="comete-if:identity" namespace="http://comete.licef.ca/internal-format">
-                        <xsl:value-of select="$identityIdentifier"/>
-                    </xsl:element>
-                </xsl:element>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:copy>
-                    <xsl:apply-templates select="@*|node()"/>
-                </xsl:copy>
-            </xsl:otherwise>
-        </xsl:choose>
-    </xsl:template>
-
-    <xsl:template name="manageVocabulary">
-        <xsl:param name="loURI"/>
-        <xsl:param name="source"/>
-        <xsl:param name="element"/>
-        <xsl:param name="value"/>
-        <xsl:variable name="emptyString" select="saxon:linkToVocabularyConcept( $loURI, $source, $element, $value )"/>
+        <xsl:variable name="emptyString" select="saxon:linkToIdentity($loURI,$recordURI,$entityType,.,'http://ltsc.ieee.org/xsd/LOM')"/>
         <xsl:copy>
             <xsl:apply-templates select="@*|node()"/>
         </xsl:copy>
         <xsl:value-of select="$emptyString"/>
-    </xsl:template>
-
-    <xsl:template match="/*">
-        <xsl:copy>
-            <xsl:namespace name="comete-if" select="'http://comete.licef.ca/internal-format'"/>
-            <xsl:apply-templates select="@*|node()"/>
-        </xsl:copy>
     </xsl:template>
 
     <xsl:template match="lom:entity">
@@ -67,11 +40,26 @@
                 </xsl:when>
             </xsl:choose>
         </xsl:variable>
-        <xsl:call-template name="substituteIdentity">
+        <xsl:call-template name="manageIdentity">
             <xsl:with-param name="loURI" select="$loURI"/>
             <xsl:with-param name="recordURI" select="$recordURI"/>
             <xsl:with-param name="entityType" select="$entityType"/>
         </xsl:call-template>
+    </xsl:template>
+
+
+    <!-- Vocabulary -->
+
+    <xsl:template name="manageVocabulary">
+        <xsl:param name="loURI"/>
+        <xsl:param name="source"/>
+        <xsl:param name="element"/>
+        <xsl:param name="value"/>
+        <xsl:variable name="emptyString" select="saxon:linkToVocabularyConcept( $loURI, $source, $element, $value )"/>
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:copy>
+        <xsl:value-of select="$emptyString"/>
     </xsl:template>
 
     <xsl:template match="lom:structure">

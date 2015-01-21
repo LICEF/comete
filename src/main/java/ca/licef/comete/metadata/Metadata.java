@@ -232,9 +232,6 @@ public class Metadata {
         return new String[] {errorMessage, content, namespace, pseudoOaiID};
     }
 
-    /*
-     * This method must be transactionally called. - FB
-     */
     public String[] storeUploadedRecord(File file, File resource) throws Exception {
         String[] values = parseMetadataRecord(file);
 
@@ -339,8 +336,7 @@ public class Metadata {
         String[] res = (String[])tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
 
         //Identity and vocabulary referencement management
-        //todo need to put each inner saxon call in transaction
-        //linkToResources(res[0], res[1], res[2], namespace);
+        linkToResources(res[0], res[1], res[2], namespace);
 
         return res;
     }
@@ -371,11 +367,12 @@ public class Metadata {
                 else
                     return new String[]{null, null, null, "ignored"};
             }
+
+            loURI = getLearningObjectURI(recordURI);
+            resetLearningObjectNonPersistentTriples(recordURI);
+            storeId = getStoreIdFromURI(recordURI);
         }
-
-        if (recordURI == null) {
-            isUpdate = false; //to force new MetadataRecord creation context
-
+        else {
             ////Is there another metadata record with the same oai-id ?
             ////if yes, retrieve of the described resource
             String query = Util.getQuery( "metadata/getLearningObjectFromOtherMetadataRecord.sparql", oaiId );
@@ -386,24 +383,16 @@ public class Metadata {
             //creation of new one
             if (loURI == null) {
                 loURI = Util.makeURI(COMETE.LearningObject);
-                tripleStore.insertTriple( new Triple( loURI, RDF.type, COMETE.LearningObject ) );
-                tripleStore.insertTriple( new Triple( loURI, COMETE.added, DateUtil.toISOString(new Date(), null, null) ) );
+                triples.add( new Triple( loURI, RDF.type, COMETE.LearningObject ) );
+                triples.add( new Triple( loURI, COMETE.added, DateUtil.toISOString(new Date(), null, null) ) );
             }
-        }
-        else {
-            loURI = getLearningObjectURI(recordURI);
-            resetLearningObjectNonPersistentTriples(recordURI);
-        }
 
-        if (recordURI == null) {
             storeId = store.createDigitalObject();
 
             // We remove the leading / beforehand.
             recordURI = Util.makeURI(storeId.substring( 1 ), COMETE.MetadataRecord.getURI());
-
             triples.add(new Triple(recordURI, RDF.type, COMETE.MetadataRecord));
             triples.add(new Triple(recordURI, COMETE.metadataFormat, namespace));
-
             triples.add(new Triple(recordURI, COMETE.storeDigitalObject, storeId));
             if( repoURI != null && !"".equals( repoURI ) )
                 triples.add(new Triple(recordURI, COMETE.repository, repoURI));
@@ -415,8 +404,6 @@ public class Metadata {
             triples.add(new Triple(loURI, COMETE.hasMetadataRecord, recordURI));
             triples.add(new Triple(recordURI, COMETE.describes, loURI));
         }
-        else
-            storeId = getStoreIdFromURI(recordURI);
 
         //store content
         store.setDatastream(storeId, Constants.DATASTREAM_ORIGINAL_DATA, record);
@@ -596,7 +583,7 @@ public class Metadata {
 
         String xml = Store.getInstance().getDatastream( storeId, Constants.DATASTREAM_ORIGINAL_DATA );
 
-        HashMap<String,String> parameters = new HashMap<String,String>();
+        HashMap<String,String> parameters = new HashMap<>();
         parameters.put( "loURI", loURI );
         parameters.put( "recordURI", recordURI );
 
@@ -604,14 +591,12 @@ public class Metadata {
 
         String stylesheet = null;
         if( metadataFormat.getNamespace().equals( Constants.OAI_DC_NAMESPACE ))
-            stylesheet = "metadata/convertDcToInternalFormat";
+            stylesheet = "metadata/processDcLinking";
         else if( metadataFormat.getNamespace().equals( Constants.IEEE_LOM_NAMESPACE) )
-            stylesheet = "metadata/convertLomToInternalFormat";
+            stylesheet = "metadata/processLomLinking";
 
         StreamSource source = new StreamSource( new StringReader( xml ) );
-        String newXml = Util.applyXslToDocument( stylesheet, source, parameters );
-
-        //Store.getInstance().setDatastream(storeId, Constants.DATASTREAM_INTERNAL_DATA, newXml);
+        Util.applyXslToDocument( stylesheet, source, parameters );
     }
 
     /*private void internalFormatToExposedRecords(String loURI, String storeId, MetadataFormat metadataFormat) throws Exception {

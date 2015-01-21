@@ -11,6 +11,8 @@ import ca.licef.comete.vocabulary.Vocabulary;
 import licef.IOUtil;
 import licef.LangUtil;
 import licef.StringUtil;
+import licef.reflection.Invoker;
+import licef.tsapi.TripleStore;
 import licef.tsapi.model.Triple;
 import licef.tsapi.vocabulary.DCTERMS;
 import licef.tsapi.vocabulary.FOAF;
@@ -108,7 +110,13 @@ public class XSLTUtil {
         return (str.toString());
     }
 
-    public static String getURIMarkerForEntity( String loURI, String recordURI, String entityType, String entityData, String metadataFormatNamespace ) throws Exception {
+    public static String linkToIdentity( String loURI, String recordURI, String entityType, String entityData, String metadataFormatNamespace ) throws Exception {
+        Invoker inv = new Invoker(null, "ca.licef.comete.metadata.util.XSLTUtil",
+                "linkToIdentityEff", new Object[]{loURI, recordURI, entityType, entityData, metadataFormatNamespace});
+        return (String)Core.getInstance().getTripleStore().transactionalCall(inv, TripleStore.WRITE_MODE);
+    }
+
+    public static String linkToIdentityEff( String loURI, String recordURI, String entityType, String entityData, String metadataFormatNamespace ) throws Exception {
         String linkSrc = null;
         String effectiveEntityType = null;
         if( "metadata-author".equals( entityType ) ) {
@@ -128,8 +136,6 @@ public class XSLTUtil {
         if( effectiveEntityType == null )
             return( null );
 
-        String marker = null;
-
         MetadataFormat mf = MetadataFormats.getMetadataFormat(metadataFormatNamespace);
         String[] identityUris = Identity.getInstance().digest(mf.getIdentityMimetypeFormat(), entityData);
         if (identityUris == null)
@@ -143,20 +149,21 @@ public class XSLTUtil {
                 triples.add( new Triple( recordURI, effectiveEntityType, personUri, false ) );
             else if( "learningObject".equals( linkSrc ) )
                 triples.add( new Triple( loURI, effectiveEntityType, personUri, false ) );
-            marker = personUri;
         }
         if( orgUri != null && "learningObject".equals( linkSrc ) )
             triples.add( new Triple( loURI, DCTERMS.publisher.getURI(), orgUri, false ) );
 
         Core.getInstance().getTripleStore().insertTriples(triples);
-
-        if (marker == null && orgUri != null)
-            marker = orgUri;
-
-        return( marker );
+        return "";
     }
 
     public static String linkToVocabularyConcept( String loURI, String source, String element, String value ) throws Exception {
+        Invoker inv = new Invoker(null, "ca.licef.comete.metadata.util.XSLTUtil",
+                "linkToVocabularyConceptEff", new Object[]{loURI, source, element, value});
+        return (String)Core.getInstance().getTripleStore().transactionalCall(inv, TripleStore.WRITE_MODE);
+    }
+
+    public static String linkToVocabularyConceptEff( String loURI, String source, String element, String value ) throws Exception {
         //filter for used vocabularies
         if ( !"5.2_learning_resource_type".equals(element) &&
              !"5.6_context".equals(element) &&
@@ -187,17 +194,5 @@ public class XSLTUtil {
             System.out.println("-> no concept URI found for " + source + ", " + value);
         return "";
     }
-
-    /*public static String getVCard( String identityURI, String loURI ) throws Exception {
-        if (identityURI == null)
-            return null;
-        return Identity.getInstance().getVCard(identityURI, loURI);
-    }*/
-
-    /*public static String getFN( String identityURI, String loURI ) throws Exception {
-        if (identityURI == null)
-            return null;
-        return Identity.getInstance().getFN(identityURI, loURI);
-    }*/
 
 }
