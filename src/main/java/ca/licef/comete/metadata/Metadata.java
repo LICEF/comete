@@ -661,7 +661,30 @@ public class Metadata {
      * exposed format management
      */
     private void exposeRecords(String loURI, String storeId, MetadataFormat metadataFormat) throws Exception {
-        //todo En s'inspirant de internalFormatToExposedRecords, exposer LOM et DC depuis original_data
+        Store store = Store.getInstance();
+        if( !store.isDatastreamExists( storeId, Constants.DATASTREAM_ORIGINAL_DATA ) )
+            return;
+
+        String recordURI = Util.makeURI( storeId.substring( 1 ), COMETE.MetadataRecord.getURI() );
+        System.out.println( "Expose record : " + recordURI + "..." );
+
+        String xml = store.getDatastream( storeId, Constants.DATASTREAM_ORIGINAL_DATA );
+
+        for( MetadataFormat mf : MetadataFormats.getMetadataFormats() ) {
+            String stylesheet = null;
+            HashMap<String,String> parameters = new HashMap<String,String>();
+            if( mf.equals( metadataFormat ) )
+                stylesheet = "identity";
+            else { 
+                parameters.put( "loURI", loURI );
+                parameters.put( "recordURI", recordURI );
+                stylesheet = "metadata/convert" + StringUtil.capitalize( metadataFormat.getName() ) + "To" + StringUtil.capitalize( mf.getName() );
+            }
+
+            StreamSource source = new StreamSource( new StringReader( xml ) );
+            String newXml = Util.applyXslToDocument( stylesheet, source, parameters );
+            store.setDatastream( storeId, "exposed_" + mf.getName(), newXml );
+        }
     }
 
     /**
