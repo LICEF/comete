@@ -4,11 +4,15 @@ import ca.licef.comete.core.Core;
 import ca.licef.comete.core.DefaultView;
 import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.Util;
+import ca.licef.comete.vocabulary.Vocabulary;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import licef.CommonNamespaceContext;
 import licef.IOUtil;
+import licef.reflection.Invoker;
+import licef.tsapi.model.Tuple;
+import licef.tsapi.TripleStore;
 import licef.XMLUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -234,54 +238,46 @@ public class LearningObjectView extends DefaultView {
     }
 
     private void getIdentityData( String loUri, Set identities, HashMap identityRoles, HashMap identityOrganizations, HashMap orgNames ) throws Exception {
-        //Hashtable<String, String>[] results = Core.getInstance().getTripleStoreService().getResults( "getLearningObjectIdentityData.sparql", loUri );
-        //for( int i = 0; i < results.length; i++ ) {
-        //    String identityUri = results[ i ].get( "identity" );
-        //    String predicate = results[ i ].get( "p" );
-        //    String orgUri = results[ i ].get( "org" );
-        //    String orgName = results[ i ].get( "orgName" );
+        TripleStore tripleStore = Core.getInstance().getTripleStore();
+        String query = Util.getQuery( "metadata/getLearningObjectIdentityData.sparql", loUri );
+        Invoker inv = new Invoker( tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new String[] { query } );
+        Tuple[] tuples = (Tuple[])tripleStore.transactionalCall( inv );
+        for( Tuple tuple : tuples ) {
+            String identityUri = tuple.getValue( "identity" ).getContent();
+            String predicate = tuple.getValue( "p" ).getContent();
+            String orgUri = tuple.getValue( "org" ).getContent();
+            String orgName = tuple.getValue( "orgName" ).getContent();
 
-        //    identities.add( identityUri );
+            identities.add( identityUri );
 
-        //    Set roles = (Set)identityRoles.get( identityUri );
-        //    if( roles == null ) {
-        //        roles = new HashSet();
-        //        identityRoles.put( identityUri, roles );
-        //    }
-        //    roles.add( predicate );
+            Set roles = (Set)identityRoles.get( identityUri );
+            if( roles == null ) {
+                roles = new HashSet();
+                identityRoles.put( identityUri, roles );
+            }
+            roles.add( predicate );
 
-        //    if( orgUri != null && !"".equals( orgUri ) ) {
-        //        if( orgName != null && !"".equals( orgName ) )
-        //            orgNames.put( orgUri, orgName );
-        //        Set organizations = (Set)identityOrganizations.get( identityUri );
-        //        if( organizations == null ) {
-        //            organizations = new HashSet();
-        //            identityOrganizations.put( identityUri, organizations );
-        //        }
-        //        organizations.add( orgUri );
-        //    }
-        //}
+            if( orgUri != null && !"".equals( orgUri ) ) {
+                if( orgName != null && !"".equals( orgName ) )
+                    orgNames.put( orgUri, orgName );
+                Set organizations = (Set)identityOrganizations.get( identityUri );
+                if( organizations == null ) {
+                    organizations = new HashSet();
+                    identityOrganizations.put( identityUri, organizations );
+                }
+                organizations.add( orgUri );
+            }
+        }
     }
 
     private HashMap<String,String> getVocabularies( String lang ) throws Exception {
         HashMap<String,String> vocTable = new HashMap<String,String>();
-        //String allVocUrl = ca.licef.comete.core.util.Util.getRestUrl( Constants.TYPE_VOCABULARY ) + "/all";
-        //WebResource webResource = Core.getInstance().getRestClient().resource( allVocUrl );
-        //MultivaluedMap queryParams = new MultivaluedMapImpl();
-        //queryParams.add( "lang", lang );
-        //ClientResponse response = webResource.queryParams( queryParams ).accept( MediaType.APPLICATION_JSON ).get( ClientResponse.class );
-        //int status = response.getStatus();
-        //if( status == HttpServletResponse.SC_OK ) {
-        //    String strJson = response.getEntity( String.class );
-        //    JSONObject json = new JSONObject( strJson );
-        //    JSONArray vocs = json.getJSONArray( "vocabularies" );
-        //    for( int i = 0; i < vocs.length(); i++ ) {
-        //        JSONObject voc = (JSONObject)vocs.get( i );
-        //        String uri = (String)voc.get( "uri" );
-        //        String label = (String)voc.get( "label" );
-        //        vocTable.put( uri, label );
-        //    }
-        //}
+
+        Vocabulary vocabManager = Vocabulary.getInstance();
+        String[] vocabUris = vocabManager.getNavigableVocabularies();
+        for( String uri : vocabUris )
+            vocTable.put( uri, vocabManager.getVocabularyTitle( uri, lang, true ) );
+
         return( vocTable );
     }
 
@@ -294,9 +290,8 @@ public class LearningObjectView extends DefaultView {
     }
 
     private String getVocabularyConceptLabel( String subjectUri, String lang ) throws Exception {
-        //String label = Core.getInstance().getTripleStoreService().getResourceLabel( subjectUri, lang, true )[ 0 ];
-        //return( label );
-        return( "" );
+        String[] labels = Util.getResourceLabel( subjectUri, lang, true );
+        return( labels[ 0 ] );
     }
 
     class ContributeComparator implements Comparator<String> {
