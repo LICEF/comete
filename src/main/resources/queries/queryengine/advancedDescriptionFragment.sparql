@@ -1,1 +1,1 @@
-GRAPH <server:main-fullTextView_{1}> '{' ?s dct:description "{0}" '}'
+GRAPH <server:main-fullTextView_{1}> '{' ?s dcterms:description "{0}" '}'

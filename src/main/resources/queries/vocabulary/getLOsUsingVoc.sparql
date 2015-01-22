@@ -1,14 +1,14 @@
-PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX comete: <http://comete.licef.ca/reference#>
-PREFIX server: <#>
 
 SELECT DISTINCT ?s
 WHERE '{'
+    <{0}> comete:vocUri ?vocUri .
     ?s rdf:type comete:LearningObject .
-    ?s dct:subject ?concept .
-    GRAPH <server:voc-globalView> '{'
-        ?concept skos:inScheme <{0}>
+    ?s dcterms:subject ?concept .
+    GRAPH ?vocUri '{'
+        ?concept skos:inScheme ?vocUri
     '}'
 '}'

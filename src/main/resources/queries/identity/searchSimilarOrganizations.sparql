@@ -1,6 +1,6 @@
 PREFIX text: <http://jena.apache.org/text#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX comete: <http://comete.licef.ca/reference#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 
@@ -12,8 +12,8 @@ WHERE '{'
     UNION
     '{' ?s text:query ( foaf:altName "{0}" ) '}'
     OPTIONAL '{'
-        GRAPH <{1}/identity-similarity> '{'
-            ?s dct:identifier ?gid
+        GRAPH <{1}> '{'
+            ?s dcterms:identifier ?gid
         '}'
     '}'
 '}'

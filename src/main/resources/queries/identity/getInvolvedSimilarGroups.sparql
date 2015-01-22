@@ -1,7 +1,7 @@
-PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 
 SELECT DISTINCT ?gid
 WHERE '{'
-    ?s dct:identifier ?gid .
+    ?s dcterms:identifier ?gid .
     FILTER ( {0} )
 '}'

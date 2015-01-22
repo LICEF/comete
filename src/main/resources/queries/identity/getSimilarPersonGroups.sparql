@@ -1,11 +1,11 @@
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX comete: <http://comete.licef.ca/reference#>
 
 SELECT DISTINCT ?gid
 WHERE '{'
     ?s rdf:type comete:Person .
-    GRAPH <{0}/identity-similarity> '{'
-        ?s dct:identifier ?gid
+    GRAPH <{0}> '{'
+        ?s dcterms:identifier ?gid
     '}'
 '}'

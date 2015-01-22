@@ -47,12 +47,6 @@
             scope: this
         } );
 
-        this.checkUpdateButton = Ext.create('Ext.button.Button', {
-            text: tr('Check for Updates'),
-            disabled: !authorized,
-            handler: this.checkUpdates, 
-            scope: this
-        } );
 
         this.updateButton = Ext.create('Ext.button.Button', {
             text: tr('Update'),
@@ -78,7 +72,7 @@
                 stripeRows: false,
             },
             autoScroll: true,
-            bbar: [ this.addButton, this.modifyButton, this.deleteButton, '->', this.checkUpdateButton, this.updateButton ]
+            bbar: [ this.addButton, this.modifyButton, this.deleteButton, '->', this.updateButton ]
         });
 
         this.vocabList.on( 'selectionchange', this.vocabChanged, this );
@@ -109,6 +103,7 @@
         this.detailsPanel = Ext.create('Ext.Panel', { 
             region: 'center',
             width: 600,
+            margin: '0 0 0 10',
             border: false,
             layout: 'form',
             defaultType: 'textfield',
@@ -133,10 +128,10 @@
         this.aliases = Ext.create('Ext.grid.Panel', { 
             store: this.vocAliasStore,
             height: 150,  
-            width: 495,  
+            width: 485,  
             margin: '5 0 0 0',    
             columns: [ 
-                { dataIndex: 'alias', flex: 1,
+                { dataIndex: 'alias', width: '99%',
                   editor: {
                       allowBlank: false
                   }
@@ -193,10 +188,10 @@
         this.aliasPanel = Ext.create('Ext.Panel', { 
             region: 'south',
             width: 600,
-            margin: '4 0 0 0',
+            margin: '4 0 0 10',
             border: false,
             layout: 'hbox',
-            items: [ { xtype: 'label', text: tr('Aliases') + ":", width: 105, margin: '5 0 0 0' },                      
+            items: [ { xtype: 'label', text: tr('Aliases') + ":", width: 105, margin: '5 0 0 5' },                      
                      this.aliases ]
         }); 
 
@@ -324,26 +319,6 @@
     afterModify: function() {
         this.vocCtxtStore.loadPage(1);
         Ext.Msg.alert('Information', tr('Vocabulary modified.'));
-    },
-    checkUpdates: function() {
-        Ext.Ajax.request( {
-            url: vocabularyUrl + '/rest/vocContexts/checkUpdates',
-            method: 'GET',
-            success: function(response, opts) {
-                var array = Ext.JSON.decode(response.responseText, true);
-                for (var i = 0; i < array.length; i++) {
-                    var record = this.vocabList.getStore().findRecord('restUrl', array[i]);   
-                    record.set('update', true);
-                    record.commit(); //probably not good use of commit but avoid mark cell as dirty -AM
-                }
-                this.vocabList.columns[1].setVisible(true);
-            },
-            failure: function(response, opts) {
-                waitDialog.close();
-                Ext.Msg.alert('Failure', response.responseText);
-            },
-            scope: this
-        } );
     },
     updateVocabulary: function() {
         var records = this.vocabList.getSelectionModel().getSelection();
@@ -516,7 +491,7 @@ Ext.define( 'Comete.AdminVocEditor', {
         });
         waitDialog.wait( tr('Please wait') + '...' );
         this.formPanel.submit({
-            url: vocabularyUrl + '/rest/vocContexts',
+            url: 'rest/vocContexts',
             method: 'POST',
             success: function(form, action) {
                 this.close();     

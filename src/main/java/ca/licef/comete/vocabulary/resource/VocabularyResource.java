@@ -125,7 +125,7 @@ public class VocabularyResource {
     @GET
     @Path( "all" )
     @Produces( MediaType.APPLICATION_JSON )
-    public String getVocabularies( @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) throws Exception {
+    public Response getVocabularies( @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) throws Exception {
         String[] vocabularies = Vocabulary.getInstance().getNavigableVocabularies();
         StringWriter out = new StringWriter();
         try {
@@ -153,7 +153,7 @@ public class VocabularyResource {
             e.printStackTrace();
         }
 
-        return( out.toString() );
+        return Response.ok(out.toString()).build();
     }
 
 

@@ -1,10 +1,12 @@
 package ca.licef.comete.vocabulary.resource;
 
-import ca.licef.comete.core.Core;
-import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.Util;
+import ca.licef.comete.security.Security;
+import ca.licef.comete.vocabularies.COMETE;
+import ca.licef.comete.vocabulary.Vocabulary;
 import com.sun.jersey.multipart.FormDataParam;
 import com.sun.jersey.spi.resource.Singleton;
+import licef.tsapi.model.Tuple;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,18 +14,12 @@ import org.json.JSONWriter;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Locale;
 
 @Singleton
 @Path( "/vocContexts" )
@@ -53,46 +49,22 @@ public class VocContextResource {
 
         return "";
     }
-    
-    @GET
-    @Path( "convertVdexToSkos" )
-    @Produces( MediaType.TEXT_XML )
-    public String convertVdexToSkos( @QueryParam( "vdexLocation" ) String vdexLocation,
-                                     @QueryParam( "vocUri" ) String vocUri) throws Exception {
-        /*URL vdexUrl = null;
-        try {
-            vdexUrl = new URL( vdexLocation );
-        }
-        catch( MalformedURLException e ) {
-            throw( new WebApplicationException( HttpServletResponse.SC_BAD_REQUEST ) );
-        }
-
-        try {
-            return( Vocabulary.getInstance().convertVdexToSkos( vdexUrl, vocUri ) );
-        }
-        catch( Exception e ) {
-            throw( new WebApplicationException( HttpServletResponse.SC_NOT_FOUND ) );
-        }*/
-
-        return "";
-    }
 
     @GET
     @Produces( MediaType.APPLICATION_JSON )
-    public String getVocabularies( @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) throws Exception {
-        /*Hashtable<String, String>[] results =
-                Core.getInstance().getTripleStoreService().getResults("getVocContexts.sparql");
+    public Response getVocabularies( @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) throws Exception {
+        Tuple[] ctxts = Vocabulary.getInstance().getVocContexts();
         StringWriter out = new StringWriter();
         try {
             JSONWriter json = new JSONWriter( out ).object();
 
             JSONArray vocCtxts = new JSONArray();
-            for (int i = 0; i < results.length; i++) {
-                String vocCtxtUri = results[i].get("s");
-                String vocUri = results[i].get("uri");
+            for (int i = 0; i < ctxts.length; i++) {
+                String vocCtxtUri = ctxts[i].getValue("s").getContent();
+                String vocUri = ctxts[i].getValue("vocUri").getContent();
                 JSONObject voc = new JSONObject();
                 voc.put( "restUrl",
-                        Util.getRestUrl( Constants.TYPE_VOCABULARY_CONTEXT ) + "/" +
+                        Util.getRestUrl(COMETE.VocContext) + "/" +
                             Util.getIdNumberValue( vocCtxtUri ));
                 voc.put( "label", Vocabulary.getInstance().getVocabularyTitle(vocUri, lang, true) );
                 vocCtxts.put(voc);
@@ -111,25 +83,21 @@ public class VocContextResource {
             e.printStackTrace();
         }
 
-        return( out.toString() );*/
-
-        return "";
+        return Response.ok(out.toString()).build();
     }
 
     @GET
     @Path( "{id}/used" )
     public Response isVocabularyUsed(@PathParam( "id" ) String id ) throws Exception {
-        /*String uri = Util.makeURI(id, Constants.TYPE_VOCABULARY_CONTEXT);
-        boolean b = Vocabulary.getInstance().getVocabularyManager().isVocabularyUsed(uri);
-        return Response.ok(Boolean.toString(b)).build();*/
-
-        return Response.ok().build();
+        String uri = Util.makeURI(id, COMETE.VocContext);
+        boolean b = Vocabulary.getInstance().isVocabularyUsed(uri);
+        return Response.ok(Boolean.toString(b)).build();
     }
 
     @POST
     @Consumes( MediaType.MULTIPART_FORM_DATA )
     @Produces( MediaType.TEXT_HTML ) //!important for ExtJS see Ext.form.Basic.hasUpload() description -AM
-    public Response addVocabulary(@Context HttpServletRequest request,
+    public Response addNewVocContext(@Context HttpServletRequest request,
                                   @FormDataParam("name") String name,
                                   @FormDataParam("source") String source,
                                   @FormDataParam("category") String cat,
@@ -138,10 +106,10 @@ public class VocContextResource {
                                   @FormDataParam("file") java.io.InputStream uploadedInputStream,
                                   @FormDataParam("file") com.sun.jersey.core.header.FormDataContentDisposition fileDetail ) throws Exception {
 
-        /*if (!Security.isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to add vocabulary.").build();
 
-        String errorMessage = Vocabulary.getInstance().getVocabularyManager().addNewVocabulary(
+        String errorMessage = Vocabulary.getInstance().addNewVocContext(
                 name, source, cat, "on".equals(navig), url, fileDetail.getFileName(), uploadedInputStream);
         StringWriter out = new StringWriter();
         try {
@@ -162,23 +130,21 @@ public class VocContextResource {
             e.printStackTrace();
         }
 
-        return Response.ok( out.toString() ).build();*/
-
-        return Response.ok().build();
+        return Response.ok( out.toString() ).build();
     }
 
     @POST
     @Path( "{id}" )
     @Consumes( MediaType.MULTIPART_FORM_DATA )
     @Produces( MediaType.TEXT_HTML ) //!important for ExtJS see Ext.form.Basic.hasUpload() description -AM
-    public Response modifyVocabulary(@Context HttpServletRequest request,
+    public Response modifyVocabularyContent(@Context HttpServletRequest request,
                                      @PathParam( "id" ) String id,
                                      @FormDataParam("file") java.io.InputStream uploadedInputStream ) throws Exception {
-        /*if (!Security.isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to add vocabulary.").build();
 
-        String uri = Util.makeURI(id, Constants.TYPE_VOCABULARY_CONTEXT);
-        String errorMessage = Vocabulary.getInstance().getVocabularyManager().modifyVocabularyContent(uri, uploadedInputStream);
+        String uri = Util.makeURI(id, COMETE.VocContext);
+        String errorMessage = Vocabulary.getInstance().modifyVocabularyContent(uri, uploadedInputStream);
         StringWriter out = new StringWriter();
         try {
             JSONWriter json = new JSONWriter( out ).object();
@@ -197,7 +163,30 @@ public class VocContextResource {
         catch( IOException e ) {
             e.printStackTrace();
         }
-        return Response.ok( out.toString() ).build();*/
+        return Response.ok( out.toString() ).build();
+    }
+
+    @GET
+    @Path( "{id}/update" )
+    public Response updateVocContext(@Context HttpServletRequest request, @PathParam( "id" ) String id ) throws Exception {
+        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to change settings.").build();
+
+        String uri = Util.makeURI(id, COMETE.VocContext);
+        Vocabulary.getInstance().updateVocContext(uri);
+        return Response.ok().build();
+    }
+
+    @DELETE
+    @Path( "{id}" )
+    public Response deleteVocContext(@Context HttpServletRequest request, @PathParam( "id" ) String id ) throws Exception {
+        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to change settings.").build();
+
+        String uri = Util.makeURI(id, COMETE.VocContext);
+        boolean ok = Vocabulary.getInstance().deleteVocContext(uri);
+        if (!ok)
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Vocabulary linked by resource(s). Cannot delete it.").build();
 
         return Response.ok().build();
     }
@@ -205,24 +194,20 @@ public class VocContextResource {
     @GET
     @Path( "{id}/details" )
     @Produces( MediaType.APPLICATION_JSON )
-    public String getVocContextDetails(@PathParam( "id" ) String id) throws Exception {
-        /*String uri = Util.makeURI(id, Constants.TYPE_VOCABULARY_CONTEXT);
-        Hashtable<String, String>[] results =
-                Core.getInstance().getTripleStoreService().getResults("getVocContextDetails.sparql", uri);
+    public Response getVocContextDetails(@PathParam( "id" ) String id) throws Exception {
+        String uri = Util.makeURI(id, COMETE.VocContext);
+        Tuple[] details = Vocabulary.getInstance().getVocContextDetails(uri);
         StringWriter out = new StringWriter();
         try {
             JSONWriter json = new JSONWriter( out ).object();
 
             JSONArray vocDetails = new JSONArray();
-            for (int i = 0; i < results.length; i++) {
-                JSONObject detail = new JSONObject();
-                detail.put( "uri", results[i].get("vocUri") );
-                detail.put( "source", Util.manageQuotes( results[i].get("src")) );
-                detail.put( "location", Util.manageQuotes(results[i].get("location")) );
-                detail.put( "graph", Util.manageQuotes(results[i].get("graph")) );
-                detail.put( "navigable", Util.manageQuotes(results[i].get("navigable")) );
-                vocDetails.put(detail);
-            }
+            JSONObject detail = new JSONObject();
+            detail.put( "uri", details[0].getValue("vocUri").getContent() );
+            detail.put( "source", details[0].getValue("src").getContent() );
+            detail.put( "location", details[0].getValue("location").getContent());
+            detail.put( "navigable", details[0].getValue("navigable").getContent() );
+            vocDetails.put(detail);
             json.key( "vocDetails" ).value( vocDetails );
             json.endObject();
         }
@@ -237,87 +222,23 @@ public class VocContextResource {
             e.printStackTrace();
         }
 
-        return( out.toString() );*/
-
-        return "";
-    }
-
-    @GET
-    @Path( "{id}/update" )
-    public Response resetVocabulary(@Context HttpServletRequest request, @PathParam( "id" ) String id ) throws Exception {
-        /*if (!Security.isAuthorized(request.getRemoteAddr()))
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to change settings.").build();
-
-        String uri = Util.makeURI(id, Constants.TYPE_VOCABULARY_CONTEXT);
-        Vocabulary.getInstance().getVocabularyManager().updateVocabulary(uri);
-        return Response.ok().build();*/
-
-        return Response.ok().build();
-    }
-
-    @DELETE
-    @Path( "{id}" )
-    public Response deleteVocabulary(@Context HttpServletRequest request, @PathParam( "id" ) String id ) throws Exception {
-        /*if (!Security.isAuthorized(request.getRemoteAddr()))
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to change settings.").build();
-
-        String uri = Util.makeURI(id, Constants.TYPE_VOCABULARY_CONTEXT);
-        boolean ok = Vocabulary.getInstance().getVocabularyManager().deleteVocabulary(uri);
-        if (!ok)
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Vocabulary linked by resource(s). Cannot delete it.").build();
-
-        return Response.ok().build();*/
-
-        return Response.ok().build();
-    }
-
-    @GET
-    @Path( "checkUpdates" )
-    @Produces( MediaType.APPLICATION_JSON )
-    public Response checkUpdates(@Context HttpServletRequest request ) throws Exception {
-        /*if (!Security.isAuthorized(request.getRemoteAddr()))
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to manage vocabularies.").build();
-
-        List<String> results = Vocabulary.getInstance().getVocabularyManager().getVocsWithAvailableUpdate();
-        StringWriter out = new StringWriter();
-        try {
-            JSONWriter json = new JSONWriter( out ).array();
-            for (String vocCtxt : results) {
-                String restUrl = Util.getRestUrl( Constants.TYPE_VOCABULARY_CONTEXT ) + "/" + Util.getIdNumberValue( vocCtxt );
-                json.value(restUrl);
-            }
-            json.endArray();
-        }
-        catch( JSONException e ) {
-            e.printStackTrace();
-        }
-
-        try {
-            out.close();
-        }
-        catch( IOException e ) {
-            e.printStackTrace();
-        }
-
-        return Response.ok(out.toString()).build();*/
-
-        return Response.ok().build();
+        return Response.ok(out.toString()).build();
     }
 
     @GET
     @Path( "{id}/aliases" )
     @Produces( MediaType.APPLICATION_JSON )
-    public String getVocContextAliases(@PathParam( "id" ) String id) throws Exception {
-        /*String uri = Util.makeURI(id, Constants.TYPE_VOCABULARY_CONTEXT);
-        Hashtable<String, String>[] results = Core.getInstance().getTripleStoreService().getResults("getVocAliases.sparql", uri);
+    public Response getVocContextAliases(@PathParam( "id" ) String id) throws Exception {
+        String uri = Util.makeURI(id, COMETE.VocContext);
+        Tuple[] aliases = Vocabulary.getInstance().getVocContextAliases(uri);
         StringWriter out = new StringWriter();
         try {
             JSONWriter json = new JSONWriter( out ).object();
 
             JSONArray vocAliases = new JSONArray();
-            for (int i = 0; i < results.length; i++) {
+            for (int i = 0; i < aliases.length; i++) {
                 JSONObject alias = new JSONObject();
-                alias.put( "alias", Util.manageQuotes(results[i].get("alias")) );
+                alias.put("alias", aliases[i].getValue("alias").getContent());
                 vocAliases.put(alias);
             }
             json.key( "vocAliases" ).value( vocAliases );
@@ -334,9 +255,7 @@ public class VocContextResource {
             e.printStackTrace();
         }
 
-        return( out.toString() );*/
-
-        return "";
+        return Response.ok(out.toString()).build();
     }
 
     @POST
@@ -344,12 +263,11 @@ public class VocContextResource {
     public Response addVocContextAlias(@Context HttpServletRequest request, @PathParam( "id" ) String id,
                                        @FormParam( "alias" ) String alias) throws Exception {
 
-        /*if (!Security.isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to change settings.").build();
 
-        String uri = Util.makeURI(id, Constants.TYPE_VOCABULARY_CONTEXT);
-        Core.getInstance().getTripleStoreService().addTriple(uri, Constants.METAMODEL_VOCABULARY_ALIAS, alias);
-        return Response.ok().build();*/
+        String uri = Util.makeURI(id, COMETE.VocContext);
+        Vocabulary.getInstance().addVocContextAlias(uri, alias);
 
         return Response.ok().build();
     }
@@ -360,13 +278,11 @@ public class VocContextResource {
                                           @PathParam( "id" ) String id,
                                           @FormParam( "alias" ) String alias,
                                           @FormParam( "prevAlias" ) String prevAlias) throws Exception {
-        /*if (!Security.isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to change settings.").build();
 
-        String uri = Util.makeURI(id, Constants.TYPE_VOCABULARY_CONTEXT);
-        Core.getInstance().getTripleStoreService().deleteTriple(uri, Constants.METAMODEL_VOCABULARY_ALIAS, prevAlias);
-        Core.getInstance().getTripleStoreService().addTriple(uri, Constants.METAMODEL_VOCABULARY_ALIAS, alias);
-        return Response.ok().build();*/
+        String uri = Util.makeURI(id, COMETE.VocContext);
+        Vocabulary.getInstance().updateVocContextAlias(uri, prevAlias, alias);
 
         return Response.ok().build();
     }
@@ -375,27 +291,22 @@ public class VocContextResource {
     @Path( "{id}/aliases" )
     public Response deleteVocContextAlias(@Context HttpServletRequest request, @PathParam( "id" ) String id,
                                           @FormParam( "alias" ) String alias) throws Exception {
-        /*if (!Security.isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to change settings.").build();
 
-        String uri = Util.makeURI(id, Constants.TYPE_VOCABULARY_CONTEXT);
-        Core.getInstance().getTripleStoreService().deleteTriple(uri, Constants.METAMODEL_VOCABULARY_ALIAS, alias);
-        return Response.ok().build();*/
-
+        String uri = Util.makeURI(id, COMETE.VocContext);
+        Vocabulary.getInstance().deleteVocContextAlias(uri, alias);
         return Response.ok().build();
     }
 
     @POST
     @Path( "{id}/navigable" )
     public Response setVocContextNav(@Context HttpServletRequest request, @PathParam( "id" ) String id) throws Exception {
-
-        /*if (!Security.isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to change settings.").build();
 
-        String uri = Util.makeURI(id, Constants.TYPE_VOCABULARY_CONTEXT);
-        Core.getInstance().getTripleStoreService().deleteTriple(uri, Constants.METAMODEL_VOCABULARY_NAVIGABLE, "false");
-        Core.getInstance().getTripleStoreService().addTriple(uri, Constants.METAMODEL_VOCABULARY_NAVIGABLE, "true");
-        return Response.ok().build();*/
+        String uri = Util.makeURI(id, COMETE.VocContext);
+        Vocabulary.getInstance().updateVocContextNavigable(uri, true);
 
         return Response.ok().build();
     }
@@ -403,14 +314,11 @@ public class VocContextResource {
     @DELETE
     @Path( "{id}/navigable" )
     public Response deleteVocContextNav(@Context HttpServletRequest request, @PathParam( "id" ) String id) throws Exception {
-
-        /*if (!Security.isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to change settings.").build();
 
-        String uri = Util.makeURI(id, Constants.TYPE_VOCABULARY_CONTEXT);
-        Core.getInstance().getTripleStoreService().deleteTriple(uri, Constants.METAMODEL_VOCABULARY_NAVIGABLE, "true");
-        Core.getInstance().getTripleStoreService().addTriple(uri, Constants.METAMODEL_VOCABULARY_NAVIGABLE, "false");
-        return Response.ok().build();*/
+        String uri = Util.makeURI(id, COMETE.VocContext);
+        Vocabulary.getInstance().updateVocContextNavigable(uri, false);
 
         return Response.ok().build();
     }

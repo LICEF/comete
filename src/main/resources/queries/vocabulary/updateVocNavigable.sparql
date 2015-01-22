@@ -1,0 +1,11 @@
+PREFIX comete: <http://comete.licef.ca/reference#>
+
+DELETE '{'
+    <{0}> comete:vocNavigable "{1}"
+'}'
+INSERT '{'
+    <{0}> comete:vocNavigable "{2}"
+'}'
+WHERE '{'
+    <{0}> comete:vocNavigable "{1}"
+'}'

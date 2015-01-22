@@ -1,12 +1,9 @@
 PREFIX comete: <http://comete.licef.ca/reference#>
 
+WITH <{0}>
 DELETE '{'
-    GRAPH <{0}> '{'
-        ?s comete:validationEnabled ?o
-    '}'
+    ?s comete:validationEnabled ?o
 '}'
 WHERE '{'
-    GRAPH <{0}> '{'
-        ?s comete:validationEnabled ?o
-    '}'
+    ?s comete:validationEnabled ?o
 '}'

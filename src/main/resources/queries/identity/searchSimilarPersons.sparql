@@ -25,7 +25,7 @@ WHERE '{'
         '{' ?s text:query ( comete:altFamilyName "{0}" ) '}'
     '}'
     OPTIONAL '{'
-        GRAPH <{2}/identity-similarity> '{'
+        GRAPH <{2}> '{'
             ?s dcterms:identifier ?gid
         '}'
     '}'

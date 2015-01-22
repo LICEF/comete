@@ -509,7 +509,7 @@ public class Identity {
         switch (identityLevel) {
             case IDENTITY_NORMAL:
                 String query = CoreUtil.getQuery("identity/searchSimilarPersons.sparql",
-                        firstname, lastname, Core.getInstance().getUriPrefix());
+                        firstname, lastname, tripleStore.getUri(IDENTITY_SIMILARITY_GRAPH));
                 results = tripleStore.sparqlSelectWithTextIndex(query, Constants.indexPredicates, Constants.INDEX_LANGUAGES, null);
                 break;
             default:
@@ -564,7 +564,7 @@ public class Identity {
 
         if (!"".equals(constraints)) {
             String query = CoreUtil.getQuery("identity/manageSimilarIdentities.sparql",
-                    Core.getInstance().getUriPrefix(), uuid, constraints);
+                    tripleStore.getUri(IDENTITY_SIMILARITY_GRAPH), uuid, constraints);
             tripleStore.sparqlUpdate(query);
         }
         tripleStore.insertTriples(similarTriples, IDENTITY_SIMILARITY_GRAPH); //to not forget others without gid
@@ -577,7 +577,7 @@ public class Identity {
         String[] clearedTerms = (String[]) res[0];
         String terms = (String) res[1];
         String query = CoreUtil.getQuery("identity/searchSimilarOrganizations.sparql",
-                terms, Core.getInstance().getUriPrefix());
+                terms, tripleStore.getUri(IDENTITY_SIMILARITY_GRAPH));
         Tuple[] results = tripleStore.sparqlSelectWithTextIndex(
                 query, Constants.indexPredicates, Constants.INDEX_LANGUAGES, null);
 
@@ -614,7 +614,7 @@ public class Identity {
 
         if (!"".equals(constraints)) {
             query = CoreUtil.getQuery("identity/manageSimilarIdentities.sparql",
-                    Core.getInstance().getUriPrefix(), uuid, constraints);
+                    tripleStore.getUri(IDENTITY_SIMILARITY_GRAPH), uuid, constraints);
             tripleStore.sparqlUpdate(query);
         }
         tripleStore.insertTriples(similarTriples, IDENTITY_SIMILARITY_GRAPH); //to not forget others without gid
