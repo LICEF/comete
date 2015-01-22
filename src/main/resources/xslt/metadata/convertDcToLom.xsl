@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <xsl:stylesheet 
     version="2.0"
-    xmlns:comete-if="http://comete.licef.ca/internal-format"
     xmlns:dc="http://purl.org/dc/elements/1.1/" 
     xmlns:lom="http://ltsc.ieee.org/xsd/LOM"
     xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/"
@@ -28,13 +27,13 @@
                 <xsl:apply-templates select="dc:subject"/>
                 <xsl:apply-templates select="dc:coverage"/>
             </lom:general>
-            <!--xsl:if test="dc:contributor or dc:creator or dc:publisher">
+            <xsl:if test="dc:contributor or dc:creator or dc:publisher">
                 <lom:lifeCycle>
                     <xsl:apply-templates select="dc:contributor"/>
                     <xsl:apply-templates select="dc:creator"/>
                     <xsl:apply-templates select="dc:publisher"/>
                 </lom:lifeCycle>
-            </xsl:if-->
+            </xsl:if>
             <lom:metaMetadata>
                 <lom:identifier>
                     <lom:catalog>URI</lom:catalog>
@@ -111,21 +110,22 @@
         </lom:keyword>
     </xsl:template>
 
-    <!--xsl:template match="dc:contributor | dc:creator | dc:publisher">
-        <xsl:variable name="identityURI" select="comete-if:identity"/>
-        <xsl:variable name="vcard" select="saxon:getVCard($identityURI, $loURI)"/>
-        <lom:contribute>
-            <xsl:choose>
-                <xsl:when test="local-name() = 'creator'">
-                    <lom:role><lom:source>LOMv1.0</lom:source><lom:value>author</lom:value></lom:role>
-                </xsl:when>
-                <xsl:when test="local-name() = 'publisher'">
-                    <lom:role><lom:source>LOMv1.0</lom:source><lom:value>publisher</lom:value></lom:role>
-                </xsl:when>
-            </xsl:choose>
-            <lom:entity><xsl:value-of select="$vcard"/></lom:entity>
-        </lom:contribute>
-    </xsl:template-->
+    <xsl:template match="dc:contributor | dc:creator | dc:publisher">
+        <xsl:variable name="vcard" select="saxon:getVCard( . )"/>
+        <xsl:if test="$vcard">
+            <lom:contribute>
+                <xsl:choose>
+                    <xsl:when test="local-name() = 'creator'">
+                        <lom:role><lom:source>LOMv1.0</lom:source><lom:value>author</lom:value></lom:role>
+                    </xsl:when>
+                    <xsl:when test="local-name() = 'publisher'">
+                        <lom:role><lom:source>LOMv1.0</lom:source><lom:value>publisher</lom:value></lom:role>
+                    </xsl:when>
+                </xsl:choose>
+                <lom:entity><xsl:value-of select="$vcard"/></lom:entity>
+            </lom:contribute>
+        </xsl:if>
+    </xsl:template>
 
     <xsl:template match="dc:rights">
         <lom:description>

@@ -1,6 +1,5 @@
 <xsl:stylesheet 
     version="2.0"
-    xmlns:comete-if="http://comete.licef.ca/internal-format"
     xmlns:dc="http://purl.org/dc/elements/1.1/" 
     xmlns:lom="http://ltsc.ieee.org/xsd/LOM"
     xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/"
@@ -57,32 +56,20 @@
 
     <!-- DC:CREATOR -->
     <xsl:template match="lom:lifeCycle/lom:contribute[lom:role/lom:value = 'author']/lom:entity">
-        <xsl:if test="comete-if:identity">
-            <!--xsl:variable name="identityURI" select="normalize-space( comete-if:identity )"/>
-            <xsl:variable name="fn" select="saxon:getFN( $identityURI, $loURI )"/-->
-            <xsl:variable name="fn" select="'Frederic Bergeron'"/>
-            <dc:creator><xsl:value-of select="$fn"/></dc:creator>
-        </xsl:if>
+        <xsl:variable name="fn" select="saxon:getFN( . )"/>
+        <dc:creator><xsl:value-of select="$fn"/></dc:creator>
     </xsl:template>       
     
     <!-- DC:PUBLISHER-->
     <xsl:template match="lom:lifeCycle/lom:contribute[lom:role/lom:value = 'publisher']/lom:entity">
-        <xsl:if test="comete-if:identity">
-            <!--xsl:variable name="identityURI" select="normalize-space( comete-if:identity )"/>
-            <xsl:variable name="fn" select="saxon:getFN( $identityURI, $loURI )"/-->
-            <xsl:variable name="fn" select="'Frederic Bergeron'"/>
-            <dc:publisher><xsl:value-of select="$fn"/></dc:publisher>
-        </xsl:if>
+        <xsl:variable name="fn" select="saxon:getFN( . )"/>
+        <dc:publisher><xsl:value-of select="$fn"/></dc:publisher>
     </xsl:template>       
 
     <!-- DC:CONTRIBUTOR-->
-    <xsl:template match="lom:lifeCycle/lom:contribute[lom:role/lom:value != 'author' and lom:role/lom:value != 'publisher']/lom:entity">
-        <xsl:if test="comete-if:identity">
-            <!--xsl:variable name="identityURI" select="normalize-space( comete-if:identity )"/>
-            <xsl:variable name="fn" select="saxon:getFN( $identityURI, $loURI )"/-->
-            <xsl:variable name="fn" select="'Frederic Bergeron'"/>
-            <dc:contributor><xsl:value-of select="$fn"/></dc:contributor>
-        </xsl:if>
+    <xsl:template match="lom:lifeCycle/lom:contribute[not(lom:role/lom:value) or (lom:role/lom:value != 'author' and lom:role/lom:value != 'publisher')]/lom:entity">
+        <xsl:variable name="fn" select="saxon:getFN( . )"/>
+        <dc:contributor><xsl:value-of select="$fn"/></dc:contributor>
     </xsl:template>       
 
     <!-- DC:DATE -->

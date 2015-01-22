@@ -201,6 +201,7 @@ public class Metadata {
         String content = null;
         String namespace = null;
         String pseudoOaiID = null;
+        String xpath = null;
         try {
             Node node = XMLUtil.getXMLNode(file);
             content = XMLUtil.getXMLString( node );
@@ -208,15 +209,18 @@ public class Metadata {
             Hashtable namespaces = XMLUtil.getAttributes(content, "/");
             String[] array = StringUtil.split(rootname, ':');
             rootname = array[array.length - 1].toLowerCase();
-            if ("lom".equals(rootname) && namespaces.containsValue(Constants.IEEE_LOM_NAMESPACE))
+            if ("lom".equals(rootname) && namespaces.containsValue(Constants.IEEE_LOM_NAMESPACE)) {
                 namespace = Constants.IEEE_LOM_NAMESPACE;
-            else if ("dc".equals(rootname) && namespaces.containsValue(Constants.OAI_DC_NAMESPACE))
+                xpath = "//lom:lom/lom:metaMetadata/lom:identifier/lom:entry";
+            }
+            else if ("dc".equals(rootname) && namespaces.containsValue(Constants.OAI_DC_NAMESPACE)) {
                 namespace = Constants.OAI_DC_NAMESPACE;
+                xpath = "//dc:identifier";
+            }
             else
                 errorMessage = "Wrong metadata format.";
 
-            //check of 3.1 metaMetadata identifier existence
-            String xpath = "//lom:lom/lom:metaMetadata/lom:identifier/lom:entry";
+            //check of 3.1 metaMetadata identifier existence for LOM or dc:identifier for DC.
             NodeList identifierNodes = XMLUtil.getNodeList( node, xpath );
             for( int i = 0; i < identifierNodes.getLength(); i++ ) {
                 Node identNode = identifierNodes.item( i );
@@ -668,25 +672,13 @@ public class Metadata {
 
             StreamSource source = new StreamSource( new StringReader( xml ) );
             String newXml = Util.applyXslToDocument( stylesheet, source, parameters );
-            store.setDatastream( storeId, "exposed_" + mf.getName(), newXml );
+            int resp = store.setDatastream( storeId, "exposed_" + mf.getName(), newXml );
+            if (resp == Store.DATASTREAM_STORED)
+                System.out.println("-> " + recordURI + " exposed (" + metadataFormat.getName() + " format)");
+            else if (resp == Store.DATASTREAM_UNCHANGED)
+                System.out.println("-> no change on : " + recordURI + ".");
         }
     }
-
-    /**
-     *  Update the exposed datastream.
-     *  @param id Record to update.
-     *  @param record Content to update.
-     *  @param metadataFormat Metadata format of the record.
-     */
-    void updateExposedFormat(String id, String record, MetadataFormat metadataFormat, String recordUri) throws Exception{
-        String datastream = metadataFormat.getExposedDatastream();
-        int resp = Store.getInstance().setDatastream(id, datastream, record);
-        if (resp == Store.DATASTREAM_STORED)
-            System.out.println("-> " + recordUri + " exposed (" + metadataFormat.getName() + " format)");
-        else if (resp == Store.DATASTREAM_UNCHANGED)
-            System.out.println("-> no change on : " + recordUri + ".");
-    }
-
 
     /*
      * Validation

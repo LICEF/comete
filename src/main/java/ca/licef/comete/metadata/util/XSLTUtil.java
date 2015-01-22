@@ -195,4 +195,25 @@ public class XSLTUtil {
         return "";
     }
 
+    public static String getFN( String vcard ) throws Exception {
+        return( Identity.getInstance().getVCardFormattedName( vcard ) );
+    }
+
+    public static String getVCard( String dcIdentityStr ) {
+        if( dcIdentityStr == null || "".equals( dcIdentityStr.trim() ) )
+            return( null );
+
+        // If the identity is already a vcard, return it as is.
+        if( dcIdentityStr.trim().startsWith( "BEGIN:VCARD" ) )
+            return( dcIdentityStr.trim() );
+
+        // Otherwise, create a simple vcard with only the FN field.
+        StringBuilder str = new StringBuilder();
+        str.append( "BEGIN:VCARD\n" );
+        str.append( "VERSION:3.0\n" );
+        str.append( "FN:" + dcIdentityStr );
+        str.append( "END:VCARD" );
+        return( str.toString() );
+    }
+
 }
