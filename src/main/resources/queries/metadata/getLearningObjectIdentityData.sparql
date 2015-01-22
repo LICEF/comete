@@ -1,5 +1,4 @@
-PREFIX dc: <http://purl.org/dc/elements/1.1/>
-PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX metamodel: <http://comete.licef.ca/metamodel#>
 PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
@@ -7,9 +6,9 @@ PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
 SELECT ?identity ?p ?org ?orgName
 WHERE '{'
     <{0}> ?p ?identity .
-    FILTER ( ?p = dct:creator || ?p = dct:publisher )
+    FILTER ( ?p = dcterms:creator || ?p = dcterms:publisher )
     OPTIONAL '{'
-        ?identity dct:isPartOf ?org .
+        ?identity dcterms:isPartOf ?org .
         OPTIONAL '{'
             ?org foaf:name ?orgName
         '}'
