@@ -1,3 +1,4 @@
+PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX text: <http://jena.apache.org/text#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
@@ -11,7 +12,7 @@ WHERE '{'
     UNION
     '{' ?s text:query ( foaf:altName "{0}" ) '}'
     OPTIONAL '{'
-        GRAPH <{2}> '{'
+        GRAPH <{1}> '{'
             ?s dcterms:identifier ?gid .
         '}'
     '}'

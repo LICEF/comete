@@ -110,10 +110,15 @@ public class XSLTUtil {
         return (str.toString());
     }
 
-    public static String linkToIdentity( String loURI, String recordURI, String entityType, String entityData, String metadataFormatNamespace ) throws Exception {
-        Invoker inv = new Invoker(null, "ca.licef.comete.metadata.util.XSLTUtil",
-                "linkToIdentityEff", new Object[]{loURI, recordURI, entityType, entityData, metadataFormatNamespace});
-        return (String)Core.getInstance().getTripleStore().transactionalCall(inv, TripleStore.WRITE_MODE);
+    public static String linkToIdentity( String loURI, String recordURI, String entityType, String entityData, String metadataFormatNamespace ) {
+        try {
+            Invoker inv = new Invoker(null, "ca.licef.comete.metadata.util.XSLTUtil",
+                    "linkToIdentityEff", new Object[]{loURI, recordURI, entityType, entityData, metadataFormatNamespace});
+            return (String)Core.getInstance().getTripleStore().transactionalCall(inv, TripleStore.WRITE_MODE);
+        }
+        catch( Exception e ) {
+            return( null );
+        }
     }
 
     public static String linkToIdentityEff( String loURI, String recordURI, String entityType, String entityData, String metadataFormatNamespace ) throws Exception {
@@ -157,10 +162,15 @@ public class XSLTUtil {
         return "";
     }
 
-    public static String linkToVocabularyConcept( String loURI, String source, String element, String value ) throws Exception {
-        Invoker inv = new Invoker(null, "ca.licef.comete.metadata.util.XSLTUtil",
-                "linkToVocabularyConceptEff", new Object[]{loURI, source, element, value});
-        return (String)Core.getInstance().getTripleStore().transactionalCall(inv, TripleStore.WRITE_MODE);
+    public static String linkToVocabularyConcept( String loURI, String source, String element, String value ) {
+        try {
+            Invoker inv = new Invoker(null, "ca.licef.comete.metadata.util.XSLTUtil",
+                    "linkToVocabularyConceptEff", new Object[]{loURI, source, element, value});
+            return (String)Core.getInstance().getTripleStore().transactionalCall(inv, TripleStore.WRITE_MODE);
+        }
+        catch( Exception e ) {
+            return( null );
+        }
     }
 
     public static String linkToVocabularyConceptEff( String loURI, String source, String element, String value ) throws Exception {

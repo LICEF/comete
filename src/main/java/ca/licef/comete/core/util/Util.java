@@ -12,6 +12,8 @@ import licef.jrdf.graph.Graph;
 import licef.jrdf.graph.TripleFactory;
 import licef.jrdf.writer.*;
 import licef.jrdf.writer.rdfxml.RdfXmlWriter;
+import licef.reflection.Invoker;
+import licef.tsapi.TripleStore;
 import licef.tsapi.model.Triple;
 import licef.tsapi.vocabulary.DCTERMS;
 import licef.tsapi.vocabulary.FOAF;
@@ -316,8 +318,15 @@ public class Util {
         else if (type.equals(COMETE.Repository.getURI()))
             predicate = FOAF.name.getURI();
 
-        String[] label = Core.getInstance().getTripleStore().
-                getBestLocalizedLiteralObject(uri, predicate, lang, graph);
+        //String[] label = Core.getInstance().getTripleStore().
+        //        getBestLocalizedLiteralObject(uri, predicate, lang, graph);
+        // Need to replace the previous call by something that looks like this but
+        // I get an illegalArgumentException. - FB
+        TripleStore tripleStore = Core.getInstance().getTripleStore();
+        Invoker inv = new Invoker( tripleStore, "licef.tsapi.TripleStore", "getBestLocalizedLiteralObject", 
+            new Object[] { uri, predicate, lang, new Object[] { graph } } );
+        String[] label = (String[])tripleStore.transactionalCall( inv );
+
 
         if (label == null || label[ 0 ] == null || "".equals(label[ 0 ]))
             return( new String[] { uri, null } );

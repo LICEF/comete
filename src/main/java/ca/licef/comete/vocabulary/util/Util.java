@@ -3,9 +3,11 @@ package ca.licef.comete.vocabulary.util;
 import ca.licef.comete.core.Core;
 import ca.licef.comete.core.util.Constants;
 import licef.IOUtil;
+import licef.reflection.Invoker;
 import licef.StringUtil;
 import licef.XMLUtil;
 import licef.tsapi.vocabulary.SKOS;
+import licef.tsapi.TripleStore;
 
 import java.io.File;
 import java.net.URL;
@@ -45,7 +47,9 @@ public class Util {
     }
 
     public static boolean isGraphExists(String uri) throws Exception {
-        String[] names = Core.getInstance().getTripleStore().getNamedGraphs();
+        TripleStore tripleStore = Core.getInstance().getTripleStore();
+        Invoker inv = new Invoker( tripleStore, "licef.tsapi.TripleStore", "getNamedGraphs", new Object[] {} );
+        String[] names = (String[])tripleStore.transactionalCall( inv );
         for (String name : names)
             if (uri.equals(name))
                 return true;
