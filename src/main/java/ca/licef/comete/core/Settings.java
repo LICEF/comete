@@ -39,8 +39,7 @@ public class Settings {
         TripleStore tripleStore = Core.getInstance().getTripleStore();
         Triple[] enabledValidationTriples = tripleStore.getTriplesWithPredicate( COMETE.validationEnabled, Settings.GRAPH );
 
-        String query = Util.getQuery( "deleteValidationSettings.sparql", tripleStore.getUri( GRAPH ) );
-        tripleStore.sparqlUpdate( query );
+        tripleStore.removeTriplesWithPredicate(COMETE.validationEnabled, GRAPH);
 
         List<Triple> triplesToAdd = new ArrayList<Triple>();
         for( String applProf : applProfTable.keySet() ) {

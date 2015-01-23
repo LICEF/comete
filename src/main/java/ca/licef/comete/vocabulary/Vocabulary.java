@@ -216,8 +216,8 @@ public class Vocabulary {
     }
 
     public void updateVocContextAlias(String uri, String prevAlias, String alias) throws Exception {
-        String query = CoreUtil.getQuery("vocabulary/updateVocAlias.sparql", uri, prevAlias, alias);
-        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "sparqlUpdate", new Object[]{query});
+        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "updateObjectTriple",
+                new Object[]{uri, COMETE.vocAlias, prevAlias, alias, new String[]{}});
         tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
     }
 
@@ -228,9 +228,8 @@ public class Vocabulary {
     }
 
     public void updateVocContextNavigable(String uri, boolean value) throws Exception {
-        String query = CoreUtil.getQuery("vocabulary/updateVocNavigable.sparql",
-                uri, Boolean.toString(!value), Boolean.toString(value));
-        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "sparqlUpdate", new Object[]{query});
+        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "updateObjectTriple",
+                new Object[]{uri, COMETE.vocNavigable, Boolean.toString(!value), Boolean.toString(value), new String[]{}});
         tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
     }
 

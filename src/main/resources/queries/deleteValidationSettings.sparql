@@ -1,9 +1,0 @@
-PREFIX comete: <http://comete.licef.ca/reference#>
-
-WITH <{0}>
-DELETE '{'
-    ?s comete:validationEnabled ?o
-'}'
-WHERE '{'
-    ?s comete:validationEnabled ?o
-'}'

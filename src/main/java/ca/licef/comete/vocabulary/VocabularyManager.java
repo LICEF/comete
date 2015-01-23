@@ -167,8 +167,7 @@ public class VocabularyManager {
         boolean navigable = Boolean.parseBoolean(details[0].getValue("navigable").getContent());
 
         //triple store deletion
-        String query = CoreUtil.getQuery("deleteResource.sparql", uri);
-        tripleStore.sparqlUpdate(query);
+        tripleStore.removeResource(uri);
         clearVocabularyGraph(vocUri, navigable);
 
         //physical deletion
