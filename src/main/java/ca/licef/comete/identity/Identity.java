@@ -248,7 +248,7 @@ public class Identity {
             }
         }
 
-        tripleStore.insertTriplesWithTextIndex(list, Constants.indexPredicates, Constants.INDEX_LANGUAGES, null);
+        tripleStore.insertTriplesWithTextIndex(list);
 
         System.out.println("Person: " + formattedName + " created");
 
@@ -283,7 +283,7 @@ public class Identity {
         }
 
         if (!list.isEmpty())
-            tripleStore.insertTriplesWithTextIndex(list, Constants.indexPredicates, Constants.INDEX_LANGUAGES, null);
+            tripleStore.insertTriplesWithTextIndex(list);
     }
 
     int getIdentityLevel(String firstname, String lastname, String email) {
@@ -375,7 +375,7 @@ public class Identity {
             }
         }
 
-        tripleStore.insertTriplesWithTextIndex(list, Constants.indexPredicates, Constants.INDEX_LANGUAGES, null);
+        tripleStore.insertTriplesWithTextIndex(list);
 
         System.out.println("Org: " + org + " created");
 
@@ -409,7 +409,7 @@ public class Identity {
         }
 
         if (!list.isEmpty())
-            tripleStore.insertTriplesWithTextIndex(list, Constants.indexPredicates, Constants.INDEX_LANGUAGES, null);
+            tripleStore.insertTriplesWithTextIndex(list);
     }
 
     void maybeCopyValue(Entity en, Property pred, Property predAlt, String value, List<Triple> list) throws Exception {
@@ -510,7 +510,7 @@ public class Identity {
             case IDENTITY_NORMAL:
                 String query = CoreUtil.getQuery("identity/searchSimilarPersons.sparql",
                         firstname, lastname, tripleStore.getUri(IDENTITY_SIMILARITY_GRAPH));
-                results = tripleStore.sparqlSelectWithTextIndex(query, Constants.indexPredicates, Constants.INDEX_LANGUAGES, null);
+                results = tripleStore.sparqlSelectWithTextIndex(query);
                 break;
             default:
                 //avoid braces interpreted within boolean expression (and also wrong balancing) -AM
@@ -532,8 +532,7 @@ public class Identity {
                 }
                 query = CoreUtil.getQuery("identity/searchSimilarPersonsFN.sparql",
                         formattedName, Core.getInstance().getUriPrefix());
-                results = tripleStore.sparqlSelectWithTextIndex(
-                        query, Constants.indexPredicates, Constants.INDEX_LANGUAGES, null);
+                results = tripleStore.sparqlSelectWithTextIndex(query);
         }
         if (results == null || results.length == 0)
             return;
@@ -578,8 +577,7 @@ public class Identity {
         String terms = (String) res[1];
         String query = CoreUtil.getQuery("identity/searchSimilarOrganizations.sparql",
                 terms, tripleStore.getUri(IDENTITY_SIMILARITY_GRAPH));
-        Tuple[] results = tripleStore.sparqlSelectWithTextIndex(
-                query, Constants.indexPredicates, Constants.INDEX_LANGUAGES, null);
+        Tuple[] results = tripleStore.sparqlSelectWithTextIndex(query);
 
         if (results == null || results.length == 0)
             return;

@@ -427,7 +427,7 @@ public class Metadata {
         manageLanguages(recordURI, loURI, triples );
 
         //triples insertions
-        tripleStore.insertTriplesWithTextIndex(triples, Constants.indexPredicates, Constants.INDEX_LANGUAGES, null);
+        tripleStore.insertTriplesWithTextIndex(triples);
 
         //automatic exposition to harvesting
         exposeRecords(loURI, storeId, metadataFormat);
@@ -575,7 +575,7 @@ public class Metadata {
 
     private void resetLearningObjectNonPersistentTriples(String recordURI) throws Exception {
         String query = Util.getQuery( "metadata/deleteLOTriplesToReset.sparql", recordURI );
-        tripleStore.sparqlUpdateWithTextIndex(query, Constants.indexPredicates, Constants.INDEX_LANGUAGES, null);
+        tripleStore.sparqlUpdateWithTextIndex(query);
     }
 
     /**

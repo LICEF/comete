@@ -114,8 +114,7 @@ public class QueryEngine {
         else {
             keywordsFormattedForRegex = ca.licef.comete.core.util.Util.formatKeywords(keywords);
             _query = CoreUtil.getQuery("queryengine/getLearningObjectsByKeywordsCount.sparql", lang, keywordsFormattedForRegex);
-            res = tripleStore.sparqlSelectWithTextIndex(_query,
-                    Constants.indexPredicates, Constants.INDEX_LANGUAGES, null);
+            res = tripleStore.sparqlSelectWithTextIndex(_query);
         }
         count = Integer.parseInt(res[0].getValue("count").getContent());
 
@@ -128,8 +127,7 @@ public class QueryEngine {
             }
             else {
                 _query = CoreUtil.getQuery("queryengine/getLearningObjectsByKeywords.sparql", lang, keywordsFormattedForRegex, orderByVariable, start, limit);
-                results = tripleStore.sparqlSelectWithTextIndex(_query,
-                        Constants.indexPredicates, Constants.INDEX_LANGUAGES, null);
+                results = tripleStore.sparqlSelectWithTextIndex(_query);
             }
             rs = buildResultSet(results, count, lang);
         }

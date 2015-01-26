@@ -185,9 +185,9 @@ public class Vocabulary {
         tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
     }
 
-    public String modifyVocabularyContent(String uri, InputStream uploadedInputStream) throws Exception {
+    public String modifyVocabularyContent(String uri, String fileName, InputStream uploadedInputStream) throws Exception {
         Invoker inv = new Invoker(getVocabularyManager(), "ca.licef.comete.vocabulary.VocabularyManager",
-                "modifyVocabularyContent", new Object[]{uri, uploadedInputStream});
+                "modifyVocabularyContent", new Object[]{uri, fileName, uploadedInputStream});
         return (String)tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
     }
 

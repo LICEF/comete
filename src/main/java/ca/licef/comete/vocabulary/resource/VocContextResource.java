@@ -26,31 +26,6 @@ import java.io.StringWriter;
 public class VocContextResource {
 
     @GET
-    @Path( "{id}/html" )
-    @Produces( MediaType.TEXT_HTML )
-    public String getVocContextAsHtml( @PathParam( "id" ) String id, @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) throws Exception {
-        /*Locale locale = ( "fr".equals( lang ) ? Locale.FRENCH : Locale.ENGLISH );
-        String vocContextUri = Util.makeURI(id, Constants.TYPE_VOCABULARY_CONTEXT);
-        String html = Core.getInstance().getDefaultView().getHtml(vocContextUri, locale, "default", context);
-        return( html );*/
-
-        return "";
-    }
-
-    @GET
-    @Path( "{id}/rdf" )
-    @Produces( "application/rdf+xml" )
-    public String getVocContextAsRdf( @PathParam( "id" ) String id, @DefaultValue( "false" ) @QueryParam( "incomingLinks" ) String incomingLinks, @DefaultValue( "false" ) @QueryParam( "rdfMetadataInfos" ) String rdfMetadataInfos, @DefaultValue( "false" ) @QueryParam( "humanReadable" ) String humanReadable ) throws Exception {
-        /*boolean isRdfMetadataInfos = ( "true".equals( rdfMetadataInfos ) );
-        boolean isHumanReadable = ( "true".equals( humanReadable ) );
-        String vocContextUri = Util.makeURI(id, Constants.TYPE_VOCABULARY_CONTEXT);
-        String rdf = Core.getInstance().getDefaultView().getRdf( vocContextUri, incomingLinks, isRdfMetadataInfos, isHumanReadable );
-        return( rdf );*/
-
-        return "";
-    }
-
-    @GET
     @Produces( MediaType.APPLICATION_JSON )
     public Response getVocabularies( @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) throws Exception {
         Tuple[] ctxts = Vocabulary.getInstance().getVocContexts();
@@ -139,12 +114,13 @@ public class VocContextResource {
     @Produces( MediaType.TEXT_HTML ) //!important for ExtJS see Ext.form.Basic.hasUpload() description -AM
     public Response modifyVocabularyContent(@Context HttpServletRequest request,
                                      @PathParam( "id" ) String id,
-                                     @FormDataParam("file") java.io.InputStream uploadedInputStream ) throws Exception {
+                                     @FormDataParam("file") java.io.InputStream uploadedInputStream,
+                                     @FormDataParam("file") com.sun.jersey.core.header.FormDataContentDisposition fileDetail) throws Exception {
         if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to add vocabulary.").build();
 
         String uri = Util.makeURI(id, COMETE.VocContext);
-        String errorMessage = Vocabulary.getInstance().modifyVocabularyContent(uri, uploadedInputStream);
+        String errorMessage = Vocabulary.getInstance().modifyVocabularyContent(uri, fileDetail.getFileName(), uploadedInputStream);
         StringWriter out = new StringWriter();
         try {
             JSONWriter json = new JSONWriter( out ).object();

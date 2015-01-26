@@ -1,11 +1,13 @@
 package ca.licef.comete.core;
 
+import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.vocabularies.COMETE;
 import ca.licef.comete.vocabulary.Vocabulary;
 
 import licef.reflection.Invoker;
 import licef.reflection.ThreadInvoker;
 import licef.tsapi.TripleStore;
+import licef.tsapi.textIndex.IndexConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -134,6 +136,7 @@ public class Core {
         if (tripleStore == null) {
             tripleStore = new TripleStore(cometeHome + "/database", cometeHome, getUriPrefix() + "/");
             tripleStore.registerVocabulary("http://comete.licef.ca/reference#", COMETE.class);
+            tripleStore.setDefaultIndexCfg(new IndexConfig(Constants.indexPredicates, Constants.INDEX_LANGUAGES, null));
             tripleStore.startServer(false);
             waitTripleStoreUp();
         }

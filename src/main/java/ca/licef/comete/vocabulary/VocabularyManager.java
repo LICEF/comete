@@ -115,7 +115,7 @@ public class VocabularyManager {
         System.out.println("Update done.");
     }
 
-    public String modifyVocabularyContent(String uri, InputStream uploadedInputStream) throws Exception {
+    public String modifyVocabularyContent(String uri, String fileName, InputStream uploadedInputStream) throws Exception {
         Tuple[] details = Vocabulary.getInstance().getVocContextDetails(uri);
         String location = details[0].getValue("location").getContent();
         String vocId = details[0].getValue("vocId").getContent();
@@ -150,7 +150,12 @@ public class VocabularyManager {
         }
         else {
             content.delete();
-            tmpContentFile.renameTo(content);
+            File newContent = new File(vocDir, fileName);
+            tmpContentFile.renameTo(newContent);
+            tripleStore.updateObjectTriple(uri, COMETE.vocSourceLocation, location, "/" + vocId + "/" + fileName);
+
+            //todo replacer  <location> dans description.xml
+
             updateVocContext(uri);
         }
 
@@ -347,7 +352,7 @@ public class VocabularyManager {
         //load content
         if (isNavigable)
             tripleStore.loadContentWithTextIndex(new ByteArrayInputStream(skosContent.getBytes()),
-                    Constants.indexPredicates, Constants.INDEX_LANGUAGES, null, licef.tsapi.Constants.RDFXML, vocUri);
+                    licef.tsapi.Constants.RDFXML, vocUri);
         else
             tripleStore.loadContent(new ByteArrayInputStream(skosContent.getBytes()),
                     licef.tsapi.Constants.RDFXML, vocUri);
@@ -358,7 +363,7 @@ public class VocabularyManager {
 
     private void clearVocabularyGraph(String vocUri, boolean isNavigable) throws Exception {
         if (isNavigable)
-            tripleStore.clearWithTextIndex(Constants.indexPredicates, Constants.INDEX_LANGUAGES, null, vocUri);
+            tripleStore.clearWithTextIndex(vocUri);
         else
             tripleStore.clear(vocUri);
     }
