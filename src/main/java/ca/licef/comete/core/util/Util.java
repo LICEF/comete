@@ -296,7 +296,7 @@ public class Util {
 
     public static String[] getResourceLabel(String uri, String lang, boolean forceVocType) throws Exception {
         lang = LangUtil.convertLangToISO2(lang);
-        String predicate = RDFS.label.getURI(); //default case
+        Property predicate = RDFS.label; //default case
         String graph = null;
         //vocabulary concept case
         String type = Util.getURIType(uri);
@@ -307,17 +307,17 @@ public class Util {
             SKOS.ConceptScheme.getURI().equals(type) ||
             SKOS.Concept.getURI().equals(type) ) {
             //predicate = SKOS.prefLabel.getURI();
-            predicate = RDFS.label.getURI(); //preferred
+            predicate = RDFS.label; //preferred
             graph = Vocabulary.getInstance().getConceptScheme(uri);
         }
         else if (type.equals(COMETE.LearningObject.getURI()))
-            predicate = DCTERMS.title.getURI();
+            predicate = DCTERMS.title;
         else if (type.equals(COMETE.Person.getURI()))
-            predicate = FOAF.name.getURI();
+            predicate = FOAF.name;
         else if (type.equals(COMETE.Organization.getURI()))
-            predicate = FOAF.name.getURI();
+            predicate = FOAF.name;
         else if (type.equals(COMETE.Repository.getURI()))
-            predicate = FOAF.name.getURI();
+            predicate = FOAF.name;
 
         String[] label = Core.getInstance().getTripleStore().getBestLocalizedLiteralObject( uri, predicate, lang, graph );
 

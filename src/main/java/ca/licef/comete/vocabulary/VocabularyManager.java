@@ -152,9 +152,17 @@ public class VocabularyManager {
             content.delete();
             File newContent = new File(vocDir, fileName);
             tmpContentFile.renameTo(newContent);
-            tripleStore.updateObjectTriple(uri, COMETE.vocSourceLocation, location, "/" + vocId + "/" + fileName);
 
-            //todo replacer  <location> dans description.xml
+            //change description
+            String newLocation = "/" + vocId + "/" + fileName;
+            File descr = new File(vocDir, "description.xml");
+            String xmlDescr = XMLUtil.getXMLString( XMLUtil.getXMLNode(descr) );
+            Hashtable t = new Hashtable();
+            t.put(location, newLocation);
+            xmlDescr = XMLUtil.substituteXMLContent(xmlDescr, "//location/text()", t, false);
+            IOUtil.writeStringToFile(xmlDescr, descr);
+
+            tripleStore.updateObjectTriple(uri, COMETE.vocSourceLocation, location, newLocation);
 
             updateVocContext(uri);
         }
