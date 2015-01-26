@@ -290,7 +290,8 @@ public class LearningObjectView extends DefaultView {
     }
 
     private String getVocabularyConceptLabel( String subjectUri, String lang ) throws Exception {
-        String[] labels = Util.getResourceLabel( subjectUri, lang, true );
+        Invoker inv = new Invoker( null, "ca.licef.comete.core.util.Util", "getResourceLabel", new Object[] { subjectUri, lang, true } );
+        String[] labels = (String[])Core.getInstance().getTripleStore().transactionalCall( inv );
         return( labels[ 0 ] );
     }
 

@@ -296,7 +296,7 @@ public class Util {
 
     public static String[] getResourceLabel(String uri, String lang, boolean forceVocType) throws Exception {
         lang = LangUtil.convertLangToISO2(lang);
-        Property predicate = RDFS.label; //default case
+        String predicate = RDFS.label.getURI(); //default case
         String graph = null;
         //vocabulary concept case
         String type = Util.getURIType(uri);
@@ -304,31 +304,27 @@ public class Util {
             return( new String[] { uri, null } );
 
         if (forceVocType ||
-                SKOS.ConceptScheme.getURI().equals(type) ||
-                    SKOS.Concept.getURI().equals(type) ) {
-            //predicate = SKOS.prefLabel;
-            predicate = RDFS.label; //preferred
+            SKOS.ConceptScheme.getURI().equals(type) ||
+            SKOS.Concept.getURI().equals(type) ) {
+            //predicate = SKOS.prefLabel.getURI();
+            predicate = RDFS.label.getURI(); //preferred
             graph = Vocabulary.getInstance().getConceptScheme(uri);
         }
         else if (type.equals(COMETE.LearningObject.getURI()))
-            predicate = DCTERMS.title;
+            predicate = DCTERMS.title.getURI();
         else if (type.equals(COMETE.Person.getURI()))
-            predicate = FOAF.name;
+            predicate = FOAF.name.getURI();
         else if (type.equals(COMETE.Organization.getURI()))
-            predicate = FOAF.name;
+            predicate = FOAF.name.getURI();
         else if (type.equals(COMETE.Repository.getURI()))
-            predicate = FOAF.name;
+            predicate = FOAF.name.getURI();
 
-        TripleStore tripleStore = Core.getInstance().getTripleStore();
-        Invoker inv = new Invoker( tripleStore, "licef.tsapi.TripleStore", "getBestLocalizedLiteralObject", 
-            new Object[] { uri, predicate, lang, new String[] { graph } } );
-        String[] label = (String[])tripleStore.transactionalCall( inv );
+        String[] label = Core.getInstance().getTripleStore().getBestLocalizedLiteralObject( uri, predicate, lang, graph );
 
         if (label == null || label[ 0 ] == null || "".equals(label[ 0 ]))
             return( new String[] { uri, null } );
         return label;
     }
-
 
     /*
      * Metadatas
