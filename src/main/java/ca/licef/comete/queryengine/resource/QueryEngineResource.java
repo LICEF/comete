@@ -74,7 +74,7 @@ public class QueryEngineResource implements Serializable {
             if (cache == null)
                 cache = new QueryCache();
             rs = QueryEngine.getInstance().search(
-                    query, filters, lang, "json", start, limit, style, cache);
+                    query, filters, lang, "json", Integer.valueOf(start), Integer.valueOf(limit), style, cache);
         }
         catch( Exception e ) {
             throw( new WebApplicationException( e, HttpServletResponse.SC_INTERNAL_SERVER_ERROR ) );

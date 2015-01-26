@@ -53,8 +53,8 @@
                 <link href="../../../default.css" rel="stylesheet" type="text/css"/>
                 <link href="../../../custom.css" rel="stylesheet" type="text/css"/>
                 <script type="text/javascript" src="../../../ext-5.0.1/build/ext-all.js"></script>
-                <script type="text/javascript" src="../../../utils.js"></script>
-                <script type="text/javascript" src="../../../learningObjectToHtml.js"></script>
+                <script type="text/javascript" src="../../../js/utils.js"></script>
+                <script type="text/javascript" src="../../../js/learningObjectToHtml.js"></script>
             </head>
             <body class="LearningObject">
                 <xsl:variable name="title">

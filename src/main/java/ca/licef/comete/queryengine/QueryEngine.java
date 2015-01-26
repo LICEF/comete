@@ -42,7 +42,7 @@ public class QueryEngine {
     }
 
     public ResultSet search( String query, String filters, String lang, String outputFormat,
-                             int start, int limit, String style, QueryCache cache) throws Exception {
+                             Integer start, Integer limit, String style, QueryCache cache) throws Exception {
 
         JSONArray queryArray = new JSONArray(query);
 
@@ -89,7 +89,7 @@ public class QueryEngine {
         if (isAdvancedSearch) {
             Invoker inv = new Invoker(this, "ca.licef.comete.queryengine.QueryEngine",
                     "advancedSearch", new Object[]{queryArray, lang, orderByVariable,
-                        start, limit, isWithScore, style, cache, outputFormat});
+                        start, limit, Boolean.valueOf(isWithScore), style, cache, outputFormat});
             rs = (ResultSet)tripleStore.transactionalCall(inv);
         }
 
@@ -98,7 +98,7 @@ public class QueryEngine {
         return rs;
     }
 
-    public ResultSet simpleSearch(String keywords, String lang, String orderByVariable, int start, int limit, String outputFormat) throws Exception {
+    public ResultSet simpleSearch(String keywords, String lang, String orderByVariable, Integer start, Integer limit, String outputFormat) throws Exception {
         ResultSet rs = null;
         int count;
         String keywordsFormattedForRegex = null;
@@ -154,11 +154,11 @@ public class QueryEngine {
         return rs;
     }
 
-    private ResultSet advancedSearch( JSONArray queryArray, String lang, String orderByVariable,
-                                      int start, int limit, boolean isWithScore, String style,
+    public ResultSet advancedSearch( JSONArray queryArray, String lang, String orderByVariable,
+                                      Integer start, Integer limit, Boolean isWithScore, String style,
                                       QueryCache cache, String outputFormat) throws Exception {
         ResultSet rs = null;
-        Object[] elements = ca.licef.comete.queryengine.util.Util.buildQueryElements(queryArray, lang, isWithScore, cache);
+        Object[] elements = ca.licef.comete.queryengine.util.Util.buildQueryElements(queryArray, lang, isWithScore.booleanValue(), cache);
         String clauses = (String)elements[0];
         int count = ((Integer)elements[1]).intValue();
 

@@ -18,7 +18,7 @@ import java.util.*;
 public class FeedUtil {
 
     public static SyndFeed getFeedFromResultSet( ResultSet rs, String feedType, String absPath, String query, int start, int limit, String lang ) {
-        ResourceBundle bundle = ResourceBundle.getBundle( "Strings", new Locale( lang ) );
+        ResourceBundle bundle = ResourceBundle.getBundle( "translations/Strings", new Locale( lang ) );
 
         SyndFeed f = new SyndFeedImpl();
         /*f.setFeedType( feedType );

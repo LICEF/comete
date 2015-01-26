@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-    <xsl:import href="/learningObjectToHtml.xsl"/>
+    <xsl:import href="/xslt/metadata/learningObjectToHtml.xsl"/>
 
     <xsl:variable name="lang" select="'fr'"/>
     <xsl:variable name="title" select="'Ressource'"/>

@@ -4,6 +4,7 @@ import ca.licef.comete.core.Core;
 import ca.licef.comete.vocabularies.COMETE;
 import ca.licef.comete.vocabulary.Vocabulary;
 import com.hp.hpl.jena.ontology.OntClass;
+import com.hp.hpl.jena.rdf.model.Property;
 import licef.*;
 import licef.jrdf.JRDFFactory;
 import licef.jrdf.SortedMemoryJRDFFactory;
@@ -295,7 +296,7 @@ public class Util {
 
     public static String[] getResourceLabel(String uri, String lang, boolean forceVocType) throws Exception {
         lang = LangUtil.convertLangToISO2(lang);
-        String predicate = RDFS.label.getURI(); //default case
+        Property predicate = RDFS.label; //default case
         String graph = null;
         //vocabulary concept case
         String type = Util.getURIType(uri);
@@ -305,28 +306,23 @@ public class Util {
         if (forceVocType ||
                 SKOS.ConceptScheme.getURI().equals(type) ||
                     SKOS.Concept.getURI().equals(type) ) {
-            //predicate = SKOS.prefLabel.getURI();
-            predicate = RDFS.label.getURI(); //preferred
+            //predicate = SKOS.prefLabel;
+            predicate = RDFS.label; //preferred
             graph = Vocabulary.getInstance().getConceptScheme(uri);
         }
         else if (type.equals(COMETE.LearningObject.getURI()))
-            predicate = DCTERMS.title.getURI();
+            predicate = DCTERMS.title;
         else if (type.equals(COMETE.Person.getURI()))
-            predicate = FOAF.name.getURI();
+            predicate = FOAF.name;
         else if (type.equals(COMETE.Organization.getURI()))
-            predicate = FOAF.name.getURI();
+            predicate = FOAF.name;
         else if (type.equals(COMETE.Repository.getURI()))
-            predicate = FOAF.name.getURI();
+            predicate = FOAF.name;
 
-        //String[] label = Core.getInstance().getTripleStore().
-        //        getBestLocalizedLiteralObject(uri, predicate, lang, graph);
-        // Need to replace the previous call by something that looks like this but
-        // I get an illegalArgumentException. - FB
         TripleStore tripleStore = Core.getInstance().getTripleStore();
         Invoker inv = new Invoker( tripleStore, "licef.tsapi.TripleStore", "getBestLocalizedLiteralObject", 
-            new Object[] { uri, predicate, lang, new Object[] { graph } } );
+            new Object[] { uri, predicate, lang, new String[] { graph } } );
         String[] label = (String[])tripleStore.transactionalCall( inv );
-
 
         if (label == null || label[ 0 ] == null || "".equals(label[ 0 ]))
             return( new String[] { uri, null } );

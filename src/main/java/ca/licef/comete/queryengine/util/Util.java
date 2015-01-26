@@ -319,7 +319,7 @@ public class Util {
     }
 
     public static String[] buildTitleAndDescription(JSONArray queryArray, String outputLang, String outputFormat) throws Exception {
-        ResourceBundle bundle = ResourceBundle.getBundle("Strings", new Locale(outputLang));
+        ResourceBundle bundle = ResourceBundle.getBundle("translations/Strings", new Locale(outputLang));
 
         StringBuilder title = new StringBuilder();
         StringBuilder description = new StringBuilder( bundle.getString( "rs.advancedSearch.description.prefix" ) );

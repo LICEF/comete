@@ -129,7 +129,7 @@ public class Vocabulary {
             uri = getConceptScheme(uri);
 
         Invoker inv = new Invoker(null, "ca.licef.comete.core.util.Util",
-                "getResourceLabel", new Object[]{uri, lang, true});
+                "getResourceLabel", new Object[]{uri, lang, Boolean.TRUE});
         String[] label = (String[])tripleStore.transactionalCall(inv);
         if (label == null || label[ 0 ] == null || "".equals(label[ 0 ]))
             label = new String[] { uri, null } ;
