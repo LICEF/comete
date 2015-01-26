@@ -457,7 +457,7 @@ public class Identity {
                     throw e;
                 }
             }
-            imgUrl = CoreUtil.getRestUrl(COMETE.Identity) + "/photo/" + filename;
+            imgUrl = Core.getInstance().getCometeUrl() + "/" + CoreUtil.getRestUrl(COMETE.Identity) + "/photo/" + filename;
         }
 
         return imgUrl;
