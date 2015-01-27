@@ -214,3 +214,7 @@ ul li {
     margin-left: 20px;
 }
 
+.x-grid-item-focused .x-grid-cell-inner:before {
+    border: none;
+}
+
