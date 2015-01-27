@@ -21,7 +21,7 @@ elementsForStrings variable are considered.
 
     <xsl:output method="xml" indent="yes"/>
 
-    <xsl:include href="utilities.xsl"/>
+    <xsl:include href="util.xsl"/>
 
     <xsl:param name="loURI"/>
     <xsl:param name="recordURI"/>

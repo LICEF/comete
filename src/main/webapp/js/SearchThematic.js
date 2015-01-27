@@ -67,8 +67,6 @@ Ext.define( 'Comete.ThematicNavigationSearch', {
 
         this.vocabularyButton = Ext.create('Ext.button.Button', {
             icon: 'images/tree.gif',
-            width: 21,
-            height: 21,
             disabled: true,
             handler: this.pickVocConcept,             
             scope: this
@@ -95,7 +93,7 @@ Ext.define( 'Comete.ThematicNavigationSearch', {
         });
 
         this.expandConceptListButton = Ext.create('Ext.button.Button', {
-            icon: 'images/down.png',
+            icon: 'images/downWhiteArrow.png',
             handler: function(){ this.conceptSearchCombo.expand() },             
             scope: this
         } );

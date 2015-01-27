@@ -3,7 +3,7 @@ Ext.define( 'Comete.Viewer', {
     initComponent: function( config ) {
         cfg = {
             border: true,
-            margin: '0 0 0 20',
+            margin: '0 20 0 20',
             html: ''
         };
         Ext.apply(this, cfg);
