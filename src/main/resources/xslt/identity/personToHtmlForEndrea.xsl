@@ -7,10 +7,10 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     exclude-result-prefixes="rdf comete foaf xsi xsl">
 
-    <xsl:include href="charMaps.xsl"/>
-    <xsl:include href="util.xsl"/>
-    <xsl:include href="utilities.xsl"/>
-    <xsl:include href="common.xsl"/>
+    <xsl:include href="/xslt/charMaps.xsl"/>
+    <xsl:include href="/xslt/util.xsl"/>
+    <xsl:include href="/xslt/utilities.xsl"/>
+    <xsl:include href="/xslt/common.xsl"/>
 
     <xsl:output method="xhtml" encoding="utf-8" indent="yes" use-character-maps="html-tags c1-control-range" omit-xml-declaration="yes"/>
 

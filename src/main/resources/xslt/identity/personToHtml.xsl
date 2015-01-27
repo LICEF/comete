@@ -7,10 +7,9 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     exclude-result-prefixes="rdf comete foaf xsi xsl">
 
-    <xsl:include href="charMaps.xsl"/>
-    <xsl:include href="util.xsl"/>
-    <xsl:include href="utilities.xsl"/>
-    <xsl:include href="common.xsl"/>
+    <xsl:include href="/xslt/charMaps.xsl"/>
+    <xsl:include href="/xslt/util.xsl"/>
+    <xsl:include href="/xslt/sharedTemplates.xsl"/>
 
     <xsl:output method="xhtml" encoding="utf-8" indent="yes" use-character-maps="html-tags c1-control-range" omit-xml-declaration="yes"/>
 
@@ -61,8 +60,8 @@
                                 <xsl:apply-templates select="comete:formattedAddress"/>
                             </xsl:if>
 
-                            <xsl:variable name="phone" select="foaf:phone[starts-with(.,'tel:')]"/>
-                            <xsl:variable name="fax" select="foaf:phone[starts-with(.,'fax:')]"/>
+                            <xsl:variable name="phone" select="foaf:phone[starts-with(@rdf:resource,'tel:')]/@rdf:resource"/>
+                            <xsl:variable name="fax" select="foaf:phone[starts-with(@rdf:resource,'fax:')]/@rdf:resource"/>
                             <xsl:if test="$phone != ''">
                                 <xsl:call-template name="render-phone">
                                     <xsl:with-param name="phone" select="$phone"/>
@@ -116,8 +115,8 @@
                     <xsl:apply-templates select="comete:formattedAddress"/>
                 </xsl:if>
 
-                <xsl:variable name="phone" select="foaf:phone[starts-with(.,'tel:')]"/>
-                <xsl:variable name="fax" select="foaf:phone[starts-with(.,'fax:')]"/>
+                <xsl:variable name="phone" select="foaf:phone[starts-with(@rdf:resource,'tel:')]/@rdf:resource"/>
+                <xsl:variable name="fax" select="foaf:phone[starts-with(@rdf:resource,'fax:')]/@rdf:resource"/>
                 <xsl:if test="$phone != ''">
                     <xsl:call-template name="render-phone">
                         <xsl:with-param name="phone" select="$phone"/>

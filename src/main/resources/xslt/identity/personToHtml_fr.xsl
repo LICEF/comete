@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-    <xsl:import href="/personToHtml.xsl"/>
+    <xsl:import href="/xslt/identity/personToHtml.xsl"/>
 
     <xsl:variable name="title" select="'Personne'"/>
     <xsl:variable name="telLabel" select="'Tél.: '"/>
