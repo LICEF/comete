@@ -1,21 +1,26 @@
 Ext.define( 'Comete.Viewer', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.Component',
     initComponent: function( config ) {
-        this.htmlTemplate = '<iframe width="100%" height="100%" src="{0}" id="CometeViewer" frameborder="0"></iframe>';
-
         cfg = {
-            html: Ext.String.format( this.htmlTemplate, '' )
+            border: true,
+            style: { paddingLeft: '20px' },
+            html: ''
         };
         Ext.apply(this, cfg);
         this.callParent(arguments); 
     },
     setContent: function( url ) {
-        if( url == null || url == '' ) {
-            this.body.update( "" );
-        }
+        if( url == null || url == '')
+            this.update( '' );
         else {
-            var html = Ext.String.format( this.htmlTemplate, url );
-            this.body.update( html );
+            Ext.Ajax.request( {
+                url: url,
+                method: 'GET',
+                success: function(response) {
+                    this.update(response.responseText)
+                },
+                scope: this 
+            } );
         }
     },
     expandContent: function() {

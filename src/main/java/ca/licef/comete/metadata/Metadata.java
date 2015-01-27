@@ -674,7 +674,7 @@ public class Metadata {
             String newXml = Util.applyXslToDocument( stylesheet, source, parameters );
             int resp = store.setDatastream( storeId, "exposed_" + mf.getName(), newXml );
             if (resp == Store.DATASTREAM_STORED)
-                System.out.println("-> " + recordURI + " exposed (" + metadataFormat.getName() + " format)");
+                System.out.println("-> " + recordURI + " exposed (" + mf.getName() + " format)");
             else if (resp == Store.DATASTREAM_UNCHANGED)
                 System.out.println("-> no change on : " + recordURI + ".");
         }

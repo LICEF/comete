@@ -230,7 +230,6 @@ public class LearningObjectView extends DefaultView {
 
         HashMap<String, String> params = new HashMap<String, String>();
         params.put( "uri", uri );
-        params.put( "cometeUrl", Core.getInstance().getCometeUrl() );
 
         StreamSource source = new StreamSource( new StringReader( expandedXml ) );
         String str = ca.licef.comete.core.util.Util.applyXslToDocument( styleSheet, source, props, params, locale );

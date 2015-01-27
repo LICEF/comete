@@ -92,7 +92,7 @@
             region: 'center',
             border: false,
             margin: '0 -1 -1 -1',
-            items: [ this.learningObjectTable, this.viewer ]            
+            items: [ this.learningObjectTable, { region: 'center', autoScroll: true, items: this.viewer } ]
         } );  
 
         cfg = {

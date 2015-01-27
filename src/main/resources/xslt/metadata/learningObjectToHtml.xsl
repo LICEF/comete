@@ -17,7 +17,6 @@
     <xsl:output method="xhtml" encoding="utf-8" indent="yes" use-character-maps="html-tags c1-control-range" omit-xml-declaration="yes"/>
 
     <xsl:param name="uri"/>
-    <xsl:param name="cometeUrl"/>
 
     <xsl:variable name="contribColCount" select="4" as="xs:integer"/>
     
@@ -46,16 +45,6 @@
     <xsl:template match="rdf:Description" mode="learningObject">
         <xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html></xsl:text>
         <html>
-            <head>
-                <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-                <title><xsl:value-of select="$title" /></title>
-                <link href="../../../ext-5.0.1/build/packages/ext-theme-crisp/build/resources/ext-theme-crisp-all.css" rel="stylesheet" type="text/css"/>
-                <link href="../../../default.css" rel="stylesheet" type="text/css"/>
-                <link href="../../../custom.css" rel="stylesheet" type="text/css"/>
-                <script type="text/javascript" src="../../../ext-5.0.1/build/ext-all.js"></script>
-                <script type="text/javascript" src="../../../js/utils.js"></script>
-                <script type="text/javascript" src="../../../js/learningObjectToHtml.js"></script>
-            </head>
             <body class="LearningObject">
                 <xsl:variable name="title">
                     <xsl:choose>
@@ -145,9 +134,9 @@
                             <xsl:for-each select="current-group()">
                                 <xsl:sort select="@conceptLabel" lang="$lang"/>
                                 <li><font style="font-weight: bold; color: #04408C"><xsl:value-of select="@vocabLabel"/></font>
-                                    <img style="margin-bottom:-1px; margin-right:6px; margin-left:8px" src="../../../images/blueArrow.gif"/>
+                                    <img style="margin-bottom:-1px; margin-right:6px; margin-left:8px" src="images/blueArrow.gif"/>
                                     <xsl:value-of select="@conceptLabel"/>
-                                    <a class="RelatedLearningObjectsLink"><xsl:attribute name="href">javascript:setRequestVocConcept( '<xsl:value-of select="@rdf:resource"/>' );</xsl:attribute><img src="../../../images/relatedResources.png" width="16" height="16"><xsl:attribute name="alt"><xsl:value-of select="$RelatedLearningObjectsToSubjectLinkLabel"/></xsl:attribute><xsl:attribute name="title"><xsl:value-of select="$RelatedLearningObjectsToSubjectLinkLabel"/></xsl:attribute></img></a></li>
+                                    <a class="RelatedLearningObjectsLink"><xsl:attribute name="href">javascript:setRequestVocConcept( '<xsl:value-of select="@rdf:resource"/>' );</xsl:attribute><img src="images/relatedResources.png" width="16" height="16"><xsl:attribute name="alt"><xsl:value-of select="$RelatedLearningObjectsToSubjectLinkLabel"/></xsl:attribute><xsl:attribute name="title"><xsl:value-of select="$RelatedLearningObjectsToSubjectLinkLabel"/></xsl:attribute></img></a></li>
                             </xsl:for-each>
                             </ul>
                     </xsl:for-each-group>
@@ -183,7 +172,7 @@
         <li><xsl:value-of select="."/>
             <a class="RelatedLearningObjectsLink">
                 <xsl:attribute name="href">javascript:setRequestKeyword( '<xsl:value-of select="$keyword"/>', '<xsl:value-of select="@xml:lang"/>' );</xsl:attribute>
-                <img src="../../../images/relatedResources.png" width="16" height="16">
+                <img src="images/relatedResources.png" width="16" height="16">
                     <xsl:attribute name="alt"><xsl:value-of select="$RelatedLearningObjectsToKeywordLinkLabel"/></xsl:attribute>
                     <xsl:attribute name="title"><xsl:value-of select="$RelatedLearningObjectsToKeywordLinkLabel"/></xsl:attribute>
                 </img>
@@ -196,7 +185,7 @@
         <a class="ResourceLink" target="_blank">
             <xsl:attribute name="href"><xsl:value-of select="$url"/></xsl:attribute>
             <img class="ResourceIcon" height="64" border="0">
-                <xsl:attribute name="src"><xsl:value-of select="concat( $cometeUrl, '/', @icon )"/></xsl:attribute>
+                <xsl:attribute name="src"><xsl:value-of select="@icon"/></xsl:attribute>
                 <xsl:attribute name="alt"><xsl:value-of select="@mimeType"/></xsl:attribute>
                 <xsl:attribute name="title"><xsl:value-of select="@mimeType"/></xsl:attribute>
             </img>
@@ -245,7 +234,7 @@
         <xsl:param name="email"/>
         <xsl:param name="website"/>
         <xsl:param name="identityLink"/>
-        <xsl:variable name="photoSrc" select="if( $photo = '' ) then concat( $cometeUrl, '/images/noPhoto.png' ) else $photo"/>
+        <xsl:variable name="photoSrc" select="if( $photo = '' ) then 'images/noPhoto.png' else $photo"/>
         <table>
             <tr>
                 <td class="ContributeCell">
@@ -260,7 +249,7 @@
                             <td>
                                 <a class="CompactContributeLink">
                                     <xsl:attribute name="href">javascript:showAdditionalIdentityInfo( '<xsl:value-of select="$identityLink"/>', 100, 100, 660, 400 );</xsl:attribute>
-                                    <img src="../../../images/details.png" width="16" height="16">
+                                    <img src="images/details.png" width="16" height="16">
                                         <xsl:attribute name="alt"><xsl:value-of select="$ContributeLinkLabel"/></xsl:attribute>
                                         <xsl:attribute name="title"><xsl:value-of select="$ContributeLinkLabel"/></xsl:attribute>
                                     </img>
@@ -344,7 +333,7 @@
         <a>
             <xsl:attribute name="class"><xsl:value-of select="$class"/></xsl:attribute>
             <xsl:attribute name="href">javascript:<xsl:value-of select="$functionName"/>( '<xsl:value-of select="$uri"/>', '<xsl:value-of select="$label"/>' );</xsl:attribute>
-            <img src="../../../images/relatedResources.png" width="16" height="16">
+            <img src="images/relatedResources.png" width="16" height="16">
                 <xsl:attribute name="alt"><xsl:value-of select="$title"/></xsl:attribute>
                 <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
             </img>
@@ -362,7 +351,7 @@
         <a target="_blank">
             <xsl:attribute name="class"><xsl:value-of select="$class"/></xsl:attribute>
             <xsl:attribute name="href"><xsl:value-of select="$uri"/></xsl:attribute>
-            <img src="../../../images/rdf.png" width="16" height="16">
+            <img src="images/rdf.png" width="16" height="16">
                 <xsl:attribute name="alt"><xsl:value-of select="$title"/></xsl:attribute>
                 <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
             </img>
