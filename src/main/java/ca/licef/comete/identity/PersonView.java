@@ -66,11 +66,11 @@ public class PersonView extends DefaultView {
         String expandedXml = XMLUtil.serialize( doc, true );
 //System.out.println( "expandedXml for Person:"+expandedXml );
 
-        String styleSheet = "personToHtml";
+        String styleSheet = "identity/personToHtml";
         if( "ceres".equals( style ) )
-            styleSheet = "personToHtmlForCeres";
+            styleSheet = "identity/personToHtmlForCeres";
         else if( "endrea".equals( style ) )
-            styleSheet = "personToHtmlForEndrea";
+            styleSheet = "identity/personToHtmlForEndrea";
 
         Properties props = new Properties();
         props.setProperty( OutputKeys.OMIT_XML_DECLARATION, "yes" );

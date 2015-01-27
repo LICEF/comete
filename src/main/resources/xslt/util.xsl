@@ -112,6 +112,20 @@
         </img>
     </xsl:template>
 
+    <xsl:template name="render-phone">
+        <xsl:param name="phone"/>
+        <xsl:param name="phoneLabel"/>
+            <p><span class="TelLabel"><xsl:value-of select="$phoneLabel" /></span>
+            <span class="TelValue"><xsl:value-of select="substring-after( $phone, 'tel:' )"/></span></p>
+    </xsl:template>
+
+    <xsl:template name="render-fax">
+        <xsl:param name="fax"/>
+        <xsl:param name="faxLabel"/>
+            <p><span class="TelLabel"><xsl:value-of select="$faxLabel" /></span>
+            <span class="TelValue"><xsl:value-of select="substring-after( $fax, 'fax:' )"/></span></p>
+    </xsl:template>
+
     <xsl:function name="funct:getLanguageString" as="xs:string">
         <xsl:param name="langCode" as="xs:string"/>
         <xsl:param name="renderingLang" as="xs:string"/>
@@ -154,4 +168,27 @@
         </xsl:choose>
     </xsl:function>
 
+    <xsl:template name="generateTripleElements">
+        <xsl:param name="triplesAsString"/>
+        <xsl:variable name="tokenizedTriples" select="tokenize( $triplesAsString, '@@@' )"/>
+        <xsl:for-each select="$tokenizedTriples">
+            <xsl:variable name="tokenizedTriple" select="tokenize( ., '###' )"/> 
+            <xsl:variable name="subject" select="$tokenizedTriple[1]"/>
+            <xsl:variable name="predicate" select="$tokenizedTriple[2]"/>
+            <xsl:variable name="object" select="$tokenizedTriple[3]"/>
+            <xsl:variable name="isLiteral" select="$tokenizedTriple[4]"/>
+            <xsl:variable name="lang" select="if( count( $tokenizedTriple ) &gt; 4 ) then $tokenizedTriple[5] else ''"/>
+            <xsl:if test="$subject != '' and $predicate != '' and normalize-space($object) != '' and $isLiteral != ''">
+                <xsl:element name="triple">
+                    <xsl:element name="subject"><xsl:value-of select="$subject"/></xsl:element>
+                    <xsl:element name="predicate"><xsl:value-of select="$predicate"/></xsl:element>
+                    <xsl:element name="object"><xsl:value-of select="$object"/></xsl:element>
+                    <xsl:element name="literal"><xsl:value-of select="$isLiteral"/></xsl:element>
+                    <xsl:if test="$lang != ''">
+                        <xsl:element name="language"><xsl:value-of select="$lang"/></xsl:element>
+                    </xsl:if>
+                </xsl:element>
+            </xsl:if>
+        </xsl:for-each>
+    </xsl:template>
 </xsl:stylesheet>
