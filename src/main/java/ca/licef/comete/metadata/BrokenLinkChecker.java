@@ -23,6 +23,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -64,7 +65,6 @@ public class BrokenLinkChecker implements Runnable {
 
             learningObjectLinks.clear();
             linksToProcess.clear();
-System.out.println( "Je suis la!" );
 
             TripleStore tripleStore = Core.getInstance().getTripleStore();
             String query = Util.getQuery( "metadata/getRecordLinks.sparql" );
@@ -85,7 +85,6 @@ System.out.println( "Je suis la!" );
             }
             totalLinkCount = linksToProcess.size(); 
             brokenLinkCount = 0;
-System.out.println( "loLinks="+learningObjectLinks );
 
             master = new Thread( this, "BrokenLinkChecker" );
             master.start();
@@ -238,6 +237,9 @@ System.out.println( "loLinks="+learningObjectLinks );
         try {
             writer = new PrintWriter( new BufferedWriter( new FileWriter( getReport( lang ) ) ) );
 
+            Date now = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat( "dd/MM/yyyy HH:mm" );
+
             HtmlCanvas html = new HtmlCanvas( writer );
             html.render( DocType.HTML5 )
                 .html()
@@ -248,7 +250,7 @@ System.out.println( "loLinks="+learningObjectLinks );
                     ._head()
                     .body()
                         .h1().content( MessageFormat.format( bundle.getString( "BrokenLinkReport.Title" ), Core.getInstance().getRepositoryName() ) )
-                        .h2().content( MessageFormat.format( bundle.getString( "BrokenLinkReport.GenerationDate" ), new Date() ) )
+                        .h2().content( MessageFormat.format( bundle.getString( "BrokenLinkReport.GenerationDate" ), sdf.format( now ) ) )
                         .table( class_( "brokenLinks" ) )
                             .tr()
                                 .th().content( bundle.getString( "BrokenLinkReport.ColLabel.LearningObject" ) )
