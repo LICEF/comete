@@ -17,6 +17,7 @@ import licef.tsapi.model.Triple;
 import licef.tsapi.model.Tuple;
 import licef.tsapi.vocabulary.DCTERMS;
 import licef.tsapi.vocabulary.FOAF;
+import licef.tsapi.vocabulary.ORG;
 import licef.tsapi.vocabulary.RDF;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -152,7 +153,7 @@ public class Identity {
 
                 //now, a person may part of more than one org
                 if (personUri != null)
-                    tripleStore.insertTriple(new Triple(personUri, DCTERMS.isPartOf, orgUri));
+                    tripleStore.insertTriple(new Triple(personUri, ORG.memberOf, orgUri));
             }
         } else if (format.equals(Constants.TEXT_MIMETYPE) && !"".equals(content)) {
             content = content.trim();

@@ -12,6 +12,7 @@ import licef.StringUtil;
 import licef.tsapi.TripleStore;
 import licef.tsapi.model.Triple;
 import licef.tsapi.vocabulary.DCTERMS;
+import licef.tsapi.vocabulary.ORG;
 import licef.tsapi.vocabulary.RDF;
 import net.fortuna.ical4j.util.Strings;
 import net.fortuna.ical4j.vcard.Parameter;
@@ -323,7 +324,7 @@ public class Util {
 
         Triple[] triples = tripleStore.getTriplesWithSubject(uri);
         for (Triple triple : triples) {
-            if (DCTERMS.isPartOf.getURI().equals(triple.getPredicate()) ||
+            if (ORG.memberOf.getURI().equals(triple.getPredicate()) ||
                     Constants.IDENTITY_PREDICATES.contains(triple.getPredicate()) ||
                         Constants.IDENTITY_ALT_PREDICATES.contains(triple.getPredicate()))
                 entity.addValue(triple.getPredicate(), triple.getObject());

@@ -17,6 +17,7 @@ var Comete_namespacePrefixes = {
     owl: 'http://www.w3.org/2002/07/owl#',
     dcterms: 'http://purl.org/dc/terms/',
     foaf: 'http://xmlns.com/foaf/0.1/',
+    org: 'http://www.w3.org/ns/org#',
     xsd: 'http://www.w3.org/2001/XMLSchema#',
     xml: 'http://www.w3.org/XML/1998/namespace',
     skos: 'http://www.w3.org/2004/02/skos/core#',

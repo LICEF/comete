@@ -15,6 +15,7 @@ import licef.IOUtil;
 import licef.tsapi.model.Triple;
 import licef.tsapi.vocabulary.DCTERMS;
 import licef.tsapi.vocabulary.FOAF;
+import licef.tsapi.vocabulary.ORG;
 
 import java.util.ArrayList;
 
@@ -47,7 +48,7 @@ public class Person extends Entity {
         data.put(FOAF.phone.getURI(), tels);
         data.put(FOAF.homepage.getURI(), urls);
         data.put(FOAF.img.getURI(), photos);
-        data.put(DCTERMS.isPartOf.getURI(), orgs);
+        data.put(ORG.memberOf.getURI(), orgs);
     }
 
     public String getUri() {

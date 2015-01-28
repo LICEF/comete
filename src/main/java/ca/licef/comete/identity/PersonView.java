@@ -38,7 +38,7 @@ public class PersonView extends DefaultView {
         Element rootElement = doc.getDocumentElement();
 
         // Insert organization element for each organization.
-        NodeList orgElements = doc.getElementsByTagNameNS( CommonNamespaceContext.dctNSURI, "isPartOf" );
+        NodeList orgElements = doc.getElementsByTagNameNS( CommonNamespaceContext.orgNSURI, "memberOf" );
         for( int i = 0; i < orgElements.getLength(); i++ ) {
             Node orgNode = orgElements.item( i );
         

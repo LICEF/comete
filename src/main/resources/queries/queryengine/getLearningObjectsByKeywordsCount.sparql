@@ -7,35 +7,38 @@ PREFIX comete: <http://comete.licef.ca/reference#>
 
 SELECT (count(DISTINCT ?s) as ?count) 
 WHERE '{'
-    '{'
-        ?s text:query ( dcterms:title "{1}" "lang:{0}" )
-    '}'
+    '{' ?s text:query ( dcterms:title "{1}" ) '}'
     UNION
-    '{'
-        ?s text:query ( dcterms:description "{1}" "lang:{0}" )
-    '}'
+    '{' ?s text:query ( dcterms:title "{1}" "lang:{0}" ) '}'
     UNION
-    '{'
-        ?s text:query ( comete:keyword "{1}" "lang:{0}" )
-    '}'
+    '{' ?s text:query ( dcterms:description "{1}" ) '}'
     UNION
-    '{'
-        ?s text:query ( comete:extraInfo "{1}" "lang:{0}" )
-    '}'
+    '{' ?s text:query ( dcterms:description "{1}" "lang:{0}" ) '}'
     UNION
-    '{'
-        ?author text:query ( foaf:name "{1}" "lang:{0}" ) .
-        ?s dcterms:creator ?author
-    '}'
+    '{' ?s text:query ( comete:keyword "{1}" ) '}'
     UNION
-    '{'
-        ?publisher text:query ( foaf:name "{1}" "lang:{0}" ) .
-        ?s dcterms:publisher ?publisher
-    '}'
+    '{' ?s text:query ( comete:keyword "{1}" "lang:{0}" ) '}'
     UNION
-    '{'
-        ?concept text:query ( skos:prefLabel "{1}" "lang:{0}" ) .
-        ?s dcterms:subject ?concept
-    '}'
+    '{' ?s text:query ( comete:extraInfo "{1}" ) '}'
+    UNION
+    '{' ?s text:query ( comete:extraInfo "{1}" "lang:{0}" ) '}'
+    UNION
+    '{' ?author text:query ( foaf:name "{1}" ) .
+        ?s dcterms:creator ?author '}'
+    UNION
+    '{' ?author text:query ( foaf:name "{1}" "lang:{0}" ) .
+        ?s dcterms:creator ?author '}'
+    UNION
+    '{' ?publisher text:query ( foaf:name "{1}" ) .
+        ?s dcterms:publisher ?publisher '}'
+    UNION
+    '{' ?publisher text:query ( foaf:name "{1}" "lang:{0}" ) .
+        ?s dcterms:publisher ?publisher '}'
+    UNION
+    '{' ?concept text:query ( skos:prefLabel "{1}" ) .
+        ?s dcterms:subject ?concept '}'
+    UNION
+    '{' ?concept text:query ( skos:prefLabel "{1}" "lang:{0}" ) .
+        ?s dcterms:subject ?concept '}'
     ?s rdf:type comete:LearningObject
 '}'
