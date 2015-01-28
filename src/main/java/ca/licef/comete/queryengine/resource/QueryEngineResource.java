@@ -225,6 +225,7 @@ public class QueryEngineResource implements Serializable {
     }
 
     private SyndFeed searchFeed( String feedType, String query, String strStart, String strLimit, String lang ) {
+System.out.println( "searchFeed feedType="+feedType+" query="+query+" strStart="+strStart+" strLimit="+strLimit+" lang="+lang );        
         int start = -1;
         if( strStart != null ) {
             try {
@@ -249,13 +250,16 @@ public class QueryEngineResource implements Serializable {
         try {
             if (cache == null)
                 cache = new QueryCache();
+System.out.println( "Before rs" );            
             rs = QueryEngine.getInstance().search( query, "", lang, feedType, start, limit, null, cache );
+System.out.println( "After rs" );            
         }
         catch( Exception e ) {
             throw( new WebApplicationException( e, HttpServletResponse.SC_INTERNAL_SERVER_ERROR ) );
         }
-
+System.out.println( "Before f" );
         SyndFeed f = FeedUtil.getFeedFromResultSet( rs, feedType, uriInfo.getAbsolutePath().toString(), query, start, limit, lang );
+System.out.println( "After f" );        
         return f;
     }
 

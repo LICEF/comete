@@ -1,14 +1,29 @@
 package ca.licef.comete.queryengine.util;
 
+import ca.licef.comete.core.Core;
+import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.ResultSet;
+import ca.licef.comete.queryengine.ResultEntry;
 import ca.licef.comete.vocabularies.COMETE;
-import com.sun.syndication.feed.synd.SyndFeed;
-import com.sun.syndication.feed.synd.SyndFeedImpl;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.syndication.feed.module.comete.*;
+import com.sun.syndication.feed.module.comete.impl.CometeModuleImpl;
+import com.sun.syndication.feed.module.comete.impl.util.LangString;
+import com.sun.syndication.feed.module.comete.impl.util.LangStringImpl;
+import com.sun.syndication.feed.module.opensearch.OpenSearchModule;
+import com.sun.syndication.feed.module.opensearch.entity.OSQuery;
+import com.sun.syndication.feed.module.opensearch.impl.OpenSearchModuleImpl;
+import com.sun.syndication.feed.synd.*;
+import com.sun.syndication.io.impl.DateParser;
 import licef.StringUtil;
 import licef.tsapi.model.Triple;
 import licef.tsapi.vocabulary.DCTERMS;
 import licef.tsapi.vocabulary.RDFS;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import javax.ws.rs.core.MediaType;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.ParseException;
@@ -21,7 +36,7 @@ public class FeedUtil {
         ResourceBundle bundle = ResourceBundle.getBundle( "translations/Strings", new Locale( lang ) );
 
         SyndFeed f = new SyndFeedImpl();
-        /*f.setFeedType( feedType );
+        f.setFeedType( feedType );
 
         List modules = f.getModules();
         OpenSearchModule osm = new OpenSearchModuleImpl();
@@ -116,25 +131,25 @@ public class FeedUtil {
                 Map labels = extractLabels( triples );
                 Map emails = buildEmailTable( triples );
                 for( Triple triple : triples ) {
-                    if( Constants.METAMODEL_TITLE.equals( triple.getPredicate() ) ) {
+                    if( DCTERMS.title.getURI().equals( triple.getPredicate() ) ) {
                         LangString langString = new LangStringImpl();
                         langString.setString( triple.getObject() );
                         if( triple.getLanguage() != null && !"".equals( triple.getLanguage() ) )
                             langString.setLanguage( triple.getLanguage() );
                         titles.add( langString );
                     }
-                    else if( Constants.METAMODEL_DESCRIPTION.equals( triple.getPredicate() ) ) {
+                    else if( DCTERMS.description.getURI().equals( triple.getPredicate() ) ) {
                         LangString langString = new LangStringImpl();
                         langString.setString( triple.getObject() );
                         if( triple.getLanguage() != null && !"".equals( triple.getLanguage() ) )
                             langString.setLanguage( triple.getLanguage() );
                         descriptions.add( langString );
                     }
-                    else if( Constants.METAMODEL_LANGUAGE.equals( triple.getPredicate() ) )
+                    else if( DCTERMS.language.getURI().equals( triple.getPredicate() ) )
                         languages.add( triple.getObject() ); 
-                    else if( Constants.METAMODEL_FORMAT.equals( triple.getPredicate() ) )
+                    else if( DCTERMS.format.equals( triple.getPredicate() ) )
                         formats.add( triple.getObject() );
-                    else if( Constants.METAMODEL_AUTHOR.equals( triple.getPredicate() ) ) {
+                    else if( DCTERMS.creator.getURI().equals( triple.getPredicate() ) ) {
                         String identityUri = triple.getObject();
                         Map creatorStrings = (Map)labels.get( identityUri );
                         String creator = (String)creatorStrings.get( lang );
@@ -144,7 +159,7 @@ public class FeedUtil {
                         creator += " " + email + "[" + identityUri + "]" ;
                         creators.add( creator );
                     }
-                    else if( Constants.METAMODEL_PUBLISHER.equals( triple.getPredicate() ) ) {
+                    else if( DCTERMS.publisher.getURI().equals( triple.getPredicate() ) ) {
                         String identityUri = triple.getObject();
                         Map publisherStrings = (Map)labels.get( identityUri );
                         String publisher = (String)publisherStrings.get( lang );
@@ -154,7 +169,7 @@ public class FeedUtil {
                         publisher += " " + email + "[" + identityUri + "]";
                         publishers.add( publisher );
                     }
-                    else if( Constants.METAMODEL_SUBJECT.equals( triple.getPredicate() ) ) {
+                    else if( DCTERMS.subject.getURI().equals( triple.getPredicate() ) ) {
                         String subjectUri = triple.getObject();
                         int indexOfLastSlash = subjectUri.lastIndexOf( "/" );
                         String taxonomyUri = subjectUri.substring( 0, indexOfLastSlash );
@@ -172,25 +187,25 @@ public class FeedUtil {
                         category.setName( value );
                         categories.add( category );
                     }
-                    else if( Constants.METAMODEL_EXTRA_INFO.equals( triple.getPredicate() ) ) {
+                    else if( COMETE.extraInfo.equals( triple.getPredicate() ) ) {
                         LangString langString = new LangStringImpl();
                         langString.setString( triple.getObject() );
                         if( triple.getLanguage() != null && !"".equals( triple.getLanguage() ) )
                             langString.setLanguage( triple.getLanguage() );
                         extraInfos.add( langString );
                     }
-                    else if( Constants.METAMODEL_KEYWORD.equals( triple.getPredicate() ) ) {
+                    else if( COMETE.keyword.getURI().equals( triple.getPredicate() ) ) {
                         LangString langString = new LangStringImpl();
                         langString.setString( triple.getObject() );
                         if( triple.getLanguage() != null && !"".equals( triple.getLanguage() ) )
                             langString.setLanguage( triple.getLanguage() );
                         keywords.add( langString );
                     }
-                    else if( Constants.METAMODEL_ADDED.equals( triple.getPredicate() ) ) {
+                    else if( COMETE.added.getURI().equals( triple.getPredicate() ) ) {
                         Date added = DateParser.parseDate( triple.getObject() );
                         cm.setAdded( added );
                     }
-                    else if( Constants.METAMODEL_UPDATED.equals( triple.getPredicate() ) ) {
+                    else if( COMETE.updated.getURI().equals( triple.getPredicate() ) ) {
                         Date updated = DateParser.parseDate( triple.getObject() );
                         cm.setUpdated( updated );
                     }
@@ -223,7 +238,7 @@ public class FeedUtil {
 
         modules.add( osm );
         f.setModules( modules );
-*/
+
         // Implementation specific metadata for the feed are added via RomeSupport.writeTo() method. - FB
 
         return f;
