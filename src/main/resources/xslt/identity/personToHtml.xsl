@@ -36,7 +36,7 @@
                 <link href="../../../custom.css" rel="stylesheet" type="text/css"/>
             </head>
             <body class="MetadataPerson">
-                <xsl:variable name="personPhoto" select="if( foaf:img ) then foaf:img[1] else if( foaf:logo ) then foaf:logo[1] else ''"/>
+                <xsl:variable name="personPhoto" select="if( foaf:img/@rdf:resource ) then foaf:img[1]/@rdf:resource else if( foaf:logo/@rdf:resource ) then foaf:logo[1]/@rdf:resource else ''"/>
                 <table class="MetadataPerson">
                     <col class="MetadataPersonCol"/>
                     <xsl:if test="$personPhoto != ''">
@@ -94,7 +94,7 @@
     </xsl:template>
 
     <xsl:template match="organization/rdf:RDF/rdf:Description">
-        <xsl:variable name="orgPhoto" select="if( foaf:logo ) then foaf:logo[1] else if( foaf:img ) then foaf:img[1] else ''"/>
+        <xsl:variable name="orgPhoto" select="if( foaf:logo/@rdf:resource ) then foaf:logo[1]/@rdf:resource else if( foaf:img/@rdf:resource ) then foaf:img[1]/@rdf:resource else ''"/>
         <xsl:if test="$orgPhoto != ''">
             <tr>
                 <td>

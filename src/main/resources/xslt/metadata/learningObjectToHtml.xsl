@@ -109,13 +109,13 @@
                         <td class="ContributesRow">
                             <xsl:call-template name="render-contribute">
                                 <xsl:with-param name="uri" select="$publisherUri"/>
-                                <xsl:with-param name="photo" select="if( $publisher/rdf:RDF/rdf:Description/foaf:img ) then 
-                                                                         $publisher/rdf:RDF/rdf:Description/foaf:img[1] 
-                                                                     else if( $publisher/rdf:RDF/rdf:Description/foaf:logo ) then
-                                                                         $publisher/rdf:RDF/rdf:Description/foaf:logo[1]
+                                <xsl:with-param name="photo" select="if( $publisher/rdf:RDF/rdf:Description/foaf:img/@rdf:resource ) then 
+                                                                         $publisher/rdf:RDF/rdf:Description/foaf:img[1]/@rdf:resource 
+                                                                     else if( $publisher/rdf:RDF/rdf:Description/foaf:logo/@rdf:resource ) then
+                                                                         $publisher/rdf:RDF/rdf:Description/foaf:logo[1]/@rdf:resource
                                                                      else ''"/>
                                 <xsl:with-param name="name" select="$publisher/rdf:RDF/rdf:Description/foaf:name[1]"/> 
-                                <xsl:with-param name="website" select="$publisher/rdf:RDF/rdf:Description/foaf:homepage"/>
+                                <xsl:with-param name="website" select="$publisher/rdf:RDF/rdf:Description/foaf:homepage/@rdf:resource"/>
                                 <xsl:with-param name="identityLink" select="$publisher/identity/@href"/>
                             </xsl:call-template>
                         </td>
@@ -181,7 +181,7 @@
     </xsl:template>
 
     <xsl:template match="foaf:page">
-        <xsl:variable name="url" select="if( starts-with( ., 'http' ) ) then . else concat( 'http://', . )"/>
+        <xsl:variable name="url" select="if( starts-with( @rdf:resource, 'http' ) ) then @rdf:resource else concat( 'http://', @rdf:resource )"/>
         <a class="ResourceLink" target="_blank">
             <xsl:attribute name="href"><xsl:value-of select="$url"/></xsl:attribute>
             <img class="ResourceIcon" height="64" border="0">
@@ -201,10 +201,10 @@
                 <td class="ContributesRow">
                     <xsl:call-template name="render-contribute">
                         <xsl:with-param name="uri" select="rdf:RDF/rdf:Description/@rdf:about"/>
-                        <xsl:with-param name="photo" select="if( rdf:RDF/rdf:Description/foaf:img ) then 
-                                                                 rdf:RDF/rdf:Description/foaf:img[1] 
-                                                             else if( rdf:RDF/rdf:Description/foaf:logo ) then
-                                                                 rdf:RDF/rdf:Description/foaf:logo[1]
+                        <xsl:with-param name="photo" select="if( rdf:RDF/rdf:Description/foaf:img/@rdf:resource ) then 
+                                                                 rdf:RDF/rdf:Description/foaf:img[1]/@rdf:resource
+                                                             else if( rdf:RDF/rdf:Description/foaf:logo/@rdf:resource ) then
+                                                                 rdf:RDF/rdf:Description/foaf:logo[1]/@rdf:resource
                                                              else ''"/>
                         <xsl:with-param name="name" select="if( rdf:RDF/rdf:Description/foaf:name ) then
                                                                 rdf:RDF/rdf:Description/foaf:name[1] 
@@ -212,10 +212,10 @@
                                                                 organization/rdf:RDF/rdf:Description/foaf:name[1]
                                                             else ''"/>
                         <xsl:with-param name="roles" select=".//role"/>
-                        <xsl:with-param name="email" select="if( starts-with(rdf:RDF/rdf:Description/foaf:mbox,'mailto:') ) then 
-                                                                 substring-after(rdf:RDF/rdf:Description/foaf:mbox,'mailto:') 
+                        <xsl:with-param name="email" select="if( starts-with(rdf:RDF/rdf:Description/foaf:mbox/@rdf:resource,'mailto:') ) then 
+                                                                 substring-after(rdf:RDF/rdf:Description/foaf:mbox/@rdf:resource,'mailto:') 
                                                              else 
-                                                                 rdf:RDF/rdf:Description/foaf:mbox"/>
+                                                                 rdf:RDF/rdf:Description/foaf:mbox/@rdf:resource"/>
                         <xsl:with-param name="identityLink" select="identity/@href"/>
                     </xsl:call-template>
                 </td>
