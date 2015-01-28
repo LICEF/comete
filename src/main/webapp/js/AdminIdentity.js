@@ -255,6 +255,7 @@ Ext.define( 'Comete.Identity', {
         editor.show();       
     },
     afterEdit: function() {
+        this.identityList.getSelectionModel().clearSelections();
         this.store.load();
     },
     maybeSelect: function() {

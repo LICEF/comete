@@ -59,13 +59,11 @@
             valueField: 'value',
             emptyText: (this.type == 'person')?'Photo selection':'Logo selection',
             margin: '0 0 0 20',
-            width: 129,            
-            listConfig: {
-                getInnerTpl: 
-                    function() { 
-                        return '<img width=90 src="{value}"/>';
-                    }
-            }
+            width: 129,
+            store: Ext.create('Ext.data.Store', {
+                fields: ['value'],
+            }),            
+            tpl: '<div><tpl for="."><div class="x-boundlist-item"><img width=90 src="{value}"/></div></tpl></div>'
         });
 
         this.photoValues.on( 'beforeselect', function(combo, record){ 
@@ -154,10 +152,7 @@
             this.dataPanel.getComponent(6).set(details.url);
             this.dataPanel.getComponent(7).set(details.address);
             if (details.photo != null) {
-                this.photoValues.store = Ext.create('Ext.data.Store', {
-                    fields: ['value'],
-                    data : details.photo
-                });
+                this.photoValues.store.loadData(details.photo);
                 if (this.mode == 'edition')
                     this.photo.setSrc(details.photo[0].value);
                 else
@@ -172,10 +167,7 @@
             this.dataPanel.getComponent(4).set(details.url);
             this.dataPanel.getComponent(5).set(details.address);
             if (details.logo != null) {
-                this.photoValues.store = Ext.create('Ext.data.Store', {
-                    fields: ['value'],
-                    data : details.logo
-                });
+                this.photoValues.store.loadData(details.logo);
                 if (this.mode == 'edition')
                     this.photo.setSrc(details.logo[0].value);
                 else
@@ -254,7 +246,11 @@ Ext.define( 'Comete.IdentityDetail', {
                 queryMode: 'local',
                 displayField: 'value',
                 valueField: 'value',
-                width: 240
+                width: 240,
+                store: new Ext.data.ArrayStore({
+                     fields: [ 'value' ]
+                }),
+                tpl: '<div><tpl for="."><div class="x-boundlist-item">{value}</div></tpl></div>'
             });
 
         if (this.mode == 'edition') {
@@ -277,10 +273,7 @@ Ext.define( 'Comete.IdentityDetail', {
             if (this.mode == 'read')
                 this.dataField.setText(data);
             else {
-                this.dataField.store = Ext.create('Ext.data.Store', {
-                    fields: ['value'],
-                    data: data
-                });
+                this.dataField.store.loadData(data);
                 this.dataField.setValue(data[0].value);
             }
         }

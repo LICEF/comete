@@ -5,6 +5,7 @@ import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.identity.util.Util;
 import ca.licef.comete.metadata.Metadata;
 import ca.licef.comete.vocabularies.COMETE;
+import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -29,11 +30,11 @@ public class Resolver {
     static TripleStore tripleStore = Core.getInstance().getTripleStore();
     static ca.licef.comete.core.util.Util CoreUtil;
 
-    public void setIdentityValues(String uri, JSONObject mainValues, String type,
+    public void setIdentityValues(String uri, JSONObject mainValues, OntClass type,
                                         JSONObject details, ArrayList<Triple> newTriples, ArrayList<Triple> triplesToDelete) throws Exception {
 
         //reset uri values
-        String query = COMETE.Person.getURI().equals(type)?
+        String query = COMETE.Person.equals(type)?
                 CoreUtil.getQuery("identity/getPersonTriplesToResetForMerge.sparql", uri):
                 CoreUtil.getQuery("identity/getOrganizationTriplesToResetForMerge.sparql", uri);
 
@@ -92,14 +93,14 @@ public class Resolver {
      * @param mainValues main values
      * @param type identity type
      */
-    public void updateIdentity(String uri, JSONObject mainValues, String type) throws Exception {
+    public void updateIdentity(String uri, JSONObject mainValues, OntClass type) throws Exception {
         ArrayList<Triple> newTriples = new ArrayList<Triple>();
         ArrayList<Triple> triplesToDelete = new ArrayList<Triple>();
 
         //retrieve all values for the uri (main and alternates)
         JSONArray wrapper = new JSONArray();
         wrapper.put(uri);
-        JSONObject details = COMETE.Person.getURI().equals(type)?
+        JSONObject details = COMETE.Person.equals(type)?
                 Identity.getInstance().getAllPersonDetails(wrapper):
                 Identity.getInstance().getAllOrganizationDetails(wrapper);
 
@@ -124,7 +125,7 @@ public class Resolver {
      * @param type identity type
      * @throws Exception
      */
-    public String mergeIdentities(JSONArray uriArray, JSONObject mainValues, String similarGroup, String type) throws Exception {
+    public String mergeIdentities(JSONArray uriArray, JSONObject mainValues, String similarGroup, OntClass type) throws Exception {
         ArrayList<Triple> newTriples = new ArrayList<Triple>();
         ArrayList<Triple> triplesToDelete = new ArrayList<Triple>();
         ArrayList<Triple> triplesToDeleteInSimilarityGraph = new ArrayList<Triple>();
@@ -180,7 +181,7 @@ public class Resolver {
         }
 
         //retrieve all values for the target_uri (main and alternates)
-        JSONObject details = COMETE.Person.getURI().equals(type)?
+        JSONObject details = COMETE.Person.equals(type)?
                 Identity.getInstance().getAllPersonDetails(uriArray):
                 Identity.getInstance().getAllOrganizationDetails(uriArray);
 
@@ -195,7 +196,7 @@ public class Resolver {
             if (mergedUri.equals(uri))
                 continue;
 
-            if (COMETE.Person.getURI().equals(type)) {// for persons, set all others possible orgs (merged uri outgoing links)
+            if (COMETE.Person.equals(type)) {// for persons, set all others possible orgs (merged uri outgoing links)
                 Triple[] _triples = tripleStore.getTriplesWithSubjectPredicate(mergedUri, DCTERMS.isPartOf);
                 for (Triple triple : _triples)
                     newTriples.add(new Triple(uri, triple.getPredicate(), triple.getObject(),

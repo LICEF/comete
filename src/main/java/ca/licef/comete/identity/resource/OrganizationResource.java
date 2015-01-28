@@ -247,20 +247,13 @@ public class OrganizationResource {
             }
         }
 
-        TripleStore tripleStore = Core.getInstance().getTripleStore();
-
-        String query = CoreUtil.getQuery("identity/findOrganizationsCount.sparql", CoreUtil.formatKeywords(str));
-        Tuple[] res = tripleStore.sparqlSelect(query);
-        int total = Integer.parseInt(res[0].getValue("count").getContent());
-
-        query = CoreUtil.getQuery("identity/findOrganizations.sparql", CoreUtil.formatKeywords(str), start, limit);
-        Tuple[] orgs = tripleStore.sparqlSelect(query);
+        Object[] res = Identity.getInstance().searchOrganizations(str, start, limit);
 
         StringWriter out = new StringWriter();
         try {
             JSONWriter json = new JSONWriter( out ).object();
-            json.key( "organizations" ).value( buildOrgJSONArray(orgs) ).
-                 key( "totalCount" ).value( total );
+            json.key( "organizations" ).value( buildOrgJSONArray((Tuple[])res[1]) ).
+                 key( "totalCount" ).value( res[0] );
             json.endObject();
         }
         catch( JSONException e ) {
@@ -341,7 +334,7 @@ public class OrganizationResource {
 
         String uri = CoreUtil.makeURI(id, COMETE.Organization.getURI());
         JSONObject values = new JSONObject(mainValues);
-        Identity.getInstance().getResolver().updateIdentity(uri, values, COMETE.Organization.getURI());
+        Identity.getInstance().updateIdentity(uri, values, COMETE.Organization);
         return Response.ok().build();
     }
 
@@ -460,7 +453,7 @@ public class OrganizationResource {
 
         JSONArray uriArray = new JSONArray(uris);
         JSONObject values = new JSONObject(mainValues);
-        String uri = Identity.getInstance().getResolver().mergeIdentities(uriArray, values, similarGroup, COMETE.Organization.getURI());
+        String uri = Identity.getInstance().getResolver().mergeIdentities(uriArray, values, similarGroup, COMETE.Organization);
         return Response.ok(uri).build();
     }
 

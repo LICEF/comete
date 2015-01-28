@@ -209,20 +209,13 @@ public class PersonResource {
         }
 
 
-        TripleStore tripleStore = Core.getInstance().getTripleStore();
-
-        String query = CoreUtil.getQuery("identity/findPersonsCount.sparql", CoreUtil.formatKeywords(str));
-        Tuple[] res = tripleStore.sparqlSelect(query);
-        int total = Integer.parseInt(res[0].getValue("count").getContent());
-
-        query = CoreUtil.getQuery("identity/findPersons.sparql", CoreUtil.formatKeywords(str), start, limit);
-        Tuple[] persons = tripleStore.sparqlSelect(query);
+        Object[] res = Identity.getInstance().searchPersons(str, start, limit);
 
         StringWriter out = new StringWriter();
         try {
             JSONWriter json = new JSONWriter( out ).object();
-            json.key( "persons" ).value( buildPersonJSONArray(persons) ).
-                 key( "totalCount" ).value( total );
+            json.key( "persons" ).value( buildPersonJSONArray((Tuple[])res[1])).
+                 key( "totalCount" ).value( res[0] );
             json.endObject();
         }
         catch( JSONException e ) {
@@ -303,7 +296,7 @@ public class PersonResource {
 
         String uri = CoreUtil.makeURI(id, COMETE.Person.getURI());
         JSONObject values = new JSONObject(mainValues);
-        Identity.getInstance().getResolver().updateIdentity(uri, values, COMETE.Person.getURI());
+        Identity.getInstance().updateIdentity(uri, values, COMETE.Person);
         return Response.ok().build();
     }
 
@@ -422,7 +415,7 @@ public class PersonResource {
 
         JSONArray uriArray = new JSONArray(uris);
         JSONObject values = new JSONObject(mainValues);
-        String uri = Identity.getInstance().getResolver().mergeIdentities(uriArray, values, similarGroup, COMETE.Person.getURI());
+        String uri = Identity.getInstance().getResolver().mergeIdentities(uriArray, values, similarGroup, COMETE.Person);
         return Response.ok(uri).build();
     }
 

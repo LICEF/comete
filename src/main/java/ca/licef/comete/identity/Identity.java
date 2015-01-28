@@ -7,6 +7,7 @@ import ca.licef.comete.identity.model.Organization;
 import ca.licef.comete.identity.model.Person;
 import ca.licef.comete.identity.util.Util;
 import ca.licef.comete.vocabularies.COMETE;
+import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import licef.IOUtil;
@@ -426,10 +427,7 @@ public class Identity {
 
     /********************/
     /* PHOTO MANAGEMENT */
-
-    /**
-     * ****************
-     */
+    /********************/
 
     String setPhoto(String photo) throws Exception {
         //photo format
@@ -499,10 +497,7 @@ public class Identity {
 
     /*************************/
     /* SIMILARITY MANAGEMENT */
-
-    /**
-     * *********************
-     */
+    /*************************/
 
     void manageSimilarPersons(String uri, String formattedName, String firstname, String lastname) throws Exception {
         int identityLevel = getIdentityLevel(firstname, lastname, null);
@@ -624,10 +619,7 @@ public class Identity {
 
     /********************/
     /* Identity details */
-
-    /**
-     * ****************
-     */
+    /********************/
 
     void loopVars(String[] vars, Tuple[] results, JSONObject detail) throws Exception {
         for (int i = 0; i < results.length; i++) {
@@ -781,12 +773,15 @@ public class Identity {
         return (emails);
     }
 
+    public void updateIdentity(String uri, JSONObject values, OntClass type) throws Exception {
+        Invoker inv = new Invoker(getResolver(), "ca.licef.comete.identity.Resolver",
+                "updateIdentity", new Object[]{uri, values, type});
+        tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
+    }
 
     /**********************/
     /** VCard management **/
-    /**
-     * ******************
-     */
+    /**********************/
 
     public String getVCard(String uri, String loURI) throws Exception {
         //uri is possibly merged previously and replaced by another one.
@@ -826,6 +821,22 @@ public class Identity {
         return new Object[]{length, tripleStore.sparqlSelect(query)};
     }
 
+    public Object[] searchPersons(String str, int start, int limit) throws Exception {
+        Invoker inv = new Invoker(this, "ca.licef.comete.identity.Identity",
+                "searchPersonsEff", new Object[]{str, start, limit});
+        return (Object[]) tripleStore.transactionalCall(inv);
+    }
+
+    public Object[] searchPersonsEff(String str, int start, int limit) throws Exception {
+        String query = CoreUtil.getQuery("identity/findPersonsCount.sparql", CoreUtil.formatKeywords(str));
+        Tuple[] res = tripleStore.sparqlSelect(query);
+        int total = Integer.parseInt(res[0].getValue("count").getContent());
+        query = CoreUtil.getQuery("identity/findPersons.sparql", CoreUtil.formatKeywords(str), start, limit);
+        Tuple[] persons = tripleStore.sparqlSelect(query);
+
+        return new Object[]{ total, persons };
+    }
+
     public Object[] getAllOrganizations(int start, int limit) throws Exception {
         Invoker inv = new Invoker(this, "ca.licef.comete.identity.Identity",
                 "getAllOrganizationsEff", new Object[]{start, limit});
@@ -836,6 +847,22 @@ public class Identity {
         int length = tripleStore.getTriplesWithPredicateObject(RDF.type, COMETE.Organization.getURI(), null).length;
         String query = CoreUtil.getQuery("identity/getOrganizations.sparql", start, limit);
         return new Object[]{length, tripleStore.sparqlSelect(query)};
+    }
+
+    public Object[] searchOrganizations(String str, int start, int limit) throws Exception {
+        Invoker inv = new Invoker(this, "ca.licef.comete.identity.Identity",
+                "searchOrganizationsEff", new Object[]{str, start, limit});
+        return (Object[]) tripleStore.transactionalCall(inv);
+    }
+
+    public Object[] searchOrganizationsEff(String str, int start, int limit) throws Exception {
+        String query = CoreUtil.getQuery("identity/findOrganizationsCount.sparql", CoreUtil.formatKeywords(str));
+        Tuple[] res = tripleStore.sparqlSelect(query);
+        int total = Integer.parseInt(res[0].getValue("count").getContent());
+        query = CoreUtil.getQuery("identity/findOrganizations.sparql", CoreUtil.formatKeywords(str), start, limit);
+        Tuple[] orgs = tripleStore.sparqlSelect(query);
+
+        return new Object[]{ total, orgs };
     }
 
     public String getVCardFormattedName(String vcard) throws Exception {
@@ -849,5 +876,6 @@ public class Identity {
 
         return getFormattedName(formattedName, firstname, lastname, email, url, org);
     }
+
 }
     
