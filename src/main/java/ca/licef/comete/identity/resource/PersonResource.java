@@ -4,10 +4,7 @@ import ca.licef.comete.core.Core;
 import ca.licef.comete.identity.Identity;
 import ca.licef.comete.security.Security;
 import ca.licef.comete.vocabularies.COMETE;
-import com.hp.hpl.jena.vocabulary.RDF;
 import com.sun.jersey.spi.resource.Singleton;
-import licef.tsapi.TripleStore;
-import licef.tsapi.model.Triple;
 import licef.tsapi.model.Tuple;
 import licef.tsapi.vocabulary.FOAF;
 import org.json.JSONArray;
@@ -102,13 +99,11 @@ public class PersonResource {
     public Response getPhoto(@PathParam("id") String id) {
         try {
             String uri = CoreUtil.makeURI(id, COMETE.Person.getURI());
-            Triple[] triples = Core.getInstance().getTripleStore().
-                    getTriplesWithSubjectPredicate(uri, FOAF.img);
-            if (triples.length == 0)
+            String photoUrl = Identity.getInstance().getPhotoUrl(uri, FOAF.img);
+            if (photoUrl == null)
                 return Response.status(Response.Status.NOT_FOUND).build();
             else {
-                String url = triples[0].getObject();
-                return Response.seeOther(new URI(url)).build();
+                return Response.seeOther(new URI(photoUrl)).build();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -304,11 +299,8 @@ public class PersonResource {
     @Path("similarGroups")
     @Produces( MediaType.APPLICATION_JSON )
     public String similarPersonGroups() throws Exception {
-        TripleStore tripleStore = Core.getInstance().getTripleStore();
 
-        //todo sparql multi-graph
-        String query = CoreUtil.getQuery("identity/getSimilarPersonGroups.sparql");
-        Tuple[] results = tripleStore.sparqlSelect(query);
+        Tuple[] results = Identity.getInstance().getSimilarPersonGroups();
 
         StringWriter out = new StringWriter();
         try {
@@ -337,10 +329,8 @@ public class PersonResource {
     @Path("similar")
     @Produces( MediaType.APPLICATION_JSON )
     public String similarPersons(@QueryParam("gid") String gid) throws Exception {
-        TripleStore tripleStore = Core.getInstance().getTripleStore();
-        //todo sparql multi-graph
-        String query = CoreUtil.getQuery("identity/getIdentitiesOfSimilarGroup.sparql", gid);
-        Tuple[] persons = tripleStore.sparqlSelect(query);
+
+        Tuple[] persons = Identity.getInstance().getSimilarIdentities(gid);
 
         StringWriter out = new StringWriter();
         try {
@@ -367,10 +357,10 @@ public class PersonResource {
         for (Tuple person : persons) {
             JSONObject _person = new JSONObject();
             String uri = person.getValue("s").getContent();
-            String id = CoreUtil.getIdNumberValue(uri);
+            String id = CoreUtil.getIdValue(uri);
             _person.put( "id", id );
             _person.put( "uri", uri );
-            _person.put( "label", CoreUtil.manageQuotes(person.getValue("name").getContent()));
+            _person.put( "label", person.getValue("name").getContent());
             _person.put( "restUrl", CoreUtil.getRestUrl(COMETE.Person) + "/" + id);
             _persons.put(_person);
         }
@@ -408,25 +398,26 @@ public class PersonResource {
     @Path("merge")
     public Response mergePersons(@Context HttpServletRequest request,
                                  @FormParam("uris") String uris,
-                                 @FormParam("similarGroup") String similarGroup,
                                  @FormParam("mainValues") String mainValues) throws Exception {
         if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to merge persons.").build();
 
         JSONArray uriArray = new JSONArray(uris);
         JSONObject values = new JSONObject(mainValues);
-        String uri = Identity.getInstance().getResolver().mergeIdentities(uriArray, values, similarGroup, COMETE.Person);
+        String uri = Identity.getInstance().mergeIdentities(uriArray, values, COMETE.Person);
         return Response.ok(uri).build();
     }
 
     @GET
     @Path("takeOff")
-    public Response takeOffPersons(@Context HttpServletRequest request, @QueryParam("uris") String uris, @QueryParam("similarGroup") String similarGroup) throws Exception {
+    public Response takeOffPersons(@Context HttpServletRequest request,
+                                   @QueryParam("uris") String uris,
+                                   @QueryParam("similarGroup") String gId) throws Exception {
         if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to takeoff persons.").build();
 
         JSONArray uriArray = new JSONArray(uris);
-        Identity.getInstance().getResolver().takeOffIdentities(uriArray, similarGroup);
+        Identity.getInstance().takeOffIdentities(uriArray, gId);
         return Response.ok().build();
     }
 
@@ -437,7 +428,7 @@ public class PersonResource {
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to typecast persons.").build();
 
         JSONArray uriArray = new JSONArray(uris);
-        Identity.getInstance().getResolver().convertPersonsToOrg(uriArray);
+        Identity.getInstance().convertPersonsToOrg(uriArray);
         return Response.ok().build();
     }
 

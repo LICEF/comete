@@ -152,9 +152,14 @@
             this.dataPanel.getComponent(6).set(details.url);
             this.dataPanel.getComponent(7).set(details.address);
             if (details.photo != null) {
+                var isMainPhoto = details.photo[0].value != "";
+                if (!isMainPhoto) 
+                    details.photo.splice(0, 1);
                 this.photoValues.store.loadData(details.photo);
-                if (this.mode == 'edition')
-                    this.photo.setSrc(details.photo[0].value);
+                if (this.mode == 'edition') {
+                    if (isMainPhoto)
+                        this.photo.setSrc(details.photo[0].value);
+                }
                 else
                     this.photo.setSrc(details.photo);
             }
@@ -167,9 +172,14 @@
             this.dataPanel.getComponent(4).set(details.url);
             this.dataPanel.getComponent(5).set(details.address);
             if (details.logo != null) {
+                var isMainLogo = details.logo[0].value != "";
+                if (!isMainLogo) 
+                    details.logo.splice(0, 1);
                 this.photoValues.store.loadData(details.logo);
-                if (this.mode == 'edition')
-                    this.photo.setSrc(details.logo[0].value);
+                if (this.mode == 'edition') {
+                    if (isMainLogo)
+                        this.photo.setSrc(details.logo[0].value);
+                }
                 else
                     this.photo.setSrc(details.logo);
             }

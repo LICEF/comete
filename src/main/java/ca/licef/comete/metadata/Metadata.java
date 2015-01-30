@@ -427,7 +427,7 @@ public class Metadata {
         manageLanguages(recordURI, loURI, triples );
 
         //triples insertions
-        tripleStore.insertTriplesWithTextIndex(triples);
+        tripleStore.insertTriples_textIndex(triples);
 
         //automatic exposition to harvesting
         exposeRecords(loURI, storeId, metadataFormat);
@@ -575,7 +575,7 @@ public class Metadata {
 
     private void resetLearningObjectNonPersistentTriples(String recordURI) throws Exception {
         String query = Util.getQuery( "metadata/deleteLOTriplesToReset.sparql", recordURI );
-        tripleStore.sparqlUpdateWithTextIndex(query);
+        tripleStore.sparqlUpdate_textIndex(query);
     }
 
     /**
@@ -606,7 +606,7 @@ public class Metadata {
     /*private void internalFormatToExposedRecords(String loURI, String storeId, MetadataFormat metadataFormat) throws Exception {
         if( !Store.getInstance().isDatastreamExists( storeId, Constants.DATASTREAM_INTERNAL_DATA ) )
             return;
-        String recordUri = Util.makeURI(Util.getIdNumberValue(storeId), COMETE.MetadataRecord);
+        String recordUri = Util.makeURI(Util.getIdValue(storeId), COMETE.MetadataRecord);
 
         System.out.println("Expose record : " + recordUri + "...");
         String xml = Store.getInstance().getDatastream( storeId, Constants.DATASTREAM_INTERNAL_DATA );

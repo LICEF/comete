@@ -40,7 +40,7 @@ public class VocContextResource {
                 JSONObject voc = new JSONObject();
                 voc.put( "restUrl",
                         Util.getRestUrl(COMETE.VocContext) + "/" +
-                            Util.getIdNumberValue( vocCtxtUri ));
+                            Util.getIdValue(vocCtxtUri));
                 voc.put( "label", Vocabulary.getInstance().getVocabularyTitle(vocUri, lang, true) );
                 vocCtxts.put(voc);
             }

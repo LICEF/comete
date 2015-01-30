@@ -359,7 +359,7 @@ public class VocabularyManager {
 
         //load content
         if (isNavigable)
-            tripleStore.loadContentWithTextIndex(new ByteArrayInputStream(skosContent.getBytes()),
+            tripleStore.loadContent_textIndex(new ByteArrayInputStream(skosContent.getBytes()),
                     licef.tsapi.Constants.RDFXML, vocUri);
         else
             tripleStore.loadContent(new ByteArrayInputStream(skosContent.getBytes()),
@@ -371,7 +371,7 @@ public class VocabularyManager {
 
     private void clearVocabularyGraph(String vocUri, boolean isNavigable) throws Exception {
         if (isNavigable)
-            tripleStore.clearWithTextIndex(vocUri);
+            tripleStore.clear_textIndex(vocUri);
         else
             tripleStore.clear(vocUri);
     }

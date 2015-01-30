@@ -250,7 +250,7 @@ public class Identity {
             }
         }
 
-        tripleStore.insertTriplesWithTextIndex(list);
+        tripleStore.insertTriples_textIndex(list);
 
         System.out.println("Person: " + formattedName + " created");
 
@@ -285,7 +285,7 @@ public class Identity {
         }
 
         if (!list.isEmpty())
-            tripleStore.insertTriplesWithTextIndex(list);
+            tripleStore.insertTriples_textIndex(list);
     }
 
     int getIdentityLevel(String firstname, String lastname, String email) {
@@ -377,7 +377,7 @@ public class Identity {
             }
         }
 
-        tripleStore.insertTriplesWithTextIndex(list);
+        tripleStore.insertTriples_textIndex(list);
 
         System.out.println("Org: " + org + " created");
 
@@ -411,7 +411,7 @@ public class Identity {
         }
 
         if (!list.isEmpty())
-            tripleStore.insertTriplesWithTextIndex(list);
+            tripleStore.insertTriples_textIndex(list);
     }
 
     void maybeCopyValue(Entity en, Property pred, Property predAlt, String value, List<Triple> list) throws Exception {
@@ -495,6 +495,16 @@ public class Identity {
         return new String[]{imgUrl, errorMessage};
     }
 
+    public String getPhotoUrl(String uri, Property predicate) throws Exception {
+        String res = null;
+        Invoker inv = new Invoker( tripleStore, "licef.tsapi.TripleStore", "getTriplesWithSubjectPredicate",
+                new Object[]{uri, predicate, new String[]{}});
+        Triple[] triples = (Triple[])tripleStore.transactionalCall(inv);
+        if (triples.length > 0)
+            res = triples[0].getObject();
+        return res;
+    }
+
     /*************************/
     /* SIMILARITY MANAGEMENT */
     /*************************/
@@ -506,7 +516,7 @@ public class Identity {
             case IDENTITY_NORMAL:
                 String query = CoreUtil.getQuery("identity/searchSimilarPersons.sparql",
                         firstname, lastname, tripleStore.getUri(IDENTITY_SIMILARITY_GRAPH));
-                results = tripleStore.sparqlSelectWithTextIndex(query);
+                results = tripleStore.sparqlSelect_textIndex(query);
                 break;
             default:
                 //avoid braces interpreted within boolean expression (and also wrong balancing) -AM
@@ -528,7 +538,7 @@ public class Identity {
                 }
                 query = CoreUtil.getQuery("identity/searchSimilarPersonsFN.sparql",
                         formattedName, Core.getInstance().getUriPrefix());
-                results = tripleStore.sparqlSelectWithTextIndex(query);
+                results = tripleStore.sparqlSelect_textIndex(query);
         }
         if (results == null || results.length == 0)
             return;
@@ -573,7 +583,7 @@ public class Identity {
         String terms = (String) res[1];
         String query = CoreUtil.getQuery("identity/searchSimilarOrganizations.sparql",
                 terms, tripleStore.getUri(IDENTITY_SIMILARITY_GRAPH));
-        Tuple[] results = tripleStore.sparqlSelectWithTextIndex(query);
+        Tuple[] results = tripleStore.sparqlSelect_textIndex(query);
 
         if (results == null || results.length == 0)
             return;
@@ -625,7 +635,7 @@ public class Identity {
         for (int i = 0; i < results.length; i++) {
             for (int j = 0; j < vars.length; j++) {
                 if (!"".equals(results[i].getValue(vars[j]).getContent())) {
-                    String val = CoreUtil.manageQuotes(results[i].getValue(vars[j]).getContent());
+                    String val = results[i].getValue(vars[j]).getContent();
                     if ("email".equals(vars[j]))
                         val = val.substring("mailto:".length());
                     else if ("tel".equals(vars[j]))
@@ -673,8 +683,9 @@ public class Identity {
         return orgDetails;
     }
 
-    void extractAllDetails(JSONArray uriArray, String queryName, String[] vars, JSONObject details) throws Exception {
-        ArrayList<String> uris = new ArrayList<String>();
+    JSONObject extractAllDetails(JSONArray uriArray, String queryName, String[] vars) throws Exception {
+        JSONObject details = new JSONObject();
+        ArrayList<String> uris = new ArrayList<>();
         for (int i = 0; i < uriArray.length(); i++)
             uris.add((String) uriArray.get(i));
         String constraints = CoreUtil.buildFilterConstraints(uris, "s", true, "=", "||");
@@ -685,6 +696,7 @@ public class Identity {
         JSONArray[] arrays = new JSONArray[vars.length];
         for (int i = 0; i < vars.length; i++)
             arrays[i] = new JSONArray();
+        boolean[] isMainValue = new boolean[vars.length];
 
         for (int i = 0; i < results.length; i++) {
             for (int j = 0; j < vars.length; j++) {
@@ -695,25 +707,33 @@ public class Identity {
                     res = results[i].getValue(key).getContent();
                 }
                 if (!"".equals(res)) {
-                    String val = CoreUtil.manageQuotes(res);
                     if (key.endsWith("email"))
-                        val = val.substring("mailto:".length());
+                        res = res.substring("mailto:".length());
                     else if (key.endsWith("tel"))
-                        val = val.substring("tel:".length());
+                        res = res.substring("tel:".length());
                     else if (key.endsWith("fax"))
-                        val = val.substring("fax:".length());
-                    JSONObject jsonVal = new JSONObject().put("value", val);
+                        res = res.substring("fax:".length());
+                    JSONObject jsonVal = new JSONObject().put("value", res);
                     if (key.startsWith("alt"))
                         arrays[j].put(jsonVal);
-                    else
+                    else {
                         Util.insertFirst(arrays[j], jsonVal);
+                        isMainValue[j] = true;
+                    }
                     break;
                 }
             }
         }
 
-        for (int i = 0; i < vars.length; i++)
-            if (arrays[i].length() > 0) details.put(vars[i], arrays[i]);
+        for (int i = 0; i < vars.length; i++) {
+            if (arrays[i].length() > 0) {
+                if (!isMainValue[i])
+                    Util.insertFirst(arrays[i], new JSONObject().put("value", ""));
+                details.put(vars[i], arrays[i]);
+            }
+        }
+
+        return details;
     }
 
     public JSONObject getAllPersonDetails(JSONArray uriArray) throws Exception {
@@ -722,13 +742,9 @@ public class Identity {
         return (JSONObject) tripleStore.transactionalCall(inv);
     }
 
-
     public JSONObject getAllPersonDetailsEff(JSONArray uriArray) throws Exception {
-        JSONObject details = new JSONObject();
         String[] vars = new String[]{"name", "firstname", "lastname", "email", "url", "address", "photo", "tel", "fax"};
-        //details
-        extractAllDetails(uriArray, "identity/getAllPersonDetails.sparql", vars, details);
-        return details;
+        return extractAllDetails(uriArray, "identity/getAllPersonDetails.sparql", vars);
     }
 
     public JSONObject getAllOrganizationDetails(JSONArray uriArray) throws Exception {
@@ -738,11 +754,8 @@ public class Identity {
     }
 
     public JSONObject getAllOrganizationDetailsEff(JSONArray uriArray) throws Exception {
-        JSONObject details = new JSONObject();
         String[] vars = new String[]{"name", "email", "url", "address", "logo", "tel", "fax"};
-        //details
-        extractAllDetails(uriArray, "identity/getAllOrganizationDetails.sparql", vars, details);
-        return details;
+        return extractAllDetails(uriArray, "identity/getAllOrganizationDetails.sparql", vars);
     }
 
     public Map getEmails(String[] identities) throws Exception {
@@ -761,7 +774,7 @@ public class Identity {
             for (int i = 0; i < rs.length; i++) {
                 Tuple row = rs[i];
                 String uri = row.getValue("identity").getContent();
-                String email = CoreUtil.manageQuotes(row.getValue("mbox").getContent());
+                String email = row.getValue("mbox").getContent();
                 int indexOfMailToPrefix = email.indexOf("mailto:");
                 if (indexOfMailToPrefix != -1)
                     email = email.substring(indexOfMailToPrefix + "mailto:".length());
@@ -775,13 +788,14 @@ public class Identity {
 
     public void updateIdentity(String uri, JSONObject values, OntClass type) throws Exception {
         Invoker inv = new Invoker(getResolver(), "ca.licef.comete.identity.Resolver",
-                "updateIdentity", new Object[]{uri, values, type});
+                "updateIdentityValues", new Object[]{uri, values, type});
         tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
     }
 
-    /**********************/
-    /** VCard management **/
-    /**********************/
+
+    /***********************************/
+    /** Identities / vcard management **/
+    /***********************************/
 
     public String getVCard(String uri, String loURI) throws Exception {
         //uri is possibly merged previously and replaced by another one.
@@ -877,5 +891,62 @@ public class Identity {
         return getFormattedName(formattedName, firstname, lastname, email, url, org);
     }
 
+    /**********************/
+    /** Similarity/Merge **/
+    /**********************/
+
+    public Tuple[] getSimilarPersonGroups() throws Exception {
+        Invoker inv = new Invoker(this, "ca.licef.comete.identity.Identity",
+                "getSimilarPersonGroupsEff", new Object[]{});
+        return (Tuple[]) tripleStore.transactionalCall(inv);
+    }
+
+    public Tuple[] getSimilarPersonGroupsEff() throws Exception {
+        String query = CoreUtil.getQuery("identity/getSimilarPersonGroups.sparql",
+                tripleStore.getUri(IDENTITY_SIMILARITY_GRAPH));
+        return tripleStore.sparqlSelect(query);
+    }
+
+    public Tuple[] getSimilarOrganizationGroups() throws Exception {
+        Invoker inv = new Invoker(this, "ca.licef.comete.identity.Identity",
+                "getSimilarOrganizationGroupsEff", new Object[]{});
+        return (Tuple[]) tripleStore.transactionalCall(inv);
+    }
+
+    public Tuple[] getSimilarOrganizationGroupsEff() throws Exception {
+        String query = CoreUtil.getQuery("identity/getSimilarOrganizationGroups.sparql",
+                tripleStore.getUri(IDENTITY_SIMILARITY_GRAPH));
+        return tripleStore.sparqlSelect(query);
+    }
+
+    public Tuple[] getSimilarIdentities(String gid) throws Exception {
+        Invoker inv = new Invoker(this, "ca.licef.comete.identity.Identity",
+                "getSimilarIdentitiesEff", new Object[]{gid});
+        return (Tuple[]) tripleStore.transactionalCall(inv);
+    }
+
+    public Tuple[] getSimilarIdentitiesEff(String gid) throws Exception {
+        String query = CoreUtil.getQuery("identity/getIdentitiesOfSimilarGroup.sparql",
+                gid, tripleStore.getUri(IDENTITY_SIMILARITY_GRAPH));
+        return tripleStore.sparqlSelect(query);
+    }
+
+    public String mergeIdentities(JSONArray uriArray, JSONObject values, OntClass type) throws Exception{
+        Invoker inv = new Invoker(getResolver(), "ca.licef.comete.identity.Resolver",
+                "mergeIdentities", new Object[]{uriArray, values, type});
+        return (String)tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
+    }
+
+    public void takeOffIdentities(JSONArray uriArray, String gId) throws Exception {
+        Invoker inv = new Invoker(getResolver(), "ca.licef.comete.identity.Resolver",
+                "takeOffIdentities", new Object[]{uriArray, gId});
+        tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
+    }
+
+    public void convertPersonsToOrg(JSONArray uriArray) throws Exception {
+        Invoker inv = new Invoker(getResolver(), "ca.licef.comete.identity.Resolver",
+                "convertPersonsToOrg", new Object[]{uriArray});
+        tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
+    }
 }
     

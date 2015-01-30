@@ -1,10 +1,7 @@
 package ca.licef.comete.queryengine;
 
 import ca.licef.comete.core.Core;
-import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.ResultSet;
-import ca.licef.comete.metadata.Metadata;
-import ca.licef.comete.queryengine.util.Util;
 import ca.licef.comete.vocabularies.COMETE;
 import licef.IOUtil;
 import licef.reflection.Invoker;
@@ -15,7 +12,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.MessageFormat;
-import java.util.Hashtable;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -114,7 +110,7 @@ public class QueryEngine {
         else {
             keywordsFormattedForRegex = ca.licef.comete.core.util.Util.formatKeywords(keywords);
             _query = CoreUtil.getQuery("queryengine/getLearningObjectsByKeywordsCount.sparql", lang, keywordsFormattedForRegex);
-            res = tripleStore.sparqlSelectWithTextIndex(_query);
+            res = tripleStore.sparqlSelect_textIndex(_query);
         }
         count = Integer.parseInt(res[0].getValue("count").getContent());
 
@@ -127,7 +123,7 @@ public class QueryEngine {
             }
             else {
                 _query = CoreUtil.getQuery("queryengine/getLearningObjectsByKeywords.sparql", lang, keywordsFormattedForRegex, orderByVariable, start, limit);
-                results = tripleStore.sparqlSelectWithTextIndex(_query);
+                results = tripleStore.sparqlSelect_textIndex(_query);
             }
             rs = buildResultSet(results, count, lang);
         }
@@ -184,7 +180,7 @@ public class QueryEngine {
             String objId = tuple.getValue("s").getContent();
             String location = tuple.getValue( "location").getContent();
             String format = tuple.getValue("format").getContent();
-            String id = CoreUtil.getIdNumberValue( objId );
+            String id = CoreUtil.getIdValue(objId);
 
             // mimetype icon as result image
             String image = null;

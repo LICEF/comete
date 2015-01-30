@@ -13,8 +13,6 @@ import licef.jrdf.graph.Graph;
 import licef.jrdf.graph.TripleFactory;
 import licef.jrdf.writer.*;
 import licef.jrdf.writer.rdfxml.RdfXmlWriter;
-import licef.reflection.Invoker;
-import licef.tsapi.TripleStore;
 import licef.tsapi.model.Triple;
 import licef.tsapi.vocabulary.DCTERMS;
 import licef.tsapi.vocabulary.FOAF;
@@ -77,7 +75,7 @@ public class Util {
         return UUID.randomUUID().toString();
     }
 
-    public static String getIdNumberValue(String id) {
+    public static String getIdValue(String id) {
         String[] vals = StringUtil.split(id, '/');
         String[] val = StringUtil.split(vals[vals.length - 1], ':');
         return val[val.length - 1];
@@ -91,7 +89,7 @@ public class Util {
         if (id.startsWith("http://"))
             return id;
         String typeVal = getTypeLabel(type);
-        return Core.getInstance().getUriPrefix() + "/" + typeVal + "/" + getIdNumberValue(id);
+        return Core.getInstance().getUriPrefix() + "/" + typeVal + "/" + getIdValue(id);
     }
 
     public static String makeURI(OntClass _class) {
@@ -111,7 +109,7 @@ public class Util {
         if (!uri.startsWith("http"))
             return uri;
         String type = getURIType(uri);
-        String val = getIdNumberValue(uri);
+        String val = getIdValue(uri);
         return getTypeLabel(type) + ":" +val;
     }
 
@@ -471,7 +469,7 @@ public class Util {
 
     public static String manageDateString(String str) {
         if (isDate(str))
-            str = manageQuotes( str.substring(0, str.indexOf("^^" + Constants.XSD_DATE_TYPE)) );
+            str = str.substring(0, str.indexOf("^^" + Constants.XSD_DATE_TYPE));
         return str;
     }
 
@@ -484,14 +482,9 @@ public class Util {
             content = str.substring(0, i);
             lang = str.substring(i + 1);
         } 
-        content = manageQuotes(content);
         return new String[]{content, lang};
     }
 
-    public static String manageQuotes(String str) {
-        str = StringUtil.unquote(str);
-        return str.replace("\\\"", "\"");
-    }
 
     public static String formatLanguage(String lang) {
         String[] vals  = StringUtil.split(lang, '-');

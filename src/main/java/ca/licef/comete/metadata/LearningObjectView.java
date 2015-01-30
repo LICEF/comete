@@ -5,33 +5,24 @@ import ca.licef.comete.core.DefaultView;
 import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.Util;
 import ca.licef.comete.vocabulary.Vocabulary;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 import licef.CommonNamespaceContext;
 import licef.IOUtil;
 import licef.reflection.Invoker;
 import licef.tsapi.model.Tuple;
 import licef.tsapi.TripleStore;
 import licef.XMLUtil;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -111,7 +102,7 @@ public class LearningObjectView extends DefaultView {
                 if( Constants.OBJ_TYPE_ORGANIZATION.equals( identityType ) && alreadyShownOrg.contains( identityUri ) )
                     continue;
 
-                String identityId = ca.licef.comete.core.util.Util.getIdNumberValue( identityUri );
+                String identityId = ca.licef.comete.core.util.Util.getIdValue(identityUri);
                 String identityXml = getRdf( identityUri, "false", false, false );
 
                 InputSource identitySrc = new InputSource( new StringReader( identityXml ) );
@@ -144,7 +135,7 @@ public class LearningObjectView extends DefaultView {
                     for( Iterator itOrgs = orgs.iterator(); itOrgs.hasNext(); ) {
                         String orgUri = (String)itOrgs.next();
                         alreadyShownOrg.add( orgUri ); 
-                        String orgId = ca.licef.comete.core.util.Util.getIdNumberValue( orgUri );
+                        String orgId = ca.licef.comete.core.util.Util.getIdValue(orgUri);
                         String orgXml = getRdf( orgUri, "false", false, false );
 
                         InputSource orgSrc = new InputSource( new StringReader( orgXml ) );

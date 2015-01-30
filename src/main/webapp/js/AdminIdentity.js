@@ -168,6 +168,7 @@ Ext.define( 'Comete.Identity', {
                     itemcontextmenu: function(view, rec, node, index, event) {
                         event.stopEvent(); // stops the default event. i.e. Windows Context Menu
                         var oneSelection = il.getSelectionModel().getSelection().length == 1;
+                        identityContextMenu.getComponent(0).setDisabled(!oneSelection);
                         identityContextMenu.getComponent(1).setDisabled(oneSelection);
                         identityContextMenu.showAt(event.getXY()); // show context menu where user right clicked
                         return false;
@@ -282,7 +283,6 @@ Ext.define( 'Comete.Identity', {
             height: 400,
             type: this.type,            
             modal: true,
-            similarGroup: 'none',
             uris: uris,
             parent: this
         });
@@ -291,6 +291,7 @@ Ext.define( 'Comete.Identity', {
     afterMerge: function(uri) {        
         this.selectedIdentityId = uri.substring(uri.lastIndexOf("/") + 1);
         this.store.load();
+        //update related similar list
         this.parent.initSimilarity(this.type);
     },
     convertToOrg: function() {
@@ -350,10 +351,26 @@ Ext.define( 'Comete.SimilarIdentity', {
             proxy: this.proxy
         });
 
-        this.skipButton = Ext.create('Ext.button.Button', {
+        this.startButton = Ext.create('Ext.button.Button', {
             text: tr('Start'),
             disabled: !authorized,
             handler: this.getSimilarGroups,
+            scope: this
+        } );
+
+        this.previousButton = Ext.create('Ext.button.Button', {
+            text: tr('Previous'),
+            disabled: !authorized,
+            handler: this.showPreviousGroup,
+            hidden: true,
+            scope: this
+        } );
+
+        this.nextButton = Ext.create('Ext.button.Button', {
+            text: tr('Next'),
+            disabled: !authorized,
+            handler: this.showNextGroup,
+            hidden: true,
             scope: this
         } );
 
@@ -385,7 +402,7 @@ Ext.define( 'Comete.SimilarIdentity', {
             },
             autoScroll: true,
             selModel: sm,
-            bbar: [ this.skipButton, {xtype: 'tbfill'}, this.takeOffButton, this.mergeButton ]
+            bbar: [ this.startButton, this.previousButton, this.nextButton, {xtype: 'tbfill'}, this.takeOffButton, this.mergeButton ]
         });
 
         this.similarityList.on( 'selectionchange', this.identityChanged, this );
@@ -412,12 +429,14 @@ Ext.define( 'Comete.SimilarIdentity', {
         Ext.apply(this, cfg);
         this.callParent(arguments); 
     },
-    initSimilarity: function() {
+    initSimilarity: function( text ) {
         this.store.loadRawData([]);
         this.similarGroups = null;
         this.currentGroup = -1;
-        this.skipButton.setText(tr('Start'));
-        this.similarityList.columns[1].setText('&nbsp;');
+        this.startButton.setVisible(true);
+        this.previousButton.setVisible(false);
+        this.nextButton.setVisible(false);
+        this.similarityList.columns[0].setText( text );
     },
     getSimilarGroups: function() {   
         if (this.similarGroups == null || this.similarGroups.length == 0) {
@@ -427,26 +446,33 @@ Ext.define( 'Comete.SimilarIdentity', {
                 method: 'GET',
                 success: function(response, opts) {
                     this.similarGroups = Ext.JSON.decode(response.responseText, true).groups;
-                    this.showNextGroup();
+                    this.startButton.setVisible(this.similarGroups.length == 0);
+                    this.previousButton.setVisible(this.similarGroups.length > 0);
+                    this.nextButton.setVisible(this.similarGroups.length > 0);
+                    if (this.similarGroups.length == 0)
+                        this.similarityList.columns[0].setText( tr('No similarity found') );
+                    else
+                        this.showNextGroup();
                 },
                 scope: this 
             } );
         }
-        else 
-            this.showNextGroup();
+    }, 
+    showPreviousGroup: function() {
+        this.currentGroup--;
+        if (this.currentGroup == -1)
+            this.currentGroup = this.similarGroups.length-1;
+        this.showOtherGroup();
     }, 
     showNextGroup: function() {
         this.currentGroup++;
         if (this.currentGroup == this.similarGroups.length)
             this.currentGroup = 0;
-        if (this.similarGroups.length == 0) {
-            this.skipButton.setText(tr('Start'));
-            this.similarityList.columns[1].setText( tr('No similarity found') );
-        }
-        else {
-            this.skipButton.setText(tr('Skip') + ' >');
-            this.similarityList.columns[1].setText( tr('Similar group') + ' ' + (this.currentGroup + 1) + '/' + this.similarGroups.length );
-        }
+        this.showOtherGroup();
+    }, 
+    showOtherGroup: function() {
+        this.similarityList.columns[0].setText( tr('Similar group') + ' ' + (this.currentGroup + 1) + '/' + this.similarGroups.length );
+
         type = (this.type == 'person')?'persons':'organizations';
         this.proxy.url = 'rest/' + type + '/similar?gid=' + this.similarGroups[this.currentGroup],
         this.store.load();
@@ -482,21 +508,15 @@ Ext.define( 'Comete.SimilarIdentity', {
             height: 400,
             type: this.type,            
             modal: true,
-            similarGroup: this.similarGroups[this.currentGroup],
             uris: uris,
             parent: this
         });
         mergeWizard.show();        
     },
     afterMerge: function() {
-        if (this.similarityList.getSelectionModel().getSelection().length == this.store.count()) {
-            this.similarGroups.splice(this.currentGroup, 1); //remove gid
-            this.currentGroup--;
-            this.showNextGroup();
-        }
-        else
-            this.store.load();  
-        this.parent.initList(this.type);        
+        this.updateList(this.similarityList.getSelectionModel().getSelection().length == this.store.count());
+        //update related identity list
+        this.parent.initList(this.type);
     },
     takeOff: function() {
         var message = (this.similarityList.getSelectionModel().getSelection().length == 1)?
@@ -531,18 +551,25 @@ Ext.define( 'Comete.SimilarIdentity', {
             },
             method: 'GET',
             success: function(response, opts) {
-                if ( (totalCount - records.length) <= 1) {
-                    this.similarGroups.splice(this.currentGroup, 1); //remove gid
-                    this.currentGroup--;
-                    this.showNextGroup();
-                }
-                else
-                    this.store.load();     
+                this.updateList( (totalCount - records.length) <= 1 );
             },
             failure: function(response, opts) {
                 Ext.Msg.alert('Failure', response.responseText);  
             },
             scope: this 
         } );         
+    },
+    updateList(isGroupObsolete) {
+        if (isGroupObsolete) {
+            this.similarGroups.splice(this.currentGroup, 1); //remove gid
+            if (this.similarGroups.length == 0)
+                this.initSimilarity(tr('No similarity found'));
+            else {
+                this.currentGroup--;
+                this.showNextGroup();
+            }
+        }
+        else
+            this.store.load();    
     }
 } );

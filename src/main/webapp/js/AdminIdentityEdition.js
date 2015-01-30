@@ -118,8 +118,6 @@ Ext.define( 'Comete.IdentityMerger', {
             uris: JSON.stringify(this.uris),
             mainValues: JSON.stringify(mainValues)
         };
-        if (this.similarGroup != 'none')
-            params.similarGroup = this.similarGroup;
         Ext.Ajax.request( {
             url: url,
             params: params,
