@@ -6,7 +6,7 @@ SELECT ?s ?p ?o
 WHERE '{'
     ?s ?p ?o .
     ?s rdf:type comete:Organization .
-    FILTER ( ?s = <{0}> &&
+    FILTER ( ( {0} ) &&
              ( ?p = foaf:name || ?p = comete:altName ||
                ?p = foaf:mbox || ?p = comete:altMbox ||
                ?p = comete:formattedAddress || ?p = comete:altFormattedAddress ||

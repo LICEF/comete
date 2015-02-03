@@ -85,9 +85,13 @@ public class Resolver {
         }
 
         //reset uri values
+        ArrayList<String> uris = new ArrayList<>();
+        for (int i = 0; i < uriArray.length(); i++)
+            uris.add((String) uriArray.get(i));
+        String constraints = CoreUtil.buildFilterConstraints(uris, "s", true, "=", "||");
         String query = COMETE.Person.equals(type)?
-                CoreUtil.getQuery("identity/getPersonTriplesToReset.sparql", uri):
-                CoreUtil.getQuery("identity/getOrganizationTriplesToReset.sparql", uri);
+                CoreUtil.getQuery("identity/getPersonTriplesToReset.sparql", constraints):
+                CoreUtil.getQuery("identity/getOrganizationTriplesToReset.sparql", constraints);
         Triple[] previousTriples = tripleStore.getTriplesInSparql(query);
         tripleStore.removeTriples_textIndex(Arrays.asList(previousTriples));
 
