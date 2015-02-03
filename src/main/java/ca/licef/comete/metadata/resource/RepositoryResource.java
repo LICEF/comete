@@ -56,68 +56,6 @@ public class RepositoryResource {
         return (Response.ok(out.toString()).build());
     }
 
-    @GET
-    @Path( "{id}/html" )
-    @Produces( MediaType.TEXT_HTML )
-    public String getRepositoryAsHtml( @PathParam( "id" ) String id, @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) throws Exception {
-//        Locale locale = ( "fr".equals( lang ) ? Locale.FRENCH : Locale.ENGLISH );
-//        String repositoryUri = Util.makeURI(id, Constants.TYPE_REPOSITORY);
-//        String html = Core.getInstance().getDefaultView().getHtml(repositoryUri, locale, "default", context);
-//        return( html );
-        return null;
-    }
-
-    @GET
-    @Path( "{id}/rdf" )
-    @Produces( "application/rdf+xml" )
-    public String getRepositoryAsRdf( @PathParam( "id" ) String id, @DefaultValue( "false" ) @QueryParam( "incomingLinks" ) String incomingLinks, @DefaultValue( "false" ) @QueryParam( "rdfMetadataInfos" ) String rdfMetadataInfos, @DefaultValue( "false" ) @QueryParam( "humanReadable" ) String humanReadable ) throws Exception {
-//        boolean isRdfMetadataInfos = ( "true".equals( rdfMetadataInfos ) );
-//        boolean isHumanReadable = ( "true".equals( humanReadable ) );
-//        String repositoryUri = Util.makeURI(id, Constants.TYPE_REPOSITORY);
-//        String rdf = Core.getInstance().getDefaultView().getRdf( repositoryUri, incomingLinks, isRdfMetadataInfos, isHumanReadable );
-//        return( rdf );
-
-        return null;
-    }
-
-    @GET
-    @Path( "{id}/incomingLinks/rdf" )
-    @Produces( { "application/rdf+xml", MediaType.APPLICATION_JSON } )
-    public Response getRepositoryIncomingLinksAsRdf( @PathParam( "id" ) String id, @DefaultValue( "false" ) @QueryParam( "humanReadable" ) String humanReadable, @DefaultValue( "0" ) @QueryParam( "offset" ) String strOffset, @DefaultValue( "25" ) @QueryParam( "limit" ) String strLimit, @DefaultValue( "rdf" ) @QueryParam( "format" ) String format ) throws Exception {
-        /*boolean isHumanReadable = ( "true".equals( humanReadable ) );
-
-        int offset = -1;
-        if( strOffset != null ) {
-            try {
-                offset = Integer.parseInt( strOffset );
-            }
-            catch( NumberFormatException e ) {
-                throw( new WebApplicationException( e, HttpServletResponse.SC_BAD_REQUEST ) );
-            }
-        }
-
-        int limit = -1;
-        if( strLimit != null ) {
-            try {
-                limit = Integer.parseInt( strLimit );
-            }
-            catch( NumberFormatException e ) {
-                throw( new WebApplicationException( e, HttpServletResponse.SC_BAD_REQUEST ) );
-            }
-        }
-
-        String repositoryUri = Util.makeURI(id, Constants.TYPE_REPOSITORY);
-
-        String links = Core.getInstance().getDefaultView().getIncomingLinks( repositoryUri, isHumanReadable, offset, limit, format );
-        if( "rdf".equals( format ) )
-            return( Response.status( HttpServletResponse.SC_OK ).entity( links ).type( "application/rdf+xml" ).build() ); 
-        if( "json".equals( format ) )
-            return( Response.status( HttpServletResponse.SC_OK ).entity( links ).type( MediaType.APPLICATION_JSON ).build() ); 
-        throw( new WebApplicationException( HttpServletResponse.SC_BAD_REQUEST ) ); // Unsupported format.*/
-
-        return null;
-    }
-
     @PUT
     @Path( "{id}" )
     @Produces( MediaType.TEXT_PLAIN )

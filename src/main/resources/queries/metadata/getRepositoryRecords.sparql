@@ -1,0 +1,7 @@
+PREFIX comete: <http://comete.licef.ca/reference#>
+
+SELECT ?s ?doId
+WHERE '{'
+    ?s comete:repository <{0}> .
+    ?s comete:fedoraDigitalObject ?doId
+'}'

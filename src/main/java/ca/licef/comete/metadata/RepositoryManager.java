@@ -1,8 +1,19 @@
 package ca.licef.comete.metadata;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import ca.licef.comete.core.Core;
+import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.Util;
+import ca.licef.comete.vocabularies.COMETE;
+import licef.reflection.Invoker;
+import licef.tsapi.model.Triple;
 import licef.tsapi.model.Tuple;
+import licef.tsapi.TripleStore;
+import licef.tsapi.vocabulary.RDF;
+import licef.tsapi.vocabulary.FOAF;
 
 /**
  * Created by amiara on 2014-11-03.
@@ -11,17 +22,18 @@ public class RepositoryManager {
 
     private static RepositoryManager instance;
 
+    private licef.tsapi.TripleStore tripleStore = Core.getInstance().getTripleStore();
+
     public static RepositoryManager getInstance() {
         if (instance == null)
             instance = new RepositoryManager();
         return (instance);
     }
 
-    licef.tsapi.TripleStore tripleStore = Core.getInstance().getTripleStore();
-
     public String[][] getRepositories() throws Exception {
         String query = Util.getQuery("metadata/getRepositories.sparql");
-        Tuple[] tuples = tripleStore.sparqlSelect(query);
+        Invoker inv = new Invoker( tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[] { query } ); 
+        Tuple[] tuples = (Tuple[])tripleStore.transactionalCall( inv );
         String[][] res = new String[tuples.length][2];
         for( int i = 0; i < tuples.length; i++ ) {
             res[i][0] = tuples[i].getValue("r").getContent();
@@ -31,68 +43,49 @@ public class RepositoryManager {
     }
 
     public String addOrUpdateRepository( String id, String name, String type, String url, String adminEmail ) throws Exception {
-        /*String repoUri = Util.makeURI( id, Constants.TYPE_REPOSITORY );
+        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.RepositoryManager", 
+            "addOrUpdateRepositoryEff", new Object[] { id, name, type, url, adminEmail } );
+        return( (String)tripleStore.transactionalCall( inv, TripleStore.WRITE_MODE ) );
+    }
 
-        Map<String,Triple> newValues = new HashMap<String,Triple>();
-        newValues.put( Constants.TYPE, new Triple( repoUri, Constants.TYPE, Constants.TYPE_REPOSITORY ) );
-        if( !name.equals( "" ) )
-            newValues.put( Constants.METAMODEL_REPOSITORY_NAME, new Triple( repoUri, Constants.METAMODEL_REPOSITORY_NAME, name ) );
-        if( !type.equals( "" ) )
-            newValues.put( Constants.METAMODEL_REPOSITORY_TYPE, new Triple( repoUri, Constants.METAMODEL_REPOSITORY_TYPE, type ) );
-        if( !url.equals( "" ) )
-            newValues.put( Constants.METAMODEL_REPOSITORY_LOCATION, new Triple( repoUri, Constants.METAMODEL_REPOSITORY_LOCATION, url ) );
-        if( !adminEmail.equals( "" ) )
-            newValues.put( Constants.METAMODEL_REPOSITORY_ADMIN_EMAIL, new Triple( repoUri, Constants.METAMODEL_REPOSITORY_ADMIN_EMAIL, adminEmail ) );
+    public String addOrUpdateRepositoryEff( String id, String name, String type, String url, String adminEmail ) throws Exception {
+        String repoUri = Util.makeURI( id, COMETE.Repository.getURI() );
 
-        Triple[] oldTriples = tripleStore.getTriplesWithSubject( repoUri );
-        if( oldTriples.length == 0 )
-            tripleStore.addTriples( newValues.values() );
+        Triple[] triples = tripleStore.getTriplesWithSubject( repoUri );
+        if( triples.length == 0 ) {
+            List<Triple> newTriples = new ArrayList<Triple>();
+            newTriples.add( new Triple( repoUri, RDF.type, COMETE.Repository ) );
+            if( name != null && !"".equals( name ) )
+                newTriples.add( new Triple( repoUri, FOAF.name, name ) );
+            if( type != null && !"".equals( type ) )
+                newTriples.add( new Triple( repoUri, COMETE.repoType, type ) );
+            if( url != null && !"".equals( url ) )
+                newTriples.add( new Triple( repoUri, FOAF.page, url ) );
+            if( adminEmail != null && !"".equals( adminEmail ) )
+                newTriples.add( new Triple( repoUri, FOAF.mbox, adminEmail ) );
+            tripleStore.insertTriples( newTriples ); 
+        }
         else {
-            // Compare existing data and update it when needed.
-            Map<String,Triple> oldValues = new HashMap<String,Triple>();
-            for( int i = 0; i < oldTriples.length; i++ )
-                oldValues.put( oldTriples[ i ].getPredicate(), oldTriples[ i ] );
-
-            for( String key : newValues.keySet() ) {
-                Triple newValueTriple = newValues.get( key );
-                String newValue = newValueTriple.getObject();
-                if( newValue != null && !"".equals( newValue ) ) {
-                    Triple oldValueTriple = oldValues.get( key );
-                    String oldValue = ( oldValueTriple == null ? null : oldValueTriple.getObject() );
-                    if( oldValue != null ) {
-                        if( !oldValue.equals( newValue ) )
-                            tripleStore.deleteTriple( oldValueTriple );
-                        tripleStore.addTriple( newValueTriple );
-                    }
-                }
+            for( Triple triple : triples ) {
+                if( triple.getPredicate().equals( FOAF.name.getURI() ) && !triple.getObject().equals( name ) ) 
+                    tripleStore.updateObjectTriple( repoUri, FOAF.name, triple.getObject(), name );
+                else if( triple.getPredicate().equals( COMETE.repoType.getURI() ) && !triple.getObject().equals( type ) ) 
+                    tripleStore.updateObjectTriple( repoUri, COMETE.repoType, triple.getObject(), type );
+                else if( triple.getPredicate().equals( FOAF.page.getURI() ) && !triple.getObject().equals( url ) ) 
+                    tripleStore.updateObjectTriple( repoUri, FOAF.page, triple.getObject(), url );
+                else if( triple.getPredicate().equals( FOAF.mbox.getURI() ) && !triple.getObject().equals( adminEmail ) ) 
+                    tripleStore.updateObjectTriple( repoUri, FOAF.mbox, triple.getObject(), adminEmail );
             }
         }
 
-        return( repoUri );*/
-
-        return null;
+        return( repoUri );
     }
 
     public String[][] getRepositoryRecords(String repoUri) throws Exception {
-        /*Hashtable<String, String>[] results =
-                Core.getInstance().getTripleStoreService().getResults( "getRepositoryRecords.sparql", repoUri );
-        String[][] res = new String[results.length][2];
-        for( int i = 0; i < results.length; i++ ) {
-            res[i][0] = results[i].get("s");
-            res[i][1] = results[i].get("doId");
-        }
-        return res; */
-
-        return null;
+        return( Metadata.getInstance().getRepositoryRecords( repoUri ) );
     }
 
     public void deleteRepositoryRecords(String repoUri) throws Exception {
-        /*String[][] records = getRepositoryRecords(repoUri);
-        for( int i = 0; i < records.length; i++ )
-            setState(records[i][1], "D");
-
-        //itql enhanced
-        Core.getInstance().getTripleStoreService().
-                processTQLQueries("deleteRepositoryRecords.tql", repoUri); */
+        Metadata.getInstance().deleteRepositoryRecords( repoUri );
     }
 }

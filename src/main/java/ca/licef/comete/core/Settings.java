@@ -39,7 +39,7 @@ public class Settings {
         TripleStore tripleStore = Core.getInstance().getTripleStore();
         Triple[] enabledValidationTriples = tripleStore.getTriplesWithPredicate( COMETE.validationEnabled, Settings.GRAPH );
 
-        tripleStore.removeTriplesWithPredicate(COMETE.validationEnabled, GRAPH);
+        tripleStore.removeTriplesWithPredicate(COMETE.validationEnabled, Settings.GRAPH);
 
         List<Triple> triplesToAdd = new ArrayList<Triple>();
         for( String applProf : applProfTable.keySet() ) {
