@@ -126,7 +126,6 @@
         this.recordListPanel = Ext.create( 'Ext.grid.Panel', {
             store: this.recordStore,
             cls: 'lo-grid',
-            margin: 10,
             selType: 'cellmodel',
             columns: [
                 { id: 'ColIdentifier', text: tr( 'Identifier' ), dataIndex: 'id', renderer: renderIdentifier },
@@ -195,7 +194,7 @@
                     'http://ltsc.ieee.org/xsd/LOM/loose': Ext.ComponentManager.get( 'CBLomLoose' ).getValue(),
                     'http://lom-fr.fr/validation/LomFRv1.0/core': Ext.ComponentManager.get( 'CBLomFR' ).getValue(),
                     'http://lom-fr.fr/validation/ScoLomFRv1.0/core': Ext.ComponentManager.get( 'CBScoLomFR_1_0' ).getValue(),
-                    'http://lom-fr.fr/validation/ScoLomFRv1.1/core': Ext.ComponentManager.get( 'CBScoLomFR_1_0' ).getValue(),
+                    'http://lom-fr.fr/validation/ScoLomFRv1.1/core': Ext.ComponentManager.get( 'CBScoLomFR_1_1' ).getValue(),
                     'http://www.normetic.org/LomNormeticv1.2': Ext.ComponentManager.get( 'CBLomNormetic_1_2' ).getValue(),
                     'http://www.openarchives.org/OAI/2.0/': Ext.ComponentManager.get( 'CBOAIDC' ).getValue()
                 },
@@ -263,20 +262,20 @@
             autoScroll: true, // Doesn't work... Why? - FB
             items: [ 
                 { region: 'north', xtype: 'label', text: tr( 'Options' ), margin: '10 0 0 10', cls: 'sectionTitle' }, 
-                { region: 'center', xtype: 'panel', margin: 10, border: 0, layout: 'vbox', width: '100%', items: [
-                    { xtype: 'radio', id: 'RBShowAllApplProf', boxLabel: tr( 'Show all application profiles' ), name: 'RBShowAllOrOneApplProf', handler: this.updateShowAllOrOneApplProf, scope: this },
-                    { xtype: 'radio', id: 'RBShowOnlyOneApplProf', boxLabel: tr( 'Show only this application profile:' ), name: 'RBShowAllOrOneApplProf', handler: this.updateShowAllOrOneApplProf, scope: this },
-                    { xtype: 'radiogroup', id: 'RBGroupShowOnlyOneApplProf', columns: 1, items: [
-                        { xtype: 'radio', id: 'RBLomStrict', boxLabel: 'LOM Strict', name: 'RBShowOnlyOneApplProf', margin: '0 0 0 20', hidden: true, dataApplProf: 'http://ltsc.ieee.org/xsd/LOM/strict' },
-                        { xtype: 'radio', id: 'RBLomLoose', boxLabel: 'LOM Loose', name: 'RBShowOnlyOneApplProf', margin: '0 0 0 20', hidden: true, dataApplProf: 'http://ltsc.ieee.org/xsd/LOM/loose' },
-                        { xtype: 'radio', id: 'RBLomFR', boxLabel: 'LOM FR', name: 'RBShowOnlyOneApplProf', margin: '0 0 0 20', hidden: true, dataApplProf: 'http://lom-fr.fr/validation/LomFRv1.0/core' },
-                        { xtype: 'radio', id: 'RBScoLomFR_1_0', boxLabel: 'LOM Scorm LOM FR 1.0', name: 'RBShowOnlyOneApplProf', margin: '0 0 0 20', hidden: true, dataApplProf: 'http://lom-fr.fr/validation/ScoLomFRv1.0/core' },
-                        { xtype: 'radio', id: 'RBScoLomFR_1_1', boxLabel: 'LOM Scorm LOM FR 1.1', name: 'RBShowOnlyOneApplProf', margin: '0 0 0 20', hidden: true, dataApplProf: 'http://lom-fr.fr/validation/ScoLomFRv1.1/core' },
-                        { xtype: 'radio', id: 'RBLomNormetic_1_2', boxLabel: 'LOM Normetic 1.2', name: 'RBShowOnlyOneApplProf', margin: '0 0 0 20', hidden: true, dataApplProf: 'http://www.normetic.org/LomNormeticv1.2' },
-                        { xtype: 'radio', id: 'RBOAIDC', boxLabel: 'OAI DC', name: 'RBShowOnlyOneApplProf', margin: '0 0 0 20', hidden: true, dataApplProf: 'http://www.openarchives.org/OAI/2.0/' } 
+                { region: 'center', xtype: 'panel', margin: 10, border: 0, layout: 'vbox', width: '100%', height: 300, items: [
+                    { xtype: 'radio', id: 'RBShowAllApplProf', width: '100%', height: 20, boxLabel: tr( 'Show all application profiles' ), name: 'RBShowAllOrOneApplProf', handler: this.updateShowAllOrOneApplProf, scope: this },
+                    { xtype: 'radio', id: 'RBShowOnlyOneApplProf', width: '100%', height: 20, boxLabel: tr( 'Show only this application profile:' ), name: 'RBShowAllOrOneApplProf', handler: this.updateShowAllOrOneApplProf, scope: this },
+                    { xtype: 'radiogroup', id: 'RBGroupShowOnlyOneApplProf', width: '100%', height: '100%', columns: 1, items: [
+                        { xtype: 'radio', id: 'RBLomStrict', width: '100%', height: 20, boxLabel: 'LOM Strict', name: 'RBShowOnlyOneApplProf', margin: '0 0 0 20', hidden: true, dataApplProf: 'http://ltsc.ieee.org/xsd/LOM/strict' },
+                        { xtype: 'radio', id: 'RBLomLoose', width: '100%', height: 20, boxLabel: 'LOM Loose', name: 'RBShowOnlyOneApplProf', margin: '0 0 0 20', hidden: true, dataApplProf: 'http://ltsc.ieee.org/xsd/LOM/loose' },
+                        { xtype: 'radio', id: 'RBLomFR', width: '100%', height: 20, boxLabel: 'LOM FR', name: 'RBShowOnlyOneApplProf', margin: '0 0 0 20', hidden: true, dataApplProf: 'http://lom-fr.fr/validation/LomFRv1.0/core' },
+                        { xtype: 'radio', id: 'RBScoLomFR_1_0', width: '100%', height: 20, boxLabel: 'LOM Scorm LOM FR 1.0', name: 'RBShowOnlyOneApplProf', margin: '0 0 0 20', hidden: true, dataApplProf: 'http://lom-fr.fr/validation/ScoLomFRv1.0/core' },
+                        { xtype: 'radio', id: 'RBScoLomFR_1_1', width: '100%', height: 20, boxLabel: 'LOM Scorm LOM FR 1.1', name: 'RBShowOnlyOneApplProf', margin: '0 0 0 20', hidden: true, dataApplProf: 'http://lom-fr.fr/validation/ScoLomFRv1.1/core' },
+                        { xtype: 'radio', id: 'RBLomNormetic_1_2', width: '100%', height: 20, boxLabel: 'LOM Normetic 1.2', name: 'RBShowOnlyOneApplProf', margin: '0 0 0 20', hidden: true, dataApplProf: 'http://www.normetic.org/LomNormeticv1.2' },
+                        { xtype: 'radio', id: 'RBOAIDC', width: '100%', height: 20, boxLabel: 'OAI DC', name: 'RBShowOnlyOneApplProf', margin: '0 0 0 20', hidden: true, dataApplProf: 'http://www.openarchives.org/OAI/2.0/' } 
                     ] },
-                    { xtype: 'checkbox', id: 'CBShowOnlyInvalidRecords', boxLabel: tr( 'Show only invalid records.' ), margin: '20 0 0 24' },
-                    { xtype: 'button', text: tr( 'Apply' ), handler: this.applyVisualizationOptions, scope: this, margin: '20 0 0 0' }
+                    { xtype: 'checkbox', id: 'CBShowOnlyInvalidRecords', width: '100%', height: 20, boxLabel: tr( 'Show only invalid records.' ), margin: '20 0 0 24' },
+                    { xtype: 'button', height: 20, text: tr( 'Apply' ), handler: this.applyVisualizationOptions, scope: this, margin: '20 0 0 0' }
                 ] }
             ]
         } );
@@ -367,7 +366,7 @@
             }
             else {
                 var id = this.getRecordIdFromUri( this.recordStore.data.items[ pos.row ].id ); 
-                var link = metadataUrl + '/rest/metadataRecords/' + id + '/xml?syntaxHighlighted=true';
+                var link = './rest/metadataRecords/' + id + '/xml?syntaxHighlighted=true';
                 var html = '<iframe width="100%" height="100%" src="' + link + '"></iframe>';
 
                 if( pos.column == 0 ) {
@@ -385,7 +384,7 @@
                     else if( 'notApplicable' == isValid )
                         this.recordResultPanel.getLayout().setActiveItem( 1 );
                     else {
-                        var reportLink = metadataUrl + '/rest/metadataRecords/' + id + '/validationReport/' + applProf + '/xml?syntaxHighlighted=true';
+                        var reportLink = './rest/metadataRecords/' + id + '/validationReport/' + applProf + '/xml?syntaxHighlighted=true';
                         var reportHtml = '<iframe width="100%" height="100%" src="' + reportLink + '"></iframe>';
                         this.errorReportViewer.body.update( reportHtml );
                         this.recordResultPanel.getLayout().setActiveItem( 0 );
@@ -404,43 +403,63 @@
                     var data = Ext.decode( response.responseText );
 
                     this.validatedApplProfiles = [];
+                    
+                    var showOnlyOneApplProfPanelHeight = 0;
 
                     Ext.ComponentManager.get( 'RBShowAllApplProf' ).setValue( true );
+
+                    Ext.ComponentManager.get( 'RBGroupShowOnlyOneApplProf' ).setHeight( 30 );
 
                     Ext.ComponentManager.get( 'CBLomStrict' ).setValue( data[ 'http://ltsc.ieee.org/xsd/LOM/strict' ] );   
                     Ext.ComponentManager.get( 'ColLomStrict' ).setVisible( data[ 'http://ltsc.ieee.org/xsd/LOM/strict' ] );
                     Ext.ComponentManager.get( 'RBLomStrict' ).setVisible( data[ 'http://ltsc.ieee.org/xsd/LOM/strict' ] );
+                    if( data[ 'http://ltsc.ieee.org/xsd/LOM/strict' ] )
+                        showOnlyOneApplProfPanelHeight += 20;
                     this.validatedApplProfiles[ 'http://ltsc.ieee.org/xsd/LOM/strict' ] = data[ 'http://ltsc.ieee.org/xsd/LOM/strict' ];
 
                     Ext.ComponentManager.get( 'CBLomLoose' ).setValue( data[ 'http://ltsc.ieee.org/xsd/LOM/loose' ] );
                     Ext.ComponentManager.get( 'ColLomLoose' ).setVisible( data[ 'http://ltsc.ieee.org/xsd/LOM/loose' ] );
                     Ext.ComponentManager.get( 'RBLomLoose' ).setVisible( data[ 'http://ltsc.ieee.org/xsd/LOM/loose' ] );
+                    if( data[ 'http://ltsc.ieee.org/xsd/LOM/loose' ] )
+                        showOnlyOneApplProfPanelHeight += 20;
                     this.validatedApplProfiles[ 'http://ltsc.ieee.org/xsd/LOM/loose' ] = data[ 'http://ltsc.ieee.org/xsd/LOM/loose' ];
 
                     Ext.ComponentManager.get( 'CBLomFR' ).setValue( data[ 'http://lom-fr.fr/validation/LomFRv1.0/core' ] );
                     Ext.ComponentManager.get( 'ColLomFR' ).setVisible( data[ 'http://lom-fr.fr/validation/LomFRv1.0/core' ] );
                     Ext.ComponentManager.get( 'RBLomFR' ).setVisible( data[ 'http://lom-fr.fr/validation/LomFRv1.0/core' ] );
+                    if( data[ 'http://lom-fr.fr/validation/LomFRv1.0/core' ] )
+                        showOnlyOneApplProfPanelHeight += 20;
                     this.validatedApplProfiles[ 'http://lom-fr.fr/validation/LomFRv1.0/core' ] = data[ 'http://lom-fr.fr/validation/LomFRv1.0/core' ];
 
                     Ext.ComponentManager.get( 'CBScoLomFR_1_0' ).setValue( data[ 'http://lom-fr.fr/validation/ScoLomFRv1.0/core' ] );
                     Ext.ComponentManager.get( 'ColScoLomFR_1_0' ).setVisible( data[ 'http://lom-fr.fr/validation/ScoLomFRv1.0/core' ] );
                     Ext.ComponentManager.get( 'RBScoLomFR_1_0' ).setVisible( data[ 'http://lom-fr.fr/validation/ScoLomFRv1.0/core' ] );
+                    if( data[ 'http://lom-fr.fr/validation/ScoLomFRv1.0/core' ] )
+                        showOnlyOneApplProfPanelHeight += 20;
                     this.validatedApplProfiles[ 'http://lom-fr.fr/validation/ScoLomFRv1.0/core' ] = data[ 'http://lom-fr.fr/validation/ScoLomFRv1.0/core' ];
 
                     Ext.ComponentManager.get( 'CBScoLomFR_1_1' ).setValue( data[ 'http://lom-fr.fr/validation/ScoLomFRv1.1/core' ] );
                     Ext.ComponentManager.get( 'ColScoLomFR_1_1' ).setVisible( data[ 'http://lom-fr.fr/validation/ScoLomFRv1.1/core' ] );
                     Ext.ComponentManager.get( 'RBScoLomFR_1_1' ).setVisible( data[ 'http://lom-fr.fr/validation/ScoLomFRv1.1/core' ] );
+                    if( data[ 'http://lom-fr.fr/validation/ScoLomFRv1.1/core' ] )
+                        showOnlyOneApplProfPanelHeight += 20;
                     this.validatedApplProfiles[ 'http://lom-fr.fr/validation/ScoLomFRv1.1/core' ] = data[ 'http://lom-fr.fr/validation/ScoLomFRv1.1/core' ];
 
                     Ext.ComponentManager.get( 'CBLomNormetic_1_2' ).setValue( data[ 'http://www.normetic.org/LomNormeticv1.2' ] );
                     Ext.ComponentManager.get( 'ColLomNormetic_1_2' ).setVisible( data[ 'http://www.normetic.org/LomNormeticv1.2' ] );
                     Ext.ComponentManager.get( 'RBLomNormetic_1_2' ).setVisible( data[ 'http://www.normetic.org/LomNormeticv1.2' ] );
+                    if( data[ 'http://www.normetic.org/LomNormeticv1.2' ] )
+                        showOnlyOneApplProfPanelHeight += 20;
                     this.validatedApplProfiles[ 'http://www.normetic.org/LomNormeticv1.2' ] = data[ 'http://www.normetic.org/LomNormeticv1.2' ];
 
                     Ext.ComponentManager.get( 'CBOAIDC' ).setValue( data[ 'http://www.openarchives.org/OAI/2.0/' ] );
                     Ext.ComponentManager.get( 'ColOAIDC' ).setVisible( data[ 'http://www.openarchives.org/OAI/2.0/' ] );
                     Ext.ComponentManager.get( 'RBOAIDC' ).setVisible( data[ 'http://www.openarchives.org/OAI/2.0/' ] );
+                    if( data[ 'http://www.openarchives.org/OAI/2.0/' ] )
+                        showOnlyOneApplProfPanelHeight += 20;
                     this.validatedApplProfiles[ 'http://www.openarchives.org/OAI/2.0/' ] = data[ 'http://www.openarchives.org/OAI/2.0/' ];
+
+                    Ext.ComponentManager.get( 'RBGroupShowOnlyOneApplProf' ).setHeight( showOnlyOneApplProfPanelHeight );
 
                     var isAtLeastOneApplProf = 
                         ( data[ 'http://ltsc.ieee.org/xsd/LOM/strict' ] ||

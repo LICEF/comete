@@ -1,9 +1,7 @@
 package ca.licef.comete.metadata.resource;
 
-//import ca.licef.comete.core.Core;
-//import ca.licef.comete.core.FedoraService;
 import ca.licef.comete.core.util.Constants;
-//import ca.licef.comete.core.util.ResultSet;
+import ca.licef.comete.core.util.ResultSet;
 import ca.licef.comete.metadata.Metadata;
 import ca.licef.comete.security.Security;
 import ca.licef.comete.core.util.Util;
@@ -32,11 +30,15 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.WebApplicationException;
 import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 @Singleton
 @Path( "/metadataRecords" )
@@ -165,6 +167,165 @@ public class MetadataRecordResource {
         }
 
         return out.toString();
+    }
+
+    @GET
+    @Path( "{id}/validationReport/{applProf}/xml" )
+    @Produces( { MediaType.TEXT_HTML, MediaType.APPLICATION_XML } )
+    public Response getMetadataRecordValidationReportAsXml( @PathParam( "id" ) String id, @PathParam( "applProf" ) String applProf, @DefaultValue( "false" ) @QueryParam( "syntaxHighlighted" ) String strIsSyntaxHighlighted ) throws Exception {
+        Store store = Store.getInstance();
+        String path = "/" + id;
+        String datastream = "ValidationReport" + applProf;
+
+        String xml = null;
+        if( store.isDatastreamExists( path, datastream )  )
+            xml = store.getDatastream( path, datastream );
+
+        if( "true".equals( strIsSyntaxHighlighted ) ) {
+            String html = ( xml == null ? "" : Util.getSyntaxHighlightedCode( "xml", xml ) );
+            return( Response.status( HttpServletResponse.SC_OK ).entity( html ).type( MediaType.TEXT_HTML ).build() );
+        }
+        else
+            return( Response.status( HttpServletResponse.SC_OK ).entity( xml ).type( MediaType.APPLICATION_XML ).build() );
+    }
+
+    //@GET
+    //@Path( "/applicationProfiles" )
+    //@Produces( MediaType.APPLICATION_JSON )
+    //public String getMetadataRecordApplicationProfiles( @DefaultValue( "0" ) @QueryParam( "start" ) String strStart, @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit ) throws Exception {
+    //    int start = -1;
+    //    if( strStart != null ) {
+    //        try {
+    //            start = Integer.parseInt( strStart );
+    //        }
+    //        catch( NumberFormatException e ) {
+    //            throw( new WebApplicationException( e, HttpServletResponse.SC_BAD_REQUEST ) );
+    //        }
+    //    }
+
+    //    int limit = -1;
+    //    if( strLimit != null ) {
+    //        try {
+    //            limit = Integer.parseInt( strLimit );
+    //        }
+    //        catch( NumberFormatException e ) {
+    //            throw( new WebApplicationException( e, HttpServletResponse.SC_BAD_REQUEST ) );
+    //        }
+    //    }
+
+    //    ResultSet rs = Metadata.getInstance().getMetadataRecordApplicationProfiles( start, limit );
+
+    //    StringWriter out = new StringWriter();
+    //    JSONWriter json = new JSONWriter( out );
+    //    
+    //    JSONArray records = new JSONArray();
+    //    
+    //    for( ListIterator it = rs.getEntries(); it.hasNext(); ) {
+    //        Map<String, Object> entry = (Map<String, Object>)it.next();
+
+    //        JSONObject record = new JSONObject();
+    //        record.put( "id", entry.get( "id" ) )
+    //            .put( "profiles", entry.get( "profiles" ) );
+    //        records.put( record );
+    //    }
+
+    //    json.object()
+    //        .key( "records" ).value( records )
+    //        .key( "totalCount" ).value( rs.getTotalRecords() );
+
+    //    json.endObject();
+
+    //    out.close();
+
+    //    return( out.toString() );
+    //}
+
+    @GET
+    @Path( "/applicationProfilesByColumns" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public String getApplicationProfilesByColumn( @DefaultValue( "0" ) @QueryParam( "start" ) String strStart, @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit, @QueryParam( "showOnlyColumn" ) String showOnlyColumn, @QueryParam( "showOnlyInvalid" ) String showOnlyInvalid ) throws Exception {
+        int start = -1;
+        if( strStart != null ) {
+            try {
+                start = Integer.parseInt( strStart );
+            }
+            catch( NumberFormatException e ) {
+                throw( new WebApplicationException( e, HttpServletResponse.SC_BAD_REQUEST ) );
+            }
+        }
+
+        int limit = -1;
+        if( strLimit != null ) {
+            try {
+                limit = Integer.parseInt( strLimit );
+            }
+            catch( NumberFormatException e ) {
+                throw( new WebApplicationException( e, HttpServletResponse.SC_BAD_REQUEST ) );
+            }
+        }
+
+        ResultSet rs = null;
+        if( showOnlyColumn != null && !"".equals( showOnlyColumn ) ) 
+            if( "true".equals( showOnlyInvalid ) ) 
+                rs = Metadata.getInstance().getInvalidMetadataRecordsForApplicationProfile( start, limit, showOnlyColumn );
+            else
+                rs = Metadata.getInstance().getMetadataRecordsForApplicationProfile( start, limit, showOnlyColumn );
+        else
+            rs = Metadata.getInstance().getMetadataRecordApplicationProfiles( start, limit );
+
+        StringWriter out = new StringWriter();
+        JSONWriter json = new JSONWriter( out );
+        
+        JSONArray records = new JSONArray();
+        
+        for( ListIterator it = rs.getEntries(); it.hasNext(); ) {
+            Map<String, Object> entry = (Map<String, Object>)it.next();
+
+            JSONObject record = new JSONObject();
+            record.put( "id", entry.get( "id" ) );
+            List<String> profiles = (List<String>)entry.get( "profiles" );
+            for( int i = 0; i < Constants.lomApplProfiles.length; i++ ) {
+                String isValid = null;
+                if( profiles.contains( Constants.lomApplProfiles[ i ] ) )
+                    isValid = "true";
+                else if( Constants.IEEE_LOM_NAMESPACE.equals( entry.get( "metadataFormat" ) ) )
+                    isValid = "false";
+                else
+                    isValid = "notApplicable";
+                record.put( Constants.lomApplProfAbbrevs[ i ], isValid );
+            }
+            for( int i = 0; i < Constants.dcApplProfiles.length; i++ ) {
+                String isValid = null;
+                if( profiles.contains( Constants.dcApplProfiles[ i ] ) )
+                    isValid = "true";
+                else if( Constants.OAI_DC_NAMESPACE.equals( entry.get( "metadataFormat" ) ) )
+                    isValid = "false";
+                else
+                    isValid = "notApplicable";
+                record.put( Constants.dcApplProfAbbrevs[ i ], isValid );
+            }
+            String repoUri = (String)entry.get( "repoUri" );
+            if( repoUri != null )
+                record.put( "repoUri", repoUri );
+            String repoName = (String)entry.get( "repoName" );
+            if( repoName != null )
+                record.put( "repoName", repoName );
+            String repoAdminEmail = (String)entry.get( "repoAdminEmail" );
+            if( repoAdminEmail != null )
+                record.put( "repoAdminEmail", repoAdminEmail );
+
+            records.put( record );
+        }
+
+        json.object()
+            .key( "records" ).value( records )
+            .key( "totalCount" ).value( rs.getTotalRecords() );
+
+        json.endObject();
+
+        out.close();
+
+        return( out.toString() );
     }
 
     /*
