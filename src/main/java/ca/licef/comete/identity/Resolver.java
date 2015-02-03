@@ -49,7 +49,7 @@ public class Resolver {
                 mainValue = mainValues.getString(key);
             } catch (JSONException e) {
             }
-            if (mainValue != null) {
+            if (mainValue != null && !"".equals(mainValue)) {
                 if ("email".equals(key)) mainValue = "mailto:" + mainValue;
                 if ("tel".equals(key)) mainValue = "tel:" + mainValue;
                 if ("fax".equals(key)) mainValue = "fax:" + mainValue;
@@ -60,7 +60,7 @@ public class Resolver {
             for (int i = 0; i < values.length(); i++) {
                 JSONObject _val = values.getJSONObject(i);
                 String val = _val.getString("value");
-                if ("".equals(val))
+                if ("".equals(val)) //getAllXDetails possibly includes an empty first element
                     continue;
                 if ("email".equals(key)) val = "mailto:" + val;
                 if ("tel".equals(key)) val = "tel:" + val;

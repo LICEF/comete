@@ -263,11 +263,6 @@ Ext.define( 'Comete.IdentityDetail', {
                 tpl: '<div><tpl for="."><div class="x-boundlist-item">{value}</div></tpl></div>'
             });
 
-        if (this.mode == 'edition') {
-            this.dataField.on('focus', this.comboFocusGained, this);
-            this.dataField.on('blur', this.comboFocusLost, this);
-        }
-
         cfg = {
             border: false,
             width: 350,
@@ -293,12 +288,5 @@ Ext.define( 'Comete.IdentityDetail', {
     },
     getMainValue: function() { 
         return this.dataField.getValue();
-    },
-    comboFocusGained: function(combo) {
-        this.initialValue = combo.getValue();
-    },
-    comboFocusLost: function(combo) {
-        if (combo.getValue() == "" || combo.getValue() == null)
-            combo.setValue(this.initialValue);
     }
 });
