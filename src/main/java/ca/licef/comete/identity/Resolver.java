@@ -32,8 +32,8 @@ public class Resolver {
     }
 
     public void updateIdentityValues(String uri, JSONArray uriArray, JSONObject mainValues, OntClass type) throws Exception {
-        ArrayList<Triple> newTriples = new ArrayList<Triple>();
-        ArrayList<String> usedKeys = new ArrayList<String>();
+        ArrayList<Triple> newTriples = new ArrayList<>();
+        ArrayList<String> usedKeys = new ArrayList<>();
 
         //retrieve all values for the target_uri (main and alternates)
         JSONObject details = COMETE.Person.equals(type)?
@@ -60,6 +60,8 @@ public class Resolver {
             for (int i = 0; i < values.length(); i++) {
                 JSONObject _val = values.getJSONObject(i);
                 String val = _val.getString("value");
+                if ("".equals(val))
+                    continue;
                 if ("email".equals(key)) val = "mailto:" + val;
                 if ("tel".equals(key)) val = "tel:" + val;
                 if ("fax".equals(key)) val = "fax:" + val;
@@ -112,6 +114,7 @@ public class Resolver {
         for (int i = 0; i < uriArray.length(); i++)
             uris.add(uriArray.getString(i));
 
+        //similar groups management 1/2
         //retrieve all possible gids related to next merged uris
         String constraints = CoreUtil.buildFilterConstraints(uris, "s", true, "=", "||");
         String query = CoreUtil.getQuery("identity/getInvolvedSimilarGroups.sparql" ,
@@ -119,24 +122,22 @@ public class Resolver {
         Tuple[] results = tripleStore.sparqlSelect(query);
         for (int i = 0; i < results.length; i++)
             groupIds.add(results[i].getValue("gid").getContent());
-        System.out.println("groupIds = " + groupIds);
+
         //values management
         updateIdentityValues(uri, uriArray, mainValues, type);
 
         //substitution for merged uris
         for (int i = 0; i < uriArray.length(); i++) {
             String mergedUri = uriArray.getString(i);
-            System.out.println("mergedUri = " + mergedUri);
             //ignore target uri
             if (mergedUri.equals(uri))
                 continue;
-            System.out.println("substitution= ");
-
             //merged uri becomes uri and delete in similarity graph
             tripleStore.substituteResourceUri_textIndex(mergedUri, uri);
             tripleStore.removeResource(mergedUri, tripleStore.getUri(Identity.IDENTITY_SIMILARITY_GRAPH));
         }
 
+        //similar groups management 2/2
         //possibly cleaning groups
         for (String gId : groupIds)
             cleanSimilarityGroup(gId);
@@ -158,68 +159,60 @@ public class Resolver {
     }
 
     public void convertPersonsToOrg(JSONArray uriArray) throws Exception{
-        ArrayList<Triple> newTriples = new ArrayList<Triple>();
-        ArrayList<Triple> triplesToDelete = new ArrayList<Triple>();
-        ArrayList<Triple> triplesToDeleteInSimilarityGraph = new ArrayList<Triple>();
 
-        ArrayList<String> personUris = new ArrayList<String>();
+        ArrayList<String> personUris = new ArrayList<>();
 
-        //substitution for converted uris
-        for (int i = 0; i < uriArray.length(); i++) {
-            String personUri = uriArray.getString(i);
-            personUris.add(personUri);
-            String id = CoreUtil.getIdValue(personUri);
-            String orgUri = CoreUtil.makeURI(id, COMETE.Organization);
-
-            //typecasting for outgoing links
-            Triple[] outgoingTriples = tripleStore.getTriplesWithSubject(personUri);
-            for (Triple triple : outgoingTriples) {
-                String predicate = triple.getPredicate();
-                String object = triple.getObject();
-                if (predicate.equals(RDF.type.getURI()))
-                    object = COMETE.Organization.getURI();
-                else if (predicate.equals(FOAF.img.getURI()))
-                    predicate = FOAF.logo.getURI();
-                else if (predicate.equals(COMETE.altImg.getURI()))
-                    predicate = COMETE.altLogo.getURI();
-                newTriples.add(new Triple(orgUri, predicate, object, false));
-            }
-
-            //redirections for incoming links
-            Triple[] incomingTriples = tripleStore.getTriplesWithObject(personUri, false, null);
-            for (Triple incomingTriple : incomingTriples)
-                newTriples.add(new Triple(incomingTriple.getSubject(), incomingTriple.getPredicate(), orgUri, false));
-
-            //Keep reference of cast previous person uri
-            newTriples.add(new Triple(orgUri, DCTERMS.replaces, personUri));
-            //and set all previous merged replace references
-            Triple[] _triples = tripleStore.getTriplesWithSubjectPredicate(personUri, DCTERMS.replaces);
-            for (Triple triple : _triples)
-                newTriples.add(new Triple(orgUri, DCTERMS.replaces, triple.getObject()));
-
-            //delete of triples associated with person uri (incoming, outgoing triples and in similarity graph)
-            triplesToDelete.addAll(Arrays.asList(outgoingTriples));
-            triplesToDelete.addAll(Arrays.asList(incomingTriples));
-            triplesToDeleteInSimilarityGraph.addAll(Arrays.asList(tripleStore.getTriplesWithSubject(personUri, Identity.IDENTITY_SIMILARITY_GRAPH)));
-        }
+        for (int i = 0; i < uriArray.length(); i++)
+            personUris.add(uriArray.getString(i));
 
         //similar groups management 1/2
         //retrieve all possible gids related to persons uris
         ArrayList<String> groupIds = new ArrayList<String>();
         String constraints = CoreUtil.buildFilterConstraints(personUris, "s", true, "=", "||");
-        //todo sparql dans le graph Identity.IDENTITY_SIMILARITY_GRAPH
         String query = CoreUtil.getQuery("identity/getInvolvedSimilarGroups.sparql",
                 constraints, tripleStore.getUri(Identity.IDENTITY_SIMILARITY_GRAPH));
         Tuple[] results = tripleStore.sparqlSelect(query);
         for (int i = 0; i < results.length; i++)
             groupIds.add(results[i].getValue("gid").getContent());
 
-        //delete triples
-        tripleStore.removeTriples(triplesToDelete);
-        tripleStore.removeTriples(triplesToDeleteInSimilarityGraph, Identity.IDENTITY_SIMILARITY_GRAPH);
 
-        //add new triples
-        tripleStore.insertTriples(newTriples);
+        //substitution for converted uris
+        for (int i = 0; i < uriArray.length(); i++) {
+            String personUri = uriArray.getString(i);
+            String id = CoreUtil.getIdValue(personUri);
+            String orgUri = CoreUtil.makeURI(id, COMETE.Organization);
+
+            tripleStore.substituteResourceUri_textIndex(personUri, orgUri);
+            tripleStore.removeResource(personUri, tripleStore.getUri(Identity.IDENTITY_SIMILARITY_GRAPH));
+
+            //typecasting for outgoing links related to org
+            Triple[] outgoingTriples = tripleStore.getTriplesWithSubject(orgUri);
+            for (Triple triple : outgoingTriples) {
+                if (triple.getPredicate().equals(RDF.type.getURI())) {
+                    tripleStore.removeTriple(triple);
+                    triple.setObject(COMETE.Organization.getURI());
+                    tripleStore.insertTriple(triple);
+                }
+                else if (triple.getPredicate().equals(FOAF.img.getURI())) {
+                    tripleStore.removeTriple(triple);
+                    triple.setPredicate(FOAF.logo.getURI());
+                    tripleStore.insertTriple(triple);
+                }
+                else if (triple.getPredicate().equals(COMETE.altImg.getURI())) {
+                    tripleStore.removeTriple(triple);
+                    triple.setPredicate(COMETE.altLogo.getURI());
+                    tripleStore.insertTriple(triple);
+                }
+            }
+
+            //typecasting for incoming links related to org
+            Triple[] incomingTriples = tripleStore.getTriplesWithPredicateObject(DCTERMS.creator.getURI(), orgUri, false, null);
+            for (Triple triple : incomingTriples) {
+                tripleStore.removeTriple(triple);
+                triple.setPredicate(DCTERMS.publisher.getURI());
+                tripleStore.insertTriple(triple);
+            }
+        }
 
         //similar groups management 2/2
         for (String gid : groupIds)
