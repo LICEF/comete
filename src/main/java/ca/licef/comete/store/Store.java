@@ -92,7 +92,6 @@ public class Store {
 
     public synchronized boolean isDatastreamExists(String path, String datastream) {
         File dsLoc = new File( location + path + "/" + datastream );
-System.out.println( "dsLoc="+dsLoc );        
         return( dsLoc.exists() );
     }
 
