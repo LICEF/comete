@@ -60,7 +60,7 @@ public class Resolver {
             for (int i = 0; i < values.length(); i++) {
                 JSONObject _val = values.getJSONObject(i);
                 String val = _val.getString("value");
-                if ("".equals(val)) //getAllXDetails possibly includes an empty first element
+                if ("".equals(val)) //getAllxDetails possibly includes an empty first element
                     continue;
                 if ("email".equals(key)) val = "mailto:" + val;
                 if ("tel".equals(key)) val = "tel:" + val;

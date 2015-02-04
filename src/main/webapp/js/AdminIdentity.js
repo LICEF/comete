@@ -97,7 +97,7 @@ Ext.define( 'Comete.Identity', {
 
         this.store = Ext.create('Ext.data.JsonStore', {
             model: (this.type == 'person')?'PersonModel':'OrganizationModel',
-            pageSize: 10,
+            pageSize: 20,
             proxy: this.proxy
         });
 
