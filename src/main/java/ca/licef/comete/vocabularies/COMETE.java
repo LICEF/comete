@@ -104,6 +104,9 @@ public class COMETE {
     /** <p>Alias corresponding to the vocabulary</p> */
     public static final DatatypeProperty validationEnabled = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#validationEnabled" );
 
+    /** <p>Link to a validation report for a specific application profile</p> */
+    public static final DatatypeProperty validationReportLink = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#validationReportLink" );
+
     /** <p>Alias corresponding to the vocabulary</p> */
     public static final DatatypeProperty vocAlias = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#vocAlias" );
 

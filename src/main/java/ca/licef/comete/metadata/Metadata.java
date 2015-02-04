@@ -728,8 +728,10 @@ public class Metadata {
             catch( ValidationException e ) {
                 isValid = false;
                 String errorReport = JDomUtils.parseXml2string(ValidationUtils.collectErrorsAsXml(e.getMessage()),null);
-                if( !store.isDatastreamExists( storeId, reportDataStream ) )
+                if( !store.isDatastreamExists( storeId, reportDataStream ) ) {
                     store.setDatastream( storeId, reportDataStream, errorReport);
+                    tripleStore.insertTriple( new Triple( recordURI, COMETE.validationReportLink, Util.getReportLink( storeId, profileUri ) ) );
+                }
             }
             finally {
                 long timeTaken = System.currentTimeMillis() - startTime;
