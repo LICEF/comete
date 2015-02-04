@@ -269,9 +269,9 @@ public class MetadataRecordResource {
             if( "true".equals( showOnlyInvalid ) ) 
                 rs = Metadata.getInstance().getInvalidMetadataRecordsForApplicationProfile( start, limit, showOnlyColumn );
             else
-                rs = Metadata.getInstance().getMetadataRecordsForApplicationProfile( start, limit, showOnlyColumn );
+                rs = Metadata.getInstance().getMetadataRecordApplicationProfiles( start, limit, showOnlyColumn );
         else
-            rs = Metadata.getInstance().getMetadataRecordApplicationProfiles( start, limit );
+            rs = Metadata.getInstance().getMetadataRecordApplicationProfiles( start, limit, null );
 
         StringWriter out = new StringWriter();
         JSONWriter json = new JSONWriter( out );
