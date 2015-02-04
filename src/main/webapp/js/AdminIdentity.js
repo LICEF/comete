@@ -559,7 +559,7 @@ Ext.define( 'Comete.SimilarIdentity', {
             scope: this 
         } );         
     },
-    updateList(isGroupObsolete) {
+    updateList: function(isGroupObsolete) {
         if (isGroupObsolete) {
             this.similarGroups.splice(this.currentGroup, 1); //remove gid
             if (this.similarGroups.length == 0)
