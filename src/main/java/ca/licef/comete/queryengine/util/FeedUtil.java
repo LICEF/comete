@@ -147,7 +147,7 @@ public class FeedUtil {
                     }
                     else if( DCTERMS.language.getURI().equals( triple.getPredicate() ) )
                         languages.add( triple.getObject() ); 
-                    else if( DCTERMS.format.equals( triple.getPredicate() ) )
+                    else if( DCTERMS.format.getURI().equals( triple.getPredicate() ) )
                         formats.add( triple.getObject() );
                     else if( DCTERMS.creator.getURI().equals( triple.getPredicate() ) ) {
                         String identityUri = triple.getObject();
@@ -187,7 +187,7 @@ public class FeedUtil {
                         category.setName( value );
                         categories.add( category );
                     }
-                    else if( COMETE.extraInfo.equals( triple.getPredicate() ) ) {
+                    else if( COMETE.extraInfo.getURI().equals( triple.getPredicate() ) ) {
                         LangString langString = new LangStringImpl();
                         langString.setString( triple.getObject() );
                         if( triple.getLanguage() != null && !"".equals( triple.getLanguage() ) )
@@ -268,7 +268,7 @@ public class FeedUtil {
         Map labels = new HashMap();
         for( ListIterator it = triples.listIterator(); it.hasNext(); ) {
             Triple triple = (Triple)it.next();
-            if(RDFS.label.equals( triple.getPredicate() ) ) {
+            if(RDFS.label.getURI().equals( triple.getPredicate() ) ) {
                 Map strings = (Map)labels.get( triple.getSubject() );
                 if( strings == null ) {
                     strings = new HashMap();
@@ -287,8 +287,8 @@ public class FeedUtil {
         ArrayList<String> identities = new ArrayList<String>();
         for( ListIterator it = triples.listIterator(); it.hasNext(); ) {
             Triple triple = (Triple)it.next();
-            if( DCTERMS.creator.equals(triple.getPredicate()) ||
-                DCTERMS.publisher.equals( triple.getPredicate() ) ) {
+            if( DCTERMS.creator.getURI().equals(triple.getPredicate()) ||
+                DCTERMS.publisher.getURI().equals( triple.getPredicate() ) ) {
                 identities.add( triple.getObject() );
             }
         }
