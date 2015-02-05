@@ -103,6 +103,14 @@
     background-color: #ffffff;
 }
 
+.x-tab-bar-default {
+    background-color: #ffffff;
+}
+
+div.x-border-layout-ct {
+    background-color: #ffffff;
+}
+
 .rootButton.x-btn-default-toolbar-small-over .x-btn-split-right {
     background-image: url("extjs-4.1.1/resources/themes/images/default/button/s-arrow-noline.gif");
 }
