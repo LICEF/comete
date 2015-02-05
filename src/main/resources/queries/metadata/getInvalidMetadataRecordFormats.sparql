@@ -1,0 +1,12 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX comete: <http://comete.licef.ca/reference#>
+
+SELECT ?s ?format
+WHERE '{'
+    ?s rdf:type comete:MetadataRecord .
+    ?s comete:metadataFormat ?format .
+    ?s comete:validationReportLink ?report .
+    FILTER ( regex( ?report, "{2}" ) )
+'}'
+OFFSET {0,number,#}
+LIMIT {1,number,#}
