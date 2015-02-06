@@ -21,5 +21,6 @@ var Comete_namespacePrefixes = {
     xsd: 'http://www.w3.org/2001/XMLSchema#',
     xml: 'http://www.w3.org/XML/1998/namespace',
     skos: 'http://www.w3.org/2004/02/skos/core#',
+    lomvoc: 'http://ltsc.ieee.org/rdf/lomv1.0/vocab#',
     comete: 'http://comete.licef.ca/reference#'
 };

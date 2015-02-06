@@ -25,6 +25,7 @@
 @prefix void:       <http://rdfs.org/ns/void#> .
 @prefix ir:         <http://www.ontologydesignpatterns.org/cp/owl/informationrealization.owl#> .
 
+@prefix lomvoc:     <http://ltsc.ieee.org/rdf/lomv1.0/vocab#> .
 @prefix oai:        <http://www.openarchives.org/OAI/2.0/> .
 @prefix comete-onto:     <http://comete.licef.ca/reference#> .
 @prefix comete:     <URI_PREFIX/> .
