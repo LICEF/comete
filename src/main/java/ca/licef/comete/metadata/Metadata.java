@@ -728,8 +728,10 @@ public class Metadata {
             catch( ValidationException e ) {
                 isValid = false;
                 String errorReport = JDomUtils.parseXml2string(ValidationUtils.collectErrorsAsXml(e.getMessage()),null);
-                if( !store.isDatastreamExists( storeId, reportDataStream ) )
+                if( !store.isDatastreamExists( storeId, reportDataStream ) ) {
                     store.setDatastream( storeId, reportDataStream, errorReport);
+                    tripleStore.insertTriple( new Triple( recordURI, COMETE.validationReportLink, Util.getReportLink( storeId, profileUri ) ) );
+                }
             }
             finally {
                 long timeTaken = System.currentTimeMillis() - startTime;
@@ -779,18 +781,26 @@ public class Metadata {
         }
         return( Validator.getValidator() );
     }
+    
+    public ResultSet getMetadataRecordApplicationProfiles( int start, int limit, String applProfile ) throws Exception {
+        return( getMetadataRecordApplicationProfiles( start, limit, applProfile, false ) );
+    }
 
     /**
-     * @applProf If <tt>null</tt>, all the application profiles will be returned.  Otherwise, only the selected application profile will be provided.
+     * @param applProf If <tt>null</tt>, all the application profiles will be returned.  Otherwise, only the selected application profile will be provided.
+     * @param showOnlyInvalidRecords If <tt>true</tt> and applProf is different from <tt>null</tt>, only invalid records will be returned.
      */
-    public ResultSet getMetadataRecordApplicationProfiles( int start, int limit, String applProfile ) throws Exception {
-        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", "getMetadataRecordApplicationProfilesEff", new Object[] { start, limit, applProfile } );
+    public ResultSet getMetadataRecordApplicationProfiles( int start, int limit, String applProfile, boolean showOnlyInvalidRecords ) throws Exception {
+        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", 
+            "getMetadataRecordApplicationProfilesEff", new Object[] { start, limit, applProfile, showOnlyInvalidRecords } );
         return( (ResultSet)Core.getInstance().getTripleStore().transactionalCall( inv ) );
     }
 
-    public ResultSet getMetadataRecordApplicationProfilesEff( int start, int limit, String applProfile ) throws Exception {
+    public ResultSet getMetadataRecordApplicationProfilesEff( int start, int limit, String applProfile, boolean showOnlyInvalidRecords ) throws Exception {
         ResultSet rs = new ResultSet();
         String query = Util.getQuery( "metadata/getAllMetadataRecordsCount.sparql" );
+        if( applProfile != null && showOnlyInvalidRecords )
+            query = Util.getQuery( "metadata/getInvalidMetadataRecordsCount.sparql", Util.getApplProfAbbreviation( applProfile ) );
         Tuple[] res = tripleStore.sparqlSelect( query );
         int count = Integer.parseInt( res[0].getValue( "count" ).getContent() );
         if( count > 0 ) {
@@ -799,6 +809,8 @@ public class Metadata {
 
             Hashtable<String, String> metadataFormats = new Hashtable<String, String>();
             query = Util.getQuery( "metadata/getAllMetadataRecordFormats.sparql", start, limit );
+            if( applProfile != null && showOnlyInvalidRecords )
+                query = Util.getQuery( "metadata/getInvalidMetadataRecordFormats.sparql", start, limit, Util.getApplProfAbbreviation( applProfile ) );
             res = tripleStore.sparqlSelect( query );
             for( Tuple tuple : res ) {
                 String uri = tuple.getValue( "s" ).getContent();
@@ -867,106 +879,6 @@ public class Metadata {
                 rs.addEntry( entry );
             }
         }
-        return( rs );
-    }
-
-    // Should be optimized when SPARQL 1.1 is available. - FB
-    public ResultSet getInvalidMetadataRecordsForApplicationProfile( int start, int limit, String applProfile ) throws Exception {
-        ResultSet rs = new ResultSet();
-        //int allRecordsCount = tripleStore.getResultsCount( "getAllMetadataRecordsCount.sparql" );
-        //if( allRecordsCount == 0 ) {
-        //    rs.setTotalRecords( 0 );
-        //    return( rs );
-        //}
-
-        //int validRecordsCount = tripleStore.getResultsCount( "getValidMetadataRecordsForApplProf.sparql", applProfile );
-        //int invalidRecordsCount = allRecordsCount - validRecordsCount;
-        //rs.setTotalRecords( invalidRecordsCount );
-
-        //int tmpStart = 0;
-        //int tmpInvalidEntryCount = 0;
-        //for( ; rs.getSize() < limit; tmpStart += limit ) {
-        //    Hashtable<String, String>[] recordUriPage = tripleStore.getResults( "getAllMetadataRecordFormats.sparql", tmpStart, limit );
-        //    if( recordUriPage.length == 0 )
-        //        break;
-
-        //    List<String> recordUris = new ArrayList<String>();
-        //    Hashtable<String, String> metadataFormats = new Hashtable<String, String>();
-        //    for( int i = 0; i < recordUriPage.length; i++ ) {
-        //        String uri = recordUriPage[ i ].get( "s" );
-        //        String format = recordUriPage[ i ].get( "format" );
-        //        recordUris.add( uri );
-        //        metadataFormats.put( uri, format );
-        //    }
-
-        //    Hashtable<String, String> metadataRecordRepoTable = new Hashtable<String, String>();
-        //    Hashtable<String, Hashtable<String, String>> repoInfo = new Hashtable<String, Hashtable<String, String>>();
-        //    retrieveMetadataRecordRepoInfo( recordUris, metadataRecordRepoTable, repoInfo );
-
-        //    String union = buildMetadataRecordsUnion( recordUris );
-        //    Hashtable<String, String>[] recordApplProfLines = tripleStore.getResults( "getMetadataRecordApplicationProfiles.sparql", union );
-
-        //    String tempUri = null;
-        //    List<String> applProfList = null;
-        //    for( int i = 0; i < recordApplProfLines.length; i++ ) {
-        //        String uri = recordApplProfLines[ i ].get( "s" );
-        //        String applProf = recordApplProfLines[ i ].get( "applProf" ); 
-        //        if( !uri.equals( tempUri ) ) {
-        //            if( applProfList != null ) {
-        //                Map entry = new HashMap<String,String>();
-        //                entry.put( "id", tempUri );
-        //                entry.put( "metadataFormat", metadataFormats.get( tempUri ) );
-        //                entry.put( "profiles", applProfList );
-        //                String repoUri = metadataRecordRepoTable.get( tempUri );
-        //                if( repoUri != null ) {
-        //                    entry.put( "repoUri", repoUri );
-        //                    Hashtable<String, String> repoInfoData = repoInfo.get( repoUri );
-        //                    if( repoInfoData != null ) {
-        //                        String repoName = repoInfoData.get( "name" );
-        //                        if( repoName != null )
-        //                            entry.put( "repoName", repoName );
-        //                        String repoAdminEmail = repoInfoData.get( "adminEmail" );
-        //                        if( repoAdminEmail != null )
-        //                            entry.put( "repoAdminEmail", repoAdminEmail );
-        //                    }
-        //                }
-        //                if( !applProfList.contains( applProfile ) ) {
-        //                    if( tmpInvalidEntryCount >= start )
-        //                        rs.addEntry( entry );
-        //                    tmpInvalidEntryCount++;
-        //                }
-        //            }
-        //            applProfList = new ArrayList<String>();
-        //            tempUri = uri;
-        //        }
-        //        if( applProfile.equals( applProf ) )
-        //            applProfList.add( applProf );
-        //    }
-        //    if( applProfList != null ) {
-        //        Map<String, Object> entry = new HashMap<String, Object>();
-        //        entry.put( "id", tempUri );
-        //        entry.put( "metadataFormat", metadataFormats.get( tempUri ) );
-        //        entry.put( "profiles", applProfList );
-        //        String repoUri = metadataRecordRepoTable.get( tempUri );
-        //        if( repoUri != null ) {
-        //            entry.put( "repoUri", repoUri );
-        //            Hashtable<String, String> repoInfoData = repoInfo.get( repoUri );
-        //            if( repoInfoData != null ) {
-        //                String repoName = repoInfoData.get( "name" );
-        //                if( repoName != null )
-        //                    entry.put( "repoName", repoName );
-        //                String repoAdminEmail = repoInfoData.get( "adminEmail" );
-        //                if( repoAdminEmail != null )
-        //                    entry.put( "repoAdminEmail", repoAdminEmail );
-        //            }
-        //        }
-        //        if( !applProfList.contains( applProfile ) ) {
-        //            if( tmpInvalidEntryCount >= start )
-        //                rs.addEntry( entry );
-        //            tmpInvalidEntryCount++;
-        //        }
-        //    }
-        //}
         return( rs );
     }
 

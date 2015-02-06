@@ -40,15 +40,16 @@
 
         this.recordErrorReport = Ext.create( 'Ext.Panel', {
             layout: 'border',
+            border: 0,
             items: [ 
                 { xtype: 'label', text: tr( 'Validation Report' ), margin: '10 0 0 10', cls: 'sectionTitle', region: 'north' }, 
                 this.errorReportViewer 
-            ],
-            border: 0
+            ]
         } );
 
         this.recordNotAppl = Ext.create( 'Ext.Panel', {
             layout: 'border',
+            border: 0,
             items: [
                 { xtype: 'label', text: tr( 'Not Applicable' ), margin: '10 0 0 10', cls: 'sectionTitle', region: 'north' },
                 { html: tr( 'This application profile is unrelated to this metadata format.' ), margin: '10 0 0 10', region: 'center', border: 0 }
@@ -57,6 +58,7 @@
 
         this.recordValid = Ext.create( 'Ext.Panel', {
             layout: 'border',
+            border: 0,
             items: [
                 { xtype: 'label', text: tr( 'Valid' ), margin: '10 0 0 10', cls: 'sectionTitle', region: 'north' },
                 { html: tr( 'The metadata record is valid according to this application profile.' ), margin: '10 0 0 10', region: 'center', border: 0 }
@@ -66,6 +68,7 @@
         this.recordResultPanel = Ext.create( 'Ext.Panel', {
             width: 600,
             layout: 'card',
+            margin: '-1 0 0 0',
             items: [ this.recordErrorReport, this.recordNotAppl, this.recordValid ],
             region: 'east', 
             split: true
@@ -156,6 +159,7 @@
             layout: 'border', 
             width: '100%', 
             region: 'center',
+            margin: '-1 0 0 0',
             items: [ this.recordHalfViewPanel, this.recordResultPanel ]
         } );
         
@@ -165,6 +169,7 @@
 
         this.recordRepoInfoPanel = Ext.create( 'Ext.Panel', {
             layout: 'border',
+            border: 0,
             items: [
                 { xtype: 'label', text: tr( 'Repository Details' ), margin: '10 0 0 10', cls: 'sectionTitle', region: 'north' },
                 this.recordRepoInfoBodyPanel
@@ -175,6 +180,7 @@
             layout: 'card', 
             width: '100%', 
             region: 'center',
+            margin: '-5 0 0 0',
             items: [ this.recordFullViewPanel, this.recordHalfWithResultViewPanel, this.recordRepoInfoPanel ]
         } );
 
@@ -275,7 +281,7 @@
                         { xtype: 'radio', id: 'RBOAIDC', width: '100%', height: 20, boxLabel: 'OAI DC', name: 'RBShowOnlyOneApplProf', margin: '0 0 0 20', hidden: true, dataApplProf: 'http://www.openarchives.org/OAI/2.0/' } 
                     ] },
                     { xtype: 'checkbox', id: 'CBShowOnlyInvalidRecords', width: '100%', height: 20, boxLabel: tr( 'Show only invalid records.' ), margin: '20 0 0 24' },
-                    { xtype: 'button', height: 20, text: tr( 'Apply' ), handler: this.applyVisualizationOptions, scope: this, margin: '20 0 0 0' }
+                    { xtype: 'button', text: tr( 'Apply' ), handler: this.applyVisualizationOptions, scope: this, margin: '20 0 0 0' }
                 ] }
             ]
         } );
@@ -298,6 +304,7 @@
             height: 400,
             region: 'north',
             split: true,
+            margin: '-1 -1 -1 -1',
             items: [ this.recordListPanel, this.visualizationOptionsPanel ]
         } );
 
@@ -324,6 +331,7 @@
         this.configPage = Ext.create( 'Ext.Panel', {
             region: 'center',
             layout: 'border',
+            margin: '-1 0 0 0',
             title: tr( 'Configuration' ),
             items: [ 
                 { region: 'north', xtype: 'label', text: tr( 'List of enabled validations' ), margin: '10 0 0 10', cls: 'sectionTitle' }, 
@@ -343,7 +351,7 @@
         var cfg = {
             activeTab: 0,
             plain: true,
-            margin: '0 10 10 10',
+            margin: '0 -1 -1 -1',
             region: 'center',      
             width: 400,
             items: [ this.visualizationPage, this.configPage ]

@@ -221,6 +221,32 @@ public class Util {
             throw( new Exception( "Unknown application profile: " + profileUri + "." ) );
     }
 
+    public static String getApplProfAbbreviation( String profileUri ) throws Exception {
+        if( Constants.APPL_PROF_LOM_STRICT.equals( profileUri ) )
+            return( Constants.APPL_PROF_ABBR_LOM_STRICT );
+        else if( Constants.APPL_PROF_LOM_LOOSE.equals( profileUri ) )
+            return( Constants.APPL_PROF_ABBR_LOM_LOOSE );
+        else if( Constants.APPL_PROF_LOM_FR_1_0.equals( profileUri ) )
+            return( Constants.APPL_PROF_ABBR_LOM_FR_1_0 );
+        else if( Constants.APPL_PROF_SCO_LOM_FR_1_0.equals( profileUri ) )
+            return( Constants.APPL_PROF_ABBR_SCO_LOM_FR_1_0 );
+        else if( Constants.APPL_PROF_SCO_LOM_FR_1_1.equals( profileUri ) )
+            return( Constants.APPL_PROF_ABBR_SCO_LOM_FR_1_1 );
+        else if( Constants.APPL_PROF_LOM_NORMETIC_1_2.equals( profileUri ) )
+            return( Constants.APPL_PROF_ABBR_LOM_NORMETIC_1_2 );
+        else if( Constants.APPL_PROF_OAI_DC.equals( profileUri ) )
+            return( Constants.APPL_PROF_ABBR_OAI_DC );
+        else
+            throw( new Exception( "Unknown application profile: " + profileUri + "." ) );
+    }
+
+    public static String getReportLink( String storeId, String profileUri ) throws Exception {
+        String urlStart = Core.getInstance().getCometeUrl() + "/rest/metadataRecords" + storeId + "/validationReport/";
+        String urlMiddle = getApplProfAbbreviation( profileUri );
+        String urlEnd = "/xml?syntaxHighlighted=true";
+        return( urlStart + urlMiddle + urlEnd );
+    }
+
     public static String buildFilterConstraints(String[] values, String varName, boolean resourceValues, String test, String delimiter) {
         return buildFilterConstraints(Arrays.asList(values), varName, resourceValues, test, delimiter);
     }

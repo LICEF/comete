@@ -216,8 +216,6 @@ public class VocabularyManager {
         String[] initVocs = vocabulariesSourceDir.list();
         if (initVocs != null) {
             for (String voc : initVocs) {
-                if (!("LOMv1.0-5.2".equals(voc) || "deweyinfo".equals(voc)))
-                    continue;
                 File destVoc = new File(vocabulariesDir, voc);
                 if (!destVoc.exists())
                     IOUtil.copyFiles(new File(vocabulariesSourceDir, voc), destVoc);

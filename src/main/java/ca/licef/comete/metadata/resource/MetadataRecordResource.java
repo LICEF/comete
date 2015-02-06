@@ -267,9 +267,9 @@ public class MetadataRecordResource {
         ResultSet rs = null;
         if( showOnlyColumn != null && !"".equals( showOnlyColumn ) ) 
             if( "true".equals( showOnlyInvalid ) ) 
-                rs = Metadata.getInstance().getInvalidMetadataRecordsForApplicationProfile( start, limit, showOnlyColumn );
+                rs = Metadata.getInstance().getMetadataRecordApplicationProfiles( start, limit, showOnlyColumn, true );
             else
-                rs = Metadata.getInstance().getMetadataRecordApplicationProfiles( start, limit, showOnlyColumn );
+                rs = Metadata.getInstance().getMetadataRecordApplicationProfiles( start, limit, showOnlyColumn, false );
         else
             rs = Metadata.getInstance().getMetadataRecordApplicationProfiles( start, limit, null );
 
