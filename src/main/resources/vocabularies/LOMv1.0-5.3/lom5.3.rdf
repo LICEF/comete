@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:skos="http://www.w3.org/2004/02/skos/core#">
-   <skos:ConceptScheme rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.3_interactivity_level">
+   <skos:ConceptScheme rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityLevel">
       <skos:prefLabel xml:lang="en">LOMv1.0: 5.3 Interactivity Level</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">LOMv1.0: 5.3 Niveau d’interactivité</skos:prefLabel>
       <skos:definition xml:lang="en">The degree of interactivity characterizing this learning object. Interactivity in this context refers to the degree to which the learner can influence the aspect or behaviour of the learning object.</skos:definition>
       <skos:definition xml:lang="fr">Degré d’interactivité qui caractérise cette REA. Dans ce contexte, l’interactivité désigne le degré auquel l’apprenant peut influencer l’aspect ou le comportement de la REA.</skos:definition>
    </skos:ConceptScheme>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.3_interactivity_level/very_low">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.3_interactivity_level"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityLevel-veryLow">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityLevel"/>
       <skos:prefLabel xml:lang="en">Very low</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">Très faible</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.3_interactivity_level"/>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityLevel"/>
    </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.3_interactivity_level/low">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.3_interactivity_level"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityLevel-low">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityLevel"/>
       <skos:prefLabel xml:lang="en">Low</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">Faible</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.3_interactivity_level"/>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityLevel"/>
    </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.3_interactivity_level/medium">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.3_interactivity_level"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityLevel-medium">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityLevel"/>
       <skos:prefLabel xml:lang="en">Medium</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">Moyen</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.3_interactivity_level"/>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityLevel"/>
    </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.3_interactivity_level/high">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.3_interactivity_level"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityLevel-high">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityLevel"/>
       <skos:prefLabel xml:lang="en">High</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">Élevé</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.3_interactivity_level"/>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityLevel"/>
    </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.3_interactivity_level/very_high">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.3_interactivity_level"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityLevel-veryHigh">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityLevel"/>
       <skos:prefLabel xml:lang="en">Very high</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">Très élevé</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.3_interactivity_level"/>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityLevel"/>
    </skos:Concept>
 </rdf:RDF>

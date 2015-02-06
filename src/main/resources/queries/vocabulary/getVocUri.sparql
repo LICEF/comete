@@ -5,5 +5,7 @@ SELECT DISTINCT ?vocUri
 WHERE '{'
     ?s rdf:type comete:VocContext .    
     ?s comete:vocUri ?vocUri .
-    ?s (comete:vocSourceLocation|comete:vocAlias) "{0}"
+    '{' ?s comete:vocUri <{0}> '}'
+    UNION
+    '{' ?s (comete:vocSourceLocation|comete:vocId|comete:vocAlias) "{0}" '}'
 '}'

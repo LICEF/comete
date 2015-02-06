@@ -12,6 +12,7 @@ WHERE '{'
     ?s comete:hasMetadataRecord <{0}> .
     FILTER ( ?p = dcterms:title || ?p = dcterms:description || ?p = foaf:page ||
              ?p = dcterms:creator || ?p = dcterms:publisher || ?p = dcterms:publisher ||
-             ?p = dcterms:subject || ?p = comete:extraInfo || ?p = dcterms:format ||
+             ?p = dcterms:subject || ?p = comete:learningResourceType || ?p = comete:educationalLevel ||
+             ?p = comete:extraInfo || ?p = dcterms:format ||
              ?p = dcterms:language || ?p = comete:keyword )
 '}'

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <vocabulary>
-    <source>LOMv1.0</source>
-    <location>/LOMv1.0-5.4/lom5.4.rdf</location>
-    <category>5.4_semantic_density</category>
+    <location>lom5.4.rdf</location>
+    <conceptUriPrefix>http://ltsc.ieee.org/rdf/lomv1.0/vocab#SemanticDensity-</conceptUriPrefix>
 </vocabulary>

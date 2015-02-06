@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <vocabulary>
-    <source>LOMv1.0</source>
-    <location>/LOMv1.0-4.4.1.1/lom4.4.1.1.rdf</location>
-    <category>4.4.1.1_type</category>
+    <location>lom4.4.1.1.rdf</location>
+    <conceptUriPrefix>http://ltsc.ieee.org/rdf/lomv1.0/vocab#RequirementType-</conceptUriPrefix>
 </vocabulary>

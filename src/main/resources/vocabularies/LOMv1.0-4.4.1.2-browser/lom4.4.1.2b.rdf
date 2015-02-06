@@ -1,41 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:skos="http://www.w3.org/2004/02/skos/core#">
-   <skos:ConceptScheme rdf:about="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_browser">
+   <skos:ConceptScheme rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#BrowserTechnology">
       <skos:prefLabel xml:lang="en">LOMv1.0: 4.4.1.2 Web browsers</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">LOMv1.0: 4.4.1.2 Navigateurs Web</skos:prefLabel>
       <skos:definition xml:lang="en">Web browsers.</skos:definition>
       <skos:definition xml:lang="fr">Navigateurs Web.</skos:definition>
    </skos:ConceptScheme>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_browser/amaya">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_browser"/>
-      <skos:prefLabel>Amaya</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_browser"/>
-   </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_browser/opera">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_browser"/>
-      <skos:prefLabel>Opera</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_browser"/>
-   </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_browser/ms-internet-explorer">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_browser"/>
-      <skos:prefLabel>Microsoft Internet Explorer</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_browser"/>
-   </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_browser/communicator">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_browser"/>
-      <skos:prefLabel>Communicator</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_browser"/>
-   </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_browser/netscape">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_browser"/>
-      <skos:prefLabel>Netscape</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_browser"/>
-   </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_browser/any">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_browser"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#BrowserTechnology-any">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#BrowserTechnology"/>
       <skos:prefLabel xml:lang="en">Any browser</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">N'importe quel</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_browser"/>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#BrowserTechnology"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#BrowserTechnology-netscapeCommunicator">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#BrowserTechnology"/>
+      <skos:prefLabel>Netscape Communicator</skos:prefLabel>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#BrowserTechnology"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#BrowserTechnology-ms-internetExplorer">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#BrowserTechnology"/>
+      <skos:prefLabel>Microsoft Internet Explorer</skos:prefLabel>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#BrowserTechnology"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#BrowserTechnology-opera">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#BrowserTechnology"/>
+      <skos:prefLabel>Opera</skos:prefLabel>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#BrowserTechnology"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#BrowserTechnology-amaya">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#BrowserTechnology"/>
+      <skos:prefLabel>Amaya</skos:prefLabel>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#BrowserTechnology"/>
    </skos:Concept>
 </rdf:RDF>

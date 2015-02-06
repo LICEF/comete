@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <vocabulary>
-    <source>LOMv1.0</source>
-    <location>/LOMv1.0-5.5/lom5.5.rdf</location>
-    <category>5.5_intended_end_user_role</category>
+    <location>lom5.5.rdf</location>
+    <conceptUriPrefix>http://ltsc.ieee.org/rdf/lomv1.0/vocab#IntendedEndUserRole-</conceptUriPrefix>
 </vocabulary>

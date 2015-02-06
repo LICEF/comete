@@ -66,7 +66,7 @@
         <xsl:call-template name="manageVocabulary">
             <xsl:with-param name="loURI" select="$loURI"/>
             <xsl:with-param name="source" select="lom:source"/>
-            <xsl:with-param name="element" select="'1.7_structure'"/>
+            <xsl:with-param name="element" select="'1.7'"/>
             <xsl:with-param name="value" select="lom:value[1]"/>
         </xsl:call-template>
     </xsl:template>
@@ -75,7 +75,7 @@
         <xsl:call-template name="manageVocabulary">
             <xsl:with-param name="loURI" select="$loURI"/>
             <xsl:with-param name="source" select="lom:source"/>
-            <xsl:with-param name="element" select="'1.8_aggregation_level'"/>
+            <xsl:with-param name="element" select="'1.8'"/>
             <xsl:with-param name="value" select="lom:value[1]"/>
         </xsl:call-template>
     </xsl:template>
@@ -84,7 +84,7 @@
         <xsl:call-template name="manageVocabulary">
             <xsl:with-param name="loURI" select="$loURI"/>
             <xsl:with-param name="source" select="lom:source"/>
-            <xsl:with-param name="element" select="'2.2_status'"/>
+            <xsl:with-param name="element" select="'2.2'"/>
             <xsl:with-param name="value" select="lom:value[1]"/>
         </xsl:call-template>
     </xsl:template>
@@ -93,7 +93,7 @@
         <xsl:call-template name="manageVocabulary">
             <xsl:with-param name="loURI" select="$loURI"/>
             <xsl:with-param name="source" select="lom:source"/>
-            <xsl:with-param name="element" select="'4.4.1.1_type'"/>
+            <xsl:with-param name="element" select="'4.4.1.1'"/>
             <xsl:with-param name="value" select="lom:value[1]"/>
         </xsl:call-template>
     </xsl:template>
@@ -102,7 +102,7 @@
         <xsl:call-template name="manageVocabulary">
             <xsl:with-param name="loURI" select="$loURI"/>
             <xsl:with-param name="source" select="lom:source"/>
-            <xsl:with-param name="element" select="'5.1_interactivity_type'"/>
+            <xsl:with-param name="element" select="'5.1'"/>
             <xsl:with-param name="value" select="lom:value[1]"/>
         </xsl:call-template>
     </xsl:template>
@@ -111,7 +111,7 @@
         <xsl:call-template name="manageVocabulary">
             <xsl:with-param name="loURI" select="$loURI"/>
             <xsl:with-param name="source" select="lom:source"/>
-            <xsl:with-param name="element" select="'5.2_learning_resource_type'"/>
+            <xsl:with-param name="element" select="'5.2'"/>
             <xsl:with-param name="value" select="lom:value[1]"/>
         </xsl:call-template>
     </xsl:template>
@@ -120,7 +120,7 @@
         <xsl:call-template name="manageVocabulary">
             <xsl:with-param name="loURI" select="$loURI"/>
             <xsl:with-param name="source" select="lom:source"/>
-            <xsl:with-param name="element" select="'5.3_interactivity_level'"/>
+            <xsl:with-param name="element" select="'5.3'"/>
             <xsl:with-param name="value" select="lom:value[1]"/>
         </xsl:call-template>
     </xsl:template>
@@ -129,7 +129,7 @@
         <xsl:call-template name="manageVocabulary">
             <xsl:with-param name="loURI" select="$loURI"/>
             <xsl:with-param name="source" select="lom:source"/>
-            <xsl:with-param name="element" select="'5.4_semantic_density'"/>
+            <xsl:with-param name="element" select="'5.4'"/>
             <xsl:with-param name="value" select="lom:value[1]"/>
         </xsl:call-template>
     </xsl:template>
@@ -138,7 +138,7 @@
         <xsl:call-template name="manageVocabulary">
             <xsl:with-param name="loURI" select="$loURI"/>
             <xsl:with-param name="source" select="lom:source"/>
-            <xsl:with-param name="element" select="'5.5_intended_end_user_role'"/>
+            <xsl:with-param name="element" select="'5.5'"/>
             <xsl:with-param name="value" select="lom:value[1]"/>
         </xsl:call-template>
     </xsl:template>
@@ -147,7 +147,7 @@
         <xsl:call-template name="manageVocabulary">
             <xsl:with-param name="loURI" select="$loURI"/>
             <xsl:with-param name="source" select="lom:source"/>
-            <xsl:with-param name="element" select="'5.6_context'"/>
+            <xsl:with-param name="element" select="'5.6'"/>
             <xsl:with-param name="value" select="lom:value[1]"/>
         </xsl:call-template>
     </xsl:template>
@@ -156,7 +156,7 @@
         <xsl:call-template name="manageVocabulary">
             <xsl:with-param name="loURI" select="$loURI"/>
             <xsl:with-param name="source" select="lom:source"/>
-            <xsl:with-param name="element" select="'5.8_difficulty'"/>
+            <xsl:with-param name="element" select="'5.8'"/>
             <xsl:with-param name="value" select="lom:value[1]"/>
         </xsl:call-template>
     </xsl:template>
@@ -165,7 +165,7 @@
         <xsl:call-template name="manageVocabulary">
             <xsl:with-param name="loURI" select="$loURI"/>
             <xsl:with-param name="source" select="lom:source"/>
-            <xsl:with-param name="element" select="'6.1_cost'"/>
+            <xsl:with-param name="element" select="'6.1'"/>
             <xsl:with-param name="value" select="lom:value[1]"/>
         </xsl:call-template>
     </xsl:template>
@@ -174,7 +174,7 @@
         <xsl:call-template name="manageVocabulary">
             <xsl:with-param name="loURI" select="$loURI"/>
             <xsl:with-param name="source" select="lom:source"/>
-            <xsl:with-param name="element" select="'6.2_copyright_and_other_restrictions'"/>
+            <xsl:with-param name="element" select="'6.2'"/>
             <xsl:with-param name="value" select="lom:value[1]"/>
         </xsl:call-template>
     </xsl:template>
@@ -186,7 +186,7 @@
         <xsl:call-template name="manageVocabulary">
             <xsl:with-param name="loURI" select="$loURI"/>
             <xsl:with-param name="source" select="lom:source/lom:string[1]"/>
-            <xsl:with-param name="element" select="'9.2_taxon_path'"/>
+            <xsl:with-param name="element" select="'9.2'"/>
             <xsl:with-param name="value" select="lom:taxon[last()]/lom:id"/>
         </xsl:call-template>
     </xsl:template>

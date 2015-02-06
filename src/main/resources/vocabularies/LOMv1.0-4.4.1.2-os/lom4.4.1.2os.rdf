@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:skos="http://www.w3.org/2004/02/skos/core#">
-   <skos:ConceptScheme rdf:about="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_operating_system">
+   <skos:ConceptScheme rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#OperatingSystemTechnology">
       <skos:prefLabel xml:lang="en">LOMv1.0: 4.4.1.2 Operating systems</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">LOMv1.0: 4.4.1.2 Systèmes d'exploitation</skos:prefLabel>
       <skos:definition xml:lang="en">Operating systems.</skos:definition>
       <skos:definition xml:lang="fr">Systèmes d'exploitation.</skos:definition>
    </skos:ConceptScheme>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_operating_system/none">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_operating_system"/>
-      <skos:prefLabel xml:lang="en">none</skos:prefLabel>
-      <skos:prefLabel xml:lang="fr">aucun</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_operating_system"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#OperatingSystemTechnology-pc-dos">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#OperatingSystemTechnology"/>
+      <skos:prefLabel>DOS</skos:prefLabel>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#OperatingSystemTechnology"/>
    </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_operating_system/multi-os">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_operating_system"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#OperatingSystemTechnology-ms-windows">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#OperatingSystemTechnology"/>
+      <skos:prefLabel>Microsoft Windows</skos:prefLabel>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#OperatingSystemTechnology"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#OperatingSystemTechnology-macos">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#OperatingSystemTechnology"/>
+      <skos:prefLabel>Mac OS</skos:prefLabel>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#OperatingSystemTechnology"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#OperatingSystemTechnology-unix">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#OperatingSystemTechnology"/>
+      <skos:prefLabel>UNIX</skos:prefLabel>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#OperatingSystemTechnology"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#OperatingSystemTechnology-multi-os">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#OperatingSystemTechnology"/>
       <skos:prefLabel xml:lang="en">multi-platform</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">multiplateforme</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_operating_system"/>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#OperatingSystemTechnology"/>
    </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_operating_system/unix">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_operating_system"/>
-      <skos:prefLabel>UNIX</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_operating_system"/>
-   </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_operating_system/macos">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_operating_system"/>
-      <skos:prefLabel>Mac OS</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_operating_system"/>
-   </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_operating_system/ms-windows">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_operating_system"/>
-      <skos:prefLabel>Microsoft Windows</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_operating_system"/>
-   </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_operating_system/pc-dos">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_operating_system"/>
-      <skos:prefLabel>DOS</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.2_type_operating_system"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#OperatingSystemTechnology-none">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#OperatingSystemTechnology"/>
+      <skos:prefLabel xml:lang="en">none</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">aucun</skos:prefLabel>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#OperatingSystemTechnology"/>
    </skos:Concept>
 </rdf:RDF>

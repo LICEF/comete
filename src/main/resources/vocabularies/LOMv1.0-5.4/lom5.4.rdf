@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:skos="http://www.w3.org/2004/02/skos/core#">
-   <skos:ConceptScheme rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.4_semantic_density">
+   <skos:ConceptScheme rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#SemanticDensity">
       <skos:prefLabel xml:lang="en">LOMv1.0: 5.4 Semantic Density</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">LOMv1.0: 5.4 Densité sémantique</skos:prefLabel>
       <skos:definition xml:lang="en">The degree of conciseness of a learning object. The semantic density of a learning object may be estimated in terms of its size, span or duration.</skos:definition>
       <skos:definition xml:lang="fr">Une évaluation subjective de l'utilité d'une REA en fonction de sa taille ou de sa durée, par exemple, l'appréciation du nombre de concepts correctement exposés dans une minute d'exposé ou sur une page.</skos:definition>
    </skos:ConceptScheme>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.4_semantic_density/very_low">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.4_semantic_density"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#SemanticDensity-veryLow">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#SemanticDensity"/>
       <skos:prefLabel xml:lang="en">Very low</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">Très faible</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.4_semantic_density"/>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#SemanticDensity"/>
    </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.4_semantic_density/low">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.4_semantic_density"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#SemanticDensity-low">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#SemanticDensity"/>
       <skos:prefLabel xml:lang="en">Low</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">Faible</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.4_semantic_density"/>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#SemanticDensity"/>
    </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.4_semantic_density/medium">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.4_semantic_density"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#SemanticDensity-medium">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#SemanticDensity"/>
       <skos:prefLabel xml:lang="en">Medium</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">Moyen</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.4_semantic_density"/>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#SemanticDensity"/>
    </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.4_semantic_density/high">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.4_semantic_density"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#SemanticDensity-high">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#SemanticDensity"/>
       <skos:prefLabel xml:lang="en">High</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">Élevé</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.4_semantic_density"/>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#SemanticDensity"/>
    </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.4_semantic_density/very_high">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.4_semantic_density"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#SemanticDensity-veryHigh">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#SemanticDensity"/>
       <skos:prefLabel xml:lang="en">Very high</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">Très élevé</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.4_semantic_density"/>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#SemanticDensity"/>
    </skos:Concept>
 </rdf:RDF>

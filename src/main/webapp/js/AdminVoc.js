@@ -107,11 +107,13 @@
             border: false,
             layout: 'form',
             defaultType: 'textfield',
-            items: [ { fieldLabel: 'URI'}
-                     , { fieldLabel: 'Source' }
-                     , { fieldLabel: tr('Source Location') }
-                     , { fieldLabel: tr('Graph') }
-                     , this.cbNavigable ]        
+            items: [ { fieldLabel: 'ID', editable: false }, 
+                     { fieldLabel: 'URI', editable: false},
+                     { fieldLabel: tr('Source Location'), editable: false },
+                     { fieldLabel: tr('Concept URI prefix'), editable: false },
+                     { fieldLabel: tr('Concept URI Suffix'), editable: false },
+                     { fieldLabel: tr('Linking predicate'), editable: false },
+                     this.cbNavigable ]        
         }); 
 
         this.deleteAliasButton = Ext.create('Ext.button.Button', {
@@ -128,7 +130,7 @@
         this.aliases = Ext.create('Ext.grid.Panel', { 
             store: this.vocAliasStore,
             height: 150,  
-            width: 485,  
+            width: 475,  
             margin: '5 0 0 0',    
             columns: [ 
                 { dataIndex: 'alias', width: '99%',
@@ -191,7 +193,7 @@
             margin: '4 0 0 10',
             border: false,
             layout: 'hbox',
-            items: [ { xtype: 'label', text: tr('Aliases') + ":", width: 105, margin: '5 0 0 5' },                      
+            items: [ { xtype: 'label', text: tr('Aliases') + ":", width: 115, margin: '5 0 0 5' },                      
                      this.aliases ]
         }); 
 
@@ -221,11 +223,13 @@
                 success: function(response) {
                     this.initDisplay = true;
                     var jsonDetails = Ext.JSON.decode(response.responseText, true).vocDetails[0];
-                    this.detailsPanel.getComponent(0).setValue(jsonDetails.uri);
-                    this.detailsPanel.getComponent(1).setValue(jsonDetails.source);
+                    this.detailsPanel.getComponent(0).setValue(jsonDetails.id);
+                    this.detailsPanel.getComponent(1).setValue(jsonDetails.uri);
                     this.detailsPanel.getComponent(2).setValue(jsonDetails.location);
-                    this.detailsPanel.getComponent(3).setValue(jsonDetails.graph);
-                    this.detailsPanel.getComponent(4).setValue(jsonDetails.navigable);
+                    this.detailsPanel.getComponent(3).setValue(jsonDetails.uriPrefix);
+                    this.detailsPanel.getComponent(4).setValue(jsonDetails.uriSuffix);
+                    this.detailsPanel.getComponent(5).setValue(jsonDetails.linkingPredicate);
+                    this.detailsPanel.getComponent(6).setValue(jsonDetails.navigable);
                     this.initDisplay = false;
                     if (authorized)
                         this.modifyButton.setDisabled(jsonDetails.location.startsWith('http'));     
@@ -248,6 +252,8 @@
             this.detailsPanel.getComponent(2).setValue("");
             this.detailsPanel.getComponent(3).setValue("");
             this.detailsPanel.getComponent(4).setValue("");
+            this.detailsPanel.getComponent(5).setValue("");
+            this.detailsPanel.getComponent(6).setValue("");
             this.vocAliasStore.removeAll();
             //buttons
             this.modifyButton.setDisabled(true);     

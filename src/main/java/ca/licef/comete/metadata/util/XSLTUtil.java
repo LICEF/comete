@@ -5,6 +5,7 @@ import ca.licef.comete.core.Core;
 import ca.licef.comete.core.metadataformat.MetadataFormat;
 import ca.licef.comete.core.metadataformat.MetadataFormats;
 import ca.licef.comete.core.util.Constants;
+import ca.licef.comete.core.util.Util;
 import ca.licef.comete.identity.Identity;
 import ca.licef.comete.vocabularies.COMETE;
 import ca.licef.comete.vocabulary.Vocabulary;
@@ -175,13 +176,16 @@ public class XSLTUtil {
 
     public static String linkToVocabularyConceptEff( String loURI, String source, String element, String value ) throws Exception {
         //filter for used vocabularies
-        if ( !"5.2_learning_resource_type".equals(element) &&
-             !"5.6_context".equals(element) &&
-             !"9.2_taxon_path".equals(element) )
+        if ( !"5.2".equals(element) &&
+             !"5.6".equals(element) &&
+             !"9.2".equals(element) )
             return null;
 
-        if ("9.2_taxon_path".equals(element))
+        if ("9.2".equals(element))
             element = null;
+        else {
+            value = StringUtil.toCamelCase(value);
+        }
         if( source == null)
             return null;
         source = source.trim();
@@ -190,15 +194,18 @@ public class XSLTUtil {
         if (value == null || "".equals(value))
             return null;
 
-        String conceptUri = Vocabulary.getInstance().getConcept(source, element, value);
-        String predicate = DCTERMS.subject.getURI();
-        if ("5.2_learning_resource_type".equals(element))
-            predicate = COMETE.learningResourceType.getURI();
-        else if ("5.6_context".equals(element))
-            predicate = COMETE.educationalLevel.getURI();
+        TripleStore tripleStore = Core.getInstance().getTripleStore();
+
+        String id = (element == null)?source:source + "-" + element;
+        String conceptUri = Vocabulary.getInstance().getConcept(id, value);
         if( conceptUri != null ) {
+            String vocUri = Vocabulary.getInstance().getVocabularyUri(id);
+            String vocCtxt = tripleStore.getTriplesWithPredicateObject(
+                    COMETE.vocUri, vocUri, null)[0].getSubject();
+            String predicate = tripleStore.getTriplesWithSubjectPredicate(
+                    vocCtxt, COMETE.vocConceptLinkingPredicate)[0].getObject();
             Triple triple = new Triple(loURI, predicate, conceptUri, false);
-            Core.getInstance().getTripleStore().insertTriple(triple);
+            tripleStore.insertTriple(triple);
         }
         else
             System.out.println("-> no concept URI found for " + source + ", " + value);

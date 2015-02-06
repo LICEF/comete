@@ -43,7 +43,11 @@ public class COMETE {
     
     /** <p>uri of a vocabulary context</p> */
     public static final ObjectProperty vocUri = m_model.createObjectProperty( "http://comete.licef.ca/reference#vocUri" );
-    
+
+    /** <p>to be completed</p> */
+    public static final ObjectProperty vocConceptLinkingPredicate = m_model.createObjectProperty( "http://comete.licef.ca/reference#vocConceptLinkingPredicate" );
+
+
     /** <p>insertion date into the system</p> */
     public static final DatatypeProperty added = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#added" );
     
@@ -107,27 +111,24 @@ public class COMETE {
     /** <p>Alias corresponding to the vocabulary</p> */
     public static final DatatypeProperty vocAlias = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#vocAlias" );
 
-    /** <p>graph name of vocabulary content</p> */
-    public static final DatatypeProperty vocGraph = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#vocGraph" );
-
-    /** <p>graph name of vocabulary content</p> */
+    /** <p>to be completed</p> */
     public static final DatatypeProperty vocConceptUriPrefix = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#vocConceptUriPrefix" );
-    
+
+    /** <p>to be completed</p> */
+    public static final DatatypeProperty vocConceptUriSuffix = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#vocConceptUriSuffix" );
+
     /** <p>ID for internal management</p> */
     public static final DatatypeProperty vocId = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#vocId" );
     
     /** <p>Usable vocabulary for thematic navigation</p> */
     public static final DatatypeProperty vocNavigable = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#vocNavigable" );
-    
-    /** <p>Unique vocabulary used as pivot for equivalence</p> */
-    public static final DatatypeProperty vocPivot = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#vocPivot" );
-    
-    /** <p>source of a vocabulary context</p> */
-    public static final DatatypeProperty vocSource = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#vocSource" );
-    
+
     /** <p>Location of the related vocabulary</p> */
     public static final DatatypeProperty vocSourceLocation = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#vocSourceLocation" );
-    
+
+    /** <p>to be completed</p> */
+    public static final DatatypeProperty vocLocalURL = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#vocLocalURL" );
+
     /** <p>class of identities</p> */
     public static final OntClass Identity = m_model.createClass( "http://comete.licef.ca/reference#Identity" );
     

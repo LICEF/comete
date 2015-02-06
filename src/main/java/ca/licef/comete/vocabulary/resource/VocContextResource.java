@@ -179,10 +179,20 @@ public class VocContextResource {
 
             JSONArray vocDetails = new JSONArray();
             JSONObject detail = new JSONObject();
+            detail.put( "id", details[0].getValue("vocId").getContent() );
             detail.put( "uri", details[0].getValue("vocUri").getContent() );
-            detail.put( "source", details[0].getValue("src").getContent() );
-            detail.put( "location", details[0].getValue("location").getContent());
+            String location = details[0].getValue("location").getContent();
+            if (!location.startsWith("http"))
+                location = "local:/" + location;
+            detail.put( "location", location);
             detail.put( "navigable", details[0].getValue("navigable").getContent() );
+            detail.put( "linkingPredicate", details[0].getValue("predicate").getContent() );
+            String pref = details[0].getValue("prefix").getContent();
+            if (!"".equals(pref))
+                detail.put( "uriPrefix", pref);
+            String suf = details[0].getValue("suffix").getContent();
+            if (!"".equals(suf))
+                detail.put( "uriSuffix", suf);
             vocDetails.put(detail);
             json.key( "vocDetails" ).value( vocDetails );
             json.endObject();

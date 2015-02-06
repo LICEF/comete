@@ -1,10 +1,10 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <vocabulary>
-    <source>DeweyInfo</source>
-    <category>info</category>
-    <location>/deweyinfo/dewey.rdf</location>
+    <id>DeweyInfo</id>
+    <location>dewey.rdf</location>
     <navigable>true</navigable>
     <conceptUriPrefix>http://dewey.info/class/</conceptUriPrefix>
+    <conceptUriSuffix>/</conceptUriSuffix>
     <alias>http://www.oclc.org/dewey/</alias>
     <alias>CDD 22e éd.</alias>
     <alias>DDC 22nd ed.</alias>

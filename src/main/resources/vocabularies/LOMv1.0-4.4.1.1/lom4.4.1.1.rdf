@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:skos="http://www.w3.org/2004/02/skos/core#">
-   <skos:ConceptScheme rdf:about="${comete.uri.prefix}/voc/lomv1.0/4.4.1.1_type">
+   <skos:ConceptScheme rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#RequirementType">
       <skos:prefLabel xml:lang="en">LOMv1.0: 4.4.1.1 Type</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">LOMv1.0: 4.4.1.1 Type</skos:prefLabel>
    </skos:ConceptScheme>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/4.4.1.1_type/browser">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.1_type"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#RequirementType-browser">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#RequirementType"/>
       <skos:prefLabel xml:lang="en">Browser</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">Fureteur</skos:prefLabel>
       <skos:description xml:lang="en">According to the tenth edition of the Concise Oxford English Dictionary, a browser is "a program with an interface for displaying HTML files, used to navigate the World Wide Web" (COED, 2002).</skos:description>
       <skos:description xml:lang="fr">« Programme informatique utilisé pour l’accès à des sites ou à des renseignements d’un réseau (comme le World Wide Web). »</skos:description>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.1_type"/>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#RequirementType"/>
    </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/4.4.1.1_type/operating_system">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.1_type"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#RequirementType-operatingSystem">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#RequirementType"/>
       <skos:prefLabel xml:lang="en">Operating system</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">Système d'exploitation</skos:prefLabel>
       <skos:description xml:lang="en">An operating system is "a set of programs for organizing the resources and activities of a computer" (OED).</skos:description>
       <skos:description xml:lang="fr">« Ensemble de programmes destinés à organiser les ressources et les activités d’un ordinateur. »</skos:description>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/4.4.1.1_type"/>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#RequirementType"/>
    </skos:Concept>
 </rdf:RDF>

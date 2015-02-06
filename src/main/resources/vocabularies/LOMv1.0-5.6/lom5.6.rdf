@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:skos="http://www.w3.org/2004/02/skos/core#">
-   <skos:ConceptScheme rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.6_context">
+   <skos:ConceptScheme rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Context">
       <skos:prefLabel xml:lang="en">LOMv1.0: 5.6 Context</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">LOMv1.0: 5.6 Contexte</skos:prefLabel>
       <skos:definition xml:lang="en">The principal environment within which the learning and use of this learning object is intended to take place.</skos:definition>
       <skos:definition xml:lang="fr">Le principal environnement prévu pour l’apprentissage et l’utilisation de cette REA.</skos:definition>
    </skos:ConceptScheme>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.6_context/higher_education">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.6_context"/>
-      <skos:prefLabel xml:lang="en">higher education</skos:prefLabel>
-      <skos:prefLabel xml:lang="fr">éducation supérieure</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.6_context"/>
-   </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.6_context/school">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.6_context"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Context-school">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Context"/>
       <skos:prefLabel xml:lang="en">school</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">école</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.6_context"/>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Context"/>
    </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.6_context/training">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.6_context"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Context-higherEducation">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Context"/>
+      <skos:prefLabel xml:lang="en">higher education</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">éducation supérieure</skos:prefLabel>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Context"/>
+   </skos:Concept>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Context-training">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Context"/>
       <skos:prefLabel xml:lang="en">training</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">formation continue</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.6_context"/>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Context"/>
    </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.6_context/other">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.6_context"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Context-other">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Context"/>
       <skos:prefLabel xml:lang="en">other</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">autre</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.6_context"/>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Context"/>
    </skos:Concept>
 </rdf:RDF>

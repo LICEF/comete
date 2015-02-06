@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:skos="http://www.w3.org/2004/02/skos/core#">
-   <skos:ConceptScheme rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.8_difficulty">
+   <skos:ConceptScheme rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Difficulty">
       <skos:prefLabel xml:lang="en">LOMv1.0: 5.8 Difficulty</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">LOMv1.0: 5.8 Difficulté</skos:prefLabel>
       <skos:definition xml:lang="en">How hard it is to work with or through this learning object for the typical intended target audience.</skos:definition>
       <skos:definition xml:lang="fr">Degré de difficulté que présente l’utilisation de cette REA pour l’auditoire cible prévu.</skos:definition>
    </skos:ConceptScheme>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.8_difficulty/very_easy">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.8_difficulty"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Difficulty-veryEasy">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Difficulty"/>
       <skos:prefLabel xml:lang="en">Very easy</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">Très facile</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.8_difficulty"/>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Difficulty"/>
    </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.8_difficulty/easy">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.8_difficulty"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Difficulty-easy">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Difficulty"/>
       <skos:prefLabel xml:lang="en">Easy</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">Facile</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.8_difficulty"/>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Difficulty"/>
    </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.8_difficulty/medium">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.8_difficulty"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Difficulty-medium">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Difficulty"/>
       <skos:prefLabel xml:lang="en">Medium</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">Moyen</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.8_difficulty"/>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Difficulty"/>
    </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.8_difficulty/difficult">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.8_difficulty"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Difficulty-difficult">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Difficulty"/>
       <skos:prefLabel xml:lang="en">Difficult</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">Difficile</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.8_difficulty"/>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Difficulty"/>
    </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.8_difficulty/very_difficult">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.8_difficulty"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Difficulty-veryDifficult">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Difficulty"/>
       <skos:prefLabel xml:lang="en">Very difficult</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">Très difficile</skos:prefLabel>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.8_difficulty"/>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#Difficulty"/>
    </skos:Concept>
 </rdf:RDF>

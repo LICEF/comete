@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:skos="http://www.w3.org/2004/02/skos/core#">
-   <skos:ConceptScheme rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.1_interactivity_type">
+   <skos:ConceptScheme rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityType">
       <skos:prefLabel xml:lang="en">LOMv1.0: 5.1 Interactivity Type</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">LOMv1.0: 5.1 Type d'interactivité</skos:prefLabel>
       <skos:definition xml:lang="en">Predominant mode of learning supported by this learning object.</skos:definition>
       <skos:definition xml:lang="fr">Principal mode d'interaction utilisé par la REA.</skos:definition>
    </skos:ConceptScheme>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.1_interactivity_type/active">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.1_interactivity_type"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityType-active">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityType"/>
       <skos:prefLabel xml:lang="en">active</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">actif</skos:prefLabel>
       <skos:description xml:lang="en">"Active" learning (e.g., learning by doing) is</skos:description>
       <skos:description xml:lang="fr">Mode d’interaction dans lequel il est supposé que l’utilisateur produise quelque chose, par exemple, des données.</skos:description>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.1_interactivity_type"/>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityType"/>
    </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.1_interactivity_type/expositive">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.1_interactivity_type"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityType-expositive">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityType"/>
       <skos:prefLabel xml:lang="en">expositive</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">réceptif</skos:prefLabel>
       <skos:description xml:lang="en">"Expositive" learning (e.g., passive learning)</skos:description>
       <skos:description xml:lang="fr">Mode d’interaction dans lequel il est supposé que l’utilisateur recoive passivement de l’information, son rôle étant limité à la navigation dans la ressource.</skos:description>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.1_interactivity_type"/>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityType"/>
    </skos:Concept>
-   <skos:Concept rdf:about="${comete.uri.prefix}/voc/lomv1.0/5.1_interactivity_type/mixed">
-      <skos:inScheme rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.1_interactivity_type"/>
+   <skos:Concept rdf:about="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityType-mixed">
+      <skos:inScheme rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityType"/>
       <skos:prefLabel xml:lang="en">mixed</skos:prefLabel>
       <skos:prefLabel xml:lang="fr">combiné</skos:prefLabel>
       <skos:description xml:lang="en">When a learning object blends the active and</skos:description>
       <skos:description xml:lang="fr">Lorsqu’une REA est un amalgame des deux modes précédents, on dit que son type d’interactivité est combiné.</skos:description>
-      <skos:topConceptOf rdf:resource="${comete.uri.prefix}/voc/lomv1.0/5.1_interactivity_type"/>
+      <skos:topConceptOf rdf:resource="http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityType"/>
    </skos:Concept>
 </rdf:RDF>

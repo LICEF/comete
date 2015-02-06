@@ -4,9 +4,7 @@ PREFIX comete: <http://comete.licef.ca/reference#>
 SELECT DISTINCT ?s ?vocUri
 WHERE {
     ?s rdf:type comete:VocContext .
-    OPTIONAL {
-        ?s comete:vocUri ?vocUri 
-    }
+    ?s comete:vocUri ?vocUri
 }
 
 

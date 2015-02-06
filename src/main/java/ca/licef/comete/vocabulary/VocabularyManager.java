@@ -11,6 +11,7 @@ import licef.reflection.Invoker;
 import licef.tsapi.TripleStore;
 import licef.tsapi.model.Triple;
 import licef.tsapi.model.Tuple;
+import licef.tsapi.vocabulary.DCTERMS;
 import licef.tsapi.vocabulary.RDF;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.w3c.dom.Document;
@@ -44,12 +45,12 @@ public class VocabularyManager {
     TripleStore tripleStore;
     static ca.licef.comete.core.util.Util CoreUtil;
 
-    public String addNewVocContext(String name, String source, String cat,
+    public String addNewVocContext(String id, String source, String cat,
                                    boolean navigableFlag, String urlLocation,
                                    String fileName, InputStream uploadedInputStream) throws Exception{
-        File vocDir = new File(vocabulariesDir, name);
+        File vocDir = new File(vocabulariesDir, id);
         if (vocDir.exists())
-            return "Vocabulary with name '" + name + "' already exists.";
+            return "Vocabulary with id '" + id + "' already exists.";
 
         //create dest folder
         IOUtil.createDirectory(vocDir.getAbsolutePath());
@@ -58,7 +59,7 @@ public class VocabularyManager {
         File contentFile = null;
         if (location == null || "".equals(location)) {
             if (fileName != null && !"".equals(fileName)) {
-                location = "/" + name + "/" + fileName;
+                location = "/" + id + "/" + fileName;
                 //copy content
                 contentFile = new File(vocDir, fileName);
                 OutputStream os = new FileOutputStream(contentFile);
@@ -85,10 +86,6 @@ public class VocabularyManager {
         org.w3c.dom.Text value = doc.createTextNode(source);
         element.appendChild(value);
         root.appendChild(element);
-        element = doc.createElement("category");
-        value = doc.createTextNode(cat);
-        element.appendChild(value);
-        root.appendChild(element);
         element = doc.createElement("location");
         value = doc.createTextNode(location);
         element.appendChild(value);
@@ -101,7 +98,7 @@ public class VocabularyManager {
         }
         IOUtil.writeStringToFile(XMLUtil.getXMLString(root), new File(vocDir, "description.xml"));
 
-        initVocabulary(name, false);
+        initVocabulary(id, false);
 
         return null;
     }
@@ -219,6 +216,8 @@ public class VocabularyManager {
         String[] initVocs = vocabulariesSourceDir.list();
         if (initVocs != null) {
             for (String voc : initVocs) {
+                if (!("LOMv1.0-5.2".equals(voc) || "deweyinfo".equals(voc)))
+                    continue;
                 File destVoc = new File(vocabulariesDir, voc);
                 if (!destVoc.exists())
                     IOUtil.copyFiles(new File(vocabulariesSourceDir, voc), destVoc);
@@ -231,7 +230,7 @@ public class VocabularyManager {
             for (String voc : vocs) {
                 Invoker invk = new Invoker(this, "ca.licef.comete.vocabulary.VocabularyManager",
                         "initVocabulary", new Object[]{voc, false});
-                String uri = (String)tripleStore.transactionalCall(invk, TripleStore.WRITE_MODE);
+                String uri = (String) tripleStore.transactionalCall(invk, TripleStore.WRITE_MODE);
                 if (uri != null)
                     newUris.add(uri);
             }
@@ -246,17 +245,18 @@ public class VocabularyManager {
         System.out.println("Vocabulary Module initialization done.");
     }
 
-    public String initVocabulary(String voc, boolean forceUpdate) throws Exception {
-        File vocDir = new File(vocabulariesDir, voc);
+    public String initVocabulary(String vocId, boolean forceUpdate) throws Exception {
+        File vocDir = new File(vocabulariesDir, vocId);
         if (!vocDir.isDirectory())
             return null;
 
         File descriptor = new File(vocDir, "description.xml");
-        String source = null;
-        String cat = null;
+        String id = null;
         String location = null;
         boolean navigableFlag = false;
         String conceptUriPrefix = null;
+        String conceptUriSuffix = null;
+        String conceptLinkingPredicate = DCTERMS.subject.getURI();
         ArrayList<String> aliases = new ArrayList<String>();
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -270,16 +270,18 @@ public class VocabularyManager {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element e = (Element) node;
                 String value = e.getFirstChild().getNodeValue().trim();
-                if ("source".equals(e.getTagName()))
-                    source = value;
-                if ("category".equals(e.getTagName()))
-                    cat = value;
+                if ("id".equals(e.getTagName()))
+                    id = value;
                 if ("location".equals(e.getTagName()))
                     location = value;
                 if ("navigable".equals(e.getTagName()))
                     navigableFlag = "true".equals(value);
                 if ("conceptUriPrefix".equals(e.getTagName()))
                     conceptUriPrefix = value;
+                if ("conceptUriSuffix".equals(e.getTagName()))
+                    conceptUriSuffix = value;
+                if ("conceptLinkingPredicate".equals(e.getTagName()))
+                    conceptLinkingPredicate = value;
                 if ("alias".equals(e.getTagName()))
                     aliases.add(value);
             }
@@ -288,41 +290,40 @@ public class VocabularyManager {
         boolean isNew = false;
         String uri = null;
         //set vocUri as local URI (default value for new records). reset later
-        String vocUri = Core.getInstance().getUriPrefix() + "/voc/" + source.toLowerCase() + "/" + cat;
-        String query = CoreUtil.getQuery("vocabulary/getVocContext.sparql", voc);
+//        String vocUri = Core.getInstance().getUriPrefix() + "/voc/" + source.toLowerCase() + "/" + cat;
+        String vocUri = null;
+        String query = CoreUtil.getQuery("vocabulary/getVocContext.sparql", vocId);
         Tuple[] tuples = tripleStore.sparqlSelect(query);
         if (tuples.length > 0) {
             uri = tuples[0].getValue("s").getContent();
             vocUri = tuples[0].getValue("vocUri").getContent(); //reset
         }
 
-        ArrayList<Triple> list = new ArrayList<Triple>();
         if( uri == null ) {
-            uri = CoreUtil.makeURI(voc, COMETE.VocContext);
-            list.add(new Triple(uri, RDF.type, COMETE.VocContext));
-            list.add(new Triple(uri, COMETE.vocId, voc));
-            list.add(new Triple(uri, COMETE.vocSource, source));
-            list.add(new Triple(uri, COMETE.vocSourceLocation, location));
-            list.add(new Triple(uri, COMETE.vocNavigable, Boolean.toString(navigableFlag)));
+            uri = CoreUtil.makeURI(vocId, COMETE.VocContext);
+            tripleStore.insertTriple(new Triple(uri, RDF.type, COMETE.VocContext));
+            tripleStore.insertTriple(new Triple(uri, COMETE.vocId, vocId));
+            tripleStore.insertTriple(new Triple(uri, COMETE.vocSourceLocation, location));
+            tripleStore.insertTriple(new Triple(uri, COMETE.vocNavigable, Boolean.toString(navigableFlag)));
+            tripleStore.insertTriple(new Triple(uri, COMETE.vocConceptLinkingPredicate, conceptLinkingPredicate));
             if (conceptUriPrefix != null)
-                list.add(new Triple(uri, COMETE.vocConceptUriPrefix, conceptUriPrefix));
-
+                tripleStore.insertTriple(new Triple(uri, COMETE.vocConceptUriPrefix, conceptUriPrefix));
+            if (conceptUriSuffix != null)
+                tripleStore.insertTriple(new Triple(uri, COMETE.vocConceptUriSuffix, conceptUriSuffix));
             for (String alias : aliases)
-                list.add(new Triple(uri, COMETE.vocAlias, alias));
-
-            tripleStore.insertTriples(list);
+                tripleStore.insertTriple(new Triple(uri, COMETE.vocAlias, alias));
 
             isNew = true;
         }
 
         //content management
         if (isNew || forceUpdate)
-            initVocabularyContent(uri, location, vocUri, navigableFlag, !isNew);
+            initVocabularyContent(uri, location, vocId, vocUri, navigableFlag, !isNew);
 
         return isNew?uri:null;
     }
 
-    private void initVocabularyContent(String uri, String location, String vocUri,
+    private void initVocabularyContent(String uri, String location,  String vocId, String vocUri,
                                        boolean isNavigable, boolean cleanFirst) throws Exception {
         //remove voc graph
         if (cleanFirst) {
@@ -338,7 +339,7 @@ public class VocabularyManager {
         if (IOUtil.isURL(location))
             vocContent = IOUtil.readStringFromURL(new URL(location));
         else
-            vocContent = IOUtil.readStringFromFile(new File(vocabulariesDir, location));
+            vocContent = IOUtil.readStringFromFile(new File(vocabulariesDir, vocId + "/" + location));
 
         int format = Util.getVocabularyFormat(vocContent);
         switch (format) {
@@ -353,8 +354,7 @@ public class VocabularyManager {
         //force reset to catch external vocUris inside vocab
         Hashtable attributes = XMLUtil.getAttributes(skosContent, "//skos:ConceptScheme");
         String newVocUri = attributes.get("about").toString();
-        tripleStore.removeTriple(new Triple(uri, COMETE.vocUri, vocUri));
-        tripleStore.insertTriple(new Triple(uri, COMETE.vocUri, newVocUri));
+        tripleStore.updateObjectTriple(uri, COMETE.vocUri, vocUri, newVocUri);
         vocUri = newVocUri;
 
         //load content
@@ -366,10 +366,12 @@ public class VocabularyManager {
                     licef.tsapi.Constants.RDFXML, vocUri);
 
         //Generation of inferred triples (for all vocs, navigable or not)
-        tripleStore.doInference(vocUri, SKOS_ONTOLOGY_GRAPH);
+        tripleStore.doInference(SKOS_ONTOLOGY_GRAPH, vocUri);
     }
 
     private void clearVocabularyGraph(String vocUri, boolean isNavigable) throws Exception {
+        if (vocUri == null)
+            return;
         if (isNavigable)
             tripleStore.clear_textIndex(vocUri);
         else
