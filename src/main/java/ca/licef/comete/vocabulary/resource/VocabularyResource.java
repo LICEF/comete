@@ -1,5 +1,7 @@
 package ca.licef.comete.vocabulary.resource;
 
+import ca.licef.comete.core.util.Util;
+import ca.licef.comete.store.Store;
 import ca.licef.comete.vocabulary.Vocabulary;
 import com.sun.jersey.spi.resource.Singleton;
 import org.json.JSONArray;
@@ -8,6 +10,7 @@ import org.json.JSONObject;
 import org.json.JSONWriter;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -20,11 +23,11 @@ import java.io.StringWriter;
 @Path( "/voc" )
 public class VocabularyResource {
 
-    @GET
+    /*@GET
     @Path( "{source}/{cat}/rdf" )
     @Produces( "application/rdf+xml" )
     public Response getVocabularyAsRdf( @PathParam( "source" ) String source, @PathParam( "cat" ) String cat, @DefaultValue( "false" ) @QueryParam( "incomingLinks" ) String incomingLinks, @DefaultValue( "false" ) @QueryParam( "rdfMetadataInfos" ) String rdfMetadataInfos, @DefaultValue( "false" ) @QueryParam( "humanReadable" ) String humanReadable ) throws Exception {
-        /*boolean isIncomingLinks = ( "true".equals( incomingLinks ) );
+        *//*boolean isIncomingLinks = ( "true".equals( incomingLinks ) );
         boolean isRdfMetadataInfos = ( "true".equals( rdfMetadataInfos ) );
         boolean isHumanReadable = ( "true".equals( humanReadable ) );
         String graph = "voc_" + (source + "_" + cat).toLowerCase();
@@ -32,63 +35,63 @@ public class VocabularyResource {
         if( rdf == null )
             return( Response.status( Response.Status.NOT_FOUND ).build() );
         else
-            return( Response.ok( rdf ).build() );*/
+            return( Response.ok( rdf ).build() );*//*
 
         return( Response.ok().build() );
-    }
+    }*/
 
-    @GET
+    /*@GET
     @Path( "{source}/{cat}/{concept}" )
     @Produces( MediaType.TEXT_PLAIN )
     public Response getVocabularyConcept( @PathParam( "source" ) String source, @PathParam( "cat" ) String cat, @PathParam( "concept" ) String concept ) throws Exception {
-        /*source = URLDecoder.decode(source, "UTF-8");
+        *//*source = URLDecoder.decode(source, "UTF-8");
         cat = URLDecoder.decode(cat, "UTF-8");
         concept = URLDecoder.decode(concept, "UTF-8");
         String uri = Vocabulary.getInstance().getConcept( source, cat, concept );
         if (uri == null)
             return Response.status(Response.Status.NOT_FOUND).build();
         else
-            return Response.ok(uri).build();*/
+            return Response.ok(uri).build();*//*
 
         return( Response.ok().build() );
-    }
+    }*/
 
-    @GET
+    /*@GET
     @Path( "{source}/{concept}" )
     @Produces( MediaType.TEXT_PLAIN )
     public Response findVocabularyConcept( @PathParam( "source" ) String source, @PathParam( "concept" ) String concept ) throws Exception {
-        /*source = URLDecoder.decode(source, "UTF-8");
+        *//*source = URLDecoder.decode(source, "UTF-8");
         concept = URLDecoder.decode(concept, "UTF-8");
         String uri = Vocabulary.getInstance().getConcept( source, concept );
         if (uri == null)
             return Response.status(Response.Status.NOT_FOUND).build();
         else
-            return (Response.ok(uri).build());*/
+            return (Response.ok(uri).build());*//*
 
         return( Response.ok().build() );
-    }
+    }*/
 
-    @GET
+    /*@GET
     @Path( "{source}/{cat}/{concept}/rdf" )
     @Produces( "application/rdf+xml" )
     public Response getVocabularyConceptAsRdf( @PathParam( "source" ) String source, @PathParam( "cat" ) String cat, @PathParam( "concept" ) String concept, @DefaultValue( "false" ) @QueryParam( "incomingLinks" ) String incomingLinks, @DefaultValue( "false" ) @QueryParam( "rdfMetadataInfos" ) String rdfMetadataInfos, @DefaultValue( "false" ) @QueryParam( "humanReadable" ) String humanReadable  ) throws Exception {
-        /*boolean isRdfMetadataInfos = ( "true".equals( rdfMetadataInfos ) );
+        *//*boolean isRdfMetadataInfos = ( "true".equals( rdfMetadataInfos ) );
         boolean isHumanReadable = ( "true".equals( humanReadable ) );
         String infos = source + "#" + cat + "#" + concept;
         String rdf = Vocabulary.getInstance().getVocabularyConceptView().getRdf( infos, incomingLinks, isRdfMetadataInfos, isHumanReadable );
         if( rdf == null )
             return( Response.status( Response.Status.NOT_FOUND ).build() );
         else
-            return( Response.ok( rdf ).build() );*/
+            return( Response.ok( rdf ).build() );*//*
 
         return( Response.ok().build() );
-    }
+    }*/
 
-    @GET
+    /*@GET
     @Path( "{source}/{cat}/{concept}/incomingLinks/rdf" )
     @Produces( { "application/rdf+xml", MediaType.APPLICATION_JSON } )
     public Response getVocabularyConceptIncomingLinksAsRdf( @PathParam( "source" ) String source, @PathParam( "cat" ) String cat, @PathParam( "concept" ) String concept, @DefaultValue( "false" ) @QueryParam( "humanReadable" ) String humanReadable, @DefaultValue( "0" ) @QueryParam( "offset" ) String strOffset, @DefaultValue( "25" ) @QueryParam( "limit" ) String strLimit, @DefaultValue( "rdf" ) @QueryParam( "format" ) String format ) throws Exception {
-        /*boolean isHumanReadable = ( "true".equals( humanReadable ) );
+        *//*boolean isHumanReadable = ( "true".equals( humanReadable ) );
 
         int offset = -1;
         if( strOffset != null ) {
@@ -117,9 +120,24 @@ public class VocabularyResource {
             return( Response.status( HttpServletResponse.SC_OK ).entity( links ).type( "application/rdf+xml" ).build() );
         if( "json".equals( format ) )
             return( Response.status( HttpServletResponse.SC_OK ).entity( links ).type( MediaType.APPLICATION_JSON ).build() );
-        throw( new WebApplicationException( HttpServletResponse.SC_BAD_REQUEST ) ); // Unsupported format.*/
+        throw( new WebApplicationException( HttpServletResponse.SC_BAD_REQUEST ) ); // Unsupported format.*//*
 
         return( Response.ok().build() );
+    }*/
+
+    @GET
+    @Path( "{id}/{format}" )
+    @Produces( MediaType.APPLICATION_XML )
+    public Response getVocabularyAsXml( @PathParam( "id" ) String id, @PathParam( "format" ) String format) throws Exception {
+        String xml = null;
+        try {
+            xml = Store.getInstance().getDatastream("/vocabularies/" + id, id + "." + format.toLowerCase());
+        } catch (IOException e) {
+        }
+        if (xml == null)
+            return( Response.status( HttpServletResponse.SC_NOT_FOUND).build() );
+        else
+            return( Response.status( HttpServletResponse.SC_OK ).entity( xml ).type( MediaType.APPLICATION_XML ).build() );
     }
 
     @GET

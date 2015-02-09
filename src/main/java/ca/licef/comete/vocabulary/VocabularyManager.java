@@ -1,7 +1,7 @@
 package ca.licef.comete.vocabulary;
 
 import ca.licef.comete.core.Core;
-import ca.licef.comete.core.util.Constants;
+import ca.licef.comete.store.Store;
 import ca.licef.comete.vocabularies.COMETE;
 import ca.licef.comete.vocabulary.util.Util;
 import licef.IOUtil;
@@ -13,11 +13,13 @@ import licef.tsapi.model.Triple;
 import licef.tsapi.model.Tuple;
 import licef.tsapi.vocabulary.DCTERMS;
 import licef.tsapi.vocabulary.RDF;
+import licef.tsapi.vocabulary.SKOS;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -41,14 +43,13 @@ public class VocabularyManager {
     public static final String SKOS_ONTOLOGY_GRAPH = "skos-ontology";
 
     File vocabulariesSourceDir; //init vocabularies
-    File vocabulariesDir;
+    File vocabulariesDirConfig;
     TripleStore tripleStore;
     static ca.licef.comete.core.util.Util CoreUtil;
 
-    public String addNewVocContext(String id, String source, String cat,
-                                   boolean navigableFlag, String urlLocation,
+    public String addNewVocContext(String id, String urlLocation,
                                    String fileName, InputStream uploadedInputStream) throws Exception{
-        File vocDir = new File(vocabulariesDir, id);
+        File vocDir = new File(vocabulariesDirConfig, id);
         if (vocDir.exists())
             return "Vocabulary with id '" + id + "' already exists.";
 
@@ -82,20 +83,10 @@ public class VocabularyManager {
         Document doc = builder.newDocument();
         Element root = doc.createElement("vocabulary");
         doc.appendChild(root);
-        Element element = doc.createElement("source");
-        org.w3c.dom.Text value = doc.createTextNode(source);
+        Element element = doc.createElement("location");
+        org.w3c.dom.Text value = doc.createTextNode(location);
         element.appendChild(value);
         root.appendChild(element);
-        element = doc.createElement("location");
-        value = doc.createTextNode(location);
-        element.appendChild(value);
-        root.appendChild(element);
-        if (navigableFlag) {
-            element = doc.createElement("navigable");
-            value = doc.createTextNode("true");
-            element.appendChild(value);
-            root.appendChild(element);
-        }
         IOUtil.writeStringToFile(XMLUtil.getXMLString(root), new File(vocDir, "description.xml"));
 
         initVocabulary(id, false);
@@ -117,7 +108,7 @@ public class VocabularyManager {
         String location = details[0].getValue("location").getContent();
         String vocId = details[0].getValue("vocId").getContent();
 
-        File vocDir = new File(vocabulariesDir, vocId);
+        File vocDir = new File(vocabulariesDirConfig, vocId);
 
         String[] vals = StringUtil.split(location, '/');
         String contentFilename = vals[vals.length - 1];
@@ -174,14 +165,13 @@ public class VocabularyManager {
         Tuple[] details = Vocabulary.getInstance().getVocContextDetails(uri);
         String vocUri = details[0].getValue("vocUri").getContent();
         String vocId = details[0].getValue("vocId").getContent();
-        boolean navigable = Boolean.parseBoolean(details[0].getValue("navigable").getContent());
 
         //triple store deletion
         tripleStore.removeResource(uri);
-        clearVocabularyGraph(vocUri, navigable);
+        tripleStore.clear_textIndex(vocUri);
 
         //physical deletion
-        File vocDir = new File(vocabulariesDir, vocId);
+        File vocDir = new File(vocabulariesDirConfig, vocId);
         IOUtil.deleteDirectory(vocDir);
 
         return true;
@@ -196,7 +186,7 @@ public class VocabularyManager {
     public void initVocabularyModule() throws Exception {
         System.out.println("Vocabulary Module initialization...");
 
-        vocabulariesDir = new File(Core.getInstance().getCometeHome(), "/conf/vocabularies");
+        vocabulariesDirConfig = new File(Core.getInstance().getCometeHome(), "/conf/vocabularies");
         tripleStore = Core.getInstance().getTripleStore();
 
         //init SKOS ontology
@@ -210,20 +200,32 @@ public class VocabularyManager {
             vocabulariesSourceDir = new File(getClass().getResource("/vocabularies").getFile());
 
         //copy initial vocabularies into COMETE conf folder
-        if (!vocabulariesDir.exists())
-            IOUtil.createDirectory(vocabulariesDir.getAbsolutePath());
+        if (!vocabulariesDirConfig.exists())
+            IOUtil.createDirectory(vocabulariesDirConfig.getAbsolutePath());
 
         String[] initVocs = vocabulariesSourceDir.list();
         if (initVocs != null) {
             for (String voc : initVocs) {
-                File destVoc = new File(vocabulariesDir, voc);
-                if (!destVoc.exists())
-                    IOUtil.copyFiles(new File(vocabulariesSourceDir, voc), destVoc);
+                File srcVocDir = new File(vocabulariesSourceDir, voc);
+                if (!srcVocDir.isDirectory())
+                    continue;
+                File descriptor = new File(srcVocDir, "description.xml");
+                String id = XMLUtil.getSubXML(new InputSource(new FileInputStream(descriptor)), "//id/text()")[0];
+                String location = XMLUtil.getSubXML(new InputSource(new FileInputStream(descriptor)), "//location/text()")[0];
+                File destVocConf = new File(vocabulariesDirConfig, id);
+                if (!destVocConf.exists()) {
+                    IOUtil.copyFiles(descriptor, new File(destVocConf, "description.xml"));
+                    if (!location.startsWith("http")) {
+                        File vocab = new File(vocabulariesSourceDir, voc + "/" + location);
+                        Store.getInstance().setDatastream("/vocabularies/" + id, location, vocab);
+                    }
+                }
             }
         }
+
         //loop on predefined vocabularies
-        ArrayList<String> newUris = new ArrayList<String>();
-        String[] vocs = vocabulariesDir.list();
+        ArrayList<String> newUris = new ArrayList<>();
+        String[] vocs = vocabulariesDirConfig.list();
         if (vocs != null) {
             for (String voc : vocs) {
                 Invoker invk = new Invoker(this, "ca.licef.comete.vocabulary.VocabularyManager",
@@ -238,13 +240,13 @@ public class VocabularyManager {
             //relationships
             for (String uri : newUris)
                 initRelationships(uri);
-        }*/
-
+        }*//*
+*/
         System.out.println("Vocabulary Module initialization done.");
     }
 
     public String initVocabulary(String vocId, boolean forceUpdate) throws Exception {
-        File vocDir = new File(vocabulariesDir, vocId);
+        File vocDir = new File(vocabulariesDirConfig, vocId);
         if (!vocDir.isDirectory())
             return null;
 
@@ -255,7 +257,7 @@ public class VocabularyManager {
         String conceptUriPrefix = null;
         String conceptUriSuffix = null;
         String conceptLinkingPredicate = DCTERMS.subject.getURI();
-        ArrayList<String> aliases = new ArrayList<String>();
+        ArrayList<String> aliases = new ArrayList<>();
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setCoalescing(true); //convert CDATA node to Text node
@@ -287,10 +289,8 @@ public class VocabularyManager {
 
         boolean isNew = false;
         String uri = null;
-        //set vocUri as local URI (default value for new records). reset later
-//        String vocUri = Core.getInstance().getUriPrefix() + "/voc/" + source.toLowerCase() + "/" + cat;
         String vocUri = null;
-        String query = CoreUtil.getQuery("vocabulary/getVocContext.sparql", vocId);
+        String query = CoreUtil.getQuery("vocabulary/getVocContext.sparql", id);
         Tuple[] tuples = tripleStore.sparqlSelect(query);
         if (tuples.length > 0) {
             uri = tuples[0].getValue("s").getContent();
@@ -300,7 +300,7 @@ public class VocabularyManager {
         if( uri == null ) {
             uri = CoreUtil.makeURI(vocId, COMETE.VocContext);
             tripleStore.insertTriple(new Triple(uri, RDF.type, COMETE.VocContext));
-            tripleStore.insertTriple(new Triple(uri, COMETE.vocId, vocId));
+            tripleStore.insertTriple(new Triple(uri, COMETE.vocId, id));
             tripleStore.insertTriple(new Triple(uri, COMETE.vocSourceLocation, location));
             tripleStore.insertTriple(new Triple(uri, COMETE.vocNavigable, Boolean.toString(navigableFlag)));
             tripleStore.insertTriple(new Triple(uri, COMETE.vocConceptLinkingPredicate, conceptLinkingPredicate));
@@ -316,18 +316,17 @@ public class VocabularyManager {
 
         //content management
         if (isNew || forceUpdate)
-            initVocabularyContent(uri, location, vocId, vocUri, navigableFlag, !isNew);
+            initVocabularyContent(uri, location, id, vocUri, !isNew);
 
         return isNew?uri:null;
     }
 
-    private void initVocabularyContent(String uri, String location,  String vocId, String vocUri,
-                                       boolean isNavigable, boolean cleanFirst) throws Exception {
+    private void initVocabularyContent(String uri, String location, String vocId, String vocUri, boolean cleanFirst) throws Exception {
         //remove voc graph
         if (cleanFirst) {
             Triple[] triples = tripleStore.getTriplesWithSubjectPredicate(uri, COMETE.vocUri);
             tripleStore.removeTriples(Arrays.asList(triples));
-            clearVocabularyGraph(vocUri, isNavigable);
+            tripleStore.clear_textIndex(vocUri);
         }
 
         String vocContent;
@@ -337,17 +336,26 @@ public class VocabularyManager {
         if (IOUtil.isURL(location))
             vocContent = IOUtil.readStringFromURL(new URL(location));
         else
-            vocContent = IOUtil.readStringFromFile(new File(vocabulariesDir, vocId + "/" + location));
+            vocContent = Store.getInstance().getDatastream("/vocabularies/" + vocId, location);
 
+        String storeId = "/vocabularies/" + vocId;
         int format = Util.getVocabularyFormat(vocContent);
         switch (format) {
             case Util.VDEX_FORMAT : //keep vdex version for history
+                Store.getInstance().setDatastream(storeId, vocId + ".vdex", vocContent);
+                tripleStore.insertTriple(new Triple(uri, COMETE.vocLocalURL,
+                        Core.getInstance().getCometeUrl() + "/" + CoreUtil.getRestUrl(SKOS.ConceptScheme) + "/" +
+                                vocId + "/vdex"));
                 skosContent = convertVdexToSkos(vocContent);
-//                IOUtil.writeStringToFile(skosContent, new File(vocabulariesDir, "skos.rdf"));
                 break;
             default:
                 skosContent = vocContent;
         }
+
+        Store.getInstance().setDatastream("/vocabularies/" + vocId, vocId + ".skos", skosContent);
+        tripleStore.insertTriple(new Triple(uri, COMETE.vocLocalURL,
+                Core.getInstance().getCometeUrl() + "/" + CoreUtil.getRestUrl(SKOS.ConceptScheme) + "/" +
+                        vocId + "/skos"));
 
         //force reset to catch external vocUris inside vocab
         Hashtable attributes = XMLUtil.getAttributes(skosContent, "//skos:ConceptScheme");
@@ -355,25 +363,12 @@ public class VocabularyManager {
         tripleStore.updateObjectTriple(uri, COMETE.vocUri, vocUri, newVocUri);
         vocUri = newVocUri;
 
-        //load content
-        if (isNavigable)
-            tripleStore.loadContent_textIndex(new ByteArrayInputStream(skosContent.getBytes()),
-                    licef.tsapi.Constants.RDFXML, vocUri);
-        else
-            tripleStore.loadContent(new ByteArrayInputStream(skosContent.getBytes()),
-                    licef.tsapi.Constants.RDFXML, vocUri);
+        //load content (with index even for non-navigable vocs, for possible future switch to)
+        tripleStore.loadContent_textIndex(new ByteArrayInputStream(skosContent.getBytes()),
+                licef.tsapi.Constants.RDFXML, vocUri);
 
         //Generation of inferred triples (for all vocs, navigable or not)
         tripleStore.doInference(SKOS_ONTOLOGY_GRAPH, vocUri);
-    }
-
-    private void clearVocabularyGraph(String vocUri, boolean isNavigable) throws Exception {
-        if (vocUri == null)
-            return;
-        if (isNavigable)
-            tripleStore.clear_textIndex(vocUri);
-        else
-            tripleStore.clear(vocUri);
     }
 
     //Relationships management

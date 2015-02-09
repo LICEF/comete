@@ -72,7 +72,7 @@ public class Store {
         File dsLoc = new File( location + path + "/" + datastream );
         if( content instanceof File ) {
             File contentFile = (File)content;
-            Files.copy( contentFile.toPath(), dsLoc.toPath() );
+            IOUtil.copyFiles(contentFile, dsLoc);
         }
         else if( content instanceof String ) {
             String contentString = (String)content;

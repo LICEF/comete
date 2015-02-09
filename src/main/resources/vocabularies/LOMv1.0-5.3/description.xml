@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <vocabulary>
+    <id>LOMv1.0-5.3</id>
     <location>lom5.3.rdf</location>
     <conceptUriPrefix>http://ltsc.ieee.org/rdf/lomv1.0/vocab#InteractivityLevel-</conceptUriPrefix>
 </vocabulary>

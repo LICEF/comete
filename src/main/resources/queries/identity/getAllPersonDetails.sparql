@@ -15,11 +15,11 @@ WHERE '{'
     UNION '{' ?s foaf:phone ?tel . 
               FILTER ( regex(str(?tel), "^tel:") ) '}'
     UNION '{' ?s comete:altPhone ?alttel .
-              FILTER ( regex(?alttel, "^tel:") ) '}'
+              FILTER ( regex(str(?alttel), "^tel:") ) '}'
     UNION '{' ?s foaf:phone ?fax .
               FILTER ( regex(str(?fax), "^fax:") ) '}'
     UNION '{' ?s comete:altPhone ?altfax .
-              FILTER ( regex(?altfax, "^fax:") ) '}'
+              FILTER ( regex(str(?altfax), "^fax:") ) '}'
     FILTER ( {0} )
 }
 

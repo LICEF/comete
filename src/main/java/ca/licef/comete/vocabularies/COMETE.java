@@ -61,13 +61,13 @@ public class COMETE {
     public static final DatatypeProperty altGivenName = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#altGivenName" );
     
     /** <p>alternative mail box</p> */
-    public static final DatatypeProperty altMbox = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#altMbox" );
+    public static final ObjectProperty altMbox = m_model.createObjectProperty( "http://comete.licef.ca/reference#altMbox" );
     
     /** <p>alternative name</p> */
     public static final DatatypeProperty altName = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#altName" );
     
     /** <p>alternative phone (tel or fax)</p> */
-    public static final DatatypeProperty altPhone = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#altPhone" );
+    public static final ObjectProperty altPhone = m_model.createObjectProperty( "http://comete.licef.ca/reference#altPhone" );
     
     /** <p>metadata application profile</p> */
     public static final DatatypeProperty applicationProfile = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#applicationProfile" );
@@ -130,7 +130,7 @@ public class COMETE {
     public static final DatatypeProperty vocSourceLocation = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#vocSourceLocation" );
 
     /** <p>to be completed</p> */
-    public static final DatatypeProperty vocLocalURL = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#vocLocalURL" );
+    public static final ObjectProperty vocLocalURL = m_model.createObjectProperty( "http://comete.licef.ca/reference#vocLocalURL" );
 
     /** <p>class of identities</p> */
     public static final OntClass Identity = m_model.createClass( "http://comete.licef.ca/reference#Identity" );

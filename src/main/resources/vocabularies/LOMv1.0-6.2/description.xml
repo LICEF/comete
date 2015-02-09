@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <vocabulary>
+    <id>LOMv1.0-6.2</id>
     <location>lom6.2.rdf</location>
     <conceptUriPrefix>http://ltsc.ieee.org/rdf/lomv1.0/vocab#CopyrightAndOtherRestrictions-</conceptUriPrefix>
 </vocabulary>

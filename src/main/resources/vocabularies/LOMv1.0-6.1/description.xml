@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <vocabulary>
+    <id>LOMv1.0-6.1</id>
     <location>lom6.1.rdf</location>
     <conceptUriPrefix>http://ltsc.ieee.org/rdf/lomv1.0/vocab#Cost-</conceptUriPrefix>
 </vocabulary>

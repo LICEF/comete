@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <vocabulary>
+    <id>LOMv1.0-4.4.1.2-browser</id>
     <location>lom4.4.1.2b.rdf</location>
     <conceptUriPrefix>http://ltsc.ieee.org/rdf/lomv1.0/vocab#BrowserTechnology-</conceptUriPrefix>
 </vocabulary>

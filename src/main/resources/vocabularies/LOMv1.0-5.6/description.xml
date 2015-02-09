@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <vocabulary>
+    <id>LOMv1.0-5.6</id>
     <location>lom5.6.rdf</location>
     <conceptUriPrefix>http://ltsc.ieee.org/rdf/lomv1.0/vocab#Context-</conceptUriPrefix>
     <conceptLinkingPredicate>http://comete.licef.ca/reference#educationalLevel</conceptLinkingPredicate>
