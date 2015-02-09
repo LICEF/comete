@@ -47,8 +47,8 @@ public class VocabularyManager {
     TripleStore tripleStore;
     static ca.licef.comete.core.util.Util CoreUtil;
 
-    public String addNewVocContext(String id, String urlLocation,
-                                   String fileName, InputStream uploadedInputStream) throws Exception{
+    public String addNewVocContext(String id, String uriPrefix, String uriSuffix, String linkingPredicate,
+                                   String urlLocation, String fileName, InputStream uploadedInputStream) throws Exception{
         File vocDir = new File(vocabulariesDirConfig, id);
         if (vocDir.exists())
             return "Vocabulary with id '" + id + "' already exists.";
@@ -58,11 +58,14 @@ public class VocabularyManager {
 
         String location = urlLocation;
         File contentFile = null;
+        String storeId = "/vocabularies/" + id;
         if (location == null || "".equals(location)) {
             if (fileName != null && !"".equals(fileName)) {
-                location = "/" + id + "/" + fileName;
+                location = fileName;
                 //copy content
-                contentFile = new File(vocDir, fileName);
+                File destFolder = new File(Store.getInstance().getLocation() + storeId);
+                destFolder.mkdirs();
+                contentFile = new File(destFolder, fileName);
                 OutputStream os = new FileOutputStream(contentFile);
                 IOUtil.copy(uploadedInputStream, os);
                 uploadedInputStream.close();
@@ -74,6 +77,7 @@ public class VocabularyManager {
         int format = Util.getVocabularyFormatFromLocation((contentFile != null)?contentFile.getAbsolutePath():location);
         if (format == -1) {
             IOUtil.deleteDirectory(vocDir);
+            Store.getInstance().deleteDigitalObject(storeId);
             return "Not a VDEX or SKOS content.";
         }
 
@@ -83,10 +87,32 @@ public class VocabularyManager {
         Document doc = builder.newDocument();
         Element root = doc.createElement("vocabulary");
         doc.appendChild(root);
-        Element element = doc.createElement("location");
-        org.w3c.dom.Text value = doc.createTextNode(location);
+        Element element = doc.createElement("id");
+        org.w3c.dom.Text value = doc.createTextNode(id);
         element.appendChild(value);
         root.appendChild(element);
+        element = doc.createElement("location");
+        value = doc.createTextNode(location);
+        element.appendChild(value);
+        root.appendChild(element);
+        if (!"".equals(uriPrefix)) {
+            element = doc.createElement("conceptUriPrefix");
+            value = doc.createTextNode(uriPrefix);
+            element.appendChild(value);
+            root.appendChild(element);
+        }
+        if (!"".equals(uriSuffix)) {
+            element = doc.createElement("conceptUriSuffix");
+            value = doc.createTextNode(uriSuffix);
+            element.appendChild(value);
+            root.appendChild(element);
+        }
+        if (!"".equals(linkingPredicate)) {
+            element = doc.createElement("linkingPredicate");
+            value = doc.createTextNode(linkingPredicate);
+            element.appendChild(value);
+            root.appendChild(element);
+        }
         IOUtil.writeStringToFile(XMLUtil.getXMLString(root), new File(vocDir, "description.xml"));
 
         initVocabulary(id, false);

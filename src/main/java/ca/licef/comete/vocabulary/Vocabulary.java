@@ -164,10 +164,10 @@ public class Vocabulary {
         return (boolean)tripleStore.transactionalCall(inv);
     }
 
-    public String addNewVocContext(String name, String source, String cat, boolean navigable,
+    public String addNewVocContext(String id, String uriPrefix, String uriSuffix, String linkingPredicate,
                                    String url, String fileName, InputStream uploadedInputStream) throws Exception {
         Invoker inv = new Invoker(getVocabularyManager(), "ca.licef.comete.vocabulary.VocabularyManager",
-                "addNewVocContext", new Object[]{name, source, cat, navigable,
+                "addNewVocContext", new Object[]{id, uriPrefix, uriSuffix, linkingPredicate,
                                               url, fileName, uploadedInputStream});
         return (String)tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
     }

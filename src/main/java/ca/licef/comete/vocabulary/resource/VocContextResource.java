@@ -73,10 +73,10 @@ public class VocContextResource {
     @Consumes( MediaType.MULTIPART_FORM_DATA )
     @Produces( MediaType.TEXT_HTML ) //!important for ExtJS see Ext.form.Basic.hasUpload() description -AM
     public Response addNewVocContext(@Context HttpServletRequest request,
-                                  @FormDataParam("name") String name,
-                                  @FormDataParam("source") String source,
-                                  @FormDataParam("category") String cat,
-                                  @FormDataParam("navigable") String navig,
+                                  @FormDataParam("id") String id,
+                                  @FormDataParam("uriPrefix") String uriPrefix,
+                                  @FormDataParam("uriSuffix") String uriSuffix,
+                                  @FormDataParam("linkingPredicate") String linkingPredicate,
                                   @FormDataParam("url") String url,
                                   @FormDataParam("file") java.io.InputStream uploadedInputStream,
                                   @FormDataParam("file") com.sun.jersey.core.header.FormDataContentDisposition fileDetail ) throws Exception {
@@ -85,7 +85,7 @@ public class VocContextResource {
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to add vocabulary.").build();
 
         String errorMessage = Vocabulary.getInstance().addNewVocContext(
-                name, source, cat, "on".equals(navig), url, fileDetail.getFileName(), uploadedInputStream);
+                id, uriPrefix, uriSuffix, linkingPredicate, url, fileDetail.getFileName(), uploadedInputStream);
         StringWriter out = new StringWriter();
         try {
             JSONWriter json = new JSONWriter( out ).object();

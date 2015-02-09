@@ -111,7 +111,7 @@
                      { fieldLabel: 'URI', editable: false},
                      { fieldLabel: tr('Source Location'), editable: false },
                      { fieldLabel: tr('Concept URI prefix'), editable: false },
-                     { fieldLabel: tr('Concept URI Suffix'), editable: false },
+                     { fieldLabel: tr('Concept URI suffix'), editable: false },
                      { fieldLabel: tr('Linking predicate'), editable: false },
                      this.cbNavigable ]        
         }); 
@@ -474,12 +474,12 @@ Ext.define( 'Comete.AdminVocEditor', {
             margin: '10',
             layout: 'form',
             defaultType: 'textfield',
-            items: [ { name: 'name', fieldLabel: tr('Name'), allowBlank: false },
-                     { name: 'source', fieldLabel: 'Source', allowBlank: false },
-                     { name: 'category', fieldLabel: tr('Category'), allowBlank: false },
+            items: [ { name: 'id', fieldLabel: 'ID', allowBlank: false },
                      this.urlLocation, 
                      this.fileLocation, 
-                     { name: 'navigable', xtype: 'checkbox', fieldLabel: 'Navigable ?' }]        
+                     { name: 'uriPrefix', fieldLabel: tr('Concept URI prefix'), emptyText: tr('Optional field') },
+                     { name: 'uriSuffix', fieldLabel: tr('Concept URI suffix'), emptyText: tr('Optional field') },
+                     { name: 'linkingPredicate', fieldLabel: tr('Linking predicate'), emptyText: tr('Optional field') } ]        
         }); 
 
 
@@ -508,6 +508,7 @@ Ext.define( 'Comete.AdminVocEditor', {
                 Ext.Msg.alert('Failure', action.result.error);            
                 waitDialog.close();   
             },
+            submitEmptyText: false,
             scope: this
         });
     }        
@@ -534,7 +535,6 @@ Ext.define( 'Comete.AdminVocUploader', {
             items: [ { fieldLabel: 'URI', disabled: true, value: this.uri },                      
                      this.fileLocation ]        
         }); 
-
 
         cfg = {
             title: tr('Modify vocabulary'),
