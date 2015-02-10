@@ -8,7 +8,7 @@ import ca.licef.comete.queryengine.ResultEntry;
 import ca.licef.comete.queryengine.util.FeedUtil;
 import ca.licef.comete.queryengine.util.Util;
 import com.sun.jersey.spi.container.servlet.PerSession;
-import com.sun.syndication.feed.synd.SyndFeed;
+import com.rometools.rome.feed.synd.SyndFeed;
 import licef.StringUtil;
 import licef.tsapi.TripleStore;
 import licef.tsapi.vocabulary.RDFS;
