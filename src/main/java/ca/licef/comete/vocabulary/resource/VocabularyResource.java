@@ -131,7 +131,7 @@ public class VocabularyResource {
     public Response getVocabularyAsXml( @PathParam( "id" ) String id, @PathParam( "format" ) String format) throws Exception {
         String xml = null;
         try {
-            xml = Store.getInstance().getDatastream("/vocabularies/" + id, id + "." + format.toLowerCase());
+            xml = Store.getInstance().getDatastream(Store.PATH_VOCABS + "/" + id, id + "." + format.toLowerCase());
         } catch (IOException e) {
         }
         if (xml == null)

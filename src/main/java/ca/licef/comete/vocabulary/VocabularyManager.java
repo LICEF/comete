@@ -58,7 +58,7 @@ public class VocabularyManager {
 
         String location = urlLocation;
         File contentFile = null;
-        String storeId = "/vocabularies/" + id;
+        String storeId = Store.PATH_VOCABS + "/" + id;
         if (location == null || "".equals(location)) {
             if (fileName != null && !"".equals(fileName)) {
                 location = fileName;
@@ -243,7 +243,7 @@ public class VocabularyManager {
                     IOUtil.copyFiles(descriptor, new File(destVocConf, "description.xml"));
                     if (!location.startsWith("http")) {
                         File vocab = new File(vocabulariesSourceDir, voc + "/" + location);
-                        Store.getInstance().setDatastream("/vocabularies/" + id, location, vocab);
+                        Store.getInstance().setDatastream(Store.PATH_VOCABS + "/" + id, location, vocab);
                     }
                 }
             }
@@ -362,9 +362,9 @@ public class VocabularyManager {
         if (IOUtil.isURL(location))
             vocContent = IOUtil.readStringFromURL(new URL(location));
         else
-            vocContent = Store.getInstance().getDatastream("/vocabularies/" + vocId, location);
+            vocContent = Store.getInstance().getDatastream(Store.PATH_VOCABS +"/" + vocId, location);
 
-        String storeId = "/vocabularies/" + vocId;
+        String storeId = Store.PATH_VOCABS + "/" + vocId;
         int format = Util.getVocabularyFormat(vocContent);
         switch (format) {
             case Util.VDEX_FORMAT : //keep vdex version for history
@@ -378,7 +378,7 @@ public class VocabularyManager {
                 skosContent = vocContent;
         }
 
-        Store.getInstance().setDatastream("/vocabularies/" + vocId, vocId + ".skos", skosContent);
+        Store.getInstance().setDatastream(Store.PATH_VOCABS + "/" + vocId, vocId + ".skos", skosContent);
         tripleStore.insertTriple(new Triple(uri, COMETE.vocLocalURL,
                 Core.getInstance().getCometeUrl() + "/" + CoreUtil.getRestUrl(SKOS.ConceptScheme) + "/" +
                         vocId + "/skos"));
