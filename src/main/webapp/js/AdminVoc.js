@@ -36,7 +36,7 @@
         this.modifyButton = Ext.create('Ext.button.Button', {
             text: tr('Modify'),
             disabled: true,
-            handler: this.modifyVocabularyContent, 
+            handler: this.modifyVocabulary, 
             scope: this
         } );
 
@@ -48,13 +48,6 @@
         } );
 
 
-        this.updateButton = Ext.create('Ext.button.Button', {
-            text: tr('Update'),
-            disabled: true,
-            handler: this.updateVocabulary, 
-            scope: this
-        } );
-        
         function updateIcon(val, cellmetadata, record, row) {
             var icon = record.get('update') == true?'exclamationMark.png':'validMark.png';
             return '<center><img src="images/' + icon + '"/><center>';
@@ -72,7 +65,7 @@
                 stripeRows: false,
             },
             autoScroll: true,
-            bbar: [ this.addButton, this.modifyButton, this.deleteButton, '->', this.updateButton ]
+            bbar: [ this.addButton, this.modifyButton, this.deleteButton ]
         });
 
         this.vocabList.on( 'selectionchange', this.vocabChanged, this );
@@ -231,8 +224,6 @@
                     this.detailsPanel.getComponent(5).setValue(jsonDetails.linkingPredicate);
                     this.detailsPanel.getComponent(6).setValue(jsonDetails.navigable);
                     this.initDisplay = false;
-                    if (authorized)
-                        this.modifyButton.setDisabled(jsonDetails.location.startsWith('http'));     
                 },
                 scope: this 
             } );
@@ -242,8 +233,8 @@
             this.vocAliasStore.load();   
             //buttons
             if (authorized) {  
+                this.modifyButton.setDisabled(false);     
                 this.deleteButton.setDisabled(false);     
-                this.updateButton.setDisabled(false);     
             }
         }
         else {
@@ -258,7 +249,6 @@
             //buttons
             this.modifyButton.setDisabled(true);     
             this.deleteButton.setDisabled(true);     
-            this.updateButton.setDisabled(true);     
         }
         this.deleteAliasButton.setDisabled(true);  
     },
@@ -275,13 +265,13 @@
         this.vocCtxtStore.loadPage(1);
         Ext.Msg.alert('Information', tr('Vocabulary added.'));
     },
-    modifyVocabularyContent: function() {
+    modifyVocabulary: function() {
         Ext.Ajax.request( {
             url: this.currentVocContextRestUrl + '/used',
             method: 'GET',
             success: function(response) {
                 if (response.responseText == 'false')
-                    this.modifyVocabularyContentStep2(null);
+                    this.modifyVocabularyStep2(null);
                 else {
                     var promptBox = Ext.Msg;
                     promptBox.buttonText = { cancel: tr("Cancel") };
@@ -297,7 +287,7 @@
             scope: this 
         } );      
     },
-    modifyVocabularyContentStep2: function(button) {
+    modifyVocabularyStep2: function(button) {
         if (button != null && button != 'ok')
             return;
         Ext.Ajax.request( {
@@ -305,66 +295,26 @@
             method: 'GET',
             success: function(response) {
                 var jsonDetails = Ext.JSON.decode(response.responseText, true).vocDetails[0];
-                this.modifyVocabularyContentStep3(jsonDetails.uri, jsonDetails.location)
+                this.modifyVocabularyStep3(jsonDetails)
             },
             scope: this 
         } );      
     },
-    modifyVocabularyContentStep3: function(vocUri, location) {
-        var editor = Ext.create('Comete.AdminVocUploader', {
+    modifyVocabularyStep3: function(values) {
+        var editor = Ext.create('Comete.AdminVocEditor', {
             width: 500,
-            height: 170,
+            height: 270,
             modal: true,
+            mode: 'modify',
             restUrl: this.currentVocContextRestUrl,
-            uri: vocUri,
-            location: location,
-            listener: this
+            values: values,
+            listener: this            
         });
-        editor.show();       
+        editor.show();
     },
     afterModify: function() {
         this.vocCtxtStore.loadPage(1);
         Ext.Msg.alert('Information', tr('Vocabulary modified.'));
-    },
-    updateVocabulary: function() {
-        var records = this.vocabList.getSelectionModel().getSelection();
-        if (records.length == 0)
-            return;
-        
-        var promptBox = Ext.Msg;
-        promptBox.buttonText = { cancel: tr("Cancel") };
-        promptBox.show({
-            msg: tr('Do you really want to update vocabulary ?'),
-            buttons: Ext.Msg.OKCANCEL,
-            icon: Ext.Msg.QUESTION,
-            fn: this.updateVocabularyEff,
-            scope: this
-        });
-
-    },
-    updateVocabularyEff: function(button) {
-        if (button != 'ok')
-            return;
-        var waitDialog = Ext.create('Ext.window.MessageBox', {       
-        });
-        waitDialog.wait( tr('Please wait') + '...' );
-        Ext.Ajax.request( {
-            url: this.currentVocContextRestUrl + '/update',
-            method: 'GET',
-            success: function(response, opts) {
-                waitDialog.close();
-                var selection = this.vocabList.getSelectionModel().getSelection();
-                selection[0].set('update', false);
-                selection[0].commit(); //probably not good use of commit but avoid mark cell as dirty -AM
-                this.vocabChanged(null, selection);
-                Ext.Msg.alert('Information', tr('Vocabulary updated.'));
-            },
-            failure: function(response, opts) {
-                waitDialog.close();
-                Ext.Msg.alert('Failure', response.responseText);  
-            },
-            scope: this 
-        } );
     },
     deleteVocabulary: function() {
         var records = this.vocabList.getSelectionModel().getSelection();
@@ -450,7 +400,6 @@ Ext.define( 'Comete.AdminVocEditor', {
     extend: 'Ext.window.Window',
     layout: 'fit',           
     initComponent: function( config ) {
-
         this.urlLocation = Ext.create('Ext.form.TextField', {
             name: 'url',
             labelWidth: 130,
@@ -466,7 +415,10 @@ Ext.define( 'Comete.AdminVocEditor', {
 
         //must select uploadfield twice if urlfield is not empty. 
         //Best I can do cause uploadfield reset doesn't works properly... (known bug) -AM
-        this.urlLocation.on('change', function() { this.fileLocation.reset(); }, this ); 
+        this.urlLocation.on('change', function() { 
+            this.fileLocation.emptyText = " ";
+            this.fileLocation.reset();
+        }, this ); 
         this.fileLocation.on('change', function() { this.urlLocation.setValue(""); }, this ); 
 
         this.formPanel = Ext.create('Ext.form.Panel', { 
@@ -474,95 +426,62 @@ Ext.define( 'Comete.AdminVocEditor', {
             margin: '10',
             layout: 'form',
             defaultType: 'textfield',
-            items: [ { name: 'id', fieldLabel: 'ID', allowBlank: false },
+            items: [ { name: 'id', fieldLabel: 'ID', editable: this.mode != 'modify' },
                      this.urlLocation, 
                      this.fileLocation, 
                      { name: 'uriPrefix', fieldLabel: tr('Concept URI prefix'), emptyText: tr('Optional field') },
                      { name: 'uriSuffix', fieldLabel: tr('Concept URI suffix'), emptyText: tr('Optional field') },
-                     { name: 'linkingPredicate', fieldLabel: tr('Linking predicate'), emptyText: tr('Optional field') } ]        
+                     { name: 'linkingPredicate', fieldLabel: tr('Linking predicate'), emptyText: tr('Optional field') } ]
         }); 
 
 
         cfg = {
-            title: tr('Add vocabulary'),
+            title: (this.mode == 'modify')?tr('Modify vocabulary'):tr('Add vocabulary'),
             buttons: [ {text:'OK', handler: this.ok, scope: this}, {text:tr('Cancel'), handler: this.close, scope: this}],
             items: [ { border: false, items: this.formPanel } ]
                      
         };
         Ext.apply(this, cfg);
         this.callParent(arguments); 
+
+       if (this.values)
+           this.setValues();
     },
     ok: function() {
         var waitDialog = Ext.create('Ext.window.MessageBox', {       
         });
         waitDialog.wait( tr('Please wait') + '...' );
         this.formPanel.submit({
-            url: 'rest/vocContexts',
+            url: ((this.mode == 'modify')?this.restUrl:'rest/vocContexts'),
             method: 'POST',
             success: function(form, action) {
                 this.close();     
-                waitDialog.close(); 
-                this.listener.afterAdd();          
+                waitDialog.close();
+                if (this.mode == 'modify') 
+                    this.listener.afterModify();          
+                else
+                    this.listener.afterAdd();
             },
-            failure: function(form, action) {    
+            failure: function(form, action) { 
                 Ext.Msg.alert('Failure', action.result.error);            
                 waitDialog.close();   
             },
             submitEmptyText: false,
             scope: this
         });
-    }        
-});
-
-Ext.define( 'Comete.AdminVocUploader', {
-    extend: 'Ext.window.Window',
-    layout: 'fit',           
-    initComponent: function( config ) {
-
-        this.fileLocation = Ext.create('Ext.form.field.File', {
-            name: 'file',
-            fieldLabel: tr('local voc. (file)'),
-            emptyText: 'VDEX ' + tr('or') + ' SKOS',
-            labelWidth: 120,
-            buttonText: '...'
-        });
-
-        this.formPanel = Ext.create('Ext.form.Panel', { 
-            border: false,
-            margin: '10',
-            layout: 'form',
-            defaultType: 'textfield',
-            items: [ { fieldLabel: 'URI', disabled: true, value: this.uri },                      
-                     this.fileLocation ]        
-        }); 
-
-        cfg = {
-            title: tr('Modify vocabulary'),
-            buttons: [ {text:'OK', handler: this.ok, scope: this}, {text:tr('Cancel'), handler: this.close, scope: this}],
-            items: [ { border: false, items: this.formPanel } ]
-                     
-        };
-        Ext.apply(this, cfg);
-        this.callParent(arguments); 
     },
-    ok: function() {
-        var waitDialog = Ext.create('Ext.window.MessageBox', {       
-        });
-        waitDialog.wait( tr('Please wait') + '...' );
-        this.formPanel.submit({
-            url: this.restUrl,
-            method: 'POST',
-            success: function(form, action) {
-                this.close();     
-                waitDialog.close(); 
-                this.listener.afterModify();
-            },
-            failure: function(form, action) {                
-                Ext.Msg.alert('Failure', action.result.error);
-                waitDialog.close();   
-            },
-            scope: this
-        });
+    setValues() {
+        this.formPanel.getComponent(0).setValue(this.values.id);
+        var initLocation = this.values.location;
+        if (initLocation.startsWith('http'))
+            this.urlLocation.setValue(initLocation);
+        else
+            this.fileLocation.emptyText = initLocation;
+        this.formPanel.getComponent(3).setValue(this.values.uriPrefix);
+        this.formPanel.getComponent(3).setValue(this.values.uriPrefix);
+        this.formPanel.getComponent(4).setValue(this.values.uriSuffix);
+        this.formPanel.getComponent(5).setValue(this.values.linkingPredicate);
     }        
 });
+
 

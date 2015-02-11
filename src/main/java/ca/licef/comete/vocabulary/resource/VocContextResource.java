@@ -112,15 +112,19 @@ public class VocContextResource {
     @Path( "{id}" )
     @Consumes( MediaType.MULTIPART_FORM_DATA )
     @Produces( MediaType.TEXT_HTML ) //!important for ExtJS see Ext.form.Basic.hasUpload() description -AM
-    public Response modifyVocabularyContent(@Context HttpServletRequest request,
+    public Response modifyVocContextAndContent(@Context HttpServletRequest request,
                                      @PathParam( "id" ) String id,
+                                     @FormDataParam("uriPrefix") String uriPrefix,
+                                     @FormDataParam("uriSuffix") String uriSuffix,
+                                     @FormDataParam("linkingPredicate") String linkingPredicate,
+                                     @FormDataParam("url") String url,
                                      @FormDataParam("file") java.io.InputStream uploadedInputStream,
                                      @FormDataParam("file") com.sun.jersey.core.header.FormDataContentDisposition fileDetail) throws Exception {
         if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to add vocabulary.").build();
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to modify vocabulary.").build();
 
-        String uri = Util.makeURI(id, COMETE.VocContext);
-        String errorMessage = Vocabulary.getInstance().modifyVocabularyContent(uri, fileDetail.getFileName(), uploadedInputStream);
+        String errorMessage = Vocabulary.getInstance().modifyVocabularyContent(
+                id, uriPrefix, uriSuffix, linkingPredicate, url, fileDetail.getFileName(), uploadedInputStream);
         StringWriter out = new StringWriter();
         try {
             JSONWriter json = new JSONWriter( out ).object();
@@ -142,22 +146,11 @@ public class VocContextResource {
         return Response.ok( out.toString() ).build();
     }
 
-    @GET
-    @Path( "{id}/update" )
-    public Response updateVocContext(@Context HttpServletRequest request, @PathParam( "id" ) String id ) throws Exception {
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to change settings.").build();
-
-        String uri = Util.makeURI(id, COMETE.VocContext);
-        Vocabulary.getInstance().updateVocContext(uri);
-        return Response.ok().build();
-    }
-
     @DELETE
     @Path( "{id}" )
     public Response deleteVocContext(@Context HttpServletRequest request, @PathParam( "id" ) String id ) throws Exception {
         if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to change settings.").build();
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to delete vocabulary.").build();
 
         String uri = Util.makeURI(id, COMETE.VocContext);
         boolean ok = Vocabulary.getInstance().deleteVocContext(uri);
@@ -183,7 +176,7 @@ public class VocContextResource {
             detail.put( "uri", details[0].getValue("vocUri").getContent() );
             String location = details[0].getValue("location").getContent();
             if (!location.startsWith("http"))
-                location = "local:/" + location;
+                location = "local: " + location;
             detail.put( "location", location);
             detail.put( "navigable", details[0].getValue("navigable").getContent() );
             detail.put( "linkingPredicate", details[0].getValue("predicate").getContent() );

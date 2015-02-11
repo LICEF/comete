@@ -49,37 +49,146 @@ public class VocabularyManager {
 
     public String addNewVocContext(String id, String uriPrefix, String uriSuffix, String linkingPredicate,
                                    String urlLocation, String fileName, InputStream uploadedInputStream) throws Exception{
-        File vocDir = new File(vocabulariesDirConfig, id);
-        if (vocDir.exists())
-            return "Vocabulary with id '" + id + "' already exists.";
+        if (id == null || "".equals(id))
+            return "Missing ID";
+
+        File vocDirConfig = new File(vocabulariesDirConfig, id);
+        if (vocDirConfig.exists())
+            return "Vocabulary with ID '" + id + "' already exists.";
 
         //create dest folder
-        IOUtil.createDirectory(vocDir.getAbsolutePath());
+        IOUtil.createDirectory(vocDirConfig.getAbsolutePath());
 
         String location = urlLocation;
         File contentFile = null;
-        String storeId = "/vocabularies/" + id;
         if (location == null || "".equals(location)) {
             if (fileName != null && !"".equals(fileName)) {
                 location = fileName;
                 //copy content
-                File destFolder = new File(Store.getInstance().getLocation() + storeId);
-                destFolder.mkdirs();
-                contentFile = new File(destFolder, fileName);
+                contentFile = new File(vocDirConfig, fileName);
                 OutputStream os = new FileOutputStream(contentFile);
                 IOUtil.copy(uploadedInputStream, os);
                 uploadedInputStream.close();
                 os.close();
             }
+            else
+                return "Missing content (URL or uploaded vocabulary)";
         }
 
         //checking content
         int format = Util.getVocabularyFormatFromLocation((contentFile != null)?contentFile.getAbsolutePath():location);
         if (format == -1) {
-            IOUtil.deleteDirectory(vocDir);
-            Store.getInstance().deleteDigitalObject(storeId);
+            IOUtil.deleteDirectory(vocDirConfig);
             return "Not a VDEX or SKOS content.";
         }
+
+        //descriptor creation
+        createDecriptor(id, location, uriPrefix, uriSuffix, linkingPredicate);
+
+        initVocabulary(id, false);
+
+        return null;
+    }
+
+    public String modifyVocContext(String id, String uriPrefix, String uriSuffix, String linkingPredicate,
+                                          String urlLocation, String fileName, InputStream uploadedInputStream) throws Exception {
+        String error = null;
+        File vocDirConfig = new File(vocabulariesDirConfig, id);
+        String uri = ca.licef.comete.core.util.Util.makeURI(id, COMETE.VocContext);
+        if (!tripleStore.isResourceExists(uri))
+            return "Unknown vocabulary to modify.";
+
+        tripleStore.removeTriplesWithSubjectPredicate(uri, COMETE.vocConceptUriPrefix);
+        tripleStore.removeTriplesWithSubjectPredicate(uri, COMETE.vocConceptUriSuffix);
+        tripleStore.removeTriplesWithSubjectPredicate(uri, COMETE.vocConceptLinkingPredicate);
+        if (!"".equals(uriPrefix))
+            tripleStore.insertTriple(new Triple(uri, COMETE.vocConceptUriPrefix, uriPrefix));
+        if (!"".equals(uriSuffix))
+            tripleStore.insertTriple(new Triple(uri, COMETE.vocConceptUriSuffix, uriSuffix));
+        if (!"".equals(linkingPredicate))
+            tripleStore.insertTriple(new Triple(uri, COMETE.vocConceptLinkingPredicate, linkingPredicate));
+
+        //change content if needed
+        Tuple[] details = Vocabulary.getInstance().getVocContextDetails(uri);
+        String location = details[0].getValue("location").getContent();
+        String newLocation = null;
+        boolean isContentToUpdate = !"".equals(urlLocation) || !"".equals(fileName);
+        boolean needContentUpdate = false;
+        if (isContentToUpdate) {
+            //possible modification from uploaded file
+            if (!"".equals(fileName)) {
+                File tmpContentFile = new File(vocDirConfig, fileName + "_tmp");
+                OutputStream os = new FileOutputStream(tmpContentFile);
+                IOUtil.copy(uploadedInputStream, os);
+                uploadedInputStream.close();
+                os.close();
+
+                int format = Util.getVocabularyFormatFromLocation(tmpContentFile.getAbsolutePath());
+                if (format == -1) {
+                    tmpContentFile.delete();
+                    error = "Not a VDEX or SKOS content.";
+                }
+                else {
+                    if (location.startsWith("http"))
+                        needContentUpdate = true;
+                    else {
+                        File content = new File(vocDirConfig, location);
+                        FileInputStream fis = new FileInputStream(content);
+                        FileInputStream fisTmp = new FileInputStream(tmpContentFile);
+                        boolean isSameContent = DigestUtils.shaHex(fisTmp).equals(DigestUtils.shaHex(fis));
+                        fisTmp.close();
+                        fis.close();
+                        content.delete();
+                        needContentUpdate = !isSameContent;
+                    }
+                    File newContent = new File(vocDirConfig, fileName);
+                    tmpContentFile.renameTo(newContent);
+                    newLocation = fileName;
+                }
+            }
+
+            //possible modification from external location
+            if (!"".equals(urlLocation)) {
+                int format = Util.getVocabularyFormatFromLocation(urlLocation);
+                if (format == -1)
+                    error = "Not a VDEX or SKOS content.";
+                else {
+                    if (location.startsWith("http")) {
+                        InputStream is = new URL(location).openStream();
+                        InputStream isTmp = new URL(urlLocation).openStream();
+                        boolean isSameContent = DigestUtils.shaHex(isTmp).equals(DigestUtils.shaHex(is));
+                        isTmp.close();
+                        is.close();
+                        needContentUpdate = !isSameContent;
+                    }
+                    else {
+                        File content = new File(vocDirConfig, location);
+                        content.delete();
+                        needContentUpdate = true;
+                    }
+                    newLocation = urlLocation;
+                }
+            }
+        }
+
+        if (newLocation != null) {
+            tripleStore.updateObjectTriple(uri, COMETE.vocSourceLocation, location, newLocation);
+            location = newLocation;
+        }
+
+        //replacing descriptor
+        (new File(vocDirConfig, "description.xml")).delete();
+        createDecriptor(id, location, uriPrefix, uriSuffix, linkingPredicate);
+
+        //update of content
+        if (needContentUpdate)
+           initVocabulary(id, true);
+
+        return error;
+    }
+
+    private void createDecriptor(String id, String location, String uriPrefix, String uriSuffix, String linkingPredicate) throws Exception {
+        File vocDirConfig = new File(vocabulariesDirConfig, id);
 
         //descriptor creation
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -113,79 +222,11 @@ public class VocabularyManager {
             element.appendChild(value);
             root.appendChild(element);
         }
-        IOUtil.writeStringToFile(XMLUtil.getXMLString(root), new File(vocDir, "description.xml"));
-
-        initVocabulary(id, false);
-
-        return null;
+        IOUtil.writeStringToFile(XMLUtil.getXMLString(root), new File(vocDirConfig, "description.xml"));
     }
 
-    public void updateVocContext(String uri) throws Exception {
-        Tuple[] details = Vocabulary.getInstance().getVocContextDetails(uri);
-        String vocId = details[0].getValue("vocId").getContent();
-        System.out.println("Update of vocabulary: " + vocId);
-        initVocabulary(vocId, true);
-        //initRelationships(vocContextUri);
-        System.out.println("Update done.");
-    }
-
-    public String modifyVocabularyContent(String uri, String fileName, InputStream uploadedInputStream) throws Exception {
-        Tuple[] details = Vocabulary.getInstance().getVocContextDetails(uri);
-        String location = details[0].getValue("location").getContent();
-        String vocId = details[0].getValue("vocId").getContent();
-
-        File vocDir = new File(vocabulariesDirConfig, vocId);
-
-        String[] vals = StringUtil.split(location, '/');
-        String contentFilename = vals[vals.length - 1];
-
-        File tmpContentFile = new File(vocDir, contentFilename + "_tmp");
-        OutputStream os = new FileOutputStream(tmpContentFile);
-        IOUtil.copy(uploadedInputStream, os);
-        uploadedInputStream.close();
-        os.close();
-
-        //content checking
-        int format = Util.getVocabularyFormatFromLocation(tmpContentFile.getAbsolutePath());
-        if (format == -1) {
-            tmpContentFile.delete();
-            return "Not a VDEX or SKOS content.";
-        }
-
-        FileInputStream fisTmp = new FileInputStream(tmpContentFile);
-        File content = new File(vocDir, contentFilename);
-        FileInputStream fis = new FileInputStream(content);
-        boolean isSameContent = DigestUtils.shaHex(fisTmp).equals(DigestUtils.shaHex(fis));
-        fisTmp.close();
-        fis.close();
-        if (isSameContent) {
-            tmpContentFile.delete();
-            return "Identical content.";
-        }
-        else {
-            content.delete();
-            File newContent = new File(vocDir, fileName);
-            tmpContentFile.renameTo(newContent);
-
-            //change description
-            String newLocation = "/" + vocId + "/" + fileName;
-            File descr = new File(vocDir, "description.xml");
-            String xmlDescr = XMLUtil.getXMLString( XMLUtil.getXMLNode(descr) );
-            Hashtable t = new Hashtable();
-            t.put(location, newLocation);
-            xmlDescr = XMLUtil.substituteXMLContent(xmlDescr, "//location/text()", t, false);
-            IOUtil.writeStringToFile(xmlDescr, descr);
-
-            tripleStore.updateObjectTriple(uri, COMETE.vocSourceLocation, location, newLocation);
-
-            updateVocContext(uri);
-        }
-
-        return null;
-    }
-
-    public boolean deleteVocContext(String uri) throws Exception {
-        if (isVocabularyUsed(uri))
+    public boolean deleteVocContext(String uri, boolean force) throws Exception {
+        if (isVocabularyUsed(uri) && !force)
             return false;
 
         Tuple[] details = Vocabulary.getInstance().getVocContextDetails(uri);
@@ -197,8 +238,8 @@ public class VocabularyManager {
         tripleStore.clear_textIndex(vocUri);
 
         //physical deletion
-        File vocDir = new File(vocabulariesDirConfig, vocId);
-        IOUtil.deleteDirectory(vocDir);
+        IOUtil.deleteDirectory(new File(vocabulariesDirConfig, vocId));
+        Store.getInstance().deleteDigitalObject("/vocabularies/" + vocId);
 
         return true;
     }
@@ -237,15 +278,9 @@ public class VocabularyManager {
                     continue;
                 File descriptor = new File(srcVocDir, "description.xml");
                 String id = XMLUtil.getSubXML(new InputSource(new FileInputStream(descriptor)), "//id/text()")[0];
-                String location = XMLUtil.getSubXML(new InputSource(new FileInputStream(descriptor)), "//location/text()")[0];
                 File destVocConf = new File(vocabulariesDirConfig, id);
-                if (!destVocConf.exists()) {
-                    IOUtil.copyFiles(descriptor, new File(destVocConf, "description.xml"));
-                    if (!location.startsWith("http")) {
-                        File vocab = new File(vocabulariesSourceDir, voc + "/" + location);
-                        Store.getInstance().setDatastream("/vocabularies/" + id, location, vocab);
-                    }
-                }
+                if (!destVocConf.exists())
+                    IOUtil.copyFiles(new File(vocabulariesSourceDir, voc), destVocConf);
             }
         }
 
@@ -348,11 +383,14 @@ public class VocabularyManager {
     }
 
     private void initVocabularyContent(String uri, String location, String vocId, String vocUri, boolean cleanFirst) throws Exception {
-        //remove voc graph
+        String storeId = "/vocabularies/" + vocId;
+
+        //remove voc graph and exposed vocs
         if (cleanFirst) {
             Triple[] triples = tripleStore.getTriplesWithSubjectPredicate(uri, COMETE.vocUri);
             tripleStore.removeTriples(Arrays.asList(triples));
             tripleStore.clear_textIndex(vocUri);
+            Store.getInstance().deleteDigitalObject(storeId);
         }
 
         String vocContent;
@@ -362,26 +400,25 @@ public class VocabularyManager {
         if (IOUtil.isURL(location))
             vocContent = IOUtil.readStringFromURL(new URL(location));
         else
-            vocContent = Store.getInstance().getDatastream("/vocabularies/" + vocId, location);
+            vocContent = IOUtil.readStringFromFile(new File(vocabulariesDirConfig, vocId + "/" + location));
 
-        String storeId = "/vocabularies/" + vocId;
+        String vocUrlPrefix = Core.getInstance().getCometeUrl() + "/" +
+                CoreUtil.getRestUrl(SKOS.ConceptScheme) + "/" + vocId;
+
         int format = Util.getVocabularyFormat(vocContent);
+
         switch (format) {
             case Util.VDEX_FORMAT : //keep vdex version for history
                 Store.getInstance().setDatastream(storeId, vocId + ".vdex", vocContent);
-                tripleStore.insertTriple(new Triple(uri, COMETE.vocLocalURL,
-                        Core.getInstance().getCometeUrl() + "/" + CoreUtil.getRestUrl(SKOS.ConceptScheme) + "/" +
-                                vocId + "/vdex"));
+                tripleStore.insertTriple(new Triple(uri, COMETE.vocLocalURL, vocUrlPrefix + "/vdex"));
                 skosContent = convertVdexToSkos(vocContent);
                 break;
             default:
                 skosContent = vocContent;
         }
 
-        Store.getInstance().setDatastream("/vocabularies/" + vocId, vocId + ".skos", skosContent);
-        tripleStore.insertTriple(new Triple(uri, COMETE.vocLocalURL,
-                Core.getInstance().getCometeUrl() + "/" + CoreUtil.getRestUrl(SKOS.ConceptScheme) + "/" +
-                        vocId + "/skos"));
+        Store.getInstance().setDatastream(storeId, vocId + ".skos", skosContent);
+        tripleStore.insertTriple(new Triple(uri, COMETE.vocLocalURL, vocUrlPrefix + "/skos"));
 
         //force reset to catch external vocUris inside vocab
         Hashtable attributes = XMLUtil.getAttributes(skosContent, "//skos:ConceptScheme");

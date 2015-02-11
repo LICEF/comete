@@ -172,21 +172,17 @@ public class Vocabulary {
         return (String)tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
     }
 
-    public void updateVocContext(String uri) throws Exception {
+    public String modifyVocabularyContent(String id, String uriPrefix, String uriSuffix, String linkingPredicate,
+                                          String url, String fileName, InputStream uploadedInputStream) throws Exception {
         Invoker inv = new Invoker(getVocabularyManager(), "ca.licef.comete.vocabulary.VocabularyManager",
-                "updateVocContext", new Object[]{uri});
-        tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
-    }
-
-    public String modifyVocabularyContent(String uri, String fileName, InputStream uploadedInputStream) throws Exception {
-        Invoker inv = new Invoker(getVocabularyManager(), "ca.licef.comete.vocabulary.VocabularyManager",
-                "modifyVocabularyContent", new Object[]{uri, fileName, uploadedInputStream});
+                "modifyVocContext", new Object[]{id, uriPrefix, uriSuffix, linkingPredicate,
+                                                     url, fileName, uploadedInputStream});
         return (String)tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
     }
 
     public boolean deleteVocContext(String uri) throws Exception {
         Invoker inv = new Invoker(getVocabularyManager(), "ca.licef.comete.vocabulary.VocabularyManager",
-                "deleteVocContext", new Object[]{uri});
+                "deleteVocContext", new Object[]{uri, false});
         return (boolean)tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
     }
 
