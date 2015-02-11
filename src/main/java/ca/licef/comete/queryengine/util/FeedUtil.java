@@ -7,15 +7,15 @@ import ca.licef.comete.queryengine.ResultEntry;
 import ca.licef.comete.vocabularies.COMETE;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-import com.sun.syndication.feed.module.comete.*;
-import com.sun.syndication.feed.module.comete.impl.CometeModuleImpl;
-import com.sun.syndication.feed.module.comete.impl.util.LangString;
-import com.sun.syndication.feed.module.comete.impl.util.LangStringImpl;
-import com.sun.syndication.feed.module.opensearch.OpenSearchModule;
-import com.sun.syndication.feed.module.opensearch.entity.OSQuery;
-import com.sun.syndication.feed.module.opensearch.impl.OpenSearchModuleImpl;
-import com.sun.syndication.feed.synd.*;
-import com.sun.syndication.io.impl.DateParser;
+import com.rometools.rome.feed.module.comete.*;
+import com.rometools.rome.feed.module.comete.impl.CometeModuleImpl;
+import com.rometools.rome.feed.module.comete.impl.util.LangString;
+import com.rometools.rome.feed.module.comete.impl.util.LangStringImpl;
+import com.rometools.modules.opensearch.OpenSearchModule;
+import com.rometools.modules.opensearch.entity.OSQuery;
+import com.rometools.modules.opensearch.impl.OpenSearchModuleImpl;
+import com.rometools.rome.feed.synd.*;
+import com.rometools.rome.io.impl.DateParser;
 import licef.StringUtil;
 import licef.tsapi.model.Triple;
 import licef.tsapi.vocabulary.DCTERMS;
@@ -33,7 +33,8 @@ import java.util.*;
 public class FeedUtil {
 
     public static SyndFeed getFeedFromResultSet( ResultSet rs, String feedType, String absPath, String query, int start, int limit, String lang ) {
-        ResourceBundle bundle = ResourceBundle.getBundle( "translations/Strings", new Locale( lang ) );
+        Locale locale = new Locale( lang );
+        ResourceBundle bundle = ResourceBundle.getBundle( "translations/Strings", locale );
 
         SyndFeed f = new SyndFeedImpl();
         f.setFeedType( feedType );
@@ -202,11 +203,11 @@ public class FeedUtil {
                         keywords.add( langString );
                     }
                     else if( COMETE.added.getURI().equals( triple.getPredicate() ) ) {
-                        Date added = DateParser.parseDate( triple.getObject() );
+                        Date added = DateParser.parseDate( triple.getObject(), locale );
                         cm.setAdded( added );
                     }
                     else if( COMETE.updated.getURI().equals( triple.getPredicate() ) ) {
-                        Date updated = DateParser.parseDate( triple.getObject() );
+                        Date updated = DateParser.parseDate( triple.getObject(), locale );
                         cm.setUpdated( updated );
                     }
                 }

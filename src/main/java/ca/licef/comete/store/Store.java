@@ -12,12 +12,19 @@ public class Store {
     public static final int DATASTREAM_UNCHANGED = 0;
     public static final int DATASTREAM_STORED = 1;
 
+    public static final String PATH_IDENTITIES = "/identities";
+    public static final String PATH_METADATA = "/metadata";
+    public static final String PATH_VOCABS = "/vocabularies";
+
+    public static final String PATH_RECORDS = PATH_METADATA + "/records";
+    public static final String PATH_PHOTOS = PATH_IDENTITIES + "/photos";
+
     public static Store getInstance() throws IOException {
         if( instance == null ) {
             String strLoc = Core.getInstance().getCometeHome() + "/store";
             File storeLoc = new File( strLoc );
             if( !storeLoc.exists() ) {
-                if( !storeLoc.mkdir() )
+                if( !storeLoc.mkdirs() )
                     throw( new IOException( "Cannot make directory " + storeLoc + "." ) );
             }
             instance = new Store( strLoc );
@@ -33,14 +40,10 @@ public class Store {
         return( location );
     }
 
-    public synchronized String createDigitalObject() throws IOException {
-        return( createDigitalObject( "" ) );
-    }
-
     public synchronized String createDigitalObject( String path ) throws IOException {
         UUID uuid = UUID.randomUUID();
         File doDir = new File( location + path + "/" + uuid );
-        if( !doDir.mkdir() )
+        if( !doDir.mkdirs() )
             throw( new IOException( "Cannot make directory " + doDir + "." ) );
         return( path + "/" + uuid );
     }

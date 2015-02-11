@@ -1,12 +1,12 @@
 package ca.licef.comete.queryengine.resource;
 
 import ca.licef.comete.core.Core;
-import com.sun.syndication.feed.WireFeed;
-import com.sun.syndication.feed.atom.Feed;
-import com.sun.syndication.feed.rss.Channel;
-import com.sun.syndication.feed.synd.SyndFeed;
-import com.sun.syndication.io.FeedException;
-import com.sun.syndication.io.WireFeedOutput;
+import com.rometools.rome.feed.WireFeed;
+import com.rometools.rome.feed.atom.Feed;
+import com.rometools.rome.feed.rss.Channel;
+import com.rometools.rome.feed.synd.SyndFeed;
+import com.rometools.rome.io.FeedException;
+import com.rometools.rome.io.WireFeedOutput;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;

@@ -354,7 +354,10 @@ public class Metadata {
         String[] res = (String[])tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
 
         //Identity and vocabulary referencement management
-        linkToResources(res[0], res[1], res[2], namespace);
+        String loURI = res[0];
+        String recordURI = res[1];
+        String storeId = res[2];
+        linkToResources(loURI, recordURI, storeId, namespace);
 
         return res;
     }
@@ -405,7 +408,7 @@ public class Metadata {
                 triples.add( new Triple( loURI, COMETE.added, DateUtil.toISOString(new Date(), null, null) ) );
             }
 
-            storeId = store.createDigitalObject();
+            storeId = store.createDigitalObject( Store.PATH_RECORDS );
 
             // We remove the leading / beforehand.
             recordURI = Util.makeURI(storeId.substring( 1 ), COMETE.MetadataRecord.getURI());

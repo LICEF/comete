@@ -189,19 +189,20 @@
             <version>1.6</version>     
         </dependency>
         <dependency>
-            <groupId>rome</groupId>
+            <groupId>licef</groupId>
             <artifactId>rome</artifactId>
-            <version>1.0</version>
+            <version>1.6.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>rome</groupId>
-            <artifactId>opensearch</artifactId>
-            <version>0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>rome</groupId>
-            <artifactId>comete</artifactId>
-            <version>0.1</version>
+            <groupId>com.rometools</groupId>
+            <artifactId>rome-modules</artifactId>
+            <version>1.6.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.rometools</groupId>
+                    <artifactId>rome</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>ca.licef.comete</groupId>

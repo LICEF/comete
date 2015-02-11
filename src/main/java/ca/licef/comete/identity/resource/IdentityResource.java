@@ -3,6 +3,7 @@ package ca.licef.comete.identity.resource;
 import ca.licef.comete.core.Core;
 import ca.licef.comete.identity.Identity;
 import ca.licef.comete.security.Security;
+import ca.licef.comete.store.Store;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 import com.sun.jersey.spi.resource.Singleton;
@@ -28,7 +29,7 @@ public class IdentityResource {
     @Path("photo/{filename}")
     public Response getPhoto(@PathParam("filename") String filename) throws Exception {
         String format = filename.substring(filename.lastIndexOf(".") + 1);
-        String path = Core.getInstance().getCometeHome() + "/photos/" + filename;
+        String path = Store.getInstance().getLocation() + Store.PATH_PHOTOS + "/" + filename;
         InputStream is = new BufferedInputStream(new FileInputStream(path));
         return Response.ok(is).type("image/" + format).build();
     }

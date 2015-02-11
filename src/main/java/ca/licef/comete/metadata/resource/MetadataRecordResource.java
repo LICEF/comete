@@ -174,7 +174,7 @@ public class MetadataRecordResource {
     @Produces( { MediaType.TEXT_HTML, MediaType.APPLICATION_XML } )
     public Response getMetadataRecordValidationReportAsXml( @PathParam( "id" ) String id, @PathParam( "applProf" ) String applProf, @DefaultValue( "false" ) @QueryParam( "syntaxHighlighted" ) String strIsSyntaxHighlighted ) throws Exception {
         Store store = Store.getInstance();
-        String path = "/" + id;
+        String path = Store.PATH_RECORDS + "/" + id;
         String datastream = "ValidationReport" + applProf;
 
         String xml = null;
@@ -346,13 +346,14 @@ public class MetadataRecordResource {
             return( Response.status( Response.Status.BAD_REQUEST ).entity( "Invalid datastream type." ).build());
 
         boolean isSyntaxHighlighted = ( "true".equals( strIsSyntaxHighlighted ) );
-
-        return( getXmlDatastream( id, datastream, isSyntaxHighlighted ) );
+        
+        String path = Store.PATH_RECORDS + "/" + id;
+        return( getXmlDatastream( path, datastream, isSyntaxHighlighted ) );
     }
 
-    private Response getXmlDatastream( String id, String datastream, boolean isSyntaxHighlighted ) throws Exception {
+    private Response getXmlDatastream( String path, String datastream, boolean isSyntaxHighlighted ) throws Exception {
         Store store = Store.getInstance();
-        String xml = store.getDatastream( "/" + id, datastream );
+        String xml = store.getDatastream( path, datastream );
 
         if( isSyntaxHighlighted ) {
             String html = ( xml == null ? "" : Util.getSyntaxHighlightedCode( "xml", xml ) );
