@@ -12,8 +12,12 @@ public class Store {
     public static final int DATASTREAM_UNCHANGED = 0;
     public static final int DATASTREAM_STORED = 1;
 
-    public static final String PATH_RECORDS = "/metadata/records";
+    public static final String PATH_IDENTITIES = "/identities";
+    public static final String PATH_METADATA = "/metadata";
     public static final String PATH_VOCABS = "/vocabularies";
+
+    public static final String PATH_RECORDS = PATH_METADATA + "/records";
+    public static final String PATH_PHOTOS = PATH_IDENTITIES + "/photos";
 
     public static Store getInstance() throws IOException {
         if( instance == null ) {

@@ -6,6 +6,7 @@ import ca.licef.comete.identity.model.Entity;
 import ca.licef.comete.identity.model.Organization;
 import ca.licef.comete.identity.model.Person;
 import ca.licef.comete.identity.util.Util;
+import ca.licef.comete.store.Store;
 import ca.licef.comete.vocabularies.COMETE;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -37,8 +38,6 @@ import java.util.*;
 public class Identity {
 
     public static final String IDENTITY_SIMILARITY_GRAPH = "identity-similarity";
-    static File PHOTO_FOLDER = new File(Core.getInstance().getCometeHome() + "/photos/");
-
 
     public static final int IDENTITY_FULL = 0;
     public static final int IDENTITY_NORMAL = 1;
@@ -49,15 +48,6 @@ public class Identity {
 
     static TripleStore tripleStore = Core.getInstance().getTripleStore();
     static ca.licef.comete.core.util.Util CoreUtil;
-
-    static {
-        try {
-            if (!PHOTO_FOLDER.exists())
-                PHOTO_FOLDER.mkdir();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public static Identity getInstance() {
         if (instance == null)
@@ -444,8 +434,10 @@ public class Identity {
             String ext = mimetype.split("/")[1].toLowerCase();
             String sha = DigestUtils.shaHex(image);
             String filename = sha + "." + ext;
-            File destFile = new File(Core.getInstance().getCometeHome() + "/photos/" + filename);
+            String path = Store.getInstance().getLocation() + Store.PATH_PHOTOS + "/" + filename;
+            File destFile = new File(path);
             if (!destFile.exists()) {
+                destFile.getParentFile().mkdirs();
                 try {
                     byte[] array = Base64.decodeBase64(image.getBytes());
                     InputStream in = new ByteArrayInputStream(array);
