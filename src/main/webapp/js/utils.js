@@ -127,10 +127,10 @@ Ext.define( 'Comete.ClickableLabel', {
     extend: 'Ext.form.Label',
     initComponent: function( config ) {
         var fn = this.fn;
-        var label = this;         
+        var label = this;
         var cfg = {
             listeners: {
-                el: {             
+                el: {
                     click: function() { 
                         if (!label.selected) {
                             fn.call(); 
@@ -166,7 +166,7 @@ Ext.define( 'Comete.Breadcrumb', {
         this.showIds = false;
         this.automaticQuery = true;
 
-        this.toolbar = Ext.create('Ext.toolbar.Toolbar', {            
+        this.toolbar = Ext.create('Ext.toolbar.Toolbar', {
             height: 29,
             layout: {
                 overflowHandler: 'Menu'
@@ -233,7 +233,7 @@ Ext.define( 'Comete.Breadcrumb', {
                     this.showDynamicMenu(b, restUrl, false);
             }, this);
         }
-        this.displayButton(button, label);              
+        this.displayButton(button, label);
         if (button != this.rootButton)
             this.lastElement = button.uri;
         this.focus();
@@ -251,7 +251,7 @@ Ext.define( 'Comete.Breadcrumb', {
             
         pos = this.toolbar.items.length;
         this.toolbar.insert( pos, button ); 
-        button.index = pos;        
+        button.index = pos;
     },
     createMenu: function(concepts) {
         var menu = Ext.create('Ext.menu.Menu');
@@ -326,7 +326,7 @@ Ext.define( 'Comete.Breadcrumb', {
     displayElement: function(uri) {
         if (uri != null) {
             Ext.Ajax.request({
-                url: vocabularyUrl + '/rest/voc/' + encodeURIComponent(uri) + '/hierarchy?includeScheme=true',
+                url: 'rest/voc/' + encodeURIComponent(uri) + '/hierarchy?includeScheme=true',
                 method: 'GET',
                 params: {
                     showIds: this.showIds,
@@ -340,7 +340,7 @@ Ext.define( 'Comete.Breadcrumb', {
             }); 
         }
     },
-    displayPath: function(json) {    
+    displayPath: function(json) {
         if (json != null) { 
             //clear toolbar
             this.clear();
@@ -467,15 +467,15 @@ Ext.define( 'Comete.VocConceptPicker', {
             margin: '10 0 0 5'
         });        
 
-        this.tree = Ext.create('Ext.tree.Panel', {        
-            region: 'center',            
+        this.tree = Ext.create('Ext.tree.Panel', {
+            region: 'center',
             store: this.treeConceptStore,
             border: this.extendedMode,
             useArrows: true, 
             columns: [
                 { xtype: 'treecolumn', dataIndex: 'label', flex: 1 }
             ],
-            hideHeaders: true,            
+            hideHeaders: true,
             label: label,
             tbar: [ label ],
             margin: this.extendedMode?'-1 -1 -1 0':'0 0 0 0',
@@ -488,13 +488,13 @@ Ext.define( 'Comete.VocConceptPicker', {
             text: tr('Select'),
             disabled: true,
             handler: function(){
-                this.hide();         
+                this.hide();
                 elem = this.tree.getSelectionModel().getSelection()[0].getData();
                 vocLabel = '';
-                if (this.extendedMode) 
+                if (this.extendedMode)
                     vocLabel = this.vocabList.getSelectionModel().getSelection()[0].getData().label;
                 this.aListener.setVocConcept(elem.uri, vocLabel, elem.label, elem.leaf, true);
-            },             
+            },
             scope: this
         } );
 
@@ -508,11 +508,11 @@ Ext.define( 'Comete.VocConceptPicker', {
         if (this.extendedMode) {
 
             this.vocabStore = Ext.create('Ext.data.JsonStore', {
-                model: 'VocabModel',                
+                model: 'VocabModel',
                 proxy: vocabProxy
             });   
             
-            this.vocabList = Ext.create('Ext.grid.Panel', { 
+            this.vocabList = Ext.create('Ext.grid.Panel', {
                 store: this.vocabStore,
                 border: false,
                 columns: [ 
@@ -529,14 +529,14 @@ Ext.define( 'Comete.VocConceptPicker', {
             this.vocPanel = Ext.create('Ext.Panel', { 
                 layout: 'fit',
                 region: 'west',
-                margin: '-1 5 -1 -1',                
+                margin: '-1 5 -1 -1',
                 width: 300,
                 items: this.vocabList
             }); 
         }
 
         var cfg = {
-            layout: 'border',            
+            layout: 'border',
             width: this.extendedMode?600:300,
             height: 400,
             modal: true,
@@ -561,8 +561,8 @@ Ext.define( 'Comete.VocConceptPicker', {
         else {
             this.treeConceptStore.load({
                 url: this.vocRestUrl + '/topConcepts?showIds=' + this.showIds + '&lang=' + this.lang
-            });                
-        }                    
+            });
+        }
     },
     vocabChanged: function( model, selected ) {
         this.selectConceptButton.setDisabled(true);
@@ -617,13 +617,13 @@ Ext.define( 'Comete.IdentityPicker', {
         }); 
 
         var cfg = {
-            layout: 'border',            
+            layout: 'border',
             width: 300,
             height: 400,
             modal: true,
             closeAction: 'hide',
             items: this.identityFinder,
-            buttons: [ 
+            buttons: [
                 this.selectButton, 
                 {
                     text: tr('Cancel'),
@@ -703,7 +703,7 @@ Ext.define( 'Comete.IdentityFinderPanel', {
 
         cfg = {
             border: false,
-            items: [ { layout: 'border', region: 'north', border: false, height: 22, margin: '10',
+            items: [ { layout: 'border', region: 'north', border: false, height: 25, margin: '10',
                        items: [ { layout: 'fit', region: 'center', border: false, items: this.searchField }, 
                                 { region: 'east', margin: '0 0 0 5', border: false, items: this.allButton } ] }, 
                      { layout: 'fit', region: 'center', border: false, items: this.identityList} ]
@@ -711,7 +711,7 @@ Ext.define( 'Comete.IdentityFinderPanel', {
         Ext.apply(this, cfg);
         this.callParent(arguments); 
 
-        this.store.sort('label', 'ASC');        
+        this.store.sort('label', 'ASC');
     },
     retrieveIdentities: function(unuseText) {
         var text = this.searchField.getValue();
@@ -736,7 +736,6 @@ Ext.define( 'Comete.IdentityFinderPanel', {
 Ext.define( 'Comete.ImageButton', {
     extend: 'Ext.Img',
     initComponent: function( config ) {
-
         var cfg = {
             border: false,
             src: this.isDisabled()?this.imgDisabled:this.img,
@@ -773,7 +772,7 @@ Ext.define( 'Comete.ImageButton', {
 
                 
         if (this.tooltip != undefined) {
-            this.on('render', function() {            
+            this.on('render', function() {
                 Ext.create('Ext.tip.ToolTip', {
                     target: this.getEl(),
                     html: this.tooltip

@@ -45,7 +45,7 @@ Ext.define( 'Comete.ThematicNavigationSearch', {
         });        
 
         this.conceptStore.on( 'beforeload', function(store) {
-                        store.proxy.url = vocabularyUrl + '/rest/voc/search?lang=' + this.lang;
+                        store.proxy.url = 'rest/voc/search?lang=' + this.lang;
                         if (this.cbId.getValue())
                             store.proxy.url = store.proxy.url + '&showIds=true';
                     }, 
@@ -60,7 +60,8 @@ Ext.define( 'Comete.ThematicNavigationSearch', {
             emptyText: tr('Select classification') + '...',
             listConfig: {
                 loadingText: tr('Loading') + '...'
-            }
+            },
+            tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div></tpl></div>'
         });
 
         this.vocabularyCombo.on( 'select', this.vocabularySelected, this );
@@ -68,7 +69,7 @@ Ext.define( 'Comete.ThematicNavigationSearch', {
         this.vocabularyButton = Ext.create('Ext.button.Button', {
             icon: 'images/tree.gif',
             disabled: true,
-            handler: this.pickVocConcept,             
+            handler: this.pickVocConcept,
             scope: this
         } );
                 
@@ -94,17 +95,17 @@ Ext.define( 'Comete.ThematicNavigationSearch', {
 
         this.expandConceptListButton = Ext.create('Ext.button.Button', {
             icon: 'images/downWhiteArrow.png',
-            handler: function(){ this.conceptSearchCombo.expand() },             
+            handler: function(){ this.conceptSearchCombo.expand() },
             scope: this
         } );
 
         this.conceptSearchCombo.on( 'beforeselect', function(combo, record){ 
                         combo.collapse();
                         this.setVocConcept(record.data.uri, record.data.vocLabel, record.data.label, false, true);                        
-                        return false;}, this );        
+                        return false;}, this );
 
         var vocPanel = Ext.create('Ext.panel.Panel', {
-            layout: 'hbox',         
+            layout: 'hbox',
             border: false,
             margin: '0 0 6 0',
             items: [this.vocabularyCombo, { xtype: 'tbspacer', width: 4 }, this.vocabularyButton, { xtype: 'tbspacer', width: 30 },
@@ -134,7 +135,7 @@ Ext.define( 'Comete.ThematicNavigationSearch', {
             boxLabel: tr('Include subcategories'),
             style: 'color: #04408C',
             margin: '3 0 0 0',
-            checked: false            
+            checked: false
         } );
 
         this.cbEquivalence = Ext.create('Ext.form.field.Checkbox', {
@@ -145,7 +146,7 @@ Ext.define( 'Comete.ThematicNavigationSearch', {
 
         this.equivalence = Ext.create('Ext.form.field.ComboBox', {
             displayField: 'label',
-            valueField: 'uri',            
+            valueField: 'uri',
             store: this.eqVocabStore,
             editable: false,
             multiSelect: true,
@@ -154,34 +155,35 @@ Ext.define( 'Comete.ThematicNavigationSearch', {
             width: 300,
             listConfig: {
                 loadingText: tr('Loading') + '...'
-            }
+            },
+            tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div></tpl></div>'
         } );
 
         this.cbId = Ext.create('Ext.form.field.Checkbox', {
             boxLabel: tr('Show category IDs'),
             style: 'color: #04408C',
-            checked: false            
+            checked: false
         } );
 
         this.cbAutomaticQuery = Ext.create('Ext.form.field.Checkbox', {
             boxLabel: tr('Automatic Query'),
             style: 'color: #04408C',
-            checked: true            
+            checked: true
         } );
 
         this.cbSubconcepts.on( 'change', 
-            function() {              
+            function() {
                 if (this.cbAutomaticQuery.getValue() && this.currentVocConceptUri)
                     this.setRequestVocConcept(this.currentVocConceptUri);                   
             }, this );
 
         this.cbEquivalence.on( 'change', 
-            function() {              
+            function() {
                 this.equivalence.setVisible(this.cbEquivalence.getValue());   
                 if (this.cbAutomaticQuery.getValue() && this.currentVocConceptUri) {
                     if (this.cbEquivalence.getValue() && this.equivalence.getValue().length == 0)
                         return;
-                    this.setRequestVocConcept(this.currentVocConceptUri);           
+                    this.setRequestVocConcept(this.currentVocConceptUri);
                 }       
             }, this );
 
@@ -192,7 +194,7 @@ Ext.define( 'Comete.ThematicNavigationSearch', {
                 this.breadcrumbBar.showIDsConcepts(value);
                 var uri = this.breadcrumbBar.getLastElement();
                 if (uri != null)
-                    this.breadcrumbBar.displayElement(uri);        
+                    this.breadcrumbBar.displayElement(uri);
             }, this );
 
         this.cbAutomaticQuery.on( 'change', 
@@ -202,7 +204,7 @@ Ext.define( 'Comete.ThematicNavigationSearch', {
 
         cfg = {
             layout: 'vbox',
-            region: 'center',      
+            region: 'center',
             margin: '0 10 0 10',
             items: [ vocPanel, this.breadcrumbBar, 
                      { layout: 'hbox',
@@ -218,7 +220,7 @@ Ext.define( 'Comete.ThematicNavigationSearch', {
                                          { layout: 'hbox',
                                            border: false,
                                            items: [this.cbEquivalence, this.equivalence]
-                                         } ] },                               
+                                         } ] },
                                { xtype: 'tbfill' },
                                { xtype: 'fieldset',
                                  width: 200,
@@ -230,10 +232,10 @@ Ext.define( 'Comete.ThematicNavigationSearch', {
                      } ]
         };
         Ext.apply(this, cfg);
-        this.callParent(arguments);   
+        this.callParent(arguments);
 
         //init of vocabulary store for general consistency -AM
-        this.vocabStore.load();     
+        this.vocabStore.load();
     },
     vocabularySelected: function(combo, records) {
         searchManager.clear();
@@ -244,7 +246,7 @@ Ext.define( 'Comete.ThematicNavigationSearch', {
         this.currentVocConceptUri = null;
         this.vocabularyButton.setDisabled(false);
         this.queryButton.setDisabled(true);
-        this.cleanEquivalence();        
+        this.cleanEquivalence();
     },
     bcElementClicked: function(conceptUri) {
         this.queryButton.setDisabled(false);
@@ -294,18 +296,18 @@ Ext.define( 'Comete.ThematicNavigationSearch', {
         this.currentVocConceptUri = conceptUri;
         if (currentVoc == null || currentVoc != vocUri) {
             this.cbEquivalence.setValue(false);
-            this.cleanEquivalence();  
+            this.cleanEquivalence();
         }
         if (isQuery && this.cbAutomaticQuery.getValue()) 
-            this.setRequestVocConcept(conceptUri);        
+            this.setRequestVocConcept(conceptUri);
     },
     setQuery: function(query) {
-        this.currentVocConceptUri = null;        
+        this.currentVocConceptUri = null;
         this.setVocConcept(query[0].value, null, null, null, false);
         this.cbSubconcepts.setValue( query[0].subConcepts == true );
         this.cbEquivalence.setValue( query[0].equivalent == true );
         if (this.equivalence.getValue())
-            this.equivalence.setValue(query[0].fromVocs);    
+            this.equivalence.setValue(query[0].fromVocs);
     },
     cleanEquivalence: function() {
         this.equivalence.clearValue();

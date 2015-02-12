@@ -279,7 +279,7 @@
                         msg: tr('This vocabulary is used.<br>Do you really want to modify it ?'),
                         buttons: Ext.Msg.OKCANCEL,
                         icon: Ext.Msg.QUESTION,
-                        fn: this.modifyVocabularyContentStep2,
+                        fn: this.modifyVocabularyStep2,
                         scope: this
                     });
                 }
@@ -470,7 +470,7 @@ Ext.define( 'Comete.AdminVocEditor', {
             scope: this
         });
     },
-    setValues() {
+    setValues: function() {
         this.formPanel.getComponent(0).setValue(this.values.id);
         var initLocation = this.values.location;
         if (initLocation.startsWith('http'))

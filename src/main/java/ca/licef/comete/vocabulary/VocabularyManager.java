@@ -239,7 +239,7 @@ public class VocabularyManager {
 
         //physical deletion
         IOUtil.deleteDirectory(new File(vocabulariesDirConfig, vocId));
-        Store.getInstance().deleteDigitalObject("/vocabularies/" + vocId);
+        Store.getInstance().deleteDigitalObject(Store.PATH_VOCABS + "/" + vocId);
 
         return true;
     }

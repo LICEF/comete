@@ -1,21 +1,21 @@
-﻿Ext.define( 'Comete.AdvancedSearch', {
+﻿function addCondition() {
+    var asp = Ext.getCmp('advancedSearchPanel');
+    asp.addQueryCond(asp.createQueryCond( false ));
+}
+
+Ext.define( 'Comete.AdvancedSearch', {
     extend: 'Ext.panel.Panel',
     layout: 'border',  
     initComponent: function( config ) {
 
         this.introLabel = Ext.create('Ext.form.Label', {
-            text: tr('Search of resources') + '...',            
-            cls: 'intro'            
+            text: tr('Search of resources') + '...',
+            cls: 'intro'
         } );
-
-        this.addCondition = Ext.create('Ext.button.Button', {
-            icon: 'images/plus.png',
-            handler: function(){ this.addQueryCond(this.createQueryCond( false )); },             
-            scope: this
-        });
-
+        
         this.advSearchQueryButton = Ext.create('Ext.button.Button', {
             text: tr('Search'),
+            region: 'east',
             handler: this.submitAdvancedSearchQuery,
             scope: this
         } );
@@ -23,7 +23,7 @@
         this.saveAsCollectionButton = Ext.create('Ext.button.Button', {
             text: tr('Save as collection') + '...',
             hidden: !authorized,
-            handler: this.saveAsCollection,        
+            handler: this.saveAsCollection,
             scope: this
         } );
 
@@ -33,30 +33,26 @@
             region: 'west'
         });
 
-        this.controlPanel = Ext.create('Ext.panel.Panel', {
-            layout: 'vbox',
-            region: 'center',
-            border: false,
-            items: this.advSearchQueryButton
-        });
-
+        this.addCondition = Ext.create('Ext.Component', {
+            html: '<a style="color: #04408c;" href="javascript:addCondition();">' + tr( 'Add condition' ) + '</a>'
+        } );
+        
         var cfg = {
+            id: 'advancedSearchPanel',
             layout: 'border',
             region: 'center', 
             border: false,
             margin: '0 0 0 10',
             items: [ { border: false, region: 'north', items: this.introLabel, height: 26 }, 
-                       this.condPanel, this.controlPanel, 
-                     { border: false, region: 'south', height: 40, layout: 'hbox', 
-                       items: [this.addCondition, { xtype: 'tbspacer', width: 20 }, 
-                               this.advSearchQueryButton, { xtype: 'tbspacer', width: 24 },
-                               this.saveAsCollectionButton] }]    
+                       this.condPanel,
+                     { border: false, region: 'south', layout: 'vbox', 
+                       items: [ this.addCondition, { xtype: 'tbspacer', height: 10 }, this.advSearchQueryButton, { xtype: 'tbspacer', height: 15 } ] } ]   
             
         };
         Ext.apply(this, cfg);
-        this.callParent(arguments);         
+        this.callParent(arguments);
 
-        this.addQueryCond( this.createQueryCond( true ));        
+        this.addQueryCond( this.createQueryCond( true ));
     },
     clear: function() {
         this.condPanel.removeAll();
@@ -79,10 +75,10 @@
         
         return newCond;        
     },
-    addQueryCond: function(cond) {    
-        this.condPanel.add(cond); 
+    addQueryCond: function(cond) {
+        this.condPanel.add(cond);
         var elems = this.condPanel.items.length;
-        setQueryPanelHeight(Math.max(24*elems + 5*(elems - 1) + 135, ADVANCED_HEIGHT), true);
+        setQueryPanelHeight(Math.max(24*elems + 5*(elems - 1) + 155, ADVANCED_HEIGHT), true);
     },
     removeQueryCond: function(cond) {
         this.condPanel.remove(cond);
@@ -92,14 +88,14 @@
             this.firstCond = this.condPanel.getComponent(0)
             this.firstCond.isFirst = true;
             this.firstCond.andOr.setVisible(false);
-            this.firstCond.andOrSpace.setVisible(false);    
+            this.firstCond.andOrSpace.setVisible(false);
             this.firstCond.firstSpacer.setVisible(elems == 1);
         }
         this.firstCond.removeButton.setVisible(elems > 1);
         this.firstCond.removeSpace.setVisible(elems > 1);
         this.firstCond.firstSpacer.setVisible(elems > 1);
         
-        setQueryPanelHeight(Math.max(24*elems + 5*(elems - 1) + 135, ADVANCED_HEIGHT), true);
+        setQueryPanelHeight(Math.max(24*elems + 5*(elems - 1) + 155, ADVANCED_HEIGHT), true);
     },
     setNextAnd: function(cond) {
         var i = 0;
@@ -128,7 +124,7 @@
         var query = new Array();
         var j = 0;
         for (i = 0; i < this.condPanel.items.length; i++) {
-            cond = this.condPanel.getComponent(i);                
+            cond = this.condPanel.getComponent(i);
             condition = cond.getCondition();
             if (condition == null)
                 continue;
@@ -180,7 +176,7 @@
             scope: this 
         });
     },
-    saveAsCollectionEff: function(button, text) {      
+    saveAsCollectionEff: function(button, text) {
         if (button != 'ok')
             return;
         if (text == "") {
@@ -248,47 +244,51 @@ Ext.define( 'Comete.QueryCondition', {
         });
 
         this.andOr = Ext.create('Ext.form.field.ComboBox', {
-                valueField: 'id',
-                displayField: 'label',
-                store: this.andOrStore,
-                width: 65,
-                editable: false,
-                value: 'AND',
-                hidden: this.isFirst
-            });
+            valueField: 'id',
+            displayField: 'label',
+            store: this.andOrStore,
+            width: 65,
+            editable: false,
+            value: 'AND',
+            hidden: this.isFirst,
+            tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div></tpl></div>'
+        });
  
         this.andOr.on('select', this.andOrSelected, this);
 
         this.andOrSpace = Ext.create('Ext.toolbar.Spacer', {
-                width: 5,
-                hidden: this.isFirst
-            });
+            width: 5,
+            hidden: this.isFirst
+        });
 
-        this.removeButton = Ext.create('Ext.button.Button', {
-                icon: 'images/minus.png',
-                handler: this.remove,             
-                scope: this,
-                hidden: this.isFirst
-            } );
+        this.removeButton = Ext.create('Comete.ImageButton', {
+            img: 'images/trash.png',
+            margin: '3 0 0 0',
+            handler: this.remove,
+            scope: this,
+            hidden: this.isFirst,
+            tooltip: tr('Remove condition')
+        } );
 
         this.removeSpace = Ext.create('Ext.toolbar.Spacer', {
-                width: 20,
-                hidden: this.isFirst
-            });
+            width: 15,
+            hidden: this.isFirst
+        });
 
         this.firstSpacer = Ext.create('Ext.toolbar.Spacer', {
-                width: 70,
-                hidden: true
-            });
+            width: 70,
+            hidden: true
+        });
 
         this.typeCond = Ext.create('Ext.form.field.ComboBox', {
-                valueField: 'id',
-                displayField: 'label',
-                store: this.choiceStore,
-                width: 220,
-                editable: false,
-                value: 'title'
-            });
+            valueField: 'id',
+            displayField: 'label',
+            store: this.choiceStore,
+            width: 220,
+            editable: false,
+            value: 'title',
+            tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div></tpl></div>'
+        });
 
         this.typeCond.on('select', this.typeCondSelected, this);
 
@@ -299,16 +299,16 @@ Ext.define( 'Comete.QueryCondition', {
         });
 
  
-        cfg = {          
-            margin: '0 0 5 0',        
-            items: [ this.removeButton, this.removeSpace, 
+        cfg = {
+            margin: '0 0 5 0',
+            items: [ this.removeButton, this.removeSpace,
                      this.firstSpacer, this.andOr, this.andOrSpace, 
                      this.typeCond, { xtype: 'tbspacer', width: 5 },
-                     this.typeCondPanel                    
+                     this.typeCondPanel                     
                    ]
         };
         Ext.apply(this, cfg);
-        this.callParent(arguments);         
+        this.callParent(arguments);
     },
     remove: function() {
         this.topPane.removeQueryCond(this);
@@ -352,7 +352,7 @@ Ext.define( 'Comete.QueryCondition', {
     andOrSelected: function(combo) {
         if ( this.isNegationChoice() ||
              this.topPane.isPreviousNegationChoice(this) ) 
-            this.setAndOr("AND");      
+            this.setAndOr("AND");
     },
     setAndOr: function(val) {
         this.andOr.setValue(val);
@@ -371,7 +371,8 @@ Ext.define( 'Comete.QueryCondition', {
             items: [ { xtype: 'textfield', width: 250 },
                      { xtype: 'tbspacer', width: 5 },
                      { xtype: 'combo', valueField: 'id', displayField: 'label', store: this.langStore,
-                       editable: false, width: 100, value: this.topPane.lang } ] 
+                       editable: false, width: 100, value: this.topPane.lang,
+                       tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div></tpl></div>' } ] 
         });
         return panel;
     },    
@@ -415,7 +416,8 @@ Ext.define( 'Comete.QueryCondition', {
             items: [ keywordCombo,
                      { xtype: 'tbspacer', width: 5 },
                      { xtype: 'combo', valueField: 'id', displayField: 'label', store: this.langStore,
-                       editable: false, width: 80, value: this.topPane.lang } ] 
+                       editable: false, width: 100, value: this.topPane.lang,
+                       tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div></tpl></div>' } ] 
         });
         return panel;
     },    
@@ -435,9 +437,10 @@ Ext.define( 'Comete.QueryCondition', {
             valueField: 'id',
             displayField: 'label',
             store: relOpStore,
-            width: 100,
+            width: 120,
             editable: false,
-            value: 'gt'
+            value: 'gt',
+            tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div></tpl></div>'
         } );
 
         var addedDateField = Ext.create('Ext.form.field.Date', {
@@ -466,7 +469,7 @@ Ext.define( 'Comete.QueryCondition', {
         var panel = Ext.create('Ext.panel.Panel', {
             layout: 'hbox',
             border: false,
-            items: [ { xtype: 'button', icon: 'images/person.gif',                         
+            items: [ { xtype: 'button', icon: 'images/person.gif',
                        handler: this.pickPerson, 
                        scope: this },
                      { xtype: 'tbspacer', width: 5 },
@@ -474,7 +477,7 @@ Ext.define( 'Comete.QueryCondition', {
                        border: false,
                        height: 22, 
                        items: labelContrib
-                     }                     
+                     }
                    ] 
         });
  
@@ -489,7 +492,7 @@ Ext.define( 'Comete.QueryCondition', {
         var panel = Ext.create('Ext.panel.Panel', {
             layout: 'hbox',
             border: false,
-            items: [ { xtype: 'button', icon: 'images/building.png',                         
+            items: [ { xtype: 'button', icon: 'images/building.png',
                        handler: this.pickOrg, 
                        scope: this }, 
                      { xtype: 'tbspacer', width: 5 },
@@ -525,13 +528,13 @@ Ext.define( 'Comete.QueryCondition', {
             style: 'color: #04408C',
             margin: '0 0 0 0',
             checked: false,
-            hidden: true            
+            hidden: true
         } );
 
         var panel = Ext.create('Ext.panel.Panel', {
             layout: 'hbox',
-            border: false,            
-            items: [ { xtype: 'button', icon: 'images/tree.gif',                         
+            border: false,
+            items: [ { xtype: 'button', icon: 'images/tree.gif',
                        handler: this.pickVocConcept, 
                        scope: this },
                      { xtype: 'tbspacer', width: 5 },
@@ -539,7 +542,7 @@ Ext.define( 'Comete.QueryCondition', {
                      arrow, 
                      labelConcept,
                      { xtype: 'tbspacer', width: 5 },
-                     cbSubconcepts                     
+                     cbSubconcepts
                    ] 
         });
  
@@ -547,9 +550,9 @@ Ext.define( 'Comete.QueryCondition', {
     }, 
     setText: function(text, lang) {
         var titleField = this.typeCondPanel.getComponent(0).getComponent(0);
-        titleField.setValue(text);        
+        titleField.setValue(text);
         var combobox = this.typeCondPanel.getComponent(0).getComponent(2);
-        combobox.setValue(lang);        
+        combobox.setValue(lang);
     },
     setDateCond: function( relOp, date ) {
         var relOpField = this.typeCondPanel.getComponent(0).getComponent(0);
@@ -558,32 +561,32 @@ Ext.define( 'Comete.QueryCondition', {
         dateComboBox.setValue( date );
     },
     pickPerson: function() {
-        this.pickIdentity('person');   
+        this.pickIdentity('person');
     },
     pickOrg: function() {
-        this.pickIdentity('organization');   
+        this.pickIdentity('organization');
     },
     pickIdentity: function(type) {
         var identityPicker = Ext.create('Comete.IdentityPicker', {
             lang: this.lang,
-            type: type,   
-            aListener: this   
+            type: type,
+            aListener: this
         });        
-        identityPicker.show();       
+        identityPicker.show();
     },
     setIdentity: function(uri, label) {
         this.data = uri;
         var labelIdentity = this.typeCondPanel.getComponent(0).getComponent(2).getComponent(0);
         labelIdentity.addCls('queryCondData'),
-        labelIdentity.setText(label);        
+        labelIdentity.setText(label);
     },
     pickVocConcept: function() { 
         var vocConceptPicker = Ext.create('Comete.VocConceptPicker', {
             showIds: false,
             lang: this.lang,
-            aListener: this   
-        });        
-        vocConceptPicker.show();         
+            aListener: this
+        });
+        vocConceptPicker.show();
     },
     setVocConcept: function(conceptUri, vocLabel, conceptLabel, isLeaf ) {
         this.data = conceptUri;

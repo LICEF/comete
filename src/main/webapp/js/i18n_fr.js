@@ -155,6 +155,8 @@
     'is the': 'est le',
     'is before the': 'est avant le',
     'is after the': 'est après le',
+    'Add condition': 'Ajouter une condition',
+    'Remove condition': 'Supprimer la condition',
 
     'Persons': 'Personnes',
     'Organizations': 'Organisations',
