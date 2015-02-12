@@ -347,8 +347,7 @@ public class MetadataRecordResource {
 
         boolean isSyntaxHighlighted = ( "true".equals( strIsSyntaxHighlighted ) );
         
-        String path = Store.PATH_RECORDS + "/" + id;
-        return( getXmlDatastream( path, datastream, isSyntaxHighlighted ) );
+        return( getXmlDatastream( id, datastream, isSyntaxHighlighted ) );
     }
 
     private Response getXmlDatastream( String path, String datastream, boolean isSyntaxHighlighted ) throws Exception {

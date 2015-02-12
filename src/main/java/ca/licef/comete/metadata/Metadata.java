@@ -40,6 +40,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -418,7 +420,15 @@ public class Metadata {
             if( repoURI != null && !"".equals( repoURI ) )
                 triples.add(new Triple(recordURI, COMETE.repository, repoURI));
 
-            String recordLink = Core.getInstance().getCometeUrl() + "/rest/metadataRecords" + storeId + "/xml";
+            String encodedStoreId = storeId;
+            try {
+                encodedStoreId = URLEncoder.encode( encodedStoreId, "UTF-8" );
+            }
+            catch( UnsupportedEncodingException e ) {
+                e.printStackTrace();
+            }
+
+            String recordLink = Core.getInstance().getCometeUrl() + "/rest/metadataRecords/" + encodedStoreId + "/xml";
             triples.add(new Triple(recordURI, COMETE.originalDataLink, recordLink));
 
             //Resource association

@@ -16,6 +16,7 @@ import proai.driver.impl.RemoteIteratorImpl;
 import proai.driver.impl.SetInfoImpl;
 
 import ca.licef.comete.core.Core;
+import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.Util;
 import ca.licef.comete.store.Store;
 import licef.DateUtil;
@@ -125,7 +126,6 @@ public class OAIDriverImpl implements OAIDriver {
                 System.out.println( "Cannot retrieve record header data.  The record will not be generated." );
                 e.printStackTrace();
             }
-
         }
     }
 
@@ -218,7 +218,7 @@ public class OAIDriverImpl implements OAIDriver {
                     if( "local".equals( oaiId ) )
                         oaiId = getLocalOaiIdentifier( recordId );
                     String location = tuples[ i ].getValue( "location" ).getContent().toString();
-                    File sourceInfo = new File( Store.getInstance().getLocation() + location );
+                    File sourceInfo = new File( Store.getInstance().getLocation() + location + "/" + Constants.DATASTREAM_ORIGINAL_DATA );
                     Record record = new RecordImpl( oaiId, mdPrefix, sourceInfo );
                     list.add( record );
                 }

@@ -12,8 +12,7 @@ WHERE '{'
         ?s oai:oai-identifier ?oaiId .
     '}' .
     BIND ( IF (bound( ?oaiId ), ?oaiId, "local") AS ?exposedOaiId ) .
-    ?s foaf:page ?page .
-    BIND ( STR( ?page ) AS ?location ) .
+    ?s comete:storeDigitalObject ?location .
     ?s oai:oai-datestamp ?strDatestamp .
     BIND ( xsd:dateTime( ?strDatestamp ) AS ?datestamp ) .
     FILTER ( ?datestamp > "{1}"^^xsd:dateTime && ?datestamp < "{2}"^^xsd:dateTime )
