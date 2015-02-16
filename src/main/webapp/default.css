@@ -87,7 +87,6 @@
 .x-tree-icon { 
     background-image: url(images/blueBullet.gif) !important; 
     background-repeat: no-repeat; 
-    margin: 6px 0px 0px 0px;
 }
 
 
@@ -226,3 +225,19 @@ ul li {
     border: none;
 }
 
+.breadcrumb-button {
+    border-color: transparent;
+    background-color: transparent;
+}
+
+.breadcrumb-button > .x-btn-wrap-default-toolbar-small.x-btn-split-right:after {
+    background-image: url("images/default-split-arrow.png");
+}
+
+.breadcrumb-button.x-btn-over > .x-btn-wrap-default-toolbar-small.x-btn-split-right:after {
+    background-image: url("images/default-split-arrow-over.png");
+}
+
+.breadcrumb-button.x-btn-menu-active > .x-btn-wrap-default-toolbar-small.x-btn-split-right:after {
+    background-image: url("images/default-split-arrow-open.png");
+}

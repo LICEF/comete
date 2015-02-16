@@ -266,7 +266,7 @@ public class LearningObjectView extends DefaultView {
         Vocabulary vocabManager = Vocabulary.getInstance();
         String[] vocabUris = vocabManager.getNavigableVocabularies();
         for( String uri : vocabUris )
-            vocTable.put( uri, vocabManager.getVocabularyTitle( uri, lang, true ) );
+            vocTable.put( uri, vocabManager.getLabel( uri, lang ) );
 
         return( vocTable );
     }

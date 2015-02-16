@@ -162,55 +162,39 @@ Ext.define( 'Comete.Breadcrumb', {
 
         this.rootButton;
         this.lastElement;
-        this.isSpacer = false;   
         this.showIds = false;
         this.automaticQuery = true;
 
         this.toolbar = Ext.create('Ext.toolbar.Toolbar', {
-            height: 29,
-            layout: {
-                overflowHandler: 'Menu'
-            },
-            autoDestroy: false,
-            items: [ { xtype: 'label', width: 0, height: 22 } ]
-        });
+            height: 36,
+            overflowHandler: 'scroller',
+            autoDestroy: false,           
+            baseCls: Ext.baseCSSPrefix + 'breadcrumb'
+        });        
 
         var cfg = {
-            height: 30,
+            height: 36,
             tbar: this.toolbar
         };
         Ext.apply(this, cfg);
         this.callParent(arguments); 
 
-        this.store.on( 'load', function() { this.displayData(this.store.getProxy().getReader().jsonData); }, this);
-
+        this.store.on( 'load', function() { this.displayData(this.store.getProxy().getReader().rawData); }, this);
     },
     displayData: function(json) {
         var button;
         var uri = json.uri;
-        var label = json.label;
+        var label = json.label == undefined?json.text:json.label;
+        var minLabel = label;
         var restUrl = json.restUrl;
         if (label.length > 25)
-            label = label.substring(0, 25) + '...';
-        if (this.rootButton == null) {
-            button = Ext.create('Ext.button.Split', {
-                    cls: 'rootButton',
-                    width: 19,
-                    height: 24,
-                    margin: '0 6 0 2'
-            });
-            this.rootButton = button;
-            button.on( 'arrowclick', function(b) { 
-                if (b.menu != null) 
-                    b.showMenu();
-                else
-                    this.showDynamicMenu(b, restUrl, true);
-            }, this);
-        }        
-        else if (json.leaf == "true") {
+            minLabel = label.substring(0, 30) + '...';
+                    
+        if (json.leaf) {
             button = Ext.create('Ext.button.Button', {
-                    text: label,
-                    tooltip: json.label,
+                    text: minLabel,
+                    cls: 'breadcrumb-button',
+                    tooltip: json.text,
                     uri: uri,
                     height: 24,
                     handler: function() {this.goElement(button, true);},
@@ -218,37 +202,36 @@ Ext.define( 'Comete.Breadcrumb', {
                 })
         }
         else {
+            var manageRoot = this.rootButton == null;
+            var handler = null;
+            if (!manageRoot)
+                handler = function() {this.goElement(button, true);}
+            var lab = manageRoot?json.label:minLabel;
             button = Ext.create('Ext.button.Split', {
-                text: label,
-                tooltip: json.label,
+                cls: 'breadcrumb-button',
+                text: lab,
+                tooltip: manageRoot?null:label,
                 uri: uri,
                 height: 24,
-                handler: function() {this.goElement(button, true);},
+                handler: handler,
                 scope: this
             });   
+
             button.on( 'arrowclick', function(b) { 
                 if (b.menu != null) 
                     b.showMenu();
                 else
-                    this.showDynamicMenu(b, restUrl, false);
+                    this.showDynamicMenu(b, restUrl, manageRoot);
             }, this);
+            if (manageRoot)
+                this.rootButton = button;
         }
         this.displayButton(button, label);
         if (button != this.rootButton)
             this.lastElement = button.uri;
         this.focus();
     },
-    displayButton: function(button, label) {
-        var isRootButton = (button == this.rootButton);
-        if (isRootButton) {
-            this.toolbar.add( { xtype: 'tbspacer', width: 4 } );
-            this.toolbar.add( { xtype: 'label', text: label, style:'font-weight: bold; color: #04408C' } );
-        }
-        else if (!this.isSpacer) {
-            pos = this.toolbar.items.length;
-            this.toolbar.insert(pos, { xtype: 'image', src: 'images/blueArrow.gif', width: 7, height: 12, margin: '0 6' } );
-        }        
-            
+    displayButton: function(button, label) {            
         pos = this.toolbar.items.length;
         this.toolbar.insert( pos, button ); 
         button.index = pos;
@@ -259,7 +242,7 @@ Ext.define( 'Comete.Breadcrumb', {
             var element = concepts[i];
             var cfg = {
                 element: element,
-                text: element.label,
+                text: element.text,
                 handler: this.goDown,
                 scope: this
             };
@@ -274,7 +257,7 @@ Ext.define( 'Comete.Breadcrumb', {
             success: function(response) {
                 var json = Ext.JSON.decode(response.responseText, true);
                 var menu = this.createMenu(json.concepts);
-                button.menu = menu;
+                button.setMenu(menu);
                 menu.button = button;
                 button.showMenu();
             },
@@ -284,17 +267,11 @@ Ext.define( 'Comete.Breadcrumb', {
     goDown: function(item) {
         this.goElement(item.parentMenu.button, false);
         this.displayData(item.element);
-        this.listener.bcElementClicked(item.element.uri);
+        this.listener.bcElementClicked(item.element.uri);        
     },
     goElement: function(button, stayHere) {
         var stopIndex = button.index;
         var lastButtonIndex = this.toolbar.items.length - 1;
-        if (!stayHere && (stopIndex < lastButtonIndex)) {
-            stopIndex += 1; 
-            this.isSpacer = true;
-        }
-        else
-            this.isSpacer = false;
         for (i = lastButtonIndex; i > stopIndex; i--) {
             var elem = this.toolbar.getComponent(i);
             this.toolbar.remove(elem);
@@ -305,14 +282,17 @@ Ext.define( 'Comete.Breadcrumb', {
             this.listener.bcElementClicked(this.lastElement);
         }
     },
-    clear: function() {
-        for (i = this.toolbar.items.length - 1; i > 0; i--) {
+    clear: function(keepDefinition) {
+        var firstIndex = 0
+        if (keepDefinition) 
+            firstIndex = 1;
+        for (i = this.toolbar.items.length - 1; i >= firstIndex; i--) {
             var elem = this.toolbar.getComponent(i);
             this.toolbar.remove(elem);
         };
-        this.rootButton = null;
+        if (!keepDefinition) 
+            this.rootButton = null;
         this.lastElement = null;
-        this.isSpacer = false;
     },
     showIDsConcepts: function(b) {
         this.showIds = b;
@@ -343,7 +323,7 @@ Ext.define( 'Comete.Breadcrumb', {
     displayPath: function(json) {
         if (json != null) { 
             //clear toolbar
-            this.clear();
+            this.clear(true);
     
             //force fix good vocRestUrl
             //var conceptRestUrl = json.all[0].concepts[0].restUrl;
@@ -375,7 +355,7 @@ Ext.define('VocabModel', {
 
 Ext.define('VocabularyConceptModel', {
     extend: 'Ext.data.Model',
-    fields: [ 'uri', 'restUrl', 'label' ]
+    fields: [ 'uri', 'restUrl', 'text' ]
 });
 
 Ext.define('ConceptModel', {
@@ -434,32 +414,23 @@ Ext.define( 'Comete.VocConceptPicker', {
         this.conceptProxy = Ext.create('Ext.data.proxy.Ajax', {
             reader: {
                 type: 'json',
-                root: 'concepts',
-                concept: 'concept',
-                label: 'label'
+                root: 'concepts'
             }
         });
 
         this.treeConceptStore = Ext.create('Ext.data.TreeStore', {
-            model: 'VocabularyConceptModel',
-            proxy: this.conceptProxy
+            proxy: this.conceptProxy            
         });
 
-        this.treeConceptStore.on( 'beforeexpand', function(node) {
-            this.conceptProxy.url = node.getData().restUrl +'/children?showIds=' + this.showIds + '&lang=' + this.lang;
-        }, this);
+        this.treeConceptStore.on( 'beforeload', function(store, operation) {
+            if (operation.getUrl() == "" && this.conceptProxy.url == "")
+                return false;                
+        }, this);        
 
         this.treeConceptStore.on( 'load', function(store, node) {
-            var root = this.treeConceptStore.getRootNode(); 
-            if (node == root)
-                root.expand();
-        }, this);
-
-        this.treeConceptStore.on( 'beforeappend', function(node, child) {
-            child.icon = 'images/black_bullet.gif'; 
-            var root = this.treeConceptStore.getRootNode(); 
-            if (node == root) 
-                this.tree.label.setText(this.conceptProxy.getReader().jsonData.label);
+            if (!this.extendedMode && this.getTitle() == null && this.conceptProxy.getReader().rawData != undefined)
+                this.setTitle(this.conceptProxy.getReader().rawData.label);
+            this.treeConceptStore.getRootNode().expand();        
         }, this);
 
         var label = Ext.create('Ext.form.Label', {
@@ -471,18 +442,18 @@ Ext.define( 'Comete.VocConceptPicker', {
             region: 'center',
             store: this.treeConceptStore,
             border: this.extendedMode,
-            useArrows: true, 
-            columns: [
-                { xtype: 'treecolumn', dataIndex: 'label', flex: 1 }
-            ],
-            hideHeaders: true,
-            label: label,
-            tbar: [ label ],
-            margin: this.extendedMode?'-1 -1 -1 0':'0 0 0 0',
-            viewConfig: {
+            useArrows: true,
+            rootVisible: false
+            //margin: this.extendedMode?'-1 -1 -1 0':'0 0 0 0',
+            /* viewConfig: {
                 margin: '-18 0 0 -16'
-            }
+            }*/
         });
+
+        this.tree.on( 'beforeitemexpand', function(node) {
+            this.conceptProxy.url = node.getData().restUrl +'/children?showIds=' + this.showIds + '&lang=' + this.lang;
+        }, this);
+
 
         this.selectConceptButton = Ext.create('Ext.button.Button', {
             text: tr('Select'),
@@ -493,7 +464,7 @@ Ext.define( 'Comete.VocConceptPicker', {
                 vocLabel = '';
                 if (this.extendedMode)
                     vocLabel = this.vocabList.getSelectionModel().getSelection()[0].getData().label;
-                this.aListener.setVocConcept(elem.uri, vocLabel, elem.label, elem.leaf, true);
+                this.aListener.setVocConcept(elem.uri, vocLabel, elem.text, elem.leaf, true);
             },
             scope: this
         } );

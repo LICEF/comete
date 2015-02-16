@@ -159,6 +159,8 @@ public class Util {
             url = "rest/vocContexts";
         else if (SKOS.ConceptScheme.getURI().equals(type))
             url = "rest/voc";
+        else if (SKOS.Concept.getURI().equals(type))
+            url = "rest/voc";
 
         return url;
     }
@@ -342,7 +344,6 @@ public class Util {
             predicate = FOAF.name;
         else if (type.equals(COMETE.Repository.getURI()))
             predicate = FOAF.name;
-
         String[] label = Core.getInstance().getTripleStore().getBestLocalizedLiteralObject( uri, predicate, lang, graph );
 
         if (label == null || label[ 0 ] == null || "".equals(label[ 0 ]))

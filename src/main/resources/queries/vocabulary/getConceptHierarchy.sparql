@@ -1,6 +1,7 @@
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
 SELECT ?parent
+FROM <{1}>
 WHERE '{'
-    ?parent skos:narrowerTransitive <{0}>
+    <{0}> skos:broader* ?parent
 '}'

@@ -16,9 +16,7 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.*;
 
 public class Vocabulary {
 
@@ -113,20 +111,22 @@ public class Vocabulary {
         return res;
     }
 
-    public String getVocabularyTitle(String uri, String lang, boolean forceConceptScheme) throws Exception {
-        if (!forceConceptScheme) //check and/or retrieve scheme uri first
-            uri = getConceptScheme(uri);
-
+    public String getLabel(String uri, String lang) throws Exception {
         Invoker inv = new Invoker(null, "ca.licef.comete.core.util.Util",
                 "getResourceLabel", new Object[]{uri, lang, Boolean.TRUE});
         String[] label = (String[])tripleStore.transactionalCall(inv);
         if (label == null || label[ 0 ] == null || "".equals(label[ 0 ]))
             label = new String[] { uri, null } ;
-
         return label[0];
     }
 
     public String getConceptScheme(String uri) throws Exception{
+        Invoker inv = new Invoker(this, "ca.licef.comete.vocabulary.Vocabulary",
+                "getConceptSchemeEff", new Object[]{uri});
+        return (String)tripleStore.transactionalCall(inv);
+    }
+
+    public String getConceptSchemeEff(String uri) throws Exception{
         if (Util.isGraphExists(uri)) //uri is a skos conceptScheme)
             return uri;
 
@@ -146,6 +146,51 @@ public class Vocabulary {
             vocUri = uri.substring(0, uri.lastIndexOf('/'));
 
         return vocUri;
+    }
+
+    public Tuple[] getTopConcepts(String uri) throws Exception {
+        String query = CoreUtil.getQuery("vocabulary/getTopConcepts.sparql", uri);
+        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
+        return (Tuple[])tripleStore.transactionalCall(inv);
+    }
+
+    public String[] getChildren(String uri) throws Exception {
+        Invoker inv = new Invoker(this, "ca.licef.comete.vocabulary.Vocabulary",
+                "getChildrenEff", new Object[]{uri});
+        return (String[])tripleStore.transactionalCall(inv);
+    }
+
+    public String[] getChildrenEff(String uri) throws Exception {
+        String graph = getConceptSchemeEff(uri);
+        Triple[] triples = tripleStore.getTriplesWithSubjectPredicate(uri, SKOS.narrower, graph);
+        String[] res = new String[triples.length];
+        for (int i = 0; i < triples.length; i++)
+            res[i] = triples[i].getObject();
+        return res;
+    }
+
+    public Tuple[] getHierarchy(String uri) throws Exception {
+        String graph = getConceptScheme(uri);
+        String query = CoreUtil.getQuery("vocabulary/getConceptHierarchy.sparql", uri, graph);
+        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
+        return (Tuple[])tripleStore.transactionalCall(inv);
+    }
+
+
+    public Tuple[] searchConcepts(String terms, String lang) throws Exception {
+        Invoker inv = new Invoker(this, "ca.licef.comete.vocabulary.Vocabulary",
+                "searchConceptsEff", new Object[]{terms, lang});
+        return (Tuple[])tripleStore.transactionalCall(inv);
+    }
+
+    public Tuple[] searchConceptsEff(String terms, String lang) throws Exception {
+        String[] nav = getNavigableVocabularies();
+        String fromGraphs = "";
+        for (String vocUri : nav)
+            fromGraphs += "FROM <" + vocUri + "> \n";
+        String query = CoreUtil.getQuery("vocabulary/getConcepts.sparql",
+                CoreUtil.formatKeywords(terms), lang, fromGraphs);
+        return tripleStore.sparqlSelect_textIndex(query);
     }
 
     /************/
@@ -222,5 +267,9 @@ public class Vocabulary {
         tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
     }
 
-
+    public Boolean isVocNavigable(String uri) throws Exception {
+        String query = CoreUtil.getQuery("vocabulary/isVocNavigable.sparql", uri);
+        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
+        return Boolean.parseBoolean(((Tuple[]) tripleStore.transactionalCall(inv))[0].getValue("navigable").getContent());
+    }
 }

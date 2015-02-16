@@ -41,7 +41,7 @@ public class VocContextResource {
                 voc.put( "restUrl",
                         Util.getRestUrl(COMETE.VocContext) + "/" +
                             Util.getIdValue(vocCtxtUri));
-                voc.put( "label", Vocabulary.getInstance().getVocabularyTitle(vocUri, lang, true) );
+                voc.put( "label", Vocabulary.getInstance().getLabel(vocUri, lang) );
                 vocCtxts.put(voc);
             }
             json.key( "vocContexts" ).value( vocCtxts );

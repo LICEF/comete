@@ -1,6 +1,13 @@
+PREFIX text: <http://jena.apache.org/text#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
-SELECT DISTINCT ?s 
-WHERE '{'   
-    ?s skos:prefLabel "{0}"
+SELECT DISTINCT ?s
+{2}
+WHERE '{'
+    '{' ?s text:query ( skos:prefLabel "{0}" ) '}'
+    UNION
+    '{' ?s text:query ( skos:prefLabel "{0}" "lang:{1}" ) '}'
+    ?s rdf:type skos:Concept .
 '}'
+ORDER BY ?s

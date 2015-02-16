@@ -6,7 +6,7 @@ window.currentSearchQueryItem = 0;
 
 SIMPLE_HEIGHT = 110;
 ADVANCED_HEIGHT = 180;
-THEMATIC_HEIGHT = 200;
+THEMATIC_HEIGHT = 220;
 COLLECTION_HEIGHT = 90;
 var currentAdvancedHeight = ADVANCED_HEIGHT;
 

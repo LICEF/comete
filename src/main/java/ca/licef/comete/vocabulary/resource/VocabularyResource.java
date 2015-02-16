@@ -1,9 +1,14 @@
 package ca.licef.comete.vocabulary.resource;
 
+import ca.licef.comete.core.Core;
 import ca.licef.comete.core.util.Util;
 import ca.licef.comete.store.Store;
 import ca.licef.comete.vocabulary.Vocabulary;
 import com.sun.jersey.spi.resource.Singleton;
+import licef.StringUtil;
+import licef.reflection.Invoker;
+import licef.tsapi.TripleStore;
+import licef.tsapi.model.Tuple;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Hashtable;
 
 
 @Singleton
@@ -154,7 +160,7 @@ public class VocabularyResource {
                 JSONObject voc = new JSONObject();
                 voc.put( "uri", vocUri );
                 voc.put( "restUrl", Vocabulary.getInstance().getRestUrl(vocUri));
-                voc.put( "label", Vocabulary.getInstance().getVocabularyTitle(vocUri, lang, true) );
+                voc.put( "label", Vocabulary.getInstance().getLabel(vocUri, lang) );
                 vocabs.put(voc);
             }
             json.key( "vocabularies" ).value( vocabs );
@@ -174,26 +180,25 @@ public class VocabularyResource {
         return Response.ok(out.toString()).build();
     }
 
-
-    /*@GET
+    @GET
     @Path( "{uri}/topConcepts" )
     @Produces( MediaType.APPLICATION_JSON )
     public String getVocabularyTopConcepts(  @PathParam( "uri" ) String uri,
                                @DefaultValue( "false" ) @QueryParam( "showIds" ) String showIds,
                                @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) throws Exception {
 
-        String[] concepts = Vocabulary.getInstance().getTopConcepts(uri, true);
+        Tuple[] concepts = Vocabulary.getInstance().getTopConcepts(uri);
         StringWriter out = new StringWriter();
         try {
             JSONWriter json = new JSONWriter( out ).object();
 
             JSONArray _concepts = new JSONArray();
-            for (String concept : concepts)
-                _concepts.put(buildJSONConcept(concept, showIds, null, lang));
+            for (Tuple concept : concepts)
+                _concepts.put(buildJSONConcept(concept.getValue("s").getContent(), showIds, null, lang));
 
-            json.key( "concepts" ).value( _concepts );
-            json.key( "label" ).value( Vocabulary.getInstance().getVocabularyTitle(uri, lang, false) );
-            json.key( "restUrl").value(Vocabulary.getInstance().getRestUrl(uri));
+            json.key("concepts").value(_concepts);
+            json.key("label").value(Vocabulary.getInstance().getLabel(uri, lang));
+            json.key("restUrl").value(Vocabulary.getInstance().getRestUrl(uri));
 
             json.endObject();
         }
@@ -209,9 +214,9 @@ public class VocabularyResource {
         }
 
         return( out.toString() );
-    }*/
+    }
 
-    /*@GET
+    @GET
     @Path( "{uri}/children" )
     @Produces( MediaType.APPLICATION_JSON )
     public String getVocabularyConceptChildren( @PathParam( "uri" ) String uri,
@@ -241,7 +246,7 @@ public class VocabularyResource {
         }
 
         return( out.toString() );
-    }*/
+    }
 
     /*@GET
     @Path( "graphName" )
@@ -281,30 +286,30 @@ public class VocabularyResource {
         return( out.toString() );
     }*/
 
-    /*@GET
+    @GET
     @Path( "{uri}/hierarchy" )
     @Produces( MediaType.APPLICATION_JSON )
     public String getVocabularyConceptHierarchy( @PathParam( "uri" ) String uri,
                                                  @DefaultValue( "false" ) @QueryParam( "showIds" ) String showIds,
                                                  @DefaultValue( "false" ) @QueryParam( "includeScheme" ) boolean includeScheme,
                                                  @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) throws Exception {
-        String[] concepts = Vocabulary.getInstance().getHierarchy(uri);
+        Tuple[] concepts = Vocabulary.getInstance().getHierarchy(uri);
         StringWriter out = new StringWriter();
         try {
             JSONWriter json = new JSONWriter( out ).object();
             JSONArray _concepts = new JSONArray();
 
             JSONObject top = new JSONObject();
-            top.put( "label", Vocabulary.getInstance().getVocabularyTitle(uri, lang, false) );
+            top.put( "label", Vocabulary.getInstance().getLabel(uri, lang) );
             String scheme = Vocabulary.getInstance().getConceptScheme(uri);
             top.put( "restUrl", Vocabulary.getInstance().getRestUrl(scheme));
-            _concepts.put(top);
+            //_concepts.put(top);
 
-            for (String concept : concepts)
-                _concepts.put(buildJSONConcept(concept, showIds, false, lang));
-
-            //uri param as last element
-            _concepts.put(buildJSONConcept(uri, showIds, null, lang));
+            //reversing the list
+            for (int i = concepts.length-1; i >= 0; i--) {
+                Tuple concept = concepts[i];
+                _concepts.put( buildJSONConcept(concept.getValue("parent").getContent(), showIds, i == 0?null:false, lang));
+            }
 
             json.key( "concepts" ).value( _concepts );
             json.endObject();
@@ -321,7 +326,7 @@ public class VocabularyResource {
         }
 
         return( out.toString() );
-    }*/
+    }
 
     //@GET
     //@Path( "{uri}/label" )
@@ -358,72 +363,9 @@ public class VocabularyResource {
     //    //return( out.toString() );
     //}
 
-    /*@GET
-    @Path( "{uri}/extendedHierarchy" )
-    @Produces( MediaType.APPLICATION_JSON )
-    public String getVocabularyConceptsHierarchy( @PathParam( "uri" ) String uri,
-                                                  @DefaultValue( "false" ) @QueryParam( "showIds" ) String showIds,
-                                                  @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) throws Exception {
-        StringWriter out = new StringWriter();
-        try {
-            JSONWriter json = new JSONWriter( out ).object();
-
-            JSONArray _all = new JSONArray();
-
-            String[] topConcepts = Vocabulary.getInstance().getTopConcepts(uri, false);
-            JSONObject top = new JSONObject();
-            JSONArray _concepts = new JSONArray();
-            for (String concept : topConcepts)
-                _concepts.put(buildJSONConcept(concept, showIds, null, lang));
-
-            top.put( "concepts", _concepts );
-            top.put( "label", Vocabulary.getInstance().getVocabularyTitle(uri, lang, false) );
-            _all.put(top);
-
-            String[] hierarchy = Vocabulary.getInstance().getHierarchy(uri);
-            for (String concept : hierarchy) {
-                String[] children = Vocabulary.getInstance().getChildren(concept);
-
-                _concepts = new JSONArray();
-                for (String child : children)
-                    _concepts.put(buildJSONConcept(child, showIds, false, lang));
-
-                JSONObject _element = buildJSONConcept(concept, showIds, null, lang);
-                _element.put( "concepts", _concepts );
-                _all.put(_element);
-            }
-
-            //uri param as last element
-            String[] children = Vocabulary.getInstance().getChildren(uri);
-            _concepts = new JSONArray();
-            for (String child : children)
-                _concepts.put(buildJSONConcept(child, showIds, null, lang));
-
-            JSONObject _element = buildJSONConcept(uri, showIds, null, lang);
-            _element.put( "concepts", _concepts );
-            _all.put(_element);
-
-            json.key( "all" ).value( _all );
-            json.endObject();
-        }
-        catch( JSONException e ) {
-            e.printStackTrace();
-        }
-
-        try {
-            out.close();
-        }
-        catch( IOException e ) {
-            e.printStackTrace();
-        }
-
-        return( out.toString() );
-    }*/
-
-    /*private JSONObject buildJSONConcept(String uri, String showIds, Boolean isLeaf, String lang) throws Exception{
-        TripleStoreService tripleStore = Core.getInstance().getTripleStoreService();
+    private JSONObject buildJSONConcept(String uri, String showIds, Boolean isLeaf, String lang) throws Exception{
         JSONObject _concept = new JSONObject();
-        String label = tripleStore.getResourceLabel(uri, lang, true)[0];
+        String label = Vocabulary.getInstance().getLabel(uri, lang);
         label = label.trim();
         if (Boolean.parseBoolean(showIds)) {
             char delimiter = '/';
@@ -435,15 +377,16 @@ public class VocabularyResource {
         }
         _concept.put( "uri", uri );
         _concept.put( "restUrl", Vocabulary.getInstance().getRestUrl(uri));
-        _concept.put( "label", label );
+        _concept.put( "text", label );
         if (isLeaf == null) {
             String[] children2 = Vocabulary.getInstance().getChildren(uri);
             isLeaf = (children2.length == 0);
         }
         if (isLeaf)
-            _concept.put( "leaf", "true" );
+            _concept.put( "leaf", true );
+
         return _concept;
-    }*/
+    }
 
    /* @GET
     @Path( "equivalentConcepts" )
@@ -474,7 +417,7 @@ public class VocabularyResource {
         return( out.toString() );
     }*/
 
-    /*@GET
+    @GET
     @Path( "search" )
     @Produces( MediaType.APPLICATION_JSON )
     public String searchJson( @QueryParam( "q" ) String terms,
@@ -484,11 +427,10 @@ public class VocabularyResource {
             return null;
 
         boolean showId = Boolean.parseBoolean(showIds);
-        Hashtable<String, String>[] results = Core.getInstance().getTripleStoreService().
-                getResultsFromGraph("getConcepts.sparql", "voc-fullTextView_" + lang,
-                        ca.licef.comete.core.util.Util.formatKeywords(terms));
+        Tuple[] results = Vocabulary.getInstance().searchConcepts(terms, lang);
 
-        Hashtable<String, Boolean> vocNavigable = new Hashtable<String, Boolean>();
+        //local cache
+        Hashtable<String, String> vocTitle = new Hashtable<>();
 
         StringWriter out = new StringWriter();
         try {
@@ -496,24 +438,14 @@ public class VocabularyResource {
 
             JSONArray concepts = new JSONArray();
             for (int i = 0; i < results.length; i++) {
-                String uri = results[i].get("s");
+                String uri = results[i].getValue("s").getContent();
                 String vocUri = Vocabulary.getInstance().getConceptScheme(uri);
-
-                Boolean isNavigable = vocNavigable.get(vocUri);
-                if (isNavigable == null) {
-                    Hashtable<String, String>[] res = Core.getInstance().getTripleStoreService().
-                            getResults("isVocNavigable.sparql", vocUri);
-                    isNavigable = Boolean.parseBoolean(
-                            ca.licef.comete.core.util.Util.manageQuotes(res[0].get("navigable")));
-                    vocNavigable.put(vocUri, isNavigable);
+                String title = vocTitle.get(vocUri);
+                if (title == null) {
+                    title = Vocabulary.getInstance().getLabel(vocUri, lang);
+                    vocTitle.put(vocUri, title);
                 }
-
-                if (!isNavigable) //Only show navigable vocabularies
-                    continue;
-
-                String vocLabel = Vocabulary.getInstance().getVocabularyTitle(uri, lang, false);
-                String conceptLabel = Core.getInstance().getTripleStoreService().
-                        getResourceLabel(uri, lang, true)[0];
+                String conceptLabel = Vocabulary.getInstance().getLabel(uri, lang);
                 if (showId) {
                     String[] spl = StringUtil.split(uri, '/');
                     String id = spl[spl.length - 1];
@@ -522,7 +454,7 @@ public class VocabularyResource {
                 JSONObject concept = new JSONObject();
                 concept.put( "uri", uri );
                 concept.put( "label", conceptLabel );
-                concept.put( "vocLabel", vocLabel);
+                concept.put( "vocLabel", title);
                 concepts.put(concept);
             }
             json.key( "concepts" ).value( concepts );
@@ -540,7 +472,7 @@ public class VocabularyResource {
         }
 
         return( out.toString() );
-    }*/
+    }
 
     @Context
     private ServletContext context;
