@@ -383,7 +383,7 @@ public class VocabularyManager {
     }
 
     private void initVocabularyContent(String uri, String location, String vocId, String vocUri, boolean cleanFirst) throws Exception {
-        String storeId = Store.PATH_VOCABS + vocId;
+        String storeId = Store.PATH_VOCABS + "/" + vocId;
 
         //remove voc graph and exposed vocs
         if (cleanFirst) {

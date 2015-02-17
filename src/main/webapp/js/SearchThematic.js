@@ -1,6 +1,4 @@
-﻿isUpdateConceptNeeded = true;
-
-Ext.define( 'Comete.ThematicNavigationSearch', {
+﻿Ext.define( 'Comete.ThematicNavigationSearch', {
     extend: 'Ext.panel.Panel',
     layout: 'border',  
     initComponent: function( config ) {
@@ -58,7 +56,16 @@ Ext.define( 'Comete.ThematicNavigationSearch', {
             tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div></tpl></div>'
         });
 
-        this.vocabularyCombo.on( 'select', this.vocabularySelected, this );        
+        this.vocabularyCombo.on( 'select', this.vocabularySelected, this ); 
+
+        this.vocabularyButton = Ext.create('Comete.ImageButton', {
+            img: 'images/tree.gif',
+            imgDisabled: 'images/treeDisabled.gif',
+            margin: '4 0 0 0',
+            handler: this.pickVocConcept,
+            disabled: true,
+            scope: this
+        } );       
                 
         this.conceptSearchCombo = Ext.create('Ext.form.field.ComboBox', {
             displayField: 'label',
@@ -71,14 +78,14 @@ Ext.define( 'Comete.ThematicNavigationSearch', {
             listConfig: {
                 loadingText: tr('Loading') + '...',
                 emptyText: tr('No matching category found'),
-                tpl: '<div><tpl for="."><div class="x-boundlist-item"><font style="font-weight: bold; color: #04408C">{vocLabel}</font>' +
-                                 '<img style="margin-bottom:-1px; margin-right:6px; margin-left:8px" src="images/split-arrow-tiny.png"/>' +
+                tpl: '<div><tpl for="."><div class="x-boundlist-item">{vocLabel}' +
+                                 '<img style="margin-bottom:-2px; margin-right:6px; margin-left:4px" src="images/split-arrow-tiny.png"/>' +
                                  '{label}</div></tpl></div>'
             }
         });
 
-        this.expandConceptListButton = Ext.create('Ext.button.Button', {
-            icon: 'images/downWhiteArrow.png',
+        this.expandConceptListButton = Ext.create('Comete.ImageButton', {
+            img: 'images/downArrow.png',
             handler: function(){ this.conceptSearchCombo.expand() },
             scope: this
         } );
@@ -92,7 +99,7 @@ Ext.define( 'Comete.ThematicNavigationSearch', {
             layout: 'hbox',
             border: false,
             margin: '0 0 6 0',
-            items: [this.vocabularyCombo, { xtype: 'tbspacer', width: 30 },
+            items: [this.vocabularyCombo, { xtype: 'tbspacer', width: 4 }, this.vocabularyButton, { xtype: 'tbspacer', width: 30 },
                     { xtype: 'label', text:tr('OR'), margin: '2 0 0 0' }, { xtype: 'tbspacer', width: 30 }, this.conceptSearchCombo,
                     { xtype: 'tbspacer', width: 4 }, this.expandConceptListButton, { xtype: 'tbspacer', width: 4 },
                     { xtype: 'label', text:tr('(min. 4 characters)'), margin: '2 0 0 5' } ]
@@ -214,6 +221,7 @@ Ext.define( 'Comete.ThematicNavigationSearch', {
         this.vocConceptProxy.url = this.currentVocRestUrl + '/topConcepts?showIds=' + this.cbId.getValue() + '&lang=' + this.lang;        
         this.vocConceptStore.load();
         this.currentVocConceptUri = null;
+        this.vocabularyButton.setDisabled(false);
         this.queryButton.setDisabled(true);
         this.cleanEquivalence();
     },
@@ -234,6 +242,40 @@ Ext.define( 'Comete.ThematicNavigationSearch', {
             }
         }
         searchManager.setRequestVocConcept2( query );
+    },
+    pickVocConcept: function() { 
+        vocConceptPicker = Ext.create('Comete.VocConceptPicker', {
+            vocRestUrl: this.currentVocRestUrl,
+            showIds: this.cbId.getValue(),
+            lang: this.lang,
+            aListener: this   
+        });        
+        vocConceptPicker.show();
+    },
+    setVocConcept: function(conceptUri, vocLabel, conceptLabel, isLeaf, isQuery) {
+        var vocUri = null;
+        if (conceptUri.startsWith("http://dewey.info/class/"))
+            vocUri = "http://dewey.info/scheme/ddc/";
+        else {
+            if (conceptUri.indexOf("#") != -1) //hash uri
+                vocUri = conceptUri.substring(0, conceptUri.lastIndexOf("#"));
+            else 
+                vocUri = conceptUri.substring(0, conceptUri.lastIndexOf("/"));
+        }
+        var currentVoc = this.vocabularyCombo.getValue();
+        this.vocabularyCombo.setValue(vocUri);
+        var record = this.vocabularyCombo.findRecord("uri", vocUri);
+        this.currentVocRestUrl = record.data.restUrl;
+        this.vocabularyButton.setDisabled(false);
+        this.breadcrumb.displayElement(conceptUri);
+        this.queryButton.setDisabled(false);
+        this.currentVocConceptUri = conceptUri;
+        if (currentVoc == null || currentVoc != vocUri) {
+            this.cbEquivalence.setValue(false);
+            this.cleanEquivalence();  
+        }
+        if (isQuery) 
+            this.setRequestVocConcept(conceptUri);        
     },
     setQuery: function(query) {
         this.currentVocConceptUri = null;

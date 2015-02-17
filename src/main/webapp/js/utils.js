@@ -172,8 +172,15 @@ Ext.define( 'Comete.Breadcrumb', {
             baseCls: Ext.baseCSSPrefix + 'breadcrumb'
         });        
 
+        this.hiddenButton = Ext.create('Ext.button.Button', {
+            text: 'should not be seen'
+        });
+
         var cfg = {
             height: 36,
+            layout: 'hbox',
+            margin: '0 0 -1 0',
+            items: this.hiddenButton,
             tbar: this.toolbar
         };
         Ext.apply(this, cfg);
@@ -187,8 +194,8 @@ Ext.define( 'Comete.Breadcrumb', {
         var label = json.label == undefined?json.text:json.label;
         var minLabel = label;
         var restUrl = json.restUrl;
-        if (label.length > 25)
-            minLabel = label.substring(0, 30) + '...';
+        if (label.length > 35)
+            minLabel = label.substring(0, 35) + '...';
                     
         if (json.leaf) {
             button = Ext.create('Ext.button.Button', {
@@ -229,7 +236,8 @@ Ext.define( 'Comete.Breadcrumb', {
         this.displayButton(button, label);
         if (button != this.rootButton)
             this.lastElement = button.uri;
-        this.focus();
+        //to unfocus button
+        this.hiddenButton.focus();
     },
     displayButton: function(button, label) {            
         pos = this.toolbar.items.length;
@@ -278,20 +286,18 @@ Ext.define( 'Comete.Breadcrumb', {
         };        
         if (stayHere) {
             this.lastElement = button.uri;
-            this.focus();
             this.listener.bcElementClicked(this.lastElement);
+            //to unfocus button
+            this.hiddenButton.focus();
         }
     },
-    clear: function(keepDefinition) {
-        var firstIndex = 0
-        if (keepDefinition) 
-            firstIndex = 1;
-        for (i = this.toolbar.items.length - 1; i >= firstIndex; i--) {
+    clear: function() {
+
+        for (i = this.toolbar.items.length - 1; i >= 0; i--) {
             var elem = this.toolbar.getComponent(i);
             this.toolbar.remove(elem);
         };
-        if (!keepDefinition) 
-            this.rootButton = null;
+        this.rootButton = null;
         this.lastElement = null;
     },
     showIDsConcepts: function(b) {
@@ -323,14 +329,8 @@ Ext.define( 'Comete.Breadcrumb', {
     displayPath: function(json) {
         if (json != null) { 
             //clear toolbar
-            this.clear(true);
+            this.clear();
     
-            //force fix good vocRestUrl
-            //var conceptRestUrl = json.all[0].concepts[0].restUrl;
-            //vocRestUrl = conceptRestUrl.substring(0, conceptRestUrl.lastIndexOf("%23"));
-            //if (vocRestUrl == "")
-            //    vocRestUrl = conceptRestUrl.substring(0, conceptRestUrl.lastIndexOf("%2F"));
-
             //build toolbar
             for (var i = 0; i < json.concepts.length; i++) 
                 this.displayData( json.concepts[i] ); 
@@ -443,11 +443,10 @@ Ext.define( 'Comete.VocConceptPicker', {
             store: this.treeConceptStore,
             border: this.extendedMode,
             useArrows: true,
-            rootVisible: false
-            //margin: this.extendedMode?'-1 -1 -1 0':'0 0 0 0',
-            /* viewConfig: {
-                margin: '-18 0 0 -16'
-            }*/
+            rootVisible: false,
+            viewConfig: {
+                margin: '0 -1 0 -1'
+            }
         });
 
         this.tree.on( 'beforeitemexpand', function(node) {
@@ -500,8 +499,8 @@ Ext.define( 'Comete.VocConceptPicker', {
             this.vocPanel = Ext.create('Ext.Panel', { 
                 layout: 'fit',
                 region: 'west',
-                margin: '-1 5 -1 -1',
-                width: 300,
+                split: true,
+                width: 200,
                 items: this.vocabList
             }); 
         }
@@ -640,7 +639,6 @@ Ext.define( 'Comete.IdentityFinderPanel', {
 
         this.allButton = Ext.create('Ext.button.Button', {
             text: tr('All'),
-            width: 40,
             handler: function() { this.retrieveIdentities(true); },
             scope: this
         } );
@@ -706,6 +704,7 @@ Ext.define( 'Comete.IdentityFinderPanel', {
 
 Ext.define( 'Comete.ImageButton', {
     extend: 'Ext.Img',
+    alias: 'widget.imagebutton',
     initComponent: function( config ) {
         var cfg = {
             border: false,
@@ -713,8 +712,11 @@ Ext.define( 'Comete.ImageButton', {
             listeners: {
                 el: {
                     click: {
-                        fn: this.handler,
-                        scope: this.scope
+                        fn: function() {
+                            if (!this.isDisabled())
+                                this.handler.apply(this.scope);
+                        },
+                        scope: this
                     },
                     mouseover: {
                         fn: function(evt) { 
@@ -753,6 +755,10 @@ Ext.define( 'Comete.ImageButton', {
 
         Ext.apply(this, cfg);
         this.callParent(arguments); 
+    },
+    do: function() {
+         //console.log(this.handler.constructor.name);
+         this.handler.apply();
     },
     setDisabled: function(disabled) {
         if( disabled ) {

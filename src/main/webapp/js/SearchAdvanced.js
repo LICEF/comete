@@ -463,13 +463,15 @@ Ext.define( 'Comete.QueryCondition', {
     createContribCond: function() {
         var labelContrib = Ext.create('Ext.form.Label', {
             text: tr('Select contributor') + '...',
-            margin: '3 0 0 5'
+            margin: '4 0 0 4'
         });  
 
         var panel = Ext.create('Ext.panel.Panel', {
             layout: 'hbox',
             border: false,
-            items: [ { xtype: 'button', icon: 'images/person.gif',
+            items: [ { xtype: 'imagebutton', 
+                       img: 'images/person.gif', 
+                       margin: '4 0 0 0',
                        handler: this.pickPerson, 
                        scope: this },
                      { xtype: 'tbspacer', width: 5 },
@@ -486,15 +488,17 @@ Ext.define( 'Comete.QueryCondition', {
     createOrgCond: function() {
         var labelOrg = Ext.create('Ext.form.Label', {
             text: tr('Select organization') + '...',
-            margin: '3 0 0 5'
+            margin: '4 0 0 4'
         });  
 
         var panel = Ext.create('Ext.panel.Panel', {
             layout: 'hbox',
             border: false,
-            items: [ { xtype: 'button', icon: 'images/building.png',
+            items: [ { xtype: 'imagebutton', 
+                       img: 'images/building.png', 
+                       margin: '4 0 0 0',
                        handler: this.pickOrg, 
-                       scope: this }, 
+                       scope: this },
                      { xtype: 'tbspacer', width: 5 },
                      { layout: 'hbox',
                        border: false,
@@ -508,40 +512,40 @@ Ext.define( 'Comete.QueryCondition', {
     createConceptCond: function() {
 
         var labelVoc = Ext.create('Ext.form.Label', {
-            style: 'font-weight: bold; color: #04408C',
-            margin: '2 0 0 5'
+            margin: '4 0 0 0'
         });  
 
         var arrow = Ext.create('Ext.Img', {
-            src: 'images/blueArrow.gif', 
-            margin: '4 6 0 6',
+            src: 'images/split-arrow-tiny.png', 
+            margin: '1 6 0 6',
             hidden: true
         });  
 
         var labelConcept = Ext.create('Ext.form.Label', {
             text: tr('Select category') + '...',
-            margin: '2 8 0 0'
+            margin: '4 0 0 0'
         });  
 
         var cbSubconcepts = Ext.create('Ext.form.field.Checkbox', {
             boxLabel: tr('and subcategories'),
             style: 'color: #04408C',
-            margin: '0 0 0 0',
-            checked: false,
+            checked: true,
             hidden: true
         } );
 
         var panel = Ext.create('Ext.panel.Panel', {
             layout: 'hbox',
             border: false,
-            items: [ { xtype: 'button', icon: 'images/tree.gif',
+            items: [ { xtype: 'imagebutton', 
+                       img: 'images/tree.gif', 
+                       margin: '4 0 0 1',
                        handler: this.pickVocConcept, 
                        scope: this },
-                     { xtype: 'tbspacer', width: 5 },
+                     { xtype: 'tbspacer', width: 10 },
                      labelVoc, 
                      arrow, 
                      labelConcept,
-                     { xtype: 'tbspacer', width: 5 },
+                     { xtype: 'tbspacer', width: 10 },
                      cbSubconcepts
                    ] 
         });

@@ -300,10 +300,10 @@ public class VocabularyResource {
             JSONArray _concepts = new JSONArray();
 
             JSONObject top = new JSONObject();
-            top.put( "label", Vocabulary.getInstance().getLabel(uri, lang) );
             String scheme = Vocabulary.getInstance().getConceptScheme(uri);
+            top.put( "label", Vocabulary.getInstance().getLabel(scheme, lang) );
             top.put( "restUrl", Vocabulary.getInstance().getRestUrl(scheme));
-            //_concepts.put(top);
+            _concepts.put(top);
 
             //reversing the list
             for (int i = concepts.length-1; i >= 0; i--) {
