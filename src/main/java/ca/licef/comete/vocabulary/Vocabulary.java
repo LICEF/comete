@@ -148,25 +148,34 @@ public class Vocabulary {
         return vocUri;
     }
 
-    public Tuple[] getTopConcepts(String uri) throws Exception {
+    public Object[] getTopConcepts(String uri) throws Exception {
+        List<String> topConceptUris = new ArrayList<>();
         String query = CoreUtil.getQuery("vocabulary/getTopConcepts.sparql", uri);
         Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
-        return (Tuple[])tripleStore.transactionalCall(inv);
+        Tuple[] res = (Tuple[])tripleStore.transactionalCall(inv);
+        int nbPos = 0;
+        for (Tuple tuple : res) {
+            topConceptUris.add(tuple.getValue("s").getContent());
+            if (!"".equals(tuple.getValue("pos").getContent()))
+                nbPos++;
+        }
+        boolean controlledPosition = (nbPos == topConceptUris.size());
+        return new Object[]{controlledPosition, topConceptUris.toArray(new String[topConceptUris.size()])};
     }
 
-    public String[] getChildren(String uri) throws Exception {
-        Invoker inv = new Invoker(this, "ca.licef.comete.vocabulary.Vocabulary",
-                "getChildrenEff", new Object[]{uri});
-        return (String[])tripleStore.transactionalCall(inv);
-    }
-
-    public String[] getChildrenEff(String uri) throws Exception {
-        String graph = getConceptSchemeEff(uri);
-        Triple[] triples = tripleStore.getTriplesWithSubjectPredicate(uri, SKOS.narrower, graph);
-        String[] res = new String[triples.length];
-        for (int i = 0; i < triples.length; i++)
-            res[i] = triples[i].getObject();
-        return res;
+    public Object[] getChildren(String uri) throws Exception {
+        List<String> childrenUris = new ArrayList<>();
+        String query = CoreUtil.getQuery("vocabulary/getChildren.sparql", uri, getConceptScheme(uri));
+        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
+        Tuple[] res = (Tuple[])tripleStore.transactionalCall(inv);
+        int nbPos = 0;
+        for (Tuple tuple : res) {
+            childrenUris.add(tuple.getValue("o").getContent());
+            if (!"".equals(tuple.getValue("pos").getContent()))
+                nbPos++;
+        }
+        boolean controlledPosition = (nbPos == childrenUris.size());
+        return new Object[]{controlledPosition, childrenUris.toArray(new String[childrenUris.size()])};
     }
 
     public Tuple[] getHierarchy(String uri) throws Exception {
@@ -175,7 +184,6 @@ public class Vocabulary {
         Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
         return (Tuple[])tripleStore.transactionalCall(inv);
     }
-
 
     public Tuple[] searchConcepts(String terms, String lang) throws Exception {
         Invoker inv = new Invoker(this, "ca.licef.comete.vocabulary.Vocabulary",

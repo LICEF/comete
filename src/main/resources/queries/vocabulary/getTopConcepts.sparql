@@ -1,12 +1,18 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX comete: <http://comete.licef.ca/reference#>
 
-SELECT DISTINCT ?s
+SELECT DISTINCT ?s ?pos
 FROM <{0}>
 WHERE '{'
     ?s rdf:type skos:Concept .
+    OPTIONAL '{'
+        ?s comete:position ?pos
+    '}'
     OPTIONAL '{'
         ?s skos:broader ?o
     '}'
     FILTER(!BOUND(?o))
 '}'
+ORDER BY xsd:integer(?pos)

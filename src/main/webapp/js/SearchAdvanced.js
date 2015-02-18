@@ -592,7 +592,7 @@ Ext.define( 'Comete.QueryCondition', {
         });
         vocConceptPicker.show();
     },
-    setVocConcept: function(conceptUri, vocLabel, conceptLabel, isLeaf ) {
+    setVocConcept: function(vocUri, conceptUri, vocLabel, conceptLabel, isLeaf ) {
         this.data = conceptUri;
         var conceptPanel = this.typeCondPanel.getComponent(0);
         conceptPanel.getComponent(2).setText(vocLabel);

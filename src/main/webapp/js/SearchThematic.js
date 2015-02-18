@@ -92,7 +92,7 @@
 
         this.conceptSearchCombo.on( 'beforeselect', function(combo, record){ 
                         combo.collapse();
-                        this.setVocConcept(record.data.uri, record.data.vocLabel, record.data.label, false, true);                        
+                        this.setVocConcept(record.data.vocUri, record.data.uri, record.data.vocLabel, record.data.label, false, true);                        
                         return false;}, this );
 
         var vocPanel = Ext.create('Ext.panel.Panel', {
@@ -218,6 +218,7 @@
         searchManager.clear();
         this.breadcrumb.clear();
         this.currentVocRestUrl = records[0].getData().restUrl;
+        this.currentVocUri = records[0].getData().uri;
         this.vocConceptProxy.url = this.currentVocRestUrl + '/topConcepts?showIds=' + this.cbId.getValue() + '&lang=' + this.lang;        
         this.vocConceptStore.load();
         this.currentVocConceptUri = null;
@@ -246,26 +247,19 @@
     pickVocConcept: function() { 
         vocConceptPicker = Ext.create('Comete.VocConceptPicker', {
             vocRestUrl: this.currentVocRestUrl,
+            vocUri: this.currentVocUri,
             showIds: this.cbId.getValue(),
             lang: this.lang,
             aListener: this   
         });        
         vocConceptPicker.show();
     },
-    setVocConcept: function(conceptUri, vocLabel, conceptLabel, isLeaf, isQuery) {
-        var vocUri = null;
-        if (conceptUri.startsWith("http://dewey.info/class/"))
-            vocUri = "http://dewey.info/scheme/ddc/";
-        else {
-            if (conceptUri.indexOf("#") != -1) //hash uri
-                vocUri = conceptUri.substring(0, conceptUri.lastIndexOf("#"));
-            else 
-                vocUri = conceptUri.substring(0, conceptUri.lastIndexOf("/"));
-        }
+    setVocConcept: function(vocUri, conceptUri, vocLabel, conceptLabel, isLeaf, isQuery) {     
         var currentVoc = this.vocabularyCombo.getValue();
         this.vocabularyCombo.setValue(vocUri);
         var record = this.vocabularyCombo.findRecord("uri", vocUri);
         this.currentVocRestUrl = record.data.restUrl;
+        this.currentVocUri = vocUri;
         this.vocabularyButton.setDisabled(false);
         this.breadcrumb.displayElement(conceptUri);
         this.queryButton.setDisabled(false);

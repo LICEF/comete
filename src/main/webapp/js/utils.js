@@ -190,8 +190,9 @@ Ext.define( 'Comete.Breadcrumb', {
     },
     displayData: function(json) {
         var button;
+        var manageRoot = this.rootButton == null;
         var uri = json.uri;
-        var label = json.label == undefined?json.text:json.label;
+        var label = manageRoot?json.label:json.text;
         var minLabel = label;
         var restUrl = json.restUrl;
         if (label.length > 35)
@@ -201,7 +202,7 @@ Ext.define( 'Comete.Breadcrumb', {
             button = Ext.create('Ext.button.Button', {
                     text: minLabel,
                     cls: 'breadcrumb-button',
-                    tooltip: json.text,
+                    tooltip: label,
                     uri: uri,
                     height: 24,
                     handler: function() {this.goElement(button, true);},
@@ -209,14 +210,13 @@ Ext.define( 'Comete.Breadcrumb', {
                 })
         }
         else {
-            var manageRoot = this.rootButton == null;
+            
             var handler = null;
             if (!manageRoot)
                 handler = function() {this.goElement(button, true);}
-            var lab = manageRoot?json.label:minLabel;
             button = Ext.create('Ext.button.Split', {
                 cls: 'breadcrumb-button',
-                text: lab,
+                text: manageRoot?label:minLabel,
                 tooltip: manageRoot?null:label,
                 uri: uri,
                 height: 24,
@@ -463,7 +463,7 @@ Ext.define( 'Comete.VocConceptPicker', {
                 vocLabel = '';
                 if (this.extendedMode)
                     vocLabel = this.vocabList.getSelectionModel().getSelection()[0].getData().label;
-                this.aListener.setVocConcept(elem.uri, vocLabel, elem.text, elem.leaf, true);
+                this.aListener.setVocConcept(this.vocUri, elem.uri, vocLabel, elem.text, elem.leaf, true);
             },
             scope: this
         } );
@@ -536,6 +536,7 @@ Ext.define( 'Comete.VocConceptPicker', {
     },
     vocabChanged: function( model, selected ) {
         this.selectConceptButton.setDisabled(true);
+        this.vocUri = selected[0].getData().uri;
         this.treeConceptStore.load({
             url: selected[0].getData().restUrl + '/topConcepts?showIds=' + this.showIds + '&lang=' + this.lang
         }); 
