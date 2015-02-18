@@ -22,8 +22,6 @@ import java.text.Collator;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Hashtable;
-import java.util.Locale;
-
 
 @Singleton
 @Path( "/voc" )
@@ -81,7 +79,7 @@ public class VocabularyResource {
     @GET
     @Path( "{uri}/topConcepts" )
     @Produces( MediaType.APPLICATION_JSON )
-    public String getVocabularyTopConcepts(  @PathParam( "uri" ) String uri,
+    public Response getVocabularyTopConcepts(  @PathParam( "uri" ) String uri,
                                @DefaultValue( "false" ) @QueryParam( "showIds" ) String showIds,
                                @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) throws Exception {
 
@@ -122,13 +120,13 @@ public class VocabularyResource {
             e.printStackTrace();
         }
 
-        return( out.toString() );
+        return Response.ok(out.toString()).build();
     }
 
     @GET
     @Path( "{uri}/children" )
     @Produces( MediaType.APPLICATION_JSON )
-    public String getVocabularyConceptChildren( @PathParam( "uri" ) String uri,
+    public Response getVocabularyConceptChildren( @PathParam( "uri" ) String uri,
                                                         @DefaultValue( "false" ) @QueryParam( "showIds" ) String showIds,
                                                         @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) throws Exception {
         Object[] res = Vocabulary.getInstance().getChildren(uri);
@@ -164,13 +162,13 @@ public class VocabularyResource {
             e.printStackTrace();
         }
 
-        return( out.toString() );
+        return Response.ok(out.toString()).build();
     }
 
     @GET
     @Path( "{uri}/hierarchy" )
     @Produces( MediaType.APPLICATION_JSON )
-    public String getVocabularyConceptHierarchy( @PathParam( "uri" ) String uri,
+    public Response getVocabularyConceptHierarchy( @PathParam( "uri" ) String uri,
                                                  @DefaultValue( "false" ) @QueryParam( "showIds" ) String showIds,
                                                  @DefaultValue( "false" ) @QueryParam( "includeScheme" ) boolean includeScheme,
                                                  @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) throws Exception {
@@ -206,43 +204,32 @@ public class VocabularyResource {
             e.printStackTrace();
         }
 
-        return( out.toString() );
+        return Response.ok(out.toString()).build();
     }
 
-    //@GET
-    //@Path( "{uri}/label" )
-    //@Produces( MediaType.APPLICATION_JSON )
-    //public String getConceptLabel( @PathParam( "uri" ) String uri, @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) throws Exception {
-    //    //String[] concepts = Vocabulary.getInstance().getHierarchy(uri);
-    //    String label = Vocabulary.getInstance().getConceptLabel( uri, lang );
-    //    return( label );
-    //    //StringWriter out = new StringWriter();
-    //    //try {
-    //    //    JSONWriter json = new JSONWriter( out ).object();
+    @GET
+    @Path( "{uri}/scheme" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public Response getConceptScheme( @PathParam( "uri" ) String uri) throws Exception {
+        String scheme = Vocabulary.getInstance().getConceptScheme( uri );
+        StringWriter out = new StringWriter();
+        try {
+            JSONWriter json = new JSONWriter( out ).object();
+            json.key( "scheme" ).value( scheme );
+            json.endObject();
+        }
+        catch( JSONException e ) {
+            e.printStackTrace();
+        }
 
-    //    //    JSONArray _concepts = new JSONArray();
-    //    //    for (String concept : concepts)
-    //    //        _concepts.put(buildJSONConcept(concept, showIds, lang));
-
-    //    //    //uri param as last element
-    //    //    _concepts.put(buildJSONConcept(uri, showIds, lang));
-
-    //    //    json.key( "concepts" ).value( _concepts );
-    //    //    json.endObject();
-    //    //}
-    //    //catch( JSONException e ) {
-    //    //    e.printStackTrace();
-    //    //}
-
-    //    //try {
-    //    //    out.close();
-    //    //}
-    //    //catch( IOException e ) {
-    //    //    e.printStackTrace();
-    //    //}
-
-    //    //return( out.toString() );
-    //}
+        try {
+            out.close();
+        }
+        catch( IOException e ) {
+            e.printStackTrace();
+        }
+        return Response.ok(out.toString()).build();
+    }
 
     private JSONObject buildJSONConcept(String uri, String showIds, Boolean isLeaf, String lang, boolean includeLabel) throws Exception{
         JSONObject _concept = new JSONObject();
@@ -328,7 +315,7 @@ public class VocabularyResource {
     @GET
     @Path( "search" )
     @Produces( MediaType.APPLICATION_JSON )
-    public String searchJson( @QueryParam( "q" ) String terms,
+    public Response searchJson( @QueryParam( "q" ) String terms,
                               @DefaultValue( "false" ) @QueryParam( "showIds" ) String showIds,
                               @DefaultValue( "en" ) @QueryParam( "lang" ) String lang) throws Exception {
         if ("".equals(terms))
@@ -380,7 +367,7 @@ public class VocabularyResource {
             e.printStackTrace();
         }
 
-        return( out.toString() );
+        return Response.ok(out.toString()).build();
     }
 
     @Context

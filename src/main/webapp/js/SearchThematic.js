@@ -272,8 +272,19 @@
             this.setRequestVocConcept(conceptUri);        
     },
     setQuery: function(query) {
+        var conceptUri = query[0].value;
+        Ext.Ajax.request( {
+            url: 'rest/voc/' + encodeURIComponent( conceptUri ) + '/scheme',
+            method: 'GET',
+            success: function(response) {
+                this.setQueryNext(Ext.JSON.decode(response.responseText, true).scheme, query);
+            },
+            scope: this 
+        } );
+    },
+    setQueryNext: function(vocUri, query) {
         this.currentVocConceptUri = null;
-        this.setVocConcept(query[0].value, null, null, null, false);
+        this.setVocConcept(vocUri, query[0].value, null, null, null, false);
         this.cbSubconcepts.setValue( query[0].subConcepts == true );
         this.cbEquivalence.setValue( query[0].equivalent == true );
         if (this.equivalence.getValue())
