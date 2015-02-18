@@ -757,10 +757,6 @@ Ext.define( 'Comete.ImageButton', {
         Ext.apply(this, cfg);
         this.callParent(arguments); 
     },
-    do: function() {
-         //console.log(this.handler.constructor.name);
-         this.handler.apply();
-    },
     setDisabled: function(disabled) {
         if( disabled ) {
             this.disable();

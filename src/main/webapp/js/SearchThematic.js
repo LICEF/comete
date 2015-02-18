@@ -43,6 +43,11 @@
             store.proxy.url = 'rest/voc/search?lang=' + this.lang + (this.cbId.getValue()?'&showIds=true':'');
         }, this );
 
+        this.conceptStore.on( 'load', function(store){
+            this.expandConceptListButton.setDisabled(store.getCount() == 0);
+              
+        }, this );
+
         this.vocabularyCombo = Ext.create('Ext.form.field.ComboBox', {
             displayField: 'label',
             valueField: 'uri',
@@ -74,7 +79,7 @@
             width: 400,
             hideTrigger: true,
             queryParam: 'q',
-            emptyText: tr('Enter the desired category') + '...',
+            emptyText: tr('Enter the desired category') + '... ' + tr('(min. 4 characters)'),
             listConfig: {
                 loadingText: tr('Loading') + '...',
                 emptyText: tr('No matching category found'),
@@ -86,14 +91,17 @@
 
         this.expandConceptListButton = Ext.create('Comete.ImageButton', {
             img: 'images/downArrow.png',
-            handler: function(){ this.conceptSearchCombo.expand() },
-            scope: this
+            imgDisabled: 'images/downArrowDisabled.png',
+            margin: '4 0 0 0',
+            handler: function(){ this.conceptSearchCombo.expand() },          
+            scope: this,
+            disabled: true
         } );
 
         this.conceptSearchCombo.on( 'beforeselect', function(combo, record){ 
-                        combo.collapse();
-                        this.setVocConcept(record.data.vocUri, record.data.uri, record.data.vocLabel, record.data.label, false, true);                        
-                        return false;}, this );
+            combo.collapse();
+            this.setVocConcept(record.data.vocUri, record.data.uri, record.data.vocLabel, record.data.label, false, true);                        
+            return false;}, this );
 
         var vocPanel = Ext.create('Ext.panel.Panel', {
             layout: 'hbox',
@@ -101,8 +109,7 @@
             margin: '0 0 6 0',
             items: [this.vocabularyCombo, { xtype: 'tbspacer', width: 4 }, this.vocabularyButton, { xtype: 'tbspacer', width: 30 },
                     { xtype: 'label', text:tr('OR'), margin: '2 0 0 0' }, { xtype: 'tbspacer', width: 30 }, this.conceptSearchCombo,
-                    { xtype: 'tbspacer', width: 4 }, this.expandConceptListButton, { xtype: 'tbspacer', width: 4 },
-                    { xtype: 'label', text:tr('(min. 4 characters)'), margin: '2 0 0 5' } ]
+                    { xtype: 'tbspacer', width: 4 }, this.expandConceptListButton ]
         } );
 
         this.breadcrumb = Ext.create('Comete.Breadcrumb', {
