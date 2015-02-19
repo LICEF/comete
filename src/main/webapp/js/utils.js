@@ -461,9 +461,13 @@ Ext.define( 'Comete.VocConceptPicker', {
                 this.hide();
                 elem = this.tree.getSelectionModel().getSelection()[0].getData();
                 vocLabel = '';
-                if (this.extendedMode)
+                conceptLabel = elem.text;
+                if (this.extendedMode) {
                     vocLabel = this.vocabList.getSelectionModel().getSelection()[0].getData().label;
-                this.aListener.setVocConcept(this.vocUri, elem.uri, vocLabel, elem.text, elem.leaf, true);
+                    if (this.showIds && conceptLabel.indexOf("&nbsp;&nbsp;") != -1)
+                        conceptLabel = conceptLabel.substring(conceptLabel.indexOf("&nbsp;&nbsp;") + "&nbsp;&nbsp;".length);
+                }
+                this.aListener.setVocConcept(this.vocUri, elem.uri, vocLabel, conceptLabel, elem.leaf, true);
             },
             scope: this
         } );
@@ -472,10 +476,13 @@ Ext.define( 'Comete.VocConceptPicker', {
             this.selectConceptButton.setDisabled(false);
         }, this);
 
- 
         this.vocPanel = { region: 'west', width: 0 }; 
 
+        this.cbId = { xtype: 'component'};
+
         if (this.extendedMode) {
+
+            this.setTitle( tr('Vocabularies') );
 
             this.vocabStore = Ext.create('Ext.data.JsonStore', {
                 model: 'VocabModel',
@@ -486,8 +493,10 @@ Ext.define( 'Comete.VocConceptPicker', {
                 store: this.vocabStore,
                 border: false,
                 columns: [ 
-                    { dataIndex: 'label', text: tr('Vocabularies'), flex: 1, height: 28 }
-                ],     
+                    { dataIndex: 'label', flex: 1 }
+                ], 
+                hideHeaders: true,
+                margin: '-1 0 0 0',
                 viewConfig: {
                     loadingText: tr('Loading') + '...',
                     stripeRows: false
@@ -503,6 +512,14 @@ Ext.define( 'Comete.VocConceptPicker', {
                 width: 200,
                 items: this.vocabList
             }); 
+
+            this.cbId = Ext.create('Ext.form.field.Checkbox', {
+                boxLabel: tr('Show category IDs'),
+                style: 'color: #04408C',
+                checked: false
+            } );  
+
+            this.cbId.on( 'change', this.updateVocab, this);          
         }
 
         var cfg = {
@@ -512,7 +529,8 @@ Ext.define( 'Comete.VocConceptPicker', {
             modal: true,
             closeAction: 'hide',
             items: [ this.vocPanel, this.tree ],
-            buttons: [ 
+            buttons: [
+                this.cbId, '->', 
                 this.selectConceptButton, 
                 {
                     text: tr('Cancel'),
@@ -536,10 +554,20 @@ Ext.define( 'Comete.VocConceptPicker', {
     },
     vocabChanged: function( model, selected ) {
         this.selectConceptButton.setDisabled(true);
-        this.vocUri = selected[0].getData().uri;
-        this.treeConceptStore.load({
-            url: selected[0].getData().restUrl + '/topConcepts?showIds=' + this.showIds + '&lang=' + this.lang
-        }); 
+        if (model.hasSelection()) {            
+            this.vocUri = selected[0].getData().uri;
+            this.treeConceptStore.load({
+                url: selected[0].getData().restUrl + '/topConcepts?showIds=' + this.showIds + '&lang=' + this.lang
+            }); 
+        }
+        else 
+            this.treeConceptStore.setData([]);           
+    },
+    updateVocab: function(cb, value) {
+        this.showIds = value;
+        var model = this.vocabList.getSelectionModel();
+        if (model.hasSelection())
+            this.vocabChanged( model, model.getSelection() );
     }
 } );
 
