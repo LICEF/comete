@@ -5,5 +5,5 @@ SELECT DISTINCT ?p
 WHERE '{'
     ?s rdf:type comete:VocContext .    
     ?s comete:vocConceptLinkingPredicate ?p .
-    ?s (comete:vocId|comete:vocAlias) "{0}"
+    ?s comete:vocUri <{0}>
 '}'

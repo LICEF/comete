@@ -1,1 +1,3 @@
-GRAPH <server:main-fullTextView_{1}> '{' ?s dcterms:description "{0}" '}'
+'{' ?s text:query ( dcterms:description "{0}" ) '}'
+UNION
+'{' ?s text:query ( dcterms:description "{0}" "lang:{1}" ) '}'

@@ -85,7 +85,7 @@ public class QueryEngine {
         if (isAdvancedSearch) {
             Invoker inv = new Invoker(this, "ca.licef.comete.queryengine.QueryEngine",
                     "advancedSearch", new Object[]{queryArray, lang, orderByVariable,
-                        start, limit, Boolean.valueOf(isWithScore), style, cache, outputFormat});
+                        start, limit, Boolean.valueOf(isWithScore), cache, outputFormat});
             rs = (ResultSet)tripleStore.transactionalCall(inv);
         }
 
@@ -95,7 +95,7 @@ public class QueryEngine {
     }
 
     public ResultSet simpleSearch(String keywords, String lang, String orderByVariable, Integer start, Integer limit, String outputFormat) throws Exception {
-        ResultSet rs = null;
+        ResultSet rs;
         int count;
         String keywordsFormattedForRegex = null;
         boolean showAllRecords = (keywords == null || keywords.trim().equals(""));
@@ -149,21 +149,21 @@ public class QueryEngine {
     }
 
     public ResultSet advancedSearch( JSONArray queryArray, String lang, String orderByVariable,
-                                      Integer start, Integer limit, Boolean isWithScore, String style,
+                                      Integer start, Integer limit, Boolean isWithScore,
                                       QueryCache cache, String outputFormat) throws Exception {
-        ResultSet rs = null;
-        Object[] elements = ca.licef.comete.queryengine.util.Util.buildQueryElements(queryArray, lang, isWithScore.booleanValue(), cache);
-        String clauses = (String)elements[0];
-        int count = ((Integer)elements[1]).intValue();
+        ResultSet rs;
+        String clauses = ca.licef.comete.queryengine.util.Util.buildQueryClauses(queryArray, lang, isWithScore, cache);
+        String query = CoreUtil.getQuery("queryengine/getLearningObjectsAdvancedQueryForCount.sparql", clauses);
+        Tuple[] res = tripleStore.sparqlSelect_textIndex(query);
+        int count = Integer.parseInt(res[0].getValue("count").getContent());
 
-//suffix by WS when needed -AM
         if( count > 0 ) {
-            /*String varScore = orderByVariable;
+            String varScore = orderByVariable;
             if (!"?score".equals(orderByVariable))
                 varScore = "";
-            Hashtable<String, String>[] results =
-                    tripleStore.getResults("getLearningObjectsAdvancedQuery" + (isWithScore?"WS":"") + ".sparql", clauses, orderByVariable, start, limit, varScore);
-            rs = buildResultSet(results, count, lang, style);*/
+            query = CoreUtil.getQuery("queryengine/getLearningObjectsAdvancedQuery.sparql", clauses, orderByVariable, start, limit, varScore);
+            Tuple[] results = tripleStore.sparqlSelect_textIndex(query);
+            rs = buildResultSet(results, count, lang);
         }
         else
             rs = new ResultSet();
@@ -228,18 +228,6 @@ public class QueryEngine {
             entry.setType( recordType );
             *//*
 
-            if ("endrea".equals(style)) {
-                String resType = "unknown";
-                Hashtable<String, String>[] res = tripleStore.getResults("getCaDResType.sparql", objId);
-                if (res.length > 0) {
-                    Hashtable<String, String> first = res[0]; //first response only
-                    String resTypeValue = first.get("o");
-                    int indexOfHash = resTypeValue.indexOf("#");
-                    if (indexOfHash != -1)
-                        resType = resTypeValue.substring(indexOfHash + 1);
-                }
-                entry.setType(resType);
-            }
 
             //metadataFormat
             *//*

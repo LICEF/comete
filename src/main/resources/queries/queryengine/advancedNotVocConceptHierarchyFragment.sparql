@@ -1,0 +1,6 @@
+MINUS '{'
+    '{' ?s <{0}> <{1}> '}'
+    UNION
+    '{' ?s <{0}> ?c .
+        GRAPH <{2}> '{' <{1}> skos:narrowerTransitive ?c '}' '}'
+'}'

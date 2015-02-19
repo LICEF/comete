@@ -1,4 +1,4 @@
-'{' ?s dcterms:subject <{1}> '}'
+'{' ?s <{0}> <{1}> '}'
 UNION
-'{' ?s dcterms:subject ?c .
-    GRAPH <server:{0}> '{' <{1}> skos:narrowerTransitive ?c '}' '}'
+'{' ?s <{0}> ?c .
+    GRAPH <{2}> '{' <{1}> skos:narrowerTransitive ?c '}' '}'

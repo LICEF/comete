@@ -3,8 +3,10 @@ package ca.licef.comete.queryengine.util;
 import ca.licef.comete.core.Core;
 import ca.licef.comete.queryengine.QueryCache;
 import ca.licef.comete.queryengine.QueryEngine;
+import ca.licef.comete.vocabulary.Vocabulary;
 import licef.DateUtil;
 import licef.tsapi.TripleStore;
+import licef.tsapi.model.Tuple;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -48,9 +50,8 @@ public class Util {
     /**
      * @return clause element and pre compute size
      */
-    public static Object[] buildQueryElements(JSONArray queryArray, String lg, boolean isWithScore, QueryCache cache) throws Exception {
+    public static String buildQueryClauses(JSONArray queryArray, String lg, boolean isWithScore, QueryCache cache) throws Exception {
         String clauses = "";
-        String negationClauses = null;
 
         boolean waitForOperator = false;
 
@@ -82,7 +83,6 @@ public class Util {
             else {
                 String condType = obj.getString("key");
                 String clause = null;
-                String negationClause = null;
                 if (FULLTEXT.equals(condType)) {
                     String text = obj.getString("value");
                     if( !text.trim().equals( "" ) )
@@ -117,7 +117,7 @@ public class Util {
                 }
                 else if (NOT_CONTRIBUTE_PREFIX.equals(condType)) {
                     String uri = obj.getString("value");
-                    negationClause = CoreUtil.getQuery("queryengine/advancedContribFragment.sparql", uri);
+                    clause = CoreUtil.getQuery("queryengine/advancedNotContribFragment.sparql", uri);
                 }
                 else if (ORGANIZATION_PREFIX.equals(condType)) {
                     String uri = obj.getString("value");
@@ -125,20 +125,25 @@ public class Util {
                 }
                 else if (NOT_ORGANIZATION_PREFIX.equals(condType)) {
                     String uri = obj.getString("value");
-                    negationClause = CoreUtil.getQuery("queryengine/advancedOrgFragment.sparql", uri);
+                    clause = CoreUtil.getQuery("queryengine/advancedNotOrgFragment.sparql", uri);
                 }
-                else if (condType.startsWith(CONCEPT_PREFIX)) {
-                    /*String uri = obj.getString("value");
+                else if (condType.startsWith(CONCEPT_PREFIX) || condType.startsWith(NOT_CONCEPT_PREFIX)) {
+                    String uri = obj.getString("value");
+                    String vocUri = Vocabulary.getInstance().getConceptScheme(uri);
+                    String predicate = Vocabulary.getInstance().getConceptLinkingPredicateFromUri(vocUri);
+                    String neg = condType.startsWith(NOT_CONCEPT_PREFIX)?"Not":"";
                     boolean isSubConcept = obj.has("subConcepts") && obj.getBoolean("subConcepts");
                     if (isSubConcept)
-                        clause = makeVocConceptHierarchyClause(TripleStoreService.VOC_GLOBAL_VIEW, uri, isWithScore);
+                        clause = CoreUtil.getQuery("queryengine/advanced" + neg + "VocConceptHierarchyFragment.sparql",
+                                predicate, uri, vocUri);
                     else
-                        clause = makeVocConceptClause(uri, isWithScore);
+                        clause = CoreUtil.getQuery("queryengine/advanced" + neg + "VocConceptFragment.sparql", predicate, uri);
+
 
                     // equivalent external concepts used only for thematic navigation (for the moment)
                     // So just one clause and little hack for all clauses generation behavior
                     // add recursively in this test -AM
-                    if (obj.has("equivalent") && obj.getBoolean("equivalent")) {
+                    /*if (obj.has("equivalent") && obj.getBoolean("equivalent")) {
                         JSONArray fromVocs = (obj.has("fromVocs"))?obj.getJSONArray("fromVocs"):null;
                         Date d1 = new Date();
                         Date d2;
@@ -165,13 +170,6 @@ public class Util {
                         }
                     }*/
                 }
-                else if (condType.startsWith(NOT_CONCEPT_PREFIX)) {
-                    /*String uri = obj.getString("value");
-                    if (obj.has("subConcepts") && obj.getBoolean("subConcepts"))
-                        negationClause = makeVocConceptHierarchyClause(TripleStoreService.VOC_GLOBAL_VIEW, uri, isWithScore);
-                    else
-                        negationClause = makeVocConceptClause(uri, isWithScore);*/
-                }
                 else if (ADDED_DATE.equals(condType)) {
                     String relOp = obj.getString( "relOp" );
                     String date = obj.getString( "value" );
@@ -197,15 +195,6 @@ public class Util {
 
                     orClauses += orClause;
                 }
-                if (negationClause != null) {
-                    if (negationClauses == null)
-                        negationClauses = negationClause;
-                    else {
-                        if (!negationClauses.contains("UNION")) //braces for first neg clause (previous one) -AM
-                            negationClauses = "{ " + negationClauses + " }";
-                        negationClauses += "\nUNION\n{ " + negationClause + " }";
-                    }
-                }
 
                 waitForOperator = !waitForOperator;
             }
@@ -214,57 +203,20 @@ public class Util {
         clauses += orClauses;
 
         //mini hack. clause block splitted in java to have this clause once... -AM
-        if (isFromHarvestedRepoClause) {
-            clauses += "\n"+(isWithScore?"?sWithScore":"?s")+" comete:hasMetadataRecord ?r .";
-        }
+        if (isFromHarvestedRepoClause)
+            clauses += "\n?s comete:hasMetadataRecord ?r .";
 
-//        licef.IOUtil.writeStringToFile(clauses, new java.io.File("e:/zzz/ti/clauses.txt"));
-//        if (negationClauses != null)
-//            licef.IOUtil.writeStringToFile(negationClauses, new java.io.File("e:/zzz/ti/notClauses.txt"));
-
-        int count = 0;
-        /*if (negationClauses == null) //"normal" case. i.e without negation
-            count = tripleStore.getResultsCount("getLearningObjectsAdvancedQueryForCount" + (isWithScore?"WS":"") + ".sparql", clauses);
-        else {
-            if ("".equals(clauses)) { //only negation case. Count by difference
-                int allCount = learningObjectsCount();
-                int negCount = tripleStore.getResultsCount("getLearningObjectsAdvancedQueryForCount" + (isWithScore?"WS":"") + ".sparql", negationClauses);
-                count = allCount - negCount;
-                clauses = buildFilter(negationClauses, isWithScore);
-            }
-            else { //both cases. Improvement: if negations doesn't impact, they are not insert as filter.
-                List uris = CoreUtil.buildList(
-                        tripleStore.getResults("getLearningObjectsAdvancedQueryForCount" + (isWithScore?"WS":"") + ".sparql", clauses),
-                        (isWithScore?"sWithScore":"s"));
-                List negUris = CoreUtil.buildList(
-                        tripleStore.getResults("getLearningObjectsAdvancedQueryForCount" + (isWithScore?"WS":"") + ".sparql", negationClauses),
-                        (isWithScore?"sWithScore":"s"));
-                ArrayList<String> newFilterNegUris = new ArrayList<String>();
-                count = uris.size();
-                for (Iterator it = uris.iterator(); it.hasNext();) {
-                    String uri = (String)it.next();
-                    if (negUris.contains(uri)) {
-                        newFilterNegUris.add(uri);
-                        count--;
-                    }
-                }
-                if (newFilterNegUris.size() > 0)
-                    clauses += "\n" + buildFilter(newFilterNegUris, isWithScore);
-            }
-        }*/
-
-        return new Object[]{clauses, count};
+        return clauses;
     }
 
     public static String makeAddedDateClause( String relOpStr, String date ) throws Exception{
         String dateWithoutTime = date;
         int indexOfTimeDelimiter = dateWithoutTime.indexOf( "T" );
-        if( indexOfTimeDelimiter != -1 ) 
+        if( indexOfTimeDelimiter != -1 )
             dateWithoutTime = dateWithoutTime.substring( 0, indexOfTimeDelimiter );
         String dateClause;
-        if (REL_OP_GT.equals(relOpStr)) {
-            dateClause = CoreUtil.getQuery("queryengine/advancedAddedDateFragment.sparql", getRelOp( relOpStr ),
-                    DateUtil.nextDay(dateWithoutTime));
+        if (REL_OP_GTE.equals(relOpStr)) {
+            dateClause = CoreUtil.getQuery("queryengine/advancedAddedDateFragment.sparql", getRelOp( relOpStr ), dateWithoutTime);
         }
         else if (REL_OP_EQ.equals(relOpStr)) {
             dateClause = CoreUtil.getQuery("queryengine/advancedAddedDateFragment.sparql", getRelOp( REL_OP_GTE), dateWithoutTime);
@@ -272,7 +224,8 @@ public class Util {
                     DateUtil.nextDay(dateWithoutTime));
         }
         else
-            dateClause = CoreUtil.getQuery("queryengine/advancedAddedDateFragment.sparql", getRelOp( relOpStr ), dateWithoutTime);
+            dateClause = CoreUtil.getQuery("queryengine/advancedAddedDateFragment.sparql", getRelOp( relOpStr ),
+                    DateUtil.nextDay(dateWithoutTime));
         return dateClause;
     }
 
@@ -284,24 +237,6 @@ public class Util {
 
         return null;
     }
-
-    static String buildFilter( List<String> uris, boolean isWithScore ) throws Exception{
-        if (uris.isEmpty())
-            return "";
-        String constraints = CoreUtil.buildFilterConstraints(uris, (isWithScore?"sWithScore":"s"), true, "!=", "&&");
-        return "FILTER ( " + constraints + " )";
-    }
-
-    /*public static String getVocabularyConceptGraph(String uri) throws Exception {
-        String url = CoreUtil.getRestUrl(Constants.TYPE_VOCABULARY) + "/graphName?uri=" + uri;
-        WebResource webResource = Core.getInstance().getRestClient().resource(url);
-        ClientResponse response = webResource.accept(MediaType.TEXT_PLAIN).get(ClientResponse.class);
-        int status = response.getStatus();
-        String graph = null;
-        if( status == 200 )
-            graph = response.getEntity(String.class);
-        return graph;
-    }*/
 
     public static JSONArray getEquivalentConcepts(String uri, boolean subConcepts, JSONArray fromVocs) throws Exception {
         /*String url = CoreUtil.getRestUrl(Constants.TYPE_VOCABULARY) + "/equivalentConcepts?uri=" + uri;
@@ -417,7 +352,7 @@ public class Util {
 
     public static String getRelOp( String relOp ) {
         if( relOpTable == null ) {
-            relOpTable = new HashMap<String,String>();
+            relOpTable = new HashMap<>();
             relOpTable.put( REL_OP_GTE, ">=" );
             relOpTable.put( REL_OP_GT, ">" );
             relOpTable.put( REL_OP_LTE, "<=" );

@@ -1,1 +1,3 @@
-GRAPH <server:main-fullTextView_{1}> '{' ?s comete:keyword "\"{0}\"" '}'
+'{' ?s text:query ( comete:keyword "{0}" ) '}'
+UNION
+'{' ?s text:query ( comete:keyword "{0}" "lang:{1}" ) '}'

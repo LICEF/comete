@@ -284,7 +284,7 @@ Ext.define( 'Comete.QueryCondition', {
             valueField: 'id',
             displayField: 'label',
             store: this.choiceStore,
-            width: 220,
+            width: 240,
             editable: false,
             value: 'title',
             tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div></tpl></div>'
@@ -425,10 +425,8 @@ Ext.define( 'Comete.QueryCondition', {
         var relOpStore = Ext.create('Ext.data.Store', {
             fields: ['id', 'label'],
             data: [
-                {'id':'gt', 'label': tr( 'is after the' ) },
-                //{'id':'gte', 'label': '>='},
-                {'id':'lt', 'label': tr( 'is before the' ) },
-                //{'id':'lte', 'label': '<='},
+                {'id':'gte', 'label': tr( 'is from the' ) },
+                {'id':'lte', 'label': tr( 'is until the' ) },
                 {'id':'eq', 'label': tr( 'is the' ) }
             ]
         });
@@ -439,7 +437,7 @@ Ext.define( 'Comete.QueryCondition', {
             store: relOpStore,
             width: 120,
             editable: false,
-            value: 'gt',
+            value: 'gte',
             tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div></tpl></div>'
         } );
 
@@ -610,13 +608,6 @@ Ext.define( 'Comete.QueryCondition', {
         else if(this.typeCond.getValue() == 'addedDate') {
             relOp = this.typeCondPanel.getComponent(0).getComponent(0).getValue();
             var date = this.typeCondPanel.getComponent(0).getComponent(2).getValue();
-
-            // For > operator, round up the date to the following day because it's more natural to interpret it this way.
-            // For instance, if we ask for resources with addedDate > 2013-10-20, we don't want to see resources
-            // that have a addedDate equal to 2013-10-20T10:00:000Z but rather resources with addedDates like 
-            // 2013-10-21T10:00:000z. - FB
-            if( 'gt' == relOp )
-                date.setDate( date.getDate() + 1 );
 
             var year = date.getYear() + 1900;
             var month = date.getMonth() + 1;

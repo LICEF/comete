@@ -92,9 +92,10 @@ public class Vocabulary {
         return uri;
     }
 
-    public String getConceptLinkingPredicate (String id) throws Exception {
+    public String getConceptLinkingPredicateFromUri(String uri) throws Exception {
+        String vocUri = getConceptScheme(uri);
         String predicate = null;
-        String query = CoreUtil.getQuery("vocabulary/getVocConceptLinkingPredicate.sparql", id);
+        String query = CoreUtil.getQuery("vocabulary/getVocConceptLinkingPredicateFromUri.sparql", vocUri);
         Tuple[] tuples = tripleStore.sparqlSelect(query);
         if (tuples.length > 0)
             predicate = tuples[0].getValue("p").getContent();

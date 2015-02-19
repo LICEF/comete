@@ -153,8 +153,8 @@
     'and subcategories': 'et ses sous-catégories',
     'where the addition date': 'dont la date d\'ajout',
     'is the': 'est le',
-    'is before the': 'est avant le',
-    'is after the': 'est après le',
+    'is from the': 'est à partir du',
+    'is until the': 'est jusqu\'au',
     'Add condition': 'Ajouter une condition',
     'Remove condition': 'Supprimer la condition',
 

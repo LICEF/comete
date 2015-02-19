@@ -200,10 +200,7 @@ public class XSLTUtil {
         String conceptUri = Vocabulary.getInstance().getConcept(id, value);
         if( conceptUri != null ) {
             String vocUri = Vocabulary.getInstance().getVocabularyUri(id);
-            String vocCtxt = tripleStore.getTriplesWithPredicateObject(
-                    COMETE.vocUri, vocUri, null)[0].getSubject();
-            String predicate = tripleStore.getTriplesWithSubjectPredicate(
-                    vocCtxt, COMETE.vocConceptLinkingPredicate)[0].getObject();
+            String predicate = Vocabulary.getInstance().getConceptLinkingPredicateFromUri(vocUri);
             Triple triple = new Triple(loURI, predicate, conceptUri, false);
             tripleStore.insertTriple(triple);
         }

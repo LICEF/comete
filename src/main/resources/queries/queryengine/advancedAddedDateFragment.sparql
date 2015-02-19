@@ -1,2 +1,2 @@
 ?s comete:added ?added .
-FILTER ( ?added {0} "{1}"^^xsd:date )
+FILTER ( xsd:dateTime(?added) {0} xsd:dateTime("{1}T00:00:00Z") )
