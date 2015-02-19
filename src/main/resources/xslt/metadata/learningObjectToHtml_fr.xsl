@@ -8,7 +8,7 @@
     <xsl:variable name="lang" select="'fr'"/>
     <xsl:variable name="title" select="'Ressource'"/>
     <xsl:variable name="HeaderLanguages" select="'Langues'"/>
-    <xsl:variable name="HeaderKeywords" select="'Mots-clefs'"/>
+    <xsl:variable name="HeaderKeywords" select="'Mots-clés'"/>
     <xsl:variable name="HeaderTechnical" select="'Accès à la ressource'"/>
     <xsl:variable name="HeaderContributes" select="'Contributions'"/>
     <xsl:variable name="HeaderSubjects" select="'Catégories associées'"/>

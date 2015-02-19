@@ -106,7 +106,7 @@
         else
             atLeastOneResult = false;
          
-        this.loManager.setResultText( label + '.' );
+        this.loManager.setResultText( label );
         this.loManager.setFeedButtonsVisible(atLeastOneResult);
     },
     setRequest: function( query ) {

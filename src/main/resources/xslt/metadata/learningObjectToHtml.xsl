@@ -130,7 +130,6 @@
                     <ul>
                     <xsl:for-each-group select="dct:subject[@navigable = 'true'][@vocabLabel]" group-by="@vocabLabel">
                         <xsl:sort select="current-grouping-key()" lang="$lang"/>
-                            <ul>
                             <xsl:for-each select="current-group()">
                                 <xsl:sort select="@conceptLabel" lang="$lang"/>
                                 <li><font style="font-weight: bold; color: #04408C"><xsl:value-of select="@vocabLabel"/></font>
@@ -138,7 +137,6 @@
                                     <xsl:value-of select="@conceptLabel"/>
                                     <a class="RelatedLearningObjectsLink"><xsl:attribute name="href">javascript:setRequestVocConcept( '<xsl:value-of select="@rdf:resource"/>' );</xsl:attribute><img src="images/relatedResources.png" width="16" height="16"><xsl:attribute name="alt"><xsl:value-of select="$RelatedLearningObjectsToSubjectLinkLabel"/></xsl:attribute><xsl:attribute name="title"><xsl:value-of select="$RelatedLearningObjectsToSubjectLinkLabel"/></xsl:attribute></img></a></li>
                             </xsl:for-each>
-                            </ul>
                     </xsl:for-each-group>
                     </ul>
                 </xsl:if>
