@@ -332,8 +332,8 @@ public class VocabularyResource {
             JSONWriter json = new JSONWriter( out ).object();
 
             JSONArray concepts = new JSONArray();
-            for (int i = 0; i < results.length; i++) {
-                String uri = results[i].getValue("s").getContent();
+            for (Tuple tuple : results) {
+                String uri = tuple.getValue("s").getContent();
                 String vocUri = Vocabulary.getInstance().getConceptScheme(uri);
                 String title = vocTitle.get(vocUri);
                 if (title == null) {

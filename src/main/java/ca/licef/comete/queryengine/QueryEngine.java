@@ -89,8 +89,8 @@ public class QueryEngine {
             rs = (ResultSet)tripleStore.transactionalCall(inv);
         }
 
-        rs.setStart( start );
-        rs.setLimit( limit );
+        rs.setStart(start);
+        rs.setLimit(limit);
         return rs;
     }
 
@@ -244,9 +244,17 @@ public class QueryEngine {
         return( rs );
     }
 
+    public Tuple[] searchKeywords(String terms, String lang) throws Exception {
+        Invoker inv = new Invoker(this, "ca.licef.comete.queryengine.QueryEngine",
+                "searchKeywordsEff", new Object[]{terms, lang});
+        return (Tuple[])tripleStore.transactionalCall(inv);
+    }
 
-    
+    public Tuple[] searchKeywordsEff(String terms, String lang) throws Exception {
+        String query = CoreUtil.getQuery("queryengine/lookupKeywords.sparql",CoreUtil.formatKeywords(terms), lang);
+        System.out.println("query = " + query);
+        return tripleStore.sparqlSelect_textIndex(query);
+    }
+
     private static QueryEngine instance;
-
-
 }

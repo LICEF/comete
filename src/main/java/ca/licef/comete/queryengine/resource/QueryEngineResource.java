@@ -6,11 +6,11 @@ import ca.licef.comete.queryengine.QueryCache;
 import ca.licef.comete.queryengine.QueryEngine;
 import ca.licef.comete.queryengine.ResultEntry;
 import ca.licef.comete.queryengine.util.FeedUtil;
-import ca.licef.comete.queryengine.util.Util;
-import com.sun.jersey.spi.container.servlet.PerSession;
 import com.rometools.rome.feed.synd.SyndFeed;
+import com.sun.jersey.spi.container.servlet.PerSession;
 import licef.StringUtil;
 import licef.tsapi.TripleStore;
+import licef.tsapi.model.Tuple;
 import licef.tsapi.vocabulary.RDFS;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -172,24 +172,19 @@ public class QueryEngineResource implements Serializable {
     @Produces( MediaType.APPLICATION_JSON )
     public String getKeywords( @DefaultValue( "en" ) @QueryParam( "lang" ) String lang, @QueryParam( "value" ) String value ) throws Exception {
         StringWriter out = new StringWriter();
+
+        Tuple[] results = QueryEngine.getInstance().searchKeywords(value, lang);
         try {
             JSONWriter json = new JSONWriter( out ).object();
 
             JSONArray keywords = new JSONArray();
 
-            if( value != null && !"".equals( value ) ) {
-                TripleStore tripleStore = Core.getInstance().getTripleStore();
-                /*Hashtable<String, String>[] results = tripleStore.getResults( "lookupKeywords.sparql", lang, value );
-                for( int i = 0; i < results.length; i++ ) {
-                    Hashtable<String, String> result = results[ i ];
-                    String keyword = Util.manageLocalizedString(result.get( "o" ))[0];
-
-                    JSONObject kw = new JSONObject();
-                    kw.put( "keyword", keyword );
-                    keywords.put( kw );
-                }*/
+            for (Tuple tuple : results) {
+                JSONObject kw = new JSONObject();
+                kw.put( "keyword", tuple.getValue("o").getContent() );
+                keywords.put( kw );
             }
-            
+
             json.key( "keywords" ).value( keywords );
 
             json.endObject();

@@ -391,7 +391,7 @@ Ext.define( 'Comete.QueryCondition', {
 
         keywordStore.on( 'beforeload', function( store ) {
             var selectedLang = this.typeCondPanel.getComponent(0).getComponent(2).getValue();
-            store.proxy.url = '/rest/queryEngine/keywords?lang=' + selectedLang;
+            store.proxy.url = 'rest/queryEngine/keywords?lang=' + selectedLang;
         }, this );
 
         var keywordCombo = Ext.create( 'Ext.form.field.ComboBox', {
@@ -404,10 +404,8 @@ Ext.define( 'Comete.QueryCondition', {
             listConfig: {
                 loadingText: tr( 'Loading' ) + '...',
                 emptyText: tr( 'No matching keyword found' ),
-                getInnerTpl: function() {
-                    return '{keyword}';
-                }
-            }
+            },
+            tpl: '<div><tpl for="."><div class="x-boundlist-item">{keyword}</div></tpl></div>'
         } );
 
         var panel = Ext.create('Ext.panel.Panel', {
