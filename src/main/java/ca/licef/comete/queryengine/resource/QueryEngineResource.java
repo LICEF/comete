@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.io.IOException;
 import java.io.Serializable;
@@ -43,7 +44,7 @@ public class QueryEngineResource implements Serializable {
     @GET
     @Path( "searchJson" )
     @Produces( MediaType.APPLICATION_JSON )
-    public String searchJson( @DefaultValue( "" ) @QueryParam( "q" ) String query,
+    public Response searchJson( @DefaultValue( "" ) @QueryParam( "q" ) String query,
         @DefaultValue( "" ) @QueryParam( "f" ) String filters,
         @DefaultValue( "0" ) @QueryParam( "start" ) String strStart, @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit,
         @DefaultValue( "default" ) @QueryParam( "style" ) String style,
@@ -125,13 +126,13 @@ public class QueryEngineResource implements Serializable {
             e.printStackTrace();
         }
 
-        return( out.toString() );
+        return Response.ok(out.toString()).build();
     }
 
     @GET
     @Path( "labels" )
     @Produces( MediaType.APPLICATION_JSON )
-    public String getLabels( @DefaultValue( "en" ) @QueryParam( "lang" ) String lang, @QueryParam( "uris" ) String uris ) throws Exception {
+    public Response getLabels( @DefaultValue( "en" ) @QueryParam( "lang" ) String lang, @QueryParam( "uris" ) String uris ) throws Exception {
         StringWriter out = new StringWriter();
         try {
             JSONWriter json = new JSONWriter( out ).array();
@@ -164,13 +165,13 @@ public class QueryEngineResource implements Serializable {
         catch( IOException e ) {
             e.printStackTrace();
         }
-        return( out.toString() );
+        return Response.ok(out.toString()).build();
     }
 
     @GET
     @Path( "keywords" )
     @Produces( MediaType.APPLICATION_JSON )
-    public String getKeywords( @DefaultValue( "en" ) @QueryParam( "lang" ) String lang, @QueryParam( "value" ) String value ) throws Exception {
+    public Response getKeywords( @DefaultValue( "en" ) @QueryParam( "lang" ) String lang, @QueryParam( "value" ) String value ) throws Exception {
         StringWriter out = new StringWriter();
 
         Tuple[] results = QueryEngine.getInstance().searchKeywords(value, lang);
@@ -198,7 +199,7 @@ public class QueryEngineResource implements Serializable {
         catch( IOException e ) {
             e.printStackTrace();
         }
-        return( out.toString() );
+        return Response.ok(out.toString()).build();
     }
 
     @GET

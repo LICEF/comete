@@ -7,6 +7,7 @@ import com.sun.jersey.multipart.FormDataParam;
 import com.sun.jersey.spi.resource.Singleton;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.json.JSONWriter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,17 +25,53 @@ import java.io.StringWriter;
 public class HarvestDefinitionResource {
 
     @GET
-    @Produces( MediaType.TEXT_PLAIN )
-    public Response getDefinitions() throws Exception {
+    @Produces( MediaType.APPLICATION_JSON )
+    public Response getHarvestDefinitions() throws Exception {
         String[] definitions = Harvester.getInstance().getDefinitions();
         StringWriter out = new StringWriter();
         try {
             JSONWriter json = new JSONWriter( out ).object();
 
             JSONArray defs = new JSONArray();
-            for (int i = 0; i < definitions.length; i++)
-                defs.put( definitions[i] );
-            json.key("definitions").value(defs);
+            for (String defId : definitions) {
+                JSONObject _def = Harvester.getInstance().getDefinition(defId);
+                JSONObject def = new JSONObject();
+                def.put( "restUrl", "rest/harvestDefinitions/" + defId );
+                def.put( "name", _def.get("name") );
+                defs.put(def);
+            }
+            json.key("harvestDefs").value(defs);
+
+            json.endObject();
+        }
+        catch( JSONException e ) {
+            e.printStackTrace();
+        }
+
+        try {
+            out.close();
+        }
+        catch( IOException e ) {
+            e.printStackTrace();
+        }
+        return (Response.ok(out.toString()).build());
+    }
+
+    @GET
+    @Path( "{id}" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public Response getHarvestDefinition( @PathParam( "id" ) String id ) throws Exception {
+        StringWriter out = new StringWriter();
+        try {
+            JSONWriter json = new JSONWriter( out ).object();
+
+            JSONObject _def = Harvester.getInstance().getDefinition(id);
+            json.key( "id" ).value( id );
+            json.key( "name" ).value( _def.get("name") );
+            json.key( "adminEmail" ).value( _def.get("adminEmail") );
+            json.key( "type" ).value( _def.get("type") );
+            json.key( "url" ).value( _def.get("url") );
+            json.key( "metadataNamespace" ).value( _def.get("metadataNamespace") );
 
             json.endObject();
         }
@@ -55,7 +92,7 @@ public class HarvestDefinitionResource {
     @Path( "{id}" )
     @Consumes( MediaType.MULTIPART_FORM_DATA )
     @Produces( MediaType.TEXT_PLAIN )
-    public Response addDefinition(@Context HttpServletRequest request,
+    public Response storeHarvestDefinition(@Context HttpServletRequest request,
                                   @PathParam( "id" ) String id,
                                   @FormDataParam("file") InputStream uploadedInputStream,
                                   @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
@@ -92,7 +129,7 @@ public class HarvestDefinitionResource {
     @DELETE
     @Path( "{id}" )
     @Produces( MediaType.TEXT_PLAIN )
-    public Response deleteDefinition(@Context HttpServletRequest request,
+    public Response deleteHarvestDefinition(@Context HttpServletRequest request,
                                      @PathParam( "id" ) String id) throws Exception {
         if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to delete harvest definition.").build();

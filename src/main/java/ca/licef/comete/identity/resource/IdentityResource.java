@@ -82,7 +82,7 @@ public class IdentityResource {
     @GET
     @Path( "emails" )
     @Produces( MediaType.APPLICATION_JSON )
-    public String getEmails(@QueryParam("uris") String identityUriList) throws Exception {
+    public Response getEmails(@QueryParam("uris") String identityUriList) throws Exception {
         StringWriter out = new StringWriter();
 
         try {
@@ -112,7 +112,7 @@ public class IdentityResource {
             }
         }
 
-        return( out.toString() );
+        return Response.ok(out.toString()).build();
     }
 
     @Context

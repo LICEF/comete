@@ -1,57 +1,41 @@
-﻿Ext.define( 'Comete.AdminVoc', {
+﻿Ext.define( 'Comete.AdminHarvest', {
     extend: 'Ext.panel.Panel',
     layout: 'border',  
     initComponent: function( config ) {
         this.isDirty = true;
 
-        this.currentVocContextRestUrl = null;
-
-        this.vocCtxtStore = Ext.create('Ext.data.JsonStore', {
-            model: 'VocCtxtModel',                
-            proxy: vocCtxtProxy
+        this.harvestDefStore = Ext.create('Ext.data.JsonStore', {
+            model: 'HarvestDefModel',                
+            proxy: harvestDefProxy
         });   
-        this.vocCtxtStore.sort( 'label', 'ASC' );
-
-        this.vocAliasProxy = Ext.create('Ext.data.proxy.Ajax', {
-            reader: {
-                type: 'json',
-                root: 'vocAliases'
-            }
-        });
-           
-        this.vocAliasStore = Ext.create('Ext.data.JsonStore', {
-            model: 'VocAliasModel',                
-            proxy: this.vocAliasProxy
-        });
-
-        this.vocAliasStore.on( 'load', function() { this.aliasesCount = this.vocAliasStore.getCount(); }, this );
+        this.harvestDefStore.sort( 'label', 'ASC' );
  
         this.addButton = Ext.create('Ext.button.Button', {
             text: tr('Add'),
             disabled: !authorized,
-            handler: this.addVocabulary, 
+            handler: this.addHarvestDef, 
             scope: this
         } );
 
         this.modifyButton = Ext.create('Ext.button.Button', {
             text: tr('Modify'),
             disabled: true,
-            handler: this.modifyVocabulary, 
+            handler: this.modifyHarvestDef, 
             scope: this
         } );
 
         this.deleteButton = Ext.create('Ext.button.Button', {
             text: tr('Delete'),
             disabled: true,
-            handler: this.deleteVocabulary, 
+            handler: this.deleteHarvestDef, 
             scope: this
         } );
 
-        this.vocabList = Ext.create('Ext.grid.Panel', { 
-            store: this.vocCtxtStore,
+        this.harvestDefList = Ext.create('Ext.grid.Panel', { 
+            store: this.harvestDefStore,
             margin: '0 20 10 10',                
             columns: [ 
-                { dataIndex: 'label', text: tr('Vocabularies'), flex: 1, height: 28 }
+                { dataIndex: 'name', text: tr('Repositories'), flex: 1, height: 28 }
             ],     
             viewConfig: {
                 loadingText: tr('Loading') + '...',
@@ -61,13 +45,13 @@
             bbar: [ this.addButton, this.modifyButton, this.deleteButton ]
         });
 
-        this.vocabList.on( 'selectionchange', this.vocabChanged, this );
+        this.harvestDefList.on( 'selectionchange', this.harvestDefChanged, this );
 
         this.vocPanel = Ext.create('Ext.Panel', { 
             layout: 'fit',
             region: 'center',
             border: false,
-            items: this.vocabList
+            items: this.harvestDefList
         });
 
         this.leftPanel = Ext.create('Ext.Panel', { 
@@ -78,152 +62,51 @@
             split: true,
             items: this.vocPanel
         }); 
-
-        this.cbNavigable = Ext.create('Ext.form.field.Checkbox', {
-            fieldLabel: 'Navigable',
-            checked: false            
-        } );
-
-        this.cbNavigable.on( 'change', this.setNavigable, this );
-
+       
         this.detailsPanel = Ext.create('Ext.Panel', { 
             region: 'center',
-            width: 600,
+            width: 500,
             margin: '0 0 0 10',
             border: false,
             layout: 'form',
             defaultType: 'textfield',
             items: [ { fieldLabel: 'ID', editable: false }, 
-                     { fieldLabel: 'URI', editable: false},
-                     { fieldLabel: tr('Source Location'), editable: false },
-                     { fieldLabel: tr('Concept URI prefix'), editable: false },
-                     { fieldLabel: tr('Concept URI suffix'), editable: false },
-                     { fieldLabel: tr('Linking predicate'), editable: false },
-                     this.cbNavigable ]        
+                     { fieldLabel: tr('Name'), editable: false},
+                     { fieldLabel: tr('Protocol'), editable: false },
+                     { fieldLabel: 'URL', editable: false },
+                     { fieldLabel: 'Format', editable: false }]        
         }); 
 
-        this.deleteAliasButton = Ext.create('Ext.button.Button', {
-            text: tr('Delete'),
-            disabled: true,
-            handler: this.deleteAlias,
-            scope: this
-        } );
-
-        var cellEditing = Ext.create('Ext.grid.plugin.CellEditing', {
-            clicksToEdit: 2
-        });
-
-        this.aliases = Ext.create('Ext.grid.Panel', { 
-            store: this.vocAliasStore,
-            height: 150,  
-            width: 475,  
-            margin: '5 0 0 0',    
-            columns: [ 
-                { dataIndex: 'alias', width: '99%',
-                  editor: {
-                      allowBlank: false
-                  }
-                }
-            ],     
-            viewConfig: {
-                loadingText: tr('Loading') + '...',
-                stripeRows: false
-            },
-            hideHeaders: true,
-            autoScroll: true,
-            plugins: [ cellEditing ],
-            bbar: [ { text: tr('Add'),
-                      disabled: !authorized,
-                      handler: function() {
-                          var alias = Ext.create('VocAliasModel', { alias: tr('New Alias') });
-                          this.aliasesCount = this.vocAliasStore.getCount();
-                          this.vocAliasStore.add(alias);                          
-                          cellEditing.startEditByPosition({row: this.vocAliasStore.getCount()-1, column: 0});
-                      }, scope: this}, 
-                      this.deleteAliasButton
-                  ]            
-        }); 
-
-
-        this.aliases.on( 'selectionchange', function(){ this.deleteAliasButton.setDisabled(false); }, this );
-
-        this.aliases.on( 'edit', function(editor, e) { 
-            var isNewAlias = (this.vocAliasStore.getCount() > this.aliasesCount);
-            var methodType = 'POST';
-            var params = {
-                alias: e.value
-            };
-            if (!isNewAlias) {
-                if (e.value == e.originalValue)
-                    return;
-                methodType = 'PUT';
-                params.prevAlias = e.originalValue;
-            }
-            Ext.Ajax.request( {
-                url: this.currentVocContextRestUrl + '/aliases',
-                params: params,
-                method: methodType,
-                success: function(response, opts) {
-                    this.aliasesCount = this.vocAliasStore.getCount();  
-                },
-                failure: function(response, opts) {
-                    Ext.Msg.alert('Failure', response.responseText);  
-                },
-                scope: this
-            } ); 
-        }, this );
-
-        this.aliasPanel = Ext.create('Ext.Panel', { 
-            region: 'south',
-            width: 600,
-            margin: '4 0 0 10',
-            border: false,
-            layout: 'hbox',
-            items: [ { xtype: 'label', text: tr('Aliases') + ":", width: 115, margin: '5 0 0 5' },                      
-                     this.aliases ]
-        }); 
-
-        this.centerPanel = Ext.create('Ext.Panel', { 
-            region: 'center',
-            border: false,
-            items: [ this.detailsPanel, this.aliasPanel ]        
-        }); 
 
         var cfg = {
             layout: 'border',
             region: 'center',      
-            items: [ this.leftPanel, this.centerPanel ]
+            items: [ this.leftPanel, { border: false, items: this.detailsPanel } ]
         };
         Ext.apply(this, cfg);
         this.callParent(arguments); 
     },
-    vocabChanged: function( model, selected ) {
-        this.currentVocContextRestUrl = null;
+    harvestDefChanged: function( model, selected ) {
         if (selected.length == 1) {
-            this.currentVocContextRestUrl = selected[0].getData().restUrl;
+            var restUrl = selected[0].getData().restUrl;
 
             //fields update
             Ext.Ajax.request( {
-                url: this.currentVocContextRestUrl + '/details',
+                url: restUrl,
                 method: 'GET',
                 success: function(response) {
-                    this.initDisplay = true;
-                    var jsonDetails = Ext.JSON.decode(response.responseText, true).vocDetails[0];
+                    var jsonDetails = Ext.JSON.decode(response.responseText, true);
                     this.detailsPanel.getComponent(0).setValue(jsonDetails.id);
-                    this.detailsPanel.getComponent(1).setValue(jsonDetails.uri);
-                    this.detailsPanel.getComponent(2).setValue(jsonDetails.location);
-                    this.detailsPanel.getComponent(3).setValue(jsonDetails.uriPrefix);
-                    this.detailsPanel.getComponent(4).setValue(jsonDetails.uriSuffix);
-                    this.detailsPanel.getComponent(5).setValue(jsonDetails.linkingPredicate);
-                    this.detailsPanel.getComponent(6).setValue(jsonDetails.navigable);
-                    this.initDisplay = false;
+                    this.detailsPanel.getComponent(1).setValue(jsonDetails.name);
+                    var protocol = (jsonDetails.type == 'OAI')?'OAI-PMH':tr('HTML Spider');
+                    this.detailsPanel.getComponent(2).setValue(protocol);
+                    this.detailsPanel.getComponent(3).setValue(jsonDetails.url);
+                    var format = (jsonDetails.metadataNamespace == 'http://ltsc.ieee.org/xsd/LOM')?'IEEE LOM':'OAI DC';
+                    this.detailsPanel.getComponent(4).setValue(format);
                 },
                 scope: this 
             } );
 
-            //aliases update
-            this.vocAliasProxy.url = this.currentVocContextRestUrl + "/aliases";        
-            this.vocAliasStore.load();   
             //buttons
             if (authorized) {  
                 this.modifyButton.setDisabled(false);     
@@ -236,17 +119,13 @@
             this.detailsPanel.getComponent(2).setValue("");
             this.detailsPanel.getComponent(3).setValue("");
             this.detailsPanel.getComponent(4).setValue("");
-            this.detailsPanel.getComponent(5).setValue("");
-            this.detailsPanel.getComponent(6).setValue("");
-            this.vocAliasStore.removeAll();
             //buttons
             this.modifyButton.setDisabled(true);     
             this.deleteButton.setDisabled(true);     
         }
-        this.deleteAliasButton.setDisabled(true);  
     },
-    addVocabulary: function() {
-        var editor = Ext.create('Comete.AdminVocEditor', {
+    addHarvestDef: function() {
+        var editor = Ext.create('Comete.AdminHarvestDefEditor', {
             width: 500,
             height: 270,
             modal: true,
@@ -256,9 +135,9 @@
     },
     afterAdd: function() {
         this.vocCtxtStore.loadPage(1);
-        Ext.Msg.alert('Information', tr('Vocabulary added.'));
+        Ext.Msg.alert('Information', tr('Repository added.'));
     },
-    modifyVocabulary: function() {
+    modifyHarvestDef: function() {
         Ext.Ajax.request( {
             url: this.currentVocContextRestUrl + '/used',
             method: 'GET',
@@ -280,7 +159,7 @@
             scope: this 
         } );      
     },
-    modifyVocabularyStep2: function(button) {
+    modifyHarvestDefStep2: function(button) {
         if (button != null && button != 'ok')
             return;
         Ext.Ajax.request( {
@@ -293,8 +172,8 @@
             scope: this 
         } );      
     },
-    modifyVocabularyStep3: function(values) {
-        var editor = Ext.create('Comete.AdminVocEditor', {
+    modifyHarvestDefStep3: function(values) {
+        var editor = Ext.create('Comete.AdminHarvestDefEditor', {
             width: 500,
             height: 270,
             modal: true,
@@ -307,10 +186,10 @@
     },
     afterModify: function() {
         this.vocCtxtStore.loadPage(1);
-        Ext.Msg.alert('Information', tr('Vocabulary modified.'));
+        Ext.Msg.alert('Information', tr('Repository modified.'));
     },
-    deleteVocabulary: function() {
-        var records = this.vocabList.getSelectionModel().getSelection();
+    deleteHarvestDef: function() {
+        var records = this.harvestDefList.getSelectionModel().getSelection();
         if (records.length == 0)
             return;
         
@@ -324,7 +203,7 @@
             scope: this
         });
     },
-    deleteVocabularyEff: function(button) {
+    deleteHarvestDefEff: function(button) {
         if (button != 'ok')
             return;
         var waitDialog = Ext.create('Ext.window.MessageBox', {       
@@ -336,7 +215,7 @@
             success: function(response, opts) {
                 waitDialog.close();
                 this.vocCtxtStore.loadPage(1);
-                Ext.Msg.alert('Information', tr('Vocabulary deleted.'));
+                Ext.Msg.alert('Information', tr('Repository deleted.'));
             },
             failure: function(response, opts) {
                 waitDialog.close();
@@ -344,52 +223,16 @@
             },
             scope: this 
         } );
-    },
-    deleteAlias: function() {
-        var records = this.aliases.getSelectionModel().getSelection();
-        if (records.length == 0)
-            return;
-        Ext.Ajax.request( {
-            url: this.currentVocContextRestUrl + '/aliases',
-            params: { alias: records[0].data.alias },
-            method: 'DELETE',
-            success: function(response, opts) {
-                this.vocAliasStore.remove(records[0]);
-                this.deleteAliasButton.setDisabled(true);
-                this.aliasesCount = this.vocAliasStore.getCount();     
-            },
-            failure: function(response, opts) {
-                Ext.Msg.alert('Failure', response.responseText);  
-            },
-            scope: this 
-        } );
-    },
-    setNavigable: function(cb, value) {
-        if (this.initDisplay)
-            return;
-
-        if (this.currentVocContextRestUrl == null)
-            return;
-        methodType = 'POST';
-        if (!value) 
-            methodType = 'DELETE';
-        Ext.Ajax.request( {
-            url: this.currentVocContextRestUrl + '/navigable',
-            method: methodType,
-            failure: function(response, opts) {
-                Ext.Msg.alert('Failure', response.responseText);  
-            }
-        } );
-    },
+    },    
     updateData: function() {
         if( this.isDirty ) {
-            this.vocCtxtStore.loadPage(1);
+            this.harvestDefStore.loadPage(1);
             this.isDirty = false;
         }
     }
 } );
 
-Ext.define( 'Comete.AdminVocEditor', {
+Ext.define( 'Comete.AdminHarvestDefEditor', {
     extend: 'Ext.window.Window',
     layout: 'fit',           
     initComponent: function( config ) {
@@ -429,7 +272,7 @@ Ext.define( 'Comete.AdminVocEditor', {
 
 
         cfg = {
-            title: (this.mode == 'modify')?tr('Modify vocabulary'):tr('Add vocabulary'),
+            title: (this.mode == 'modify')?tr('Modify repository'):tr('Add repository'),
             buttons: [ {text:'OK', handler: this.ok, scope: this}, {text:tr('Cancel'), handler: this.close, scope: this}],
             items: [ { border: false, items: this.formPanel } ]
                      

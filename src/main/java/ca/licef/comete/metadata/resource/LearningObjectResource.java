@@ -23,23 +23,23 @@ public class LearningObjectResource {
     @GET
     @Path( "{id}/html" )
     @Produces( MediaType.TEXT_HTML )
-    public String getLearningObjectAsHtml( @PathParam( "id" ) String id, @DefaultValue( "en" ) @QueryParam( "lang" ) String lang, @DefaultValue( "default" ) @QueryParam( "style" ) String style ) throws Exception {
+    public Response getLearningObjectAsHtml( @PathParam( "id" ) String id, @DefaultValue( "en" ) @QueryParam( "lang" ) String lang, @DefaultValue( "default" ) @QueryParam( "style" ) String style ) throws Exception {
         Locale locale = ( "fr".equals( lang ) ? Locale.FRENCH : Locale.ENGLISH );
         String loUri = ca.licef.comete.core.util.Util.makeURI(id, COMETE.LearningObject.getURI().toString()/*Constants.OBJ_TYPE_LEARNING_OBJECT*/);
         String html = Metadata.getInstance().getLearningObjectView().getHtml( loUri, locale, style );
-        return( html );
+        return Response.ok(html).build();
     }
 
     @GET
     @Path( "{id}/rdf" )
     @Produces( "application/rdf+xml" )
-    public String getLearningObjectAsRdf( @PathParam( "id" ) String id, @DefaultValue( "false" ) @QueryParam( "incomingLinks" ) String incomingLinks, @DefaultValue( "false" ) @QueryParam( "rdfMetadataInfos" ) String rdfMetadataInfos, @DefaultValue( "false" ) @QueryParam( "humanReadable" ) String humanReadable ) throws Exception {
+    public Response getLearningObjectAsRdf( @PathParam( "id" ) String id, @DefaultValue( "false" ) @QueryParam( "incomingLinks" ) String incomingLinks, @DefaultValue( "false" ) @QueryParam( "rdfMetadataInfos" ) String rdfMetadataInfos, @DefaultValue( "false" ) @QueryParam( "humanReadable" ) String humanReadable ) throws Exception {
         boolean isRdfMetadataInfos = ( "true".equals( rdfMetadataInfos ) );
         boolean isHumanReadable = ( "true".equals( humanReadable ) );
         String loUri = ca.licef.comete.core.util.Util.makeURI(id, Constants.OBJ_TYPE_LEARNING_OBJECT);
         //String rdf = Metadata.getInstance().getLearningObjectView().getRdf( loUri, incomingLinks, isRdfMetadataInfos, isHumanReadable );
         String rdf = null;
-        return( rdf );
+        return Response.ok(rdf).build();
     }
 
     @GET

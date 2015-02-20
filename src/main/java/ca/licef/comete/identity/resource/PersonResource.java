@@ -39,23 +39,23 @@ public class PersonResource {
     @GET
     @Path( "{id}/html" )
     @Produces( MediaType.TEXT_HTML )
-    public String getPersonAsHtml( @PathParam( "id" ) String id, @DefaultValue( "en" ) @QueryParam( "lang" ) String lang, @DefaultValue( "default" ) @QueryParam( "style" ) String style ) throws Exception {
+    public Response getPersonAsHtml( @PathParam( "id" ) String id, @DefaultValue( "en" ) @QueryParam( "lang" ) String lang, @DefaultValue( "default" ) @QueryParam( "style" ) String style ) throws Exception {
         Locale locale = ( "fr".equals( lang ) ? Locale.FRENCH : Locale.ENGLISH );
         String personUri = CoreUtil.makeURI(id, COMETE.Person.getURI());
         String html = Identity.getInstance().getPersonView().getHtml( personUri, locale, style, context );
-        return( html );
+        return Response.ok(html).build();
     }
 
     @GET
     @Path( "{id}/rdf" )
     @Produces( "application/rdf+xml" )
-    public String getPersonAsRdf( @PathParam( "id" ) String id, @DefaultValue( "false" ) @QueryParam( "incomingLinks" ) String incomingLinks, @DefaultValue( "false" ) @QueryParam( "rdfMetadataInfos" ) String rdfMetadataInfos, @DefaultValue( "false" ) @QueryParam( "humanReadable" ) String humanReadable ) throws Exception {
+    public Response getPersonAsRdf( @PathParam( "id" ) String id, @DefaultValue( "false" ) @QueryParam( "incomingLinks" ) String incomingLinks, @DefaultValue( "false" ) @QueryParam( "rdfMetadataInfos" ) String rdfMetadataInfos, @DefaultValue( "false" ) @QueryParam( "humanReadable" ) String humanReadable ) throws Exception {
         boolean isRdfMetadataInfos = ( "true".equals( rdfMetadataInfos ) );
         boolean isHumanReadable = ( "true".equals( humanReadable ) );
 
         String personUri = CoreUtil.makeURI(id, COMETE.Person.getURI());
         String rdf = Identity.getInstance().getPersonView().getRdf( personUri, incomingLinks, isRdfMetadataInfos, isHumanReadable );
-        return( rdf );
+        return Response.ok(rdf).build();
     }
 
     @GET
@@ -129,7 +129,7 @@ public class PersonResource {
 
     @GET
     @Produces( MediaType.APPLICATION_JSON )
-    public String all( @DefaultValue( "0" ) @QueryParam( "start" ) String strStart,
+    public Response all( @DefaultValue( "0" ) @QueryParam( "start" ) String strStart,
                        @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit ) throws Exception {
         int start = -1;
         if( strStart != null ) {
@@ -171,13 +171,13 @@ public class PersonResource {
             e.printStackTrace();
         }
 
-        return( out.toString() );
+        return Response.ok(out.toString()).build();
     }
 
     @GET
     @Path( "search" )
     @Produces( MediaType.APPLICATION_JSON )
-    public String searchJson( @QueryParam( "q" ) String str,
+    public Response searchJson( @QueryParam( "q" ) String str,
                               @DefaultValue( "0" ) @QueryParam( "start" ) String strStart,
                               @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit ) throws Exception {
         if ("".equals(str))
@@ -224,13 +224,13 @@ public class PersonResource {
             e.printStackTrace();
         }
 
-        return( out.toString() );
+        return Response.ok(out.toString()).build();
     }
 
     @GET
     @Path( "{id}/details" )
     @Produces( MediaType.APPLICATION_JSON )
-    public String getPersonDetails(@PathParam( "id" ) String id) throws Exception {
+    public Response getPersonDetails(@PathParam( "id" ) String id) throws Exception {
         String uri = CoreUtil.makeURI(id, COMETE.Person.getURI());
         StringWriter out = new StringWriter();
         try {
@@ -250,13 +250,13 @@ public class PersonResource {
             e.printStackTrace();
         }
 
-        return( out.toString() );
+        return Response.ok(out.toString()).build();
     }
 
     @GET
     @Path( "{id}/allDetails" )
     @Produces( MediaType.APPLICATION_JSON )
-    public String getAllPersonDetails(@PathParam( "id" ) String id) throws Exception {
+    public Response getAllPersonDetails(@PathParam( "id" ) String id) throws Exception {
         String uri = CoreUtil.makeURI(id, COMETE.Person.getURI());
         StringWriter out = new StringWriter();
         try {
@@ -278,7 +278,7 @@ public class PersonResource {
             e.printStackTrace();
         }
 
-        return( out.toString() );
+        return Response.ok(out.toString()).build();
     }
 
     @PUT
@@ -298,7 +298,7 @@ public class PersonResource {
     @GET
     @Path("similarGroups")
     @Produces( MediaType.APPLICATION_JSON )
-    public String similarPersonGroups() throws Exception {
+    public Response similarPersonGroups() throws Exception {
 
         Tuple[] results = Identity.getInstance().getSimilarPersonGroups();
 
@@ -322,13 +322,13 @@ public class PersonResource {
             e.printStackTrace();
         }
 
-        return( out.toString() );
+        return Response.ok(out.toString()).build();
     }
 
     @GET
     @Path("similar")
     @Produces( MediaType.APPLICATION_JSON )
-    public String similarPersons(@QueryParam("gid") String gid) throws Exception {
+    public Response similarPersons(@QueryParam("gid") String gid) throws Exception {
 
         Tuple[] persons = Identity.getInstance().getSimilarIdentities(gid);
 
@@ -349,7 +349,7 @@ public class PersonResource {
             e.printStackTrace();
         }
 
-        return( out.toString() );
+        return Response.ok(out.toString()).build();
     }
 
     private JSONArray buildPersonJSONArray(Tuple[] persons) throws Exception{
@@ -370,7 +370,7 @@ public class PersonResource {
     @GET
     @Path("preMergeDetails")
     @Produces( MediaType.APPLICATION_JSON )
-    public String preMergeDetails(@QueryParam("uris") String uris) throws Exception {
+    public Response preMergeDetails(@QueryParam("uris") String uris) throws Exception {
         JSONArray uriArray = new JSONArray(uris); //array of persons to merge
         StringWriter out = new StringWriter();
         try{
@@ -391,7 +391,7 @@ public class PersonResource {
             e.printStackTrace();
         }
 
-        return( out.toString() );
+        return Response.ok(out.toString()).build();
     }
 
     @POST

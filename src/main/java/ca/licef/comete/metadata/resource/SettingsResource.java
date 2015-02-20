@@ -22,7 +22,7 @@ public class SettingsResource {
     @GET
     @Path( "/validatedApplicationProfiles" )
     @Produces( MediaType.APPLICATION_JSON )
-    public String getValidatedApplicationProfiles() throws Exception {
+    public Response getValidatedApplicationProfiles() throws Exception {
         StringWriter out = new StringWriter();
         try {
             Map<String,Boolean> applProfTable = Settings.getValidatedApplicationProfiles();
@@ -37,7 +37,7 @@ public class SettingsResource {
             out.close();
         }
 
-        return( out.toString() );
+        return Response.ok(out.toString()).build();
     }
 
     @PUT

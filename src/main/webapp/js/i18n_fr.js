@@ -72,6 +72,15 @@
     'Record Validation': 'Validation des fiches',
     'Broken Links Management': 'Gestion des liens brisés',
     'Other': 'Autre',
+
+    'Repositories': 'Répertoires',
+    'Add repository': 'Ajouter un répertoire',
+    'Modify repository': 'Modifier le répertoire',
+    'Repository added.': 'Répertoire ajouté.',
+    'Repository modified.': 'Répertoire modifié.',
+    'Repository deleted.': 'Répertoire suprimé.',
+    'HTML Spider': 'Araignée HTML',
+
     'Add vocabulary': 'Ajouter un vocabulaire',
     'Modify vocabulary': 'Modifier le vocabulaire',
     'External voc. (URL)': 'Voc. externe (URL)',

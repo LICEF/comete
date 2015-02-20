@@ -43,39 +43,46 @@ function init() {
 
     currentElem = importerLabel;
 
+    var harvestLabel = Ext.create('Comete.ClickableLabel', {
+        text: tr('Harvest'),
+        cls: 'choice',
+        selected: false,
+        fn: function() { changeCardItem(1, harvestLabel); }
+    } );
+
     var identityLabel = Ext.create('Comete.ClickableLabel', {
         text: tr('Identity Management'),
         cls: 'choice',
         selected: false,
-        fn: function() { changeCardItem(1, identityLabel); }
+        fn: function() { changeCardItem(2, identityLabel); }
     } );
 
     var vocabularyLabel = Ext.create('Comete.ClickableLabel', {
         text: tr('Vocabulary Management'),
         cls: 'choice',
         selected: false,
-        fn: function() { changeCardItem(2, vocabularyLabel); }
+        fn: function() { changeCardItem(3, vocabularyLabel); }
     } );
 
     var recordValidationLabel = Ext.create('Comete.ClickableLabel', {
         text: tr('Record Validation'),
         cls: 'choice',
         selected: false,
-        fn: function() { changeCardItem(3, recordValidationLabel); }
+        fn: function() { changeCardItem(4, recordValidationLabel); }
     } );
 
     var brokenLinksLabel = Ext.create('Comete.ClickableLabel', {
         text: tr('Broken Links Management'),
         cls: 'choice',
         selected: false,
-        fn: function() { changeCardItem(4, brokenLinksLabel); }
+        fn: function() { changeCardItem(5, brokenLinksLabel); }
     } );
 
     var miscLabel = Ext.create('Comete.ClickableLabel', {
         text: tr('Other'),
         cls: 'choice',
         selected: false,
-        fn: function() { changeCardItem(5, miscLabel); }
+        fn: function() { changeCardItem(6, miscLabel); }
     } );
 
     var choicePanel = Ext.create('Ext.panel.Panel', {
@@ -84,6 +91,7 @@ function init() {
         height: 40,
         margin: '10 0 0 0',
         items: [ {xtype: 'tbspacer', width: 10}, importerLabel,
+                 {xtype: 'tbspacer', width: 10}, harvestLabel,
                  {xtype: 'tbspacer', width: 10}, identityLabel, 
                  {xtype: 'tbspacer', width: 10}, vocabularyLabel, 
                  {xtype: 'tbspacer', width: 10}, recordValidationLabel, 
@@ -91,7 +99,12 @@ function init() {
                  {xtype: 'tbspacer', width: 10}, miscLabel ]
     });    
 
-    var importerPanel = Ext.create('Comete.RecordImporter', {
+    var importerPanel = Ext.create('Comete.AdminImport', {
+        border: false,
+        lang: lang
+    } );
+
+    var harvestPanel = Ext.create('Comete.AdminHarvest', {
         border: false,
         lang: lang
     } );
@@ -121,7 +134,7 @@ function init() {
         layout: 'card',
         region: 'center',
         border: false,
-        items: [ importerPanel, adminIdentityPanel, adminVocPanel, adminRecordValidationPanel, brokenLinksPanel, otherPanel ]
+        items: [ importerPanel, harvestPanel, adminIdentityPanel, adminVocPanel, adminRecordValidationPanel, brokenLinksPanel, otherPanel ]
     });
 
     var contentPanel = Ext.create('Ext.panel.Panel', {

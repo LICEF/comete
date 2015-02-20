@@ -41,22 +41,22 @@ public class OrganizationResource {
     @GET
     @Path( "{id}/html" )
     @Produces( MediaType.TEXT_HTML )
-    public String getOrganizationAsHtml( @PathParam( "id" ) String id, @DefaultValue( "en" ) @QueryParam( "lang" ) String lang, @DefaultValue( "default" ) @QueryParam( "style" ) String style ) throws Exception {
+    public Response getOrganizationAsHtml( @PathParam( "id" ) String id, @DefaultValue( "en" ) @QueryParam( "lang" ) String lang, @DefaultValue( "default" ) @QueryParam( "style" ) String style ) throws Exception {
         Locale locale = ( "fr".equals( lang ) ? Locale.FRENCH : Locale.ENGLISH );
         String organizationUri = CoreUtil.makeURI(id, COMETE.Organization);
         String html = Identity.getInstance().getOrganizationView().getHtml(organizationUri, locale, style, context);
-        return( html );
+        return Response.ok(html).build();
     }
 
     @GET
     @Path( "{id}/rdf" )
     @Produces( "application/rdf+xml" )
-    public String getOrganizationAsRdf( @PathParam( "id" ) String id, @DefaultValue( "false" ) @QueryParam( "incomingLinks" ) String incomingLinks, @DefaultValue( "false" ) @QueryParam( "rdfMetadataInfos" ) String rdfMetadataInfos, @DefaultValue( "false" ) @QueryParam( "humanReadable" ) String humanReadable ) throws Exception {
+    public Response getOrganizationAsRdf( @PathParam( "id" ) String id, @DefaultValue( "false" ) @QueryParam( "incomingLinks" ) String incomingLinks, @DefaultValue( "false" ) @QueryParam( "rdfMetadataInfos" ) String rdfMetadataInfos, @DefaultValue( "false" ) @QueryParam( "humanReadable" ) String humanReadable ) throws Exception {
         boolean isRdfMetadataInfos = ( "true".equals( rdfMetadataInfos ) );
         boolean isHumanReadable = ( "true".equals( humanReadable ) );
         String organizationUri = CoreUtil.makeURI(id, COMETE.Organization);
         String rdf = Identity.getInstance().getOrganizationView().getRdf( organizationUri, incomingLinks, isRdfMetadataInfos, isHumanReadable );
-        return( rdf );
+        return Response.ok(rdf).build();
     }
 
     @GET
@@ -168,7 +168,7 @@ public class OrganizationResource {
 
     @GET
     @Produces( MediaType.APPLICATION_JSON )
-    public String all( @DefaultValue( "0" ) @QueryParam( "start" ) String strStart,
+    public Response all( @DefaultValue( "0" ) @QueryParam( "start" ) String strStart,
                        @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit ) throws Exception {
 
         int start = -1;
@@ -211,13 +211,13 @@ public class OrganizationResource {
             e.printStackTrace();
         }
 
-        return( out.toString() );
+        return Response.ok(out.toString()).build();
     }
 
     @GET
     @Path( "search" )
     @Produces( MediaType.APPLICATION_JSON )
-    public String searchJson( @QueryParam( "q" ) String str,
+    public Response searchJson( @QueryParam( "q" ) String str,
                               @DefaultValue( "0" ) @QueryParam( "start" ) String strStart,
                               @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit ) throws Exception {
         if ("".equals(str))
@@ -263,13 +263,13 @@ public class OrganizationResource {
             e.printStackTrace();
         }
 
-        return( out.toString() );
+        return Response.ok(out.toString()).build();
     }
 
     @GET
     @Path( "{id}/details" )
     @Produces( MediaType.APPLICATION_JSON )
-    public String getOrganizationDetails(@PathParam( "id" ) String id) throws Exception {
+    public Response getOrganizationDetails(@PathParam( "id" ) String id) throws Exception {
         String uri = CoreUtil.makeURI(id, COMETE.Organization.getURI());
         StringWriter out = new StringWriter();
         try {
@@ -289,13 +289,13 @@ public class OrganizationResource {
             e.printStackTrace();
         }
 
-        return( out.toString() );
+        return Response.ok(out.toString()).build();
     }
 
     @GET
     @Path( "{id}/allDetails" )
     @Produces( MediaType.APPLICATION_JSON )
-    public String getAllOrganizationDetails(@PathParam( "id" ) String id) throws Exception {
+    public Response getAllOrganizationDetails(@PathParam( "id" ) String id) throws Exception {
         String uri = CoreUtil.makeURI(id, COMETE.Organization.getURI());
         StringWriter out = new StringWriter();
         try {
@@ -317,7 +317,7 @@ public class OrganizationResource {
             e.printStackTrace();
         }
 
-        return( out.toString() );
+        return Response.ok(out.toString()).build();
     }
 
     @PUT
@@ -337,7 +337,7 @@ public class OrganizationResource {
     @GET
     @Path("similarGroups")
     @Produces( MediaType.APPLICATION_JSON )
-    public String similarOrgGroups() throws Exception {
+    public Response similarOrgGroups() throws Exception {
         Tuple[] results = Identity.getInstance().getSimilarOrganizationGroups();
 
         StringWriter out = new StringWriter();
@@ -360,13 +360,13 @@ public class OrganizationResource {
             e.printStackTrace();
         }
 
-        return( out.toString() );
+        return Response.ok(out.toString()).build();
     }
 
     @GET
     @Path("similar")
     @Produces( MediaType.APPLICATION_JSON )
-    public String similarOrganizations(@QueryParam("gid") String gid) throws Exception {
+    public Response similarOrganizations(@QueryParam("gid") String gid) throws Exception {
 
         Tuple[] orgs = Identity.getInstance().getSimilarIdentities(gid);
 
@@ -387,7 +387,7 @@ public class OrganizationResource {
             e.printStackTrace();
         }
 
-        return( out.toString() );
+        return Response.ok(out.toString()).build();
     }
 
     private JSONArray buildOrgJSONArray(Tuple[] orgs) throws Exception{
@@ -408,7 +408,7 @@ public class OrganizationResource {
     @GET
     @Path("preMergeDetails")
     @Produces( MediaType.APPLICATION_JSON )
-    public String preMergeDetails(@QueryParam("uris") String uris) throws Exception {
+    public Response preMergeDetails(@QueryParam("uris") String uris) throws Exception {
         JSONArray uriArray = new JSONArray(uris); //array of orgs to merge
         StringWriter out = new StringWriter();
         try{
@@ -429,7 +429,7 @@ public class OrganizationResource {
             e.printStackTrace();
         }
 
-        return( out.toString() );
+        return Response.ok(out.toString()).build();
     }
 
     @POST

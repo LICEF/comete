@@ -20,7 +20,7 @@ import java.io.StringWriter;
 public class HarvestResource {
 
     @GET
-    @Produces( MediaType.TEXT_PLAIN )
+    @Produces( MediaType.APPLICATION_JSON )
     public Response getHarvests() throws Exception {
         String[] harvests = Harvester.getInstance().getHarvests();
         StringWriter out = new StringWriter();

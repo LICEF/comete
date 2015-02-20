@@ -1,4 +1,4 @@
-﻿Ext.define( 'Comete.RecordImporter', {
+﻿Ext.define( 'Comete.AdminImport', {
     extend: 'Ext.panel.Panel',
     layout: 'vbox',  
     initComponent: function( config ) {

@@ -365,7 +365,7 @@ Ext.define('ConceptModel', {
 
 Ext.define('VocCtxtModel', {
     extend: 'Ext.data.Model',
-    fields: [ 'restUrl', 'label', 'update' ]
+    fields: [ 'restUrl', 'label' ]
 });
 
 Ext.define('VocAliasModel', {
@@ -376,6 +376,11 @@ Ext.define('VocAliasModel', {
 Ext.define('CollectionModel', {
     extend: 'Ext.data.Model',
     fields: [ 'id', 'label', 'query' ]
+});
+
+Ext.define('HarvestDefModel', {
+    extend: 'Ext.data.Model',
+    fields: [ 'restUrl', 'name' ]
 });
 
 var vocabProxy = Ext.create('Ext.data.proxy.Ajax', {
@@ -399,6 +404,13 @@ var collectionProxy = Ext.create('Ext.data.proxy.Ajax', {
     }
 });
 
+var harvestDefProxy = Ext.create('Ext.data.proxy.Ajax', {
+    url: 'rest/harvestDefinitions',
+    reader: {
+        type: 'json',
+        root: 'harvestDefs',        
+    }
+});
 
 /************************/
 /*** VocConceptPicker ***/
@@ -445,6 +457,7 @@ Ext.define( 'Comete.VocConceptPicker', {
             useArrows: true,
             rootVisible: false,
             viewConfig: {
+                loadingText: tr('Loading') + '...',
                 margin: '0 -1 0 -1'
             }
         });

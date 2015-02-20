@@ -29,7 +29,7 @@ public class CollectionResource {
 
     @GET
     @Produces( MediaType.APPLICATION_JSON )
-    public String getCollections( @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) throws Exception {
+    public Response getCollections( @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) throws Exception {
         List<String[]> collections = QueryEngine.getInstance().getCollection().getAll(lang);
         StringWriter out = new StringWriter();
         try {
@@ -64,7 +64,7 @@ public class CollectionResource {
             e.printStackTrace();
         }
 
-        return( out.toString() );
+        return Response.ok(out.toString()).build();
     }
 
     @POST

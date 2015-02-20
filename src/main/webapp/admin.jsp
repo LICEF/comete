@@ -18,7 +18,8 @@
     <title>Comète Administration</title>
     <script type="text/javascript" src="js/utils.js"></script>
     <script type="text/javascript" src="js/Toolbar.js"></script>
-    <script type="text/javascript" src="js/RecordImporter.js"></script>
+    <script type="text/javascript" src="js/AdminImport.js"></script>
+    <script type="text/javascript" src="js/AdminHarvest.js"></script>
     <script type="text/javascript" src="js/AdminIdentityUtils.js"></script>
     <script type="text/javascript" src="js/AdminIdentityEdition.js"></script>
     <script type="text/javascript" src="js/AdminIdentity.js"></script>
