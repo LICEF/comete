@@ -84,18 +84,19 @@ public class Metadata {
     }
 
     public String deleteHarvestedRecord( String oaiID, String namespace ) throws Exception {
-        /*MetadataFormat metadataFormat = MetadataFormats.getMetadataFormat(namespace);
+        MetadataFormat metadataFormat = MetadataFormats.getMetadataFormat(namespace);
         System.out.println("deleteHarvestedRecord: " +  oaiID + " (" + metadataFormat.getName() + " format)");
 
-        String recordURI = getRecordURI(oaiID, namespace);
+        TripleStore tripleStore = Core.getInstance().getTripleStore();
+        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", "getRecordURI", new Object[] { oaiID, namespace } );
+
+        String recordURI = (String)tripleStore.transactionalCall( inv );
         if (recordURI != null) {
             deleteRecord(recordURI);
             return "deleted";
         }
         else
-            return "ignored";*/
-
-        return null;
+            return "ignored";
     }
 
     public String getLearningObjectURI( String metadataRecordUri ) throws Exception {
