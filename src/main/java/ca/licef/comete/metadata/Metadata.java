@@ -303,26 +303,38 @@ public class Metadata {
     }
 
     public void deleteRecord(String recordURI) throws Exception {
-        //    String loURI = getLearningObjectURI(recordURI);
-        //    deleteLearningObject(loURI);
+        TripleStore tripleStore = Core.getInstance().getTripleStore();
+        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", "getLearningObjectURI", new Object[] { recordURI } );
+        String loURI = (String)tripleStore.transactionalCall( inv );
+        deleteLearningObject(loURI);
     }
 
     public void deleteLearningObject(String loUri) throws Exception {
-        //    //associated metadata records
-        //    Hashtable<String, String>[] results =
-        //            Core.getInstance().getTripleStoreService().getResults( "getMetadataRecords.sparql", loUri );
-        //    for( int i = 0; i < results.length; i++ ) {
-        //        String recordUri = results[i].get("s");
-        //        String doId = results[i].get("doId");
-        //        deleteMetadataRecord(recordUri, doId);
-        //    }
-        //    Core.getInstance().getTripleStoreService().deleteResource(loUri);
+        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", "doDeleteLearningObject", new String[] { loUri } );
+        Core.getInstance().getTripleStore().transactionalCall( inv, TripleStore.WRITE_MODE );
     }
 
-    //void deleteMetadataRecord(String recordURI, String doId) throws Exception {
-    //    setState(doId, "D");
-    //    Core.getInstance().getTripleStoreService().deleteResource(recordURI);
-    //}
+    public void doDeleteLearningObject(String loUri) throws Exception {
+        TripleStore tripleStore = Core.getInstance().getTripleStore();
+        String query = Util.getQuery( "metadata/getMetadataRecordFromLO.sparql", loUri ); 
+        Tuple[] res = tripleStore.sparqlSelect( query );
+        for( Tuple tuple : res ) {
+            String recordUri = tuple.getValue( "s" ).getContent();
+            String storeId = tuple.getValue( "storeId" ).getContent(); 
+            deleteMetadataRecord(recordUri, storeId);
+        }
+        tripleStore.removeResource_textIndex(loUri);
+    }
+
+    private void deleteMetadataRecord(String recordURI, String storeId) throws Exception {
+        File metadataRecFolder = new File( Store.getInstance().getLocation() + storeId );
+        if( metadataRecFolder.exists() ) {
+            File markedForDeletionFile = new File( Store.getInstance().getLocation() + storeId + ".d" );
+            if( !metadataRecFolder.renameTo( markedForDeletionFile ) )
+                throw( new IOException( "Folder " + metadataRecFolder + " could not be renamed to " + markedForDeletionFile + "." ) );
+        }
+        Core.getInstance().getTripleStore().removeResource_textIndex(recordURI);
+    }
 
     public String[][] getRepositoryRecords(String repoUri) throws Exception {
     //    Hashtable<String, String>[] results =
@@ -335,16 +347,6 @@ public class Metadata {
     //    return res;
         return( null );
     }
-
-    ///**
-    // * set fedora digital object state as "deleted" for oaiprovider exposition
-    // * @param doId fedora digital object ID
-    // * @throws Exception
-    // */
-    //void setState(String doId, String state) throws Exception {
-    //    FedoraService fedora = Core.getInstance().getFedoraService();
-    //    fedora.modifyDigitalObjectState(doId, state, "change state");
-    //}
 
     /****
      * Record's digest
