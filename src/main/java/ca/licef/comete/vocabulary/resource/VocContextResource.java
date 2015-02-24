@@ -170,24 +170,21 @@ public class VocContextResource {
         try {
             JSONWriter json = new JSONWriter( out ).object();
 
-            JSONArray vocDetails = new JSONArray();
-            JSONObject detail = new JSONObject();
-            detail.put( "id", details[0].getValue("vocId").getContent() );
-            detail.put( "uri", details[0].getValue("vocUri").getContent() );
+            json.key( "id" ).value( details[0].getValue("vocId").getContent() );
+            json.key( "uri" ).value( details[0].getValue("vocUri").getContent() );
             String location = details[0].getValue("location").getContent();
             if (!location.startsWith("http"))
                 location = "local: " + location;
-            detail.put( "location", location);
-            detail.put( "navigable", details[0].getValue("navigable").getContent() );
-            detail.put( "linkingPredicate", details[0].getValue("predicate").getContent() );
+            json.key( "location" ).value( location);
+            json.key( "navigable" ).value( details[0].getValue("navigable").getContent() );
+            json.key( "linkingPredicate" ).value( details[0].getValue("predicate").getContent() );
             String pref = details[0].getValue("prefix").getContent();
             if (!"".equals(pref))
-                detail.put( "uriPrefix", pref);
+                json.key( "uriPrefix" ).value( pref);
             String suf = details[0].getValue("suffix").getContent();
             if (!"".equals(suf))
-                detail.put( "uriSuffix", suf);
-            vocDetails.put(detail);
-            json.key( "vocDetails" ).value( vocDetails );
+                json.key( "uriSuffix" ).value( suf);
+
             json.endObject();
         }
         catch( JSONException e ) {

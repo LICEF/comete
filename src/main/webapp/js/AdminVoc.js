@@ -208,7 +208,7 @@
                 method: 'GET',
                 success: function(response) {
                     this.initDisplay = true;
-                    var jsonDetails = Ext.JSON.decode(response.responseText, true).vocDetails[0];
+                    var jsonDetails = Ext.JSON.decode(response.responseText, true);
                     this.detailsPanel.getComponent(0).setValue(jsonDetails.id);
                     this.detailsPanel.getComponent(1).setValue(jsonDetails.uri);
                     this.detailsPanel.getComponent(2).setValue(jsonDetails.location);
@@ -287,7 +287,7 @@
             url: this.currentVocContextRestUrl + '/details',
             method: 'GET',
             success: function(response) {
-                var jsonDetails = Ext.JSON.decode(response.responseText, true).vocDetails[0];
+                var jsonDetails = Ext.JSON.decode(response.responseText, true);
                 this.modifyVocabularyStep3(jsonDetails)
             },
             scope: this 

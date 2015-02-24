@@ -312,7 +312,7 @@ Ext.define( 'Comete.AdminHarvestDefEditor', {
                        valueField: 'ns',
                        value: 'http://ltsc.ieee.org/xsd/LOM',
                        tpl: '<div><tpl for="."><div class="x-boundlist-item">{name}</div></tpl></div>' },
-                     { name: 'adminEmail', fieldLabel:  tr('Admin email'), emptyText: tr('Optional field') },
+                     { name: 'adminEmail', fieldLabel: tr('Admin email') },
                      { fieldLabel: 'XSL',
                        name: 'xsl',
                        xtype: 'textarea', 
