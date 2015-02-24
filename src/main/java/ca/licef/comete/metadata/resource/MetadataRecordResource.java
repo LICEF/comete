@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -167,6 +168,19 @@ public class MetadataRecordResource {
         }
 
         return out.toString();
+    }
+
+    @DELETE
+    @Path( "{id}" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response deleteMetadataRecord( @Context HttpServletRequest request,
+                                          @PathParam( "id" ) String id ) throws Exception {
+        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to delete records.").build();
+
+        String metadataRecordUri = Util.makeURI(id, COMETE.MetadataRecord);
+        Metadata.getInstance().deleteRecord(metadataRecordUri);
+        return (Response.ok().build());
     }
 
     @GET

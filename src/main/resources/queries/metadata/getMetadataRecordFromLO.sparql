@@ -1,0 +1,9 @@
+PREFIX comete: <http://comete.licef.ca/reference#>
+
+SELECT ?s ?metadataFormat ?storeId
+WHERE '{'
+    ?s comete:describes <{0}> .
+    ?s comete:metadataFormat ?metadataFormat .
+    ?s comete:storeDigitalObject ?storeId
+'}'
+
