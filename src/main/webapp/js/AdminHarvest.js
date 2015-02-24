@@ -82,18 +82,41 @@
         }); 
 
 
+        this.startHarvestButton = Ext.create('Ext.button.Button', {
+            text: tr('Start harvest'),
+            disabled: true,
+            handler: this.startHarvest, 
+            scope: this
+        } );
+
+        this.stopHarvestButton = Ext.create('Ext.button.Button', {
+            text: tr('Stop harvest'),
+            disabled: true,
+            handler: this.stopHarvest, 
+            scope: this
+        } );
+
+        this.harvestPanel = Ext.create('Ext.panel.Panel', { 
+            layout: 'hbox',
+            border: false,
+            margin: '30 0 0 10',
+            items: [ this.startHarvestButton, {xtype: 'tbspacer', width: 10}, this.stopHarvestButton ]
+        });
+
         var cfg = {
             layout: 'border',
             region: 'center',      
-            items: [ this.leftPanel, { border: false, items: this.detailsPanel } ]
+            items: [ this.leftPanel, { border: false, layout: 'vbox', items: [ this.detailsPanel, this.harvestPanel ] } ]
         };
         Ext.apply(this, cfg);
         this.callParent(arguments); 
     },
     harvestDefChanged: function( model, selected ) {
         this.currentHarvestDefRestUrl = null;
+        this.currentHarvestDefId = null;
         if (selected.length == 1) {
             this.currentHarvestDefRestUrl = selected[0].getData().restUrl;
+            this.currentHarvestDefId = selected[0].getData().id;
 
             //fields update
             Ext.Ajax.request( {
@@ -116,8 +139,10 @@
 
             //buttons
             if (authorized) {  
-                this.modifyButton.setDisabled(false);     
-                this.deleteButton.setDisabled(false);     
+                this.modifyButton.setDisabled(false);
+                this.deleteButton.setDisabled(false);
+                this.startHarvestButton.setDisabled(false);
+                this.stopHarvestButton.setDisabled(false);
             }
         }
         else {
@@ -129,8 +154,10 @@
             this.detailsPanel.getComponent(5).setValue("");
             this.detailsPanel.getComponent(6).setValue("");
             //buttons
-            this.modifyButton.setDisabled(true);     
-            this.deleteButton.setDisabled(true);     
+            this.modifyButton.setDisabled(true);
+            this.deleteButton.setDisabled(true);
+            this.startHarvestButton.setDisabled(true);
+            this.stopHarvestButton.setDisabled(true);
         }
     },
     addHarvestDef: function() {
@@ -139,13 +166,13 @@
             modal: true,
             listener: this
         });
-        editor.show();       
+        editor.show();
     },
     afterAdd: function() {
         this.harvestDefStore.loadPage();
         Ext.Msg.alert('Information', tr('Repository added.'));
     },
-    modifyHarvestDef: function() {        
+    modifyHarvestDef: function() {
         Ext.Ajax.request( {
             url: this.currentHarvestDefRestUrl,
             method: 'GET',
@@ -163,7 +190,7 @@
             mode: 'modify',
             restUrl: this.currentHarvestDefRestUrl,
             values: values,
-            listener: this            
+            listener: this
         });
         editor.show();
     },
@@ -190,7 +217,7 @@
     deleteHarvestDefEff: function(button) {
         if (button != 'ok')
             return;
-        var waitDialog = Ext.create('Ext.window.MessageBox', {       
+        var waitDialog = Ext.create('Ext.window.MessageBox', {
         });
         waitDialog.wait( tr('Please wait') + '...' );
         Ext.Ajax.request( {
@@ -213,12 +240,38 @@
             this.harvestDefStore.loadPage(1);
             this.isDirty = false;
         }
+    },
+    startHarvest: function() {
+        Ext.Ajax.request( {
+            url: 'rest/harvests/' + this.currentHarvestDefId,
+            method: 'POST',
+            success: function(response, opts) {
+                Ext.Msg.alert('Information', tr('Harvest started.'));
+            },
+            failure: function(response, opts) {
+                Ext.Msg.alert('Message', response.responseText);  
+            },
+            scope: this 
+        } );
+    },
+    stopHarvest: function() {
+        Ext.Ajax.request( {
+            url: 'rest/harvests/' + this.currentHarvestDefId,
+            method: 'DELETE',
+            success: function(response, opts) {
+                Ext.Msg.alert('Information', tr('Harvest stopped.'));
+            },
+            failure: function(response, opts) {
+                Ext.Msg.alert('Message', response.responseText);  
+            },
+            scope: this 
+        } );
     }
 } );
 
 Ext.define( 'Comete.AdminHarvestDefEditor', {
     extend: 'Ext.window.Window',
-    layout: 'fit',           
+    layout: 'fit',
     initComponent: function( config ) {
 
         var protocolStore = Ext.create('Ext.data.Store', {
@@ -252,7 +305,7 @@ Ext.define( 'Comete.AdminHarvestDefEditor', {
                      { name: 'url', fieldLabel:  'URL' },
                      { fieldLabel: tr('Format'),
                        name: 'ns',
-                       xtype: 'combo',                      
+                       xtype: 'combo',
                        editable: false,
                        store: namespaceStore, 
                        displayField: 'name',
@@ -272,7 +325,7 @@ Ext.define( 'Comete.AdminHarvestDefEditor', {
             title: (this.mode == 'modify')?tr('Modify repository'):tr('Add repository'),
             buttons: [ {text:'OK', handler: this.ok, scope: this}, {text:tr('Cancel'), handler: this.close, scope: this}],
             items: [ { border: false, items: this.formPanel } ]
-                     
+
         };
         Ext.apply(this, cfg);
         this.callParent(arguments); 
@@ -281,22 +334,22 @@ Ext.define( 'Comete.AdminHarvestDefEditor', {
            this.setValues();
     },
     ok: function() {
-        var waitDialog = Ext.create('Ext.window.MessageBox', {       
+        var waitDialog = Ext.create('Ext.window.MessageBox', {
         });
         waitDialog.wait( tr('Please wait') + '...' );
         this.formPanel.submit({
             url: ((this.mode == 'modify')?this.restUrl:'rest/harvestDefinitions'),
             method: ((this.mode == 'modify')?'PUT':'POST'),
             success: function(form, action) {
-                this.close();     
+                this.close();
                 waitDialog.close();
                 if (this.mode == 'modify') 
-                    this.listener.afterModify();          
+                    this.listener.afterModify();
                 else
                     this.listener.afterAdd();
             },
             failure: function(form, action) { 
-                Ext.Msg.alert('Failure', action.result.error);            
+                Ext.Msg.alert('Failure', action.result.error);
                 waitDialog.close();   
             },
             submitEmptyText: false,

@@ -83,6 +83,8 @@
     'Repository deleted.': 'Répertoire suprimé.',
     'HTML Spider': 'Araignée HTML',
     'Do you really want to delete repository ?': 'Voulez-vous vraiment supprimer le répertoire ?',
+    'Start harvest': 'Démarrer la moisson',
+    'Stop harvest': 'Arrêter la moisson',
 
     'Add vocabulary': 'Ajouter un vocabulaire',
     'Modify vocabulary': 'Modifier le vocabulaire',
