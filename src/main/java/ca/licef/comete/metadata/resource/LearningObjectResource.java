@@ -89,7 +89,7 @@ public class LearningObjectResource {
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to delete records.").build();
 
         String loUri = ca.licef.comete.core.util.Util.makeURI(id, Constants.OBJ_TYPE_LEARNING_OBJECT);
-        Metadata.getInstance().deleteLearningObject(loUri);
+        Metadata.getInstance().deleteLearningObject(loUri, true);
         return (Response.ok().build());
     }
 
