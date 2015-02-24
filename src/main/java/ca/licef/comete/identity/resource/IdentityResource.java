@@ -1,6 +1,5 @@
 package ca.licef.comete.identity.resource;
 
-import ca.licef.comete.core.Core;
 import ca.licef.comete.identity.Identity;
 import ca.licef.comete.security.Security;
 import ca.licef.comete.store.Store;

@@ -36,6 +36,7 @@ public class HarvestDefinitionResource {
             for (String defId : definitions) {
                 JSONObject _def = Harvester.getInstance().getDefinition(defId);
                 JSONObject def = new JSONObject();
+                def.put( "id", defId );
                 def.put( "restUrl", "rest/harvestDefinitions/" + defId );
                 def.put( "name", _def.get("name") );
                 defs.put(def);
@@ -61,18 +62,30 @@ public class HarvestDefinitionResource {
     @Path( "{id}" )
     @Produces( MediaType.APPLICATION_JSON )
     public Response getHarvestDefinition( @PathParam( "id" ) String id ) throws Exception {
+        JSONObject def = Harvester.getInstance().getDefinition(id);
+        return (Response.ok(def.toString()).build());
+    }
+
+    @POST
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response addNewHarvestDefinition(@Context HttpServletRequest request,
+                                     @FormParam("id") String id,
+                                     @FormParam("name") String name,
+                                     @FormParam("type") String type,
+                                     @FormParam("url") String url,
+                                     @FormParam("ns") String ns,
+                                     @FormParam("adminEmail") String adminEmail,
+                                     @FormParam("xsl") String xsl ) throws Exception {
+        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to add harvest definition.").build();
+
+        String errorMessage = Harvester.getInstance().storeDefinition(id, name, type, url, ns, adminEmail, xsl, false);
         StringWriter out = new StringWriter();
         try {
             JSONWriter json = new JSONWriter( out ).object();
-
-            JSONObject _def = Harvester.getInstance().getDefinition(id);
-            json.key( "id" ).value( id );
-            json.key( "name" ).value( _def.get("name") );
-            json.key( "adminEmail" ).value( _def.get("adminEmail") );
-            json.key( "type" ).value( _def.get("type") );
-            json.key( "url" ).value( _def.get("url") );
-            json.key( "metadataNamespace" ).value( _def.get("metadataNamespace") );
-
+            json.key("success").value(errorMessage == null);
+            if (errorMessage != null)
+                json.key("error").value(errorMessage);
             json.endObject();
         }
         catch( JSONException e ) {
@@ -85,17 +98,55 @@ public class HarvestDefinitionResource {
         catch( IOException e ) {
             e.printStackTrace();
         }
-        return (Response.ok(out.toString()).build());
+
+        return Response.ok( out.toString() ).build();
+    }
+
+    @PUT
+    @Path( "{id}" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response updateHarvestDefinition(@Context HttpServletRequest request,
+                                            @PathParam( "id" ) String id,
+                                            @FormParam("name") String name,
+                                            @FormParam("type") String type,
+                                            @FormParam("url") String url,
+                                            @FormParam("ns") String ns,
+                                            @FormParam("adminEmail") String adminEmail,
+                                            @FormParam("xsl") String xsl) throws Exception {
+        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to add harvest definition.").build();
+
+        String errorMessage = Harvester.getInstance().storeDefinition(id, name, type, url, ns, adminEmail, xsl, true);
+        StringWriter out = new StringWriter();
+        try {
+            JSONWriter json = new JSONWriter( out ).object();
+            json.key("success").value(errorMessage == null);
+            if (errorMessage != null)
+                json.key("error").value(errorMessage);
+            json.endObject();
+        }
+        catch( JSONException e ) {
+            e.printStackTrace();
+        }
+
+        try {
+            out.close();
+        }
+        catch( IOException e ) {
+            e.printStackTrace();
+        }
+
+        return Response.ok( out.toString() ).build();
     }
 
     @PUT
     @Path( "{id}" )
     @Consumes( MediaType.MULTIPART_FORM_DATA )
     @Produces( MediaType.TEXT_PLAIN )
-    public Response storeHarvestDefinition(@Context HttpServletRequest request,
-                                  @PathParam( "id" ) String id,
-                                  @FormDataParam("file") InputStream uploadedInputStream,
-                                  @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
+    public Response updateHarvestDefinition(@Context HttpServletRequest request,
+                                            @PathParam( "id" ) String id,
+                                            @FormDataParam("file") InputStream uploadedInputStream,
+                                            @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
         if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to add harvest definition.").build();
 

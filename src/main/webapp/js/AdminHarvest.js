@@ -47,7 +47,7 @@
 
         this.harvestDefList.on( 'selectionchange', this.harvestDefChanged, this );
 
-        this.vocPanel = Ext.create('Ext.Panel', { 
+        this.defPanel = Ext.create('Ext.Panel', { 
             layout: 'fit',
             region: 'center',
             border: false,
@@ -60,7 +60,7 @@
             region: 'west',     
             border: false,
             split: true,
-            items: this.vocPanel
+            items: this.defPanel
         }); 
        
         this.detailsPanel = Ext.create('Ext.Panel', { 
@@ -74,7 +74,11 @@
                      { fieldLabel: tr('Name'), editable: false},
                      { fieldLabel: tr('Protocol'), editable: false },
                      { fieldLabel: 'URL', editable: false },
-                     { fieldLabel: 'Format', editable: false }]        
+                     { fieldLabel: 'Format', editable: false },
+                     { fieldLabel: tr('Admin email'), editable: false },
+                     { fieldLabel: 'XSL', xtype: 'textarea', editable: false,
+                       inputAttrTpl: 'wrap="off" spellcheck="false"', height: 180 }
+                   ]
         }); 
 
 
@@ -87,12 +91,13 @@
         this.callParent(arguments); 
     },
     harvestDefChanged: function( model, selected ) {
+        this.currentHarvestDefRestUrl = null;
         if (selected.length == 1) {
-            var restUrl = selected[0].getData().restUrl;
+            this.currentHarvestDefRestUrl = selected[0].getData().restUrl;
 
             //fields update
             Ext.Ajax.request( {
-                url: restUrl,
+                url: this.currentHarvestDefRestUrl,
                 method: 'GET',
                 success: function(response) {
                     var jsonDetails = Ext.JSON.decode(response.responseText, true);
@@ -103,6 +108,8 @@
                     this.detailsPanel.getComponent(3).setValue(jsonDetails.url);
                     var format = (jsonDetails.metadataNamespace == 'http://ltsc.ieee.org/xsd/LOM')?'IEEE LOM':'OAI DC';
                     this.detailsPanel.getComponent(4).setValue(format);
+                    this.detailsPanel.getComponent(5).setValue(jsonDetails.adminEmail);
+                    this.detailsPanel.getComponent(6).setValue(jsonDetails.xsl);
                 },
                 scope: this 
             } );
@@ -119,6 +126,8 @@
             this.detailsPanel.getComponent(2).setValue("");
             this.detailsPanel.getComponent(3).setValue("");
             this.detailsPanel.getComponent(4).setValue("");
+            this.detailsPanel.getComponent(5).setValue("");
+            this.detailsPanel.getComponent(6).setValue("");
             //buttons
             this.modifyButton.setDisabled(true);     
             this.deleteButton.setDisabled(true);     
@@ -127,65 +136,40 @@
     addHarvestDef: function() {
         var editor = Ext.create('Comete.AdminHarvestDefEditor', {
             width: 500,
-            height: 270,
             modal: true,
             listener: this
         });
         editor.show();       
     },
     afterAdd: function() {
-        this.vocCtxtStore.loadPage(1);
+        this.harvestDefStore.loadPage();
         Ext.Msg.alert('Information', tr('Repository added.'));
     },
-    modifyHarvestDef: function() {
+    modifyHarvestDef: function() {        
         Ext.Ajax.request( {
-            url: this.currentVocContextRestUrl + '/used',
+            url: this.currentHarvestDefRestUrl,
             method: 'GET',
             success: function(response) {
-                if (response.responseText == 'false')
-                    this.modifyVocabularyStep2(null);
-                else {
-                    var promptBox = Ext.Msg;
-                    promptBox.buttonText = { cancel: tr("Cancel") };
-                    promptBox.show({
-                        msg: tr('This vocabulary is used.<br>Do you really want to modify it ?'),
-                        buttons: Ext.Msg.OKCANCEL,
-                        icon: Ext.Msg.QUESTION,
-                        fn: this.modifyVocabularyStep2,
-                        scope: this
-                    });
-                }
+                var jsonDetails = Ext.JSON.decode(response.responseText, true);
+                this.modifyHarvestDefStep2(jsonDetails)
             },
             scope: this 
         } );      
     },
-    modifyHarvestDefStep2: function(button) {
-        if (button != null && button != 'ok')
-            return;
-        Ext.Ajax.request( {
-            url: this.currentVocContextRestUrl + '/details',
-            method: 'GET',
-            success: function(response) {
-                var jsonDetails = Ext.JSON.decode(response.responseText, true).vocDetails[0];
-                this.modifyVocabularyStep3(jsonDetails)
-            },
-            scope: this 
-        } );      
-    },
-    modifyHarvestDefStep3: function(values) {
+    modifyHarvestDefStep2: function(values) {
         var editor = Ext.create('Comete.AdminHarvestDefEditor', {
             width: 500,
-            height: 270,
             modal: true,
             mode: 'modify',
-            restUrl: this.currentVocContextRestUrl,
+            restUrl: this.currentHarvestDefRestUrl,
             values: values,
             listener: this            
         });
         editor.show();
     },
     afterModify: function() {
-        this.vocCtxtStore.loadPage(1);
+        this.harvestDefStore.loadPage();
+        this.harvestDefList.getSelectionModel().deselectAll();
         Ext.Msg.alert('Information', tr('Repository modified.'));
     },
     deleteHarvestDef: function() {
@@ -196,10 +180,10 @@
         var promptBox = Ext.Msg;
         promptBox.buttonText = { cancel: tr("Cancel") };
         promptBox.show({
-            msg: tr('Do you really want to delete vocabulary ?'),
+            msg: tr('Do you really want to delete repository ?'),
             buttons: Ext.Msg.OKCANCEL,
             icon: Ext.Msg.QUESTION,
-            fn: this.deleteVocabularyEff,
+            fn: this.deleteHarvestDefEff,
             scope: this
         });
     },
@@ -210,11 +194,11 @@
         });
         waitDialog.wait( tr('Please wait') + '...' );
         Ext.Ajax.request( {
-            url: this.currentVocContextRestUrl,
+            url: this.currentHarvestDefRestUrl,
             method: 'DELETE',
             success: function(response, opts) {
                 waitDialog.close();
-                this.vocCtxtStore.loadPage(1);
+                this.harvestDefStore.loadPage(1);
                 Ext.Msg.alert('Information', tr('Repository deleted.'));
             },
             failure: function(response, opts) {
@@ -236,26 +220,18 @@ Ext.define( 'Comete.AdminHarvestDefEditor', {
     extend: 'Ext.window.Window',
     layout: 'fit',           
     initComponent: function( config ) {
-        this.urlLocation = Ext.create('Ext.form.TextField', {
-            name: 'url',
-            labelWidth: 130,
-            fieldLabel: tr('External voc. (URL)')
+
+        var protocolStore = Ext.create('Ext.data.Store', {
+            fields: ['type', 'name'],
+            data : [ { 'type': 'OAI', 'name': 'OAI-PMH'}, 
+                     { 'type': 'HTML', 'name': tr('HTML Spider') } ]
         });
 
-        this.fileLocation = Ext.create('Ext.form.field.File', {
-            name: 'file',
-            fieldLabel: tr('OR') + ' ' + tr('local voc. (file)'),
-            labelWidth: 130,
-            buttonText: '...'
+        var namespaceStore = Ext.create('Ext.data.Store', {
+            fields: ['ns', 'name'],
+            data : [ { 'ns': 'http://ltsc.ieee.org/xsd/LOM', 'name': tr('IEEE LOM') },
+                     { 'ns': 'http://www.openarchives.org/OAI/2.0/oai_dc/HTML', 'name': tr('OAI DC') } ]
         });
-
-        //must select uploadfield twice if urlfield is not empty. 
-        //Best I can do cause uploadfield reset doesn't works properly... (known bug) -AM
-        this.urlLocation.on('change', function() { 
-            this.fileLocation.emptyText = " ";
-            this.fileLocation.reset();
-        }, this ); 
-        this.fileLocation.on('change', function() { this.urlLocation.setValue(""); }, this ); 
 
         this.formPanel = Ext.create('Ext.form.Panel', { 
             border: false,
@@ -263,13 +239,34 @@ Ext.define( 'Comete.AdminHarvestDefEditor', {
             layout: 'form',
             defaultType: 'textfield',
             items: [ { name: 'id', fieldLabel: 'ID', editable: this.mode != 'modify' },
-                     this.urlLocation, 
-                     this.fileLocation, 
-                     { name: 'uriPrefix', fieldLabel: tr('Concept URI prefix'), emptyText: tr('Optional field') },
-                     { name: 'uriSuffix', fieldLabel: tr('Concept URI suffix'), emptyText: tr('Optional field') },
-                     { name: 'linkingPredicate', fieldLabel: tr('Linking predicate'), emptyText: tr('Optional field') } ]
+                     { name: 'name', fieldLabel:  tr('Name') },
+                     { fieldLabel: tr('Protocol'),
+                       name: 'type',
+                       xtype: 'combo',
+                       editable: false,
+                       store: protocolStore,
+                       displayField: 'name', 
+                       valueField: 'type',
+                       value: 'OAI',
+                       tpl: '<div><tpl for="."><div class="x-boundlist-item">{name}</div></tpl></div>' },
+                     { name: 'url', fieldLabel:  'URL' },
+                     { fieldLabel: tr('Format'),
+                       name: 'ns',
+                       xtype: 'combo',                      
+                       editable: false,
+                       store: namespaceStore, 
+                       displayField: 'name',
+                       valueField: 'ns',
+                       value: 'http://ltsc.ieee.org/xsd/LOM',
+                       tpl: '<div><tpl for="."><div class="x-boundlist-item">{name}</div></tpl></div>' },
+                     { name: 'adminEmail', fieldLabel:  tr('Admin email'), emptyText: tr('Optional field') },
+                     { fieldLabel: 'XSL',
+                       name: 'xsl',
+                       xtype: 'textarea', 
+                       valueField: 'xsl',
+                       inputAttrTpl: 'wrap="off" spellcheck="false"', height: 180,
+                       emptyText: tr('Optional field') } ]
         }); 
-
 
         cfg = {
             title: (this.mode == 'modify')?tr('Modify repository'):tr('Add repository'),
@@ -288,8 +285,8 @@ Ext.define( 'Comete.AdminHarvestDefEditor', {
         });
         waitDialog.wait( tr('Please wait') + '...' );
         this.formPanel.submit({
-            url: ((this.mode == 'modify')?this.restUrl:'rest/vocContexts'),
-            method: 'POST',
+            url: ((this.mode == 'modify')?this.restUrl:'rest/harvestDefinitions'),
+            method: ((this.mode == 'modify')?'PUT':'POST'),
             success: function(form, action) {
                 this.close();     
                 waitDialog.close();
@@ -308,15 +305,12 @@ Ext.define( 'Comete.AdminHarvestDefEditor', {
     },
     setValues: function() {
         this.formPanel.getComponent(0).setValue(this.values.id);
-        var initLocation = this.values.location;
-        if (initLocation.startsWith('http'))
-            this.urlLocation.setValue(initLocation);
-        else
-            this.fileLocation.emptyText = initLocation;
-        this.formPanel.getComponent(3).setValue(this.values.uriPrefix);
-        this.formPanel.getComponent(3).setValue(this.values.uriPrefix);
-        this.formPanel.getComponent(4).setValue(this.values.uriSuffix);
-        this.formPanel.getComponent(5).setValue(this.values.linkingPredicate);
+        this.formPanel.getComponent(1).setValue(this.values.name);
+        this.formPanel.getComponent(2).setValue(this.values.type);
+        this.formPanel.getComponent(3).setValue(this.values.url);
+        this.formPanel.getComponent(4).setValue(this.values.metadataNamespace);
+        this.formPanel.getComponent(5).setValue(this.values.adminEmail);
+        this.formPanel.getComponent(6).setValue(this.values.xsl);
     }        
 });
 

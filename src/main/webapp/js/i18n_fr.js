@@ -74,12 +74,15 @@
     'Other': 'Autre',
 
     'Repositories': 'Répertoires',
+    'Protocol': 'Protocole',
+    'Admin email': 'Courriel admin',
     'Add repository': 'Ajouter un répertoire',
     'Modify repository': 'Modifier le répertoire',
     'Repository added.': 'Répertoire ajouté.',
     'Repository modified.': 'Répertoire modifié.',
     'Repository deleted.': 'Répertoire suprimé.',
     'HTML Spider': 'Araignée HTML',
+    'Do you really want to delete repository ?': 'Voulez-vous vraiment supprimer le répertoire ?',
 
     'Add vocabulary': 'Ajouter un vocabulaire',
     'Modify vocabulary': 'Modifier le vocabulaire',

@@ -599,8 +599,12 @@ Ext.define( 'Comete.QueryCondition', {
     getCondition: function() {
         var lang = null;
         var relOp = null;
-        if (this.typeCond.getValue() == 'title' || this.typeCond.getValue() == 'description' || this.typeCond.getValue() == 'keyword') {
+        if (this.typeCond.getValue() == 'title' || this.typeCond.getValue() == 'description') {
             this.data = this.typeCondPanel.getComponent(0).getComponent(0).getValue();
+            lang = this.typeCondPanel.getComponent(0).getComponent(2).getValue();
+        }
+        else if (this.typeCond.getValue() == 'keyword') {
+            this.data = "\"" + this.typeCondPanel.getComponent(0).getComponent(0).getValue() + "\"";
             lang = this.typeCondPanel.getComponent(0).getComponent(2).getValue();
         }
         else if(this.typeCond.getValue() == 'addedDate') {

@@ -52,7 +52,12 @@ public class Harvester {
         File defFolder = new File( HARVESTER_FOLDER, defId );
         File defFile = new File( defFolder, defId + ".json" );
         String jsonStr = new String( IOUtil.readFileIntoByteArray( defFile ), "UTF-8" );
-        return new JSONObject( jsonStr );
+        JSONObject obj = new JSONObject( jsonStr );
+        //xsl
+        String xsl = getXsl(defId);
+        if (xsl != null)
+            obj.put("xsl", xsl);
+        return obj;
     }
 
     public String[] getDefinitions() {
@@ -61,6 +66,45 @@ public class Harvester {
             defs.add(folder);
         }
         return defs.toArray(new String[defs.size()]);
+    }
+
+    public String storeDefinition(String defId, String name, String type, String url, String ns,
+                                  String adminEmail, String xsl, boolean isUpdate) throws Exception {
+        if ("".equals(defId))
+            return "ID is mandatory";
+
+        File defFolder = new File(HARVESTER_FOLDER, defId);
+        if (defFolder.exists() && !isUpdate)
+            return "Repository with ID '" + defId + "' already exists.";
+
+        IOUtil.createDirectory(defFolder.getAbsolutePath());
+
+        //json
+        JSONObject harvestDef = new JSONObject();
+        harvestDef.put("id", defId);
+        if (!"".equals(name))
+            harvestDef.put("name", name);
+        if (!"".equals(type))
+            harvestDef.put("type", type);
+        if (!"".equals(url))
+            harvestDef.put("url", url);
+        if (!"".equals(ns))
+            harvestDef.put("metadataNamespace", ns);
+        if (!"".equals(adminEmail))
+            harvestDef.put("adminEmail", adminEmail);
+
+        IOUtil.writeStringToFile(harvestDef.toString(), new File(defFolder, defId + ".json"));
+
+        //xsl
+        File xslFile = new File(defFolder, defId + ".xsl");
+        if ("".equals(xsl)) {
+            if (xslFile.exists())
+                xslFile.delete();
+        }
+        else
+            IOUtil.writeStringToFile(xsl, xslFile);
+
+        return null;
     }
 
     public void storeDefinition(String defId, InputStream uploadedInputStream, FormDataContentDisposition fileDetail) throws Exception {
@@ -83,7 +127,7 @@ public class Harvester {
         fos.close();
     }
 
-    private String getXslt(String defId) throws Exception {
+    private String getXsl(String defId) throws Exception {
         File defFolder = new File( HARVESTER_FOLDER, defId );
         File xsl = new File(defFolder, defId + ".xsl");
         if (!xsl.exists())
@@ -149,7 +193,7 @@ public class Harvester {
             worker = new OAIWorker( defId, url, metadataNamespace );
         else if( "HTML".equals( type ) )
             worker = new HTMLWorker( defId, url, metadataNamespace );
-        worker.setXslt( getXslt(defId) );
+        worker.setXslt( getXsl(defId) );
         worker.setFrom( from );
         workers.put( defId, worker );
         worker.start();
