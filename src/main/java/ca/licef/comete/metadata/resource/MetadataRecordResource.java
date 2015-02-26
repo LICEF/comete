@@ -179,7 +179,7 @@ public class MetadataRecordResource {
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to delete records.").build();
 
         String metadataRecordUri = Util.makeURI(id, COMETE.MetadataRecord);
-        Metadata.getInstance().deleteRecord(metadataRecordUri);
+        Metadata.getInstance().deleteRecord(metadataRecordUri, true);
         return (Response.ok().build());
     }
 

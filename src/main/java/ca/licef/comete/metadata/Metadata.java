@@ -87,12 +87,11 @@ public class Metadata {
         MetadataFormat metadataFormat = MetadataFormats.getMetadataFormat(namespace);
         System.out.println("deleteHarvestedRecord: " +  oaiID + " (" + metadataFormat.getName() + " format)");
 
-        TripleStore tripleStore = Core.getInstance().getTripleStore();
         Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", "getRecordURI", new Object[] { oaiID, namespace } );
 
         String recordURI = (String)tripleStore.transactionalCall( inv );
         if (recordURI != null) {
-            deleteRecord(recordURI);
+            deleteRecord(recordURI, true);
             return "deleted";
         }
         else
@@ -110,7 +109,7 @@ public class Metadata {
 
     public String getRecordURI( String oaiID, String namespace ) throws Exception {
         String query = Util.getQuery( "metadata/getMetadataRecordWith-oai-id.sparql", namespace, oaiID );
-        Tuple[] tuples = Core.getInstance().getTripleStore().sparqlSelect(query);
+        Tuple[] tuples = tripleStore.sparqlSelect(query);
         if( tuples.length > 0 )
             return( tuples[ 0 ].getValue( "s" ).getContent() );
         else
@@ -294,59 +293,73 @@ public class Metadata {
      */
 
     public void deleteRepositoryRecords(String repoUri) throws Exception {
-    //    String[][] records = getRepositoryRecords(repoUri);
-    //    for( int i = 0; i < records.length; i++ )
-    //        setState(records[i][1], "D");
-
-    //    //itql enhanced
-    //    Core.getInstance().getTripleStoreService().
-    //            processTQLQueries("deleteRepositoryRecords.tql", repoUri);
+        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", "doDeleteRepositoryRecords", new String[] { repoUri } );
+        tripleStore.transactionalCall( inv, TripleStore.WRITE_MODE ); 
     }
 
-    public void deleteRecord(String recordURI) throws Exception {
-        TripleStore tripleStore = Core.getInstance().getTripleStore();
+    public void doDeleteRepositoryRecords( String repoUri ) throws Exception {
+        String[][] records = getRepositoryRecords(repoUri);
+        for( int i = 0; i < records.length; i++ ) {
+            String recordUri = records[ i ][ 0 ];
+            deleteRecord( recordUri, false );
+        }
+        // Mark the records for deletion after that all the triples
+        // have been deleted.  This way, if an error occurs while the
+        // triples are deleted, the transaction will be aborted and no
+        // data will be lost and the integrity will be kept.
+        for( int i = 0; i < records.length; i++ ) {
+            String storeId = records[ i ][ 1 ];
+            markStoreRecordForDeletion( storeId );
+        }
+    }
+
+    public void deleteRecord(String recordURI, boolean markStoreRecordForDeletion) throws Exception {
         Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", "getLearningObjectURI", new Object[] { recordURI } );
         String loURI = (String)tripleStore.transactionalCall( inv );
-        deleteLearningObject(loURI);
+        deleteLearningObject(loURI, markStoreRecordForDeletion);
     }
 
-    public void deleteLearningObject(String loUri) throws Exception {
-        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", "doDeleteLearningObject", new String[] { loUri } );
-        Core.getInstance().getTripleStore().transactionalCall( inv, TripleStore.WRITE_MODE );
+    public void deleteLearningObject(String loUri, boolean markStoreRecordForDeletion) throws Exception {
+        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", "doDeleteLearningObject", new Object[] { loUri, markStoreRecordForDeletion } );
+        tripleStore.transactionalCall( inv, TripleStore.WRITE_MODE );
     }
 
-    public void doDeleteLearningObject(String loUri) throws Exception {
-        TripleStore tripleStore = Core.getInstance().getTripleStore();
+    public void doDeleteLearningObject(String loUri, boolean markStoreRecordForDeletion) throws Exception {
         String query = Util.getQuery( "metadata/getMetadataRecordFromLO.sparql", loUri ); 
         Tuple[] res = tripleStore.sparqlSelect( query );
         for( Tuple tuple : res ) {
             String recordUri = tuple.getValue( "s" ).getContent();
             String storeId = tuple.getValue( "storeId" ).getContent(); 
-            deleteMetadataRecord(recordUri, storeId);
+            deleteMetadataRecord(recordUri, ( markStoreRecordForDeletion ? storeId : null ) );
         }
         tripleStore.removeResource_textIndex(loUri);
     }
 
     private void deleteMetadataRecord(String recordURI, String storeId) throws Exception {
+        markStoreRecordForDeletion( storeId );
+        tripleStore.removeResource_textIndex(recordURI);
+    }
+
+    private void markStoreRecordForDeletion( String storeId ) throws Exception {
+        if( storeId == null )
+            return;
         File metadataRecFolder = new File( Store.getInstance().getLocation() + storeId );
         if( metadataRecFolder.exists() ) {
             File markedForDeletionFile = new File( Store.getInstance().getLocation() + storeId + ".d" );
             if( !metadataRecFolder.renameTo( markedForDeletionFile ) )
                 throw( new IOException( "Folder " + metadataRecFolder + " could not be renamed to " + markedForDeletionFile + "." ) );
         }
-        Core.getInstance().getTripleStore().removeResource_textIndex(recordURI);
     }
 
     public String[][] getRepositoryRecords(String repoUri) throws Exception {
-    //    Hashtable<String, String>[] results =
-    //            Core.getInstance().getTripleStoreService().getResults( "getRepositoryRecords.sparql", repoUri );
-    //    String[][] res = new String[results.length][2];
-    //    for( int i = 0; i < results.length; i++ ) {
-    //        res[i][0] = results[i].get("s");
-    //        res[i][1] = results[i].get("doId");
-    //    }
-    //    return res;
-        return( null );
+        String query = Util.getQuery( "metadata/getRepositoryRecords.sparql", repoUri ); 
+        Tuple[] tuples = tripleStore.sparqlSelect( query );
+        String[][] res = new String[ tuples.length ][ 2 ];
+        for( int i = 0; i < tuples.length; i++ ) {
+            res[ i ][ 0 ] = tuples[i].getValue("s").getContent();
+            res[ i ][ 1 ] = tuples[i].getValue("storeId").getContent();
+        }
+        return res;
     }
 
     /****
@@ -486,10 +499,10 @@ public class Metadata {
 
     //private String processMetadataRecord( String recordId ) throws Exception {
     //    String metadataRecordUri = Util.makeURI( recordId, Constants.TYPE_METADATA_RECORD );
-    //    String storeId = Core.getInstance().getTripleStore().getFedoraIdFromURI( metadataRecordUri );
+    //    String storeId = tripleStore.getFedoraIdFromURI( metadataRecordUri );
     //    String applicationProfile = null;
     //    String learningObjectUri = null;
-    //    Triple[] metadataRecordTriples = Core.getInstance().getTripleStore().getTriplesWithSubject( metadataRecordUri );
+    //    Triple[] metadataRecordTriples = tripleStore.getTriplesWithSubject( metadataRecordUri );
     //    for( int i = 0; i < metadataRecordTriples.length; i++ ) {
     //        Triple triple = metadataRecordTriples[ i ];
     //        if( Constants.METAMODEL_APPLICATION_PROFILE.equals( triple.getPredicate() ) )
@@ -809,7 +822,7 @@ public class Metadata {
     public ResultSet getMetadataRecordApplicationProfiles( int start, int limit, String applProfile, boolean showOnlyInvalidRecords ) throws Exception {
         Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", 
             "getMetadataRecordApplicationProfilesEff", new Object[] { start, limit, applProfile, showOnlyInvalidRecords } );
-        return( (ResultSet)Core.getInstance().getTripleStore().transactionalCall( inv ) );
+        return( (ResultSet)tripleStore.transactionalCall( inv ) );
     }
 
     public ResultSet getMetadataRecordApplicationProfilesEff( int start, int limit, String applProfile, boolean showOnlyInvalidRecords ) throws Exception {
@@ -910,7 +923,7 @@ public class Metadata {
             if (!storeId.startsWith("info:fedora/"))
                 storeId = "info:fedora/" + storeId;
             try {
-                Triple[] triples = Core.getInstance().getTripleStore().getTriplesWithPredicateObject(
+                Triple[] triples = tripleStore.getTriplesWithPredicateObject(
                         COMETE.storeDigitalObject, storeId, null);
                 if (triples.length > 0)
                     uri = triples[0].getSubject();
@@ -927,7 +940,7 @@ public class Metadata {
             return uri;
         else {
             try {
-                Triple[] triples = Core.getInstance().getTripleStore().getTriplesWithSubjectPredicate(
+                Triple[] triples = tripleStore.getTriplesWithSubjectPredicate(
                         uri, COMETE.storeDigitalObject);
                 if (triples.length > 0)
                     id = triples[0].getObject();
@@ -941,7 +954,7 @@ public class Metadata {
     private void retrieveMetadataRecordRepoInfo( List<String> recordUris, Hashtable<String, String> metadataRecordRepoTable, Hashtable<String, Hashtable<String, String>> repoInfo ) throws Exception {
         String repoInfoConstraint = Util.buildFilterConstraints( recordUris, "s", true, "=", "||" );
         String query = Util.getQuery( "metadata/getMetadataRecordRepoInfo.sparql", repoInfoConstraint );
-        Tuple[] resRepoInfo = Core.getInstance().getTripleStore().sparqlSelect( query );
+        Tuple[] resRepoInfo = tripleStore.sparqlSelect( query );
         for( Tuple tuple : resRepoInfo ) {
             String uri = tuple.getValue( "s" ).getContent();
             String repoUri = tuple.getValue( "repo" ).getContent();

@@ -5,6 +5,7 @@ import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.Util;
 import ca.licef.comete.metadata.RepositoryManager;
 import ca.licef.comete.security.Security;
+import ca.licef.comete.vocabularies.COMETE;
 import com.sun.jersey.spi.resource.Singleton;
 import licef.StringUtil;
 import org.json.JSONArray;
@@ -103,7 +104,8 @@ public class RepositoryResource {
         if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to delete records.").build();
 
-        RepositoryManager.getInstance().deleteRepositoryRecords(id);
+        String repoUri = Util.makeURI(id, COMETE.Repository);
+        RepositoryManager.getInstance().deleteRepositoryRecords(repoUri);
         return (Response.ok().build());
     }
 
