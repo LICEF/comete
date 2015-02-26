@@ -1,4 +1,9 @@
-'{' ?s <{0}> <{1}> '}'
-UNION
-'{' ?s <{0}> ?c .
-    GRAPH <{2}> '{' <{1}> skos:narrowerTransitive ?c '}' '}'
+'{'
+    ?ctxt rdf:type comete:VocContext .
+    ?ctxt comete:vocConceptLinkingPredicate ?p .
+    ?ctxt comete:vocUri <{1}> .
+    '{' ?s ?p <{0}> '}'
+    UNION
+    '{' ?s ?p ?c .
+        GRAPH <{1}> '{' <{0}> skos:narrowerTransitive ?c '}' '}'
+'}'

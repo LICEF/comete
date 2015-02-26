@@ -7,38 +7,38 @@ PREFIX comete: <http://comete.licef.ca/reference#>
 
 SELECT DISTINCT ?s ?location ?format ?added ?updated
 WHERE '{'
-    '{' (?s ?score) text:query ( dcterms:title "{1}" ) '}'
+    '{' (?s ?score) text:query ( dcterms:title "{0}" ) '}'
     UNION
-    '{' (?s ?score) text:query ( dcterms:title "{1}" "lang:{0}" ) '}'
+    '{' (?s ?score) text:query ( dcterms:title "{0}" "lang:{1}" ) '}'
     UNION
-    '{' (?s ?score) text:query ( dcterms:description "{1}" ) '}'
+    '{' (?s ?score) text:query ( dcterms:description "{0}" ) '}'
     UNION
-    '{' (?s ?score) text:query ( dcterms:description "{1}" "lang:{0}" ) '}'
+    '{' (?s ?score) text:query ( dcterms:description "{0}" "lang:{1}" ) '}'
     UNION
-    '{' (?s ?score) text:query ( comete:keyword "{1}" ) '}'
+    '{' (?s ?score) text:query ( comete:keyword "{0}" ) '}'
     UNION
-    '{' (?s ?score) text:query ( comete:keyword "{1}" "lang:{0}" ) '}'
+    '{' (?s ?score) text:query ( comete:keyword "{0}" "lang:{1}" ) '}'
     UNION
-    '{' (?s ?score) text:query ( comete:extraInfo "{1}" ) '}'
+    '{' (?s ?score) text:query ( comete:extraInfo "{0}" ) '}'
     UNION
-    '{' (?s ?score) text:query ( comete:extraInfo "{1}" "lang:{0}" ) '}'
+    '{' (?s ?score) text:query ( comete:extraInfo "{0}" "lang:{1}" ) '}'
     UNION
-    '{' (?author ?score) text:query ( foaf:name "{1}" ) .
+    '{' (?author ?score) text:query ( foaf:name "{0}" ) .
         ?s dcterms:creator ?author '}'
     UNION
-    '{' (?author ?score) text:query ( foaf:name "{1}" "lang:{0}" ) .
+    '{' (?author ?score) text:query ( foaf:name "{0}" "lang:{1}" ) .
         ?s dcterms:creator ?author '}'
     UNION
-    '{' (?publisher ?score) text:query ( foaf:name "{1}" ) .
+    '{' (?publisher ?score) text:query ( foaf:name "{0}" ) .
         ?s dcterms:publisher ?publisher  '}'
     UNION
-    '{' (?publisher ?score) text:query ( foaf:name "{1}" "lang:{0}" ) .
+    '{' (?publisher ?score) text:query ( foaf:name "{0}" "lang:{1}" ) .
         ?s dcterms:publisher ?publisher  '}'
     UNION
-    '{' (?concept ?score) text:query ( skos:prefLabel "{1}" ) .
+    '{' (?concept ?score) text:query ( skos:prefLabel "{0}" ) .
         ?s dcterms:subject ?concept '}'
     UNION
-    '{' (?concept ?score) text:query ( skos:prefLabel "{1}" "lang:{0}" ) .
+    '{' (?concept ?score) text:query ( skos:prefLabel "{0}" "lang:{1}" ) .
         ?s dcterms:subject ?concept '}'
     OPTIONAL '{'
         ?s foaf:page ?location

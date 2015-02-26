@@ -49,7 +49,7 @@ public class Collection {
         File lgDef = new File( definitions.getParentFile(), lang + "_" + definitions.getName());
         if (lgDef.exists())
             def = lgDef;
-        ArrayList<String[]> collections = new ArrayList<String[]> ();
+        ArrayList<String[]> collections = new ArrayList<> ();
 
         Vector v = IOUtil.readLines(def);
         for (Enumeration e = v.elements(); e.hasMoreElements();) {

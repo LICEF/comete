@@ -6,6 +6,7 @@ import ca.licef.comete.queryengine.QueryCache;
 import ca.licef.comete.queryengine.QueryEngine;
 import ca.licef.comete.queryengine.ResultEntry;
 import ca.licef.comete.queryengine.util.FeedUtil;
+import ca.licef.comete.security.Security;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.sun.jersey.spi.container.servlet.PerSession;
 import licef.StringUtil;
@@ -18,6 +19,7 @@ import org.json.JSONObject;
 import org.json.JSONWriter;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -28,6 +30,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
 
 @PerSession
@@ -252,6 +255,62 @@ public class QueryEngineResource implements Serializable {
         }
         SyndFeed f = FeedUtil.getFeedFromResultSet( rs, feedType, uriInfo.getAbsolutePath().toString(), query, start, limit, lang );
         return f;
+    }
+
+    /***************/
+    /* Collections */
+    /***************/
+    @GET
+    @Path( "collections" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public Response getCollections( @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) throws Exception {
+        List<String[]> collections = QueryEngine.getInstance().getCollection().getAll(lang);
+        StringWriter out = new StringWriter();
+        try {
+            JSONWriter json = new JSONWriter( out ).object();
+
+            JSONArray colls = new JSONArray();
+            int index = 0;
+            for (String[] _col : collections) {
+                JSONObject col = new JSONObject();
+                col.put( "id", "coll_" + index );
+                col.put( "label", _col[0] );
+                JSONArray query = new JSONArray();
+                JSONObject queryEl = new JSONObject();
+                queryEl.put( "key", "collection" );
+                queryEl.put( "value", "coll_" + index );
+                query.put(queryEl);
+                col.put( "query", query );
+                colls.put(col);
+                index++;
+            }
+            json.key( "collections" ).value( colls );
+            json.endObject();
+        }
+        catch( JSONException e ) {
+            e.printStackTrace();
+        }
+
+        try {
+            out.close();
+        }
+        catch( IOException e ) {
+            e.printStackTrace();
+        }
+
+        return Response.ok(out.toString()).build();
+    }
+
+    @POST
+    @Path( "collections" )
+    public Response addCollection(@Context HttpServletRequest request,
+                                  @FormParam( "label" ) String label,
+                                  @FormParam( "q" ) String query) throws Exception {
+        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+
+        QueryEngine.getInstance().getCollection().addCollection(label, query);
+        return Response.ok().build();
     }
 
     @Context private transient UriInfo uriInfo;

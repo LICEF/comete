@@ -11,7 +11,7 @@
         });
 
         this.collectionProxy = Ext.create('Ext.data.proxy.Ajax', {
-            url: '/rest/queryEngine/collections',
+            url: 'rest/queryEngine/collections',
             reader: {
                 type: 'json',
                 root: 'collections'
@@ -31,7 +31,8 @@
             listConfig: {
                 loadingText: tr('Loading') + '...'
             },
-            store: this.collectionStore
+            store: this.collectionStore,
+            tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div></tpl></div>'
         });
 
         this.collectionCombo.on( 'select', this.collectionSelected, this );

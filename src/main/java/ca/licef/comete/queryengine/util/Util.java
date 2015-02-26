@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import javax.servlet.ServletContext;
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.*;
 
 /**
@@ -91,7 +92,7 @@ public class Util {
                 }
                 else if (LANGUAGE.equals(condType)) {
                     String lang = obj.getString("value");
-                    clause = CoreUtil.getQuery("advancedLanguageFragment.sparql", lang);
+                    clause = CoreUtil.getQuery("queryengine/advancedLanguageFragment.sparql", lang);
                 }
                 else if (TITLE_PREFIX.equals(condType)) {
                     String text = obj.getString("value");
@@ -130,14 +131,12 @@ public class Util {
                 else if (condType.startsWith(CONCEPT_PREFIX) || condType.startsWith(NOT_CONCEPT_PREFIX)) {
                     String uri = obj.getString("value");
                     String vocUri = Vocabulary.getInstance().getConceptScheme(uri);
-                    String predicate = Vocabulary.getInstance().getConceptLinkingPredicateFromUri(vocUri);
                     String neg = condType.startsWith(NOT_CONCEPT_PREFIX)?"Not":"";
                     boolean isSubConcept = obj.has("subConcepts") && obj.getBoolean("subConcepts");
                     if (isSubConcept)
-                        clause = CoreUtil.getQuery("queryengine/advanced" + neg + "VocConceptHierarchyFragment.sparql",
-                                predicate, uri, vocUri);
+                        clause = CoreUtil.getQuery("queryengine/advanced" + neg + "VocConceptHierarchyFragment.sparql", uri, vocUri);
                     else
-                        clause = CoreUtil.getQuery("queryengine/advanced" + neg + "VocConceptFragment.sparql", predicate, uri);
+                        clause = CoreUtil.getQuery("queryengine/advanced" + neg + "VocConceptFragment.sparql", uri, vocUri);
 
 
                     // equivalent external concepts used only for thematic navigation (for the moment)
@@ -229,15 +228,6 @@ public class Util {
         return dateClause;
     }
 
-
-    static String buildFilter( String clause, boolean isWithScore ) throws Exception{
-        /*Hashtable<String, String>[] results = tripleStore.getResults("getLearningObjectsAdvancedQueryForCount.sparql", clause);
-        List<String> uris = CoreUtil.buildList(results, (isWithScore?"sWithScore":"s"));
-        return buildFilter(uris, isWithScore);*/
-
-        return null;
-    }
-
     public static JSONArray getEquivalentConcepts(String uri, boolean subConcepts, JSONArray fromVocs) throws Exception {
         /*String url = CoreUtil.getRestUrl(Constants.TYPE_VOCABULARY) + "/equivalentConcepts?uri=" + uri;
         if (subConcepts)
@@ -259,7 +249,7 @@ public class Util {
         StringBuilder title = new StringBuilder();
         StringBuilder description = new StringBuilder( bundle.getString( "rs.advancedSearch.description.prefix" ) );
 
-        /*title.append( MessageFormat.format( bundle.getString( "rs.advancedSearch.title" ), outputFormat.toUpperCase() ) );
+        title.append( MessageFormat.format( bundle.getString( "rs.advancedSearch.title" ), outputFormat.toUpperCase() ) );
 
         boolean waitForOperator = false;
 
@@ -298,34 +288,34 @@ public class Util {
                 else if (CONTRIBUTE_PREFIX.equals(condType)) {
                     String uri = obj.getString("value");
                     description.append( MessageFormat.format( bundle.getString( "rs.advancedSearch.description.contributor" ), 
-                        tripleStore.getResourceLabel( uri, outputLang ) ) );
+                        CoreUtil.getResourceLabel( uri, outputLang ) ) );
                 }
                 else if (NOT_CONTRIBUTE_PREFIX.equals(condType)) {
                     String uri = obj.getString("value");
                     description.append( MessageFormat.format( bundle.getString( "rs.advancedSearch.description.contributor.not" ),
-                        tripleStore.getResourceLabel( uri, outputLang ) ) );
+                        CoreUtil.getResourceLabel( uri, outputLang ) ) );
                 }
                 else if (ORGANIZATION_PREFIX.equals(condType)) {
                     String uri = obj.getString("value");
-                    description.append( MessageFormat.format( bundle.getString( "rs.advancedSearch.description.organization" ), 
-                        tripleStore.getResourceLabel( uri, outputLang ) ) );
+                    description.append( MessageFormat.format( bundle.getString( "rs.advancedSearch.description.organization" ),
+                        CoreUtil.getResourceLabel( uri, outputLang ) ) );
                 }
                 else if (NOT_ORGANIZATION_PREFIX.equals(condType)) {
                     String uri = obj.getString("value");
                     description.append( MessageFormat.format( bundle.getString( "rs.advancedSearch.description.organization.not" ),
-                        tripleStore.getResourceLabel( uri, outputLang ) ) );
+                        CoreUtil.getResourceLabel( uri, outputLang ) ) );
                 }
                 else if (condType.startsWith(CONCEPT_PREFIX)) {
                     String uri = obj.getString("value");
-                    description.append( MessageFormat.format( bundle.getString( "rs.advancedSearch.description.concept" ),
-                            tripleStore.getResourceLabel( uri, outputLang, true )) );
+                    description.append( MessageFormat.format(bundle.getString("rs.advancedSearch.description.concept"),
+                        CoreUtil.getResourceLabel(uri, outputLang, true)) );
                     if (obj.has("subConcepts") && obj.getBoolean("subConcepts"))
                         description.append( " " ).append( bundle.getString( "rs.advancedSearch.description.andSubConcepts" ) );
                 }
                 else if (condType.startsWith(NOT_CONCEPT_PREFIX)) {
                     String uri = obj.getString("value");
                     description.append( MessageFormat.format( bundle.getString( "rs.advancedSearch.description.concept.not" ),
-                            tripleStore.getResourceLabel( uri, outputLang, true )) );
+                        CoreUtil.getResourceLabel( uri, outputLang, true )) );
                     if (obj.has("subConcepts") && obj.getBoolean("subConcepts"))
                         description.append( " " ).append( bundle.getString( "rs.advancedSearch.description.andSubConcepts" ) );
                 }
@@ -338,14 +328,14 @@ public class Util {
                 else if (FROM_HARVESTED_REPO.equals(condType)) {
                     String uri = obj.getString("value");
                     description.append( MessageFormat.format( bundle.getString( "rs.advancedSearch.description.harvestedRepository" ),
-                            tripleStore.getResourceLabel( uri, outputLang ) ) );
+                        CoreUtil.getResourceLabel( uri, outputLang ) ) );
                 }
 
                 waitForOperator = !waitForOperator;
             }
         }
 
-        description.append( "." );*/
+        description.append( "." );
 
         return( new String[] { title.toString(), description.toString() } );
     }

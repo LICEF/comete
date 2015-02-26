@@ -1,1 +1,7 @@
-?s <{0}> <{1}> .
+'{'
+    ?ctxt rdf:type comete:VocContext .
+    ?ctxt comete:vocConceptLinkingPredicate ?p .
+    ?ctxt comete:vocUri <{1}> .
+    ?s ?p <{0}>
+'}'
+
