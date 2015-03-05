@@ -9,8 +9,9 @@
 
     <xsl:include href="/xslt/charMaps.xsl"/>
     <xsl:include href="/xslt/util.xsl"/>
-    <xsl:include href="/xslt/utilities.xsl"/>
-    <xsl:include href="/xslt/common.xsl"/>
+    <!--xsl:include href="/xslt/utilities.xsl"/-->
+    <!--xsl:include href="/xslt/common.xsl"/-->
+    <xsl:include href="/xslt/sharedTemplates.xsl"/>
 
     <xsl:output method="xhtml" encoding="utf-8" indent="yes" use-character-maps="html-tags c1-control-range" omit-xml-declaration="yes"/>
 
@@ -30,13 +31,13 @@
             <head>
                 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
                 <title><xsl:value-of select="$title" /></title>
-                <link href="../../../ext-3.2.1/resources/css/ext-all.css" rel="stylesheet" type="text/css"/>
+                <link href="../../../ext-5.0.1/build/packages/ext-theme-crisp/build/resources/ext-theme-crisp-all.css" rel="stylesheet" type="text/css"/>
                 <link href="../../../layout-browser.css" rel="stylesheet" type="text/css"/>
-                <link href="../../../defaultForCeres.css" rel="stylesheet" type="text/css"/>
+                <link href="../../../default.css" rel="stylesheet" type="text/css"/>
                 <link href="../../../custom.css" rel="stylesheet" type="text/css"/>
             </head>
             <body class="MetadataOrganization">
-                <xsl:variable name="orgPhoto" select="if( foaf:logo ) then foaf:logo[1] else if( foaf:img ) then foaf:img[1] else ''"/>
+                <xsl:variable name="orgPhoto" select="if( foaf:logo/@rdf:resource ) then foaf:logo[1]/@rdf:resource else if( foaf:img/@rdf:resource ) then foaf:img[1]/@rdf:resource else ''"/>
                 <table class="MetadataOrganization">
                     <col class="MetadataOrgCol"/>
                     <xsl:if test="$orgPhoto != ''">

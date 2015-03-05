@@ -191,4 +191,23 @@
             </xsl:if>
         </xsl:for-each>
     </xsl:template>
+
+    <xsl:template name="escape-single-quotes">
+        <xsl:param name="string" />
+        <xsl:variable name="replace" select="&quot;'&quot;" />
+        <xsl:variable name="by" select="&quot;\'&quot;" />
+        <xsl:choose>
+            <xsl:when test="contains( $string, $replace )">
+                <xsl:value-of select="substring-before( $string, $replace )" />
+                <xsl:value-of select="$by" />
+                <xsl:call-template name="escape-single-quotes">
+                    <xsl:with-param name="string" select="substring-after( $string, $replace )" />
+                </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="$string" disable-output-escaping="yes"/>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
 </xsl:stylesheet>

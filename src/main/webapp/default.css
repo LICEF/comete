@@ -118,9 +118,39 @@ div.x-border-layout-ct {
  * Default stylesheet.
  */
 
+body {
+    background-color: white;
+}
+
+.BigSectionHeader {
+    margin-top: 14px;
+    font-size: 16px;
+    text-transform: uppercase;
+    color: #99248f;
+}
+
 .SectionHeader {
     margin-top: 14px;
     font-size: 14px;
+    color: #2F4F4F;
+}
+
+.Footer {
+    margin-top: 14px;
+}
+
+#SharingIcons {
+    float: left;
+}
+
+#SharingIcons a {
+    margin-left: 4px;
+}
+
+.ResourceLink {
+    margin-top: 6px; 
+    margin-bottom: 6px; 
+    float: right;
 }
 
 .LearningObject {
@@ -129,11 +159,25 @@ div.x-border-layout-ct {
 
 .LearningObjectTitle {
     font-size: 18px;
+    color: #99248f;
+}
+
+table.Contributes tr td {
+    padding: 10px;
+    vertical-align: top;
+}
+
+.ContributesColContribPhoto {
+    width: 100px;
+}
+
+.ContributesColOrgPhoto {
+    width: 100px;
 }
 
 .Contributes {
     border-collapse: collapse;
-    font-family: 'lucida grande', tahoma, arial, sans-serif;
+    font-family: arial, "sans-serif";
     font-size: 12px;
 }
 
@@ -145,10 +189,10 @@ div.x-border-layout-ct {
     font-style: italic;
 }
 
-table.Contributes tr td {
+/*table.Contributes tr td {
     padding: 0px 6px 2px;
     vertical-align: top;
-}
+}*/
 
 .ContributesRow {
     padding-bottom: 10px !important;
@@ -163,27 +207,45 @@ table.Contributes tr td {
 }
 
 .ContribFullName {
-    font-weight: bold;
+    font-size: 16px;
+    bottom-margin: 10px;
+    color: #99248f;
 }
 
 .OrganizationName {
-    color: #f6b30c;
+    font-size: 16px;
+    color: #99248f;
     bottom-margin: 10px;
 }
+
 
 .WorkAdr {
     bottom-margin: 10px;
 }
 
 table.MetadataPerson {
+    font-family: arial, "sans-serif";
+    font-size: 14px;
+    margin-top: 10px;
     margin-left: auto;
     margin-right: auto;
-    font-family: 'lucida grande', tahoma, arial, sans-serif;
-    font-size: 18px;
+    padding: 10px;
+}
+
+table.MetadataOrganization {
+    font-family: arial, "sans-serif";
+    font-size: 14px;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 10px;
+}
+
+table.MetadataOrganization tr td {
+    vertical-align: top;
 }
 
 table.MetadataPerson tr td {
-    padding: 16px;
     vertical-align: top;
 }
 
@@ -196,13 +258,13 @@ table.MetadataPerson tr td {
 .OrganizationImageDetailedView {
 }
 
-table.MetadataOrganization {
+/*table.MetadataOrganization {
     font-family: 'lucida grande', tahoma, arial, sans-serif;
     font-size: 18px;
     margin-top: 10px;
     margin-left: auto;
     margin-right: auto;
-}
+}*/
 
 .LinkedDataLink {
     margin-left: 8px;
@@ -240,4 +302,29 @@ ul li {
 
 .breadcrumb-button.x-btn-menu-active > .x-btn-wrap-default-toolbar-small.x-btn-split-right:after {
     background-image: url("images/default-split-arrow-open.png");
+}
+
+.HighlightedBox {
+    background-color: #eeeeee;
+    /*border: 1px solid;*/
+    border-radius: 8px;
+    padding: 0 10px 10px 10px;
+    box-shadow: 4px 4px 5px #666666;
+    margin-top: 10px;
+}
+
+.secondaryData {
+    background-color: #eeeeee;
+    border-radius: 8px 8px 8px 8px;
+    box-shadow: 4px 4px 5px #666666;
+}
+
+.assocOrgsHeader {
+    text-align: center; 
+    text-decoration: underline;
+    font-size: 14px;
+}
+
+.hidden {
+    visibility: hidden;
 }

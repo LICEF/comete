@@ -119,7 +119,12 @@
         return( this.viewer.isContentCollapsed() );
     },
     setViewerContent: function( url ) {
-        this.viewer.setContent( url == 'null' ? null : url );
+        if( url == 'null' )
+            this.viewer.setContent( null );
+        else {
+            this.viewer.setContent( url, initSharingLinks );
+            //initSharingLinks();
+        }
     },
     initViewerContentForSelection: function() {
         var loc = this.learningObjectTable.getSelectedLoHtmlLocation();

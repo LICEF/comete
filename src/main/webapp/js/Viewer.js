@@ -9,7 +9,7 @@ Ext.define( 'Comete.Viewer', {
         Ext.apply(this, cfg);
         this.callParent(arguments); 
     },
-    setContent: function( url ) {
+    setContent: function( url, callback ) {
         if( url == null || url == '')
             this.update( '' );
         else {
@@ -18,6 +18,8 @@ Ext.define( 'Comete.Viewer', {
                 method: 'GET',
                 success: function(response) {
                     this.update(response.responseText)
+                    if( callback != null )
+                        callback();
                 },
                 scope: this 
             } );

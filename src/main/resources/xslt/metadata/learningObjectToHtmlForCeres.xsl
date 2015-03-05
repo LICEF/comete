@@ -13,10 +13,12 @@
 
     <xsl:include href="/xslt/charMaps.xsl"/>
     <xsl:include href="/xslt/util.xsl"/>
+    <!--xsl:include href="/xslt/dynamicVariables.xsl"/-->
 
     <xsl:output method="xhtml" encoding="utf-8" indent="yes" use-character-maps="html-tags c1-control-range" omit-xml-declaration="yes"/>
 
     <xsl:param name="uri"/>
+    <!--xsl:param name="metadataUrl"/-->
 
     <xsl:variable name="lang" select="'en'"/>
     <xsl:variable name="title" select="'Resource'"/>
@@ -94,6 +96,50 @@
         <xsl:variable name="ampersand"><![CDATA[&]]></xsl:variable>
         <xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html></xsl:text>
         <html>
+            <head>
+                <!--meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                <title><xsl:value-of select="$title" /></title>
+                <link href="../../../extjs-4.1.1/resources/css/ext-all.css" rel="stylesheet" type="text/css"/>
+                <link href="../../../layout-browser.css" rel="stylesheet" type="text/css"/>
+                <link href="../../../defaultForCeres.css" rel="stylesheet" type="text/css"/>
+                <link href="../../../custom.css" rel="stylesheet" type="text/css"/>
+                <script type="text/javascript" src="../../../extjs-4.1.1/ext-all.js"></script>
+                <script type="text/javascript" src="../../../utils.js"></script>
+                <script type="text/javascript" src="../../../learningObjectToHtml.js"></script-->
+                <!--script type="text/javascript">
+                    //function getResourceLink( isAmpersandHtmlEscaped ) {
+                    //    var ampersandDelimiter = '<xsl:value-of select="$ampersand" disable-output-escaping="yes"/>';
+                    //    if( isAmpersandHtmlEscaped )
+                    //        ampersandDelimiter = '%26';
+                    //    return( '<xsl:value-of select="'$portalUrl'"/>?lang=<xsl:value-of select="$lang"/>' + ampersandDelimiter + 
+                    //        'uri=<xsl:value-of select="$uri"/>' );
+                    //}
+
+                    //function initSharingLinks() {
+                    //    var title = '<xsl:value-of select="replace( escape-html-uri( $title ), '''', '\\''' )"/>';
+                    //    var urlFacebook = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent( getResourceLink() );
+                    //    var urlTwitter = 'https://twitter.com/share?url=' + encodeURIComponent( getResourceLink() );
+                    //    var urlLinkedin = 'http://www.linkedin.com/shareArticle?mini=true<xsl:value-of select="$ampersand" disable-output-escaping="yes"/>url=' + encodeURIComponent( getResourceLink() ) + 
+                    //        '<xsl:value-of select="$ampersand" disable-output-escaping="yes"/>source=Ceres' + 
+                    //        '<xsl:value-of select="$ampersand" disable-output-escaping="yes"/>title=' + encodeURIComponent( title );
+                    //    var urlEmail = 'mailto:?subject=<xsl:value-of select="escape-html-uri( $ShareByEmailSubject )"/><xsl:value-of select="$ampersand" disable-output-escaping="yes"/>body=<xsl:value-of select="escape-html-uri( $ShareByEmailBody )"/>' + encodeURIComponent( getResourceLink( false ) );
+                    //    Ext.get( 'ShareOnFacebookLink' ).set( { href: urlFacebook } );
+                    //    Ext.get( 'ShareOnTwitter' ).set( { href: urlTwitter } );
+                    //    Ext.get( 'ShareOnLinkedin' ).set( { href: urlLinkedin } );
+                    //    Ext.get( 'ShareByEmail' ).set( { href: urlEmail } );
+                    //}
+
+                    //Ext.onReady( function() {    
+                    //    alert( 10 );
+                    //    initSharingLinks();
+                    //} );
+
+                    //function fred() {
+                    //    alert( 'fred' );
+                    //}
+
+                </script-->
+            </head>
             <body id="LearningObjectBody" class="LearningObject">
                 <div id="LearningObjectResource">
                 <xsl:attribute name="resource"><xsl:value-of select="$uri"/></xsl:attribute>
@@ -367,6 +413,14 @@
         <xsl:param name="website"/>
         <xsl:param name="identityLink"/>
         <xsl:variable name="photoSrc" select="if( $photo = '' ) then 'images/noPhoto.png' else $photo"/>
+        <!--li>uri=<xsl:value-of select="$uri"/></li>
+        <li>photo=<xsl:value-of select="$photo"/></li>
+        <li>name=<xsl:value-of select="$name"/></li>
+        <li>roles=<xsl:value-of select="$roles"/></li>
+        <li>email=<xsl:value-of select="$email"/></li>
+        <li>website=<xsl:value-of select="$website"/></li>
+        <li>identityLink=<xsl:value-of select="$identityLink"/></li>
+        <li>photoSrc=<xsl:value-of select="$photoSrc"/></li-->
         <li>
             <span class="ContribFullName">
                 <xsl:call-template name="render-related-learning-objects-link">
@@ -506,4 +560,3 @@
         </xsl:choose>
     </xsl:function>
 </xsl:stylesheet>
-
