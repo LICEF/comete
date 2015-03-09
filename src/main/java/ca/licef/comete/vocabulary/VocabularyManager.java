@@ -5,7 +5,6 @@ import ca.licef.comete.store.Store;
 import ca.licef.comete.vocabularies.COMETE;
 import ca.licef.comete.vocabulary.util.Util;
 import licef.IOUtil;
-import licef.StringUtil;
 import licef.XMLUtil;
 import licef.reflection.Invoker;
 import licef.tsapi.TripleStore;
@@ -285,31 +284,22 @@ public class VocabularyManager {
         }
 
         //loop on predefined vocabularies
-        ArrayList<String> newUris = new ArrayList<>();
         String[] vocs = vocabulariesDirConfig.list();
         if (vocs != null) {
             for (String voc : vocs) {
                 Invoker invk = new Invoker(this, "ca.licef.comete.vocabulary.VocabularyManager",
                         "initVocabulary", new Object[]{voc, false});
-                String uri = (String) tripleStore.transactionalCall(invk, TripleStore.WRITE_MODE);
-                if (uri != null)
-                    newUris.add(uri);
+                tripleStore.transactionalCall(invk, TripleStore.WRITE_MODE);
             }
         }
 
-        /*if (!newUris.isEmpty()) {
-            //relationships
-            for (String uri : newUris)
-                initRelationships(uri);
-        }*//*
-*/
         System.out.println("Vocabulary Module initialization done.");
     }
 
-    public String initVocabulary(String vocId, boolean forceUpdate) throws Exception {
+    public void initVocabulary(String vocId, boolean forceUpdate) throws Exception {
         File vocDir = new File(vocabulariesDirConfig, vocId);
         if (!vocDir.isDirectory())
-            return null;
+            return;
 
         File descriptor = new File(vocDir, "description.xml");
         String id = null;
@@ -378,8 +368,6 @@ public class VocabularyManager {
         //content management
         if (isNew || forceUpdate)
             initVocabularyContent(uri, location, id, vocUri, !isNew);
-
-        return isNew?uri:null;
     }
 
     private void initVocabularyContent(String uri, String location, String vocId, String vocUri, boolean cleanFirst) throws Exception {
@@ -411,6 +399,7 @@ public class VocabularyManager {
             case Util.VDEX_FORMAT : //keep vdex version for history
                 Store.getInstance().setDatastream(storeId, vocId + ".vdex", vocContent);
                 tripleStore.insertTriple(new Triple(uri, COMETE.vocLocalURL, vocUrlPrefix + "/vdex"));
+                //convert content + relationships
                 skosContent = convertVdexToSkos(vocContent);
                 break;
             default:
@@ -434,91 +423,8 @@ public class VocabularyManager {
         tripleStore.doInference(SKOS_ONTOLOGY_GRAPH, vocUri);
     }
 
-    //Relationships management
-    /* private void initRelationships(String uri) throws Exception {
-        String location = tripleStore.getTriplesWithSubjectPredicate(uri,
-                Constants.METAMODEL_VOCABULARY_SOURCE_LOCATION)[0].getObject();
-        XSLTUtil.initVocUris();
-        File rels = getRelationships(location);
-        if (rels != null) {
-            tripleStore.loadRDFContent(rels.toURI().toString(), VOC_EQUIVALENCE_GRAPH);
-            tripleStore.applyRules(skosRlogFile.toURI().toString(), VOC_EQUIVALENCE_GRAPH);
-        }
-    }
-
-    /*private File getRelationships(String location) throws Exception {
-        String voc = location.split("/")[1];
-        File relDescr = new File(vocabulariesDir, voc + "/relationships.rdf");
-
-        if (!relDescr.exists()) {
-            String vocContent = "";
-            URL sourceUrl;
-            if (IOUtil.isURL(location)) {
-                sourceUrl = new URL( location );
-                vocContent = IOUtil.readStringFromURL(sourceUrl);
-            }
-            else
-                vocContent = IOUtil.readStringFromFile(new File(vocabulariesDir, location));
-
-            relDescr = null;
-            String skosContent = "";
-            int format = Util.getVocabularyFormat(vocContent);
-            switch (format) {
-                case Util.VDEX_FORMAT : //keep vdex version for history
-                    skosContent = convertVdexRelationshipsToSkos(vocContent);
-                    break;
-            }
-            if (skosContent.contains("Match")) {
-                relDescr = new File(System.getProperty("java.io.tmpdir"), "relationships.rdf");
-                IOUtil.writeStringToFile(skosContent, relDescr);
-            }
-        }
-
-        return relDescr;
-    }*/
-
     public String convertVdexToSkos( String vdexContent ) throws Exception {
         StreamSource source = new StreamSource( new ByteArrayInputStream( vdexContent.getBytes() ) );
         return( CoreUtil.applyXslToDocument( "vocabulary/convertVDEXToSKOS", source ) );
     }
-
-    public String convertVdexRelationshipsToSkos( String vdexContent ) throws Exception {
-        StreamSource source = new StreamSource( new ByteArrayInputStream( vdexContent.getBytes() ) );
-        return( CoreUtil.applyXslToDocument( "vocablary/convertVDEXRelationshipsToSKOS", source ) );
-    }
-
-    /*boolean hasVocabularyChanged(String id, String location) throws Exception {
-        Fedora fedora = Core.getInstance().getFedora();
-        String vocContent;
-        URL sourceUrl;
-
-        if (IOUtil.isURL(location)) {
-            sourceUrl = new URL( location );
-            vocContent = IOUtil.readStringFromURL(sourceUrl);
-        }
-        else
-            vocContent = IOUtil.readStringFromFile(new File( vocabulariesDir, location));
-
-        int format = Util.getVocabularyFormat(vocContent);
-        String locationFormat = Constants.DATASTREAM_SKOS;
-        if (format == Util.VDEX_FORMAT)
-            locationFormat = Constants.DATASTREAM_VDEX;
-
-        //current voc datastream
-        String previousVocContent = fedora.getDatastream(id, locationFormat);
-
-        return !DigestUtils.shaHex(previousVocContent).equals(DigestUtils.shaHex(vocContent));
-    }  */
-
-    /*public ArrayList<String> getVocsWithAvailableUpdate() throws Exception {
-        ArrayList<String> vocsWithUpdate = new ArrayList<String>();
-
-        Hashtable<String, String>[] results = tripleStore.getResults("getVocContextsDetails.sparql");
-
-        for (Hashtable<String, String> result : results) {
-            if ( hasVocabularyChanged(result.get("doId"), Vocabulary.CoreUtil.manageQuotes(result.get("location"))) )
-                vocsWithUpdate.add(result.get("s"));
-        }
-        return vocsWithUpdate;
-    } */
 }

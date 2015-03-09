@@ -33,6 +33,7 @@
                 </xsl:call-template>
             </skos:ConceptScheme>
             <xsl:apply-templates select="vdex:term"/>
+            <xsl:apply-templates select="//vdex:relationship"/>
         </rdf:RDF>
     </xsl:template>
 
@@ -64,6 +65,34 @@
         <xsl:apply-templates select="vdex:term"/>
     </xsl:template>
 
+    <xsl:template match="vdex:relationship">
+        <xsl:param name="sourceIdentifier" select="vdex:sourceTerm/@vocabularyIdentifier"/>
+        <xsl:param name="sourceTerm" select="iri-to-uri(vdex:sourceTerm)"/>
+        <xsl:param name="targetIdentifier" select="vdex:targetTerm/@vocabularyIdentifier"/>
+        <xsl:param name="targetTerm" select="iri-to-uri(vdex:targetTerm)"/>
+        <xsl:variable name="src" select="concat( $sourceIdentifier, '#', $sourceTerm )"/>
+        <xsl:variable name="dest" select="concat( $targetIdentifier, '#', $targetTerm )"/>
+        <xsl:choose>
+            <xsl:when test="($src) and ($dest)">
+                <skos:Concept rdf:about="{$src}">
+                    <xsl:choose>
+                        <xsl:when test="vdex:relationshipType='RT'">
+                            <skos:closeMatch rdf:resource="{$dest}"/>
+                        </xsl:when>
+                        <xsl:when test="vdex:relationshipType='NT'">
+                            <skos:narrowMatch rdf:resource="{$dest}"/>
+                        </xsl:when>
+                        <xsl:when test="vdex:relationshipType='BT'">
+                            <skos:broadMatch rdf:resource="{$dest}"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <skos:relatedMatch rdf:resource="{$dest}"/>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </skos:Concept>
+            </xsl:when>
+        </xsl:choose>
+    </xsl:template>
 </xsl:stylesheet>
 
 
