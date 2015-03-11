@@ -85,7 +85,7 @@ public class Vocabulary {
 
     public String getVocabularyUri(String id) throws Exception {
         String uri = null;
-        String query = CoreUtil.getQuery("vocabulary/getVocUri.sparql", id);
+        String query = CoreUtil.getQuery("vocabulary/getVocUri.sparql", ( id.startsWith( "http://" ) ? id : "http://" ), id);
         Tuple[] tuples = tripleStore.sparqlSelect(query);
         if (tuples.length > 0)
             uri = tuples[0].getValue("vocUri").getContent();

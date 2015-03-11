@@ -166,26 +166,17 @@ public class LearningObjectView extends DefaultView {
 
         NodeList subjectElements = doc.getElementsByTagNameNS( CommonNamespaceContext.dctNSURI, "subject" );
         if( subjectElements.getLength() > 0 ) {
-            HashMap<String,String> vocabs = getVocabularies( locale.getLanguage() );        
             for( int i = 0; i < subjectElements.getLength(); i++ ) {
                 Element subjectElement = (Element)subjectElements.item( i );
                 String subjectUri = subjectElement.getAttributeNS( CommonNamespaceContext.rdfNSURI, "resource" );
-                String assocVoc = getAssocVocab( subjectUri, vocabs );
-                if( assocVoc != null || subjectUri.startsWith( "http://cegepadistance.ca/ns/typesrea" ) ) {
-                    subjectElement.setAttributeNS( "", "vocabLabel", vocabs.get( assocVoc ) );
-                    if( subjectUri.contains( "licef/DDC" ) ) {
-                        int lastSlashPos = subjectUri.lastIndexOf( "/" );
-                        String left = subjectUri.substring( 0, lastSlashPos + 1 );
-                        String right = subjectUri.substring( lastSlashPos + 1 );
-                        while( right.length() < 3 ) 
-                            right += "0";
-                        subjectUri = left + right;
-                    }
-                    String conceptLabel = getVocabularyConceptLabel( subjectUri, locale.getLanguage() );
-                    if( conceptLabel != null ) 
-                        subjectElement.setAttributeNS( "", "conceptLabel", conceptLabel );
-                    subjectElement.setAttributeNS( "", "navigable", ( assocVoc != null ) + "" );
-                }
+                String conceptScheme = Vocabulary.getInstance().getConceptScheme( subjectUri );
+                String vocabLabel = Vocabulary.getInstance().getLabel( conceptScheme, locale.getLanguage() );
+                if( vocabLabel != null )
+                    subjectElement.setAttributeNS( "", "vocabLabel", vocabLabel );
+                String conceptLabel = Vocabulary.getInstance().getLabel( subjectUri, locale.getLanguage() );
+                if( conceptLabel != null ) 
+                    subjectElement.setAttributeNS( "", "conceptLabel", conceptLabel );
+                subjectElement.setAttributeNS( "", "navigable", Vocabulary.getInstance().isVocNavigable( conceptScheme ) + "" );
             }
         }
 
@@ -258,25 +249,6 @@ public class LearningObjectView extends DefaultView {
                 organizations.add( orgUri );
             }
         }
-    }
-
-    private HashMap<String,String> getVocabularies( String lang ) throws Exception {
-        HashMap<String,String> vocTable = new HashMap<String,String>();
-
-        Vocabulary vocabManager = Vocabulary.getInstance();
-        String[] vocabUris = vocabManager.getNavigableVocabularies();
-        for( String uri : vocabUris )
-            vocTable.put( uri, vocabManager.getLabel( uri, lang ) );
-
-        return( vocTable );
-    }
-
-    private String getAssocVocab( String subjectUri, HashMap<String,String> vocabs ) {
-        for( String vocabUri : vocabs.keySet() ) {
-            if( subjectUri.startsWith( vocabUri ) )
-                return( vocabUri );
-        }
-        return( null );
     }
 
     private String getVocabularyConceptLabel( String subjectUri, String lang ) throws Exception {

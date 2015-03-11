@@ -170,31 +170,33 @@
                         </td>
                         <xsl:if test="$isRightColVisible">
                             <td valign="top" class="DetailTableRightSide">
-                                <div class="HighlightedBox">
-                                    <xsl:attribute name="width"><xsl:value-of select="$colWidth"/></xsl:attribute>
-                                    <xsl:if test="comete:keyword">
-                                        <h2 class="SectionHeader"><xsl:value-of select="$HeaderKeywords"/></h2>
-                                        <ul>
-                                            <xsl:apply-templates select="comete:keyword">
-                                                <xsl:sort select="." lang="$lang"/>
-                                            </xsl:apply-templates>
-                                        </ul>
-                                    </xsl:if>
-                                    <xsl:if test="count(dct:subject[@navigable = 'true'][@vocabLabel]) &gt; 0">
-                                        <h2 class="SectionHeader"><xsl:value-of select="$HeaderSubjects"/></h2>
-                                        <ul>
-                                        <xsl:for-each-group select="dct:subject[@navigable = 'true'][@vocabLabel]" group-by="@vocabLabel">
-                                            <xsl:sort select="current-grouping-key()" lang="$lang"/>
-                                                <ul>
-                                                <xsl:for-each select="current-group()">
-                                                    <xsl:sort select="@conceptLabel" lang="$lang"/>
-                                                    <li><xsl:value-of select="@vocabLabel"/><img style="margin-bottom:-1px; margin-left:8px" src="images/split-arrow-tiny.png" width="12" height="17"/><a class="RelatedLearningObjectsLink"><xsl:attribute name="href">javascript:setRequestVocConcept( '<xsl:value-of select="@rdf:resource"/>' );</xsl:attribute><xsl:value-of select="@conceptLabel"/></a></li>
-                                                </xsl:for-each>
-                                                </ul>
-                                        </xsl:for-each-group>
-                                        </ul>
-                                    </xsl:if>
-                                </div>
+                                <xsl:if test="comete:keyword or count(dct:subject[@navigable = 'true'][@vocabLabel]) &gt; 0">
+                                    <div class="HighlightedBox">
+                                        <xsl:attribute name="width"><xsl:value-of select="$colWidth"/></xsl:attribute>
+                                        <xsl:if test="comete:keyword">
+                                            <h2 class="SectionHeader"><xsl:value-of select="$HeaderKeywords"/></h2>
+                                            <ul>
+                                                <xsl:apply-templates select="comete:keyword">
+                                                    <xsl:sort select="." lang="$lang"/>
+                                                </xsl:apply-templates>
+                                            </ul>
+                                        </xsl:if>
+                                        <xsl:if test="count(dct:subject[@navigable = 'true'][@vocabLabel]) &gt; 0">
+                                            <h2 class="SectionHeader"><xsl:value-of select="$HeaderSubjects"/></h2>
+                                            <ul>
+                                            <xsl:for-each-group select="dct:subject[@navigable = 'true'][@vocabLabel]" group-by="@vocabLabel">
+                                                <xsl:sort select="current-grouping-key()" lang="$lang"/>
+                                                    <!--ul-->
+                                                    <xsl:for-each select="current-group()">
+                                                        <xsl:sort select="@conceptLabel" lang="$lang"/>
+                                                        <li><xsl:value-of select="@vocabLabel"/><img style="margin-bottom:-1px; margin-left:8px" src="images/split-arrow-tiny.png" width="12" height="17"/><a class="RelatedLearningObjectsLink"><xsl:attribute name="href">javascript:setRequestVocConcept( '<xsl:value-of select="@rdf:resource"/>' );</xsl:attribute><xsl:value-of select="@conceptLabel"/></a></li>
+                                                    </xsl:for-each>
+                                                    <!--/ul-->
+                                            </xsl:for-each-group>
+                                            </ul>
+                                        </xsl:if>
+                                    </div>
+                                </xsl:if>
                             </td>
                         </xsl:if>
                     </tr>
