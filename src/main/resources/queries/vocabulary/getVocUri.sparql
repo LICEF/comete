@@ -7,5 +7,5 @@ WHERE '{'
     ?s comete:vocUri ?vocUri .
     '{' ?s comete:vocUri <{0}> '}'
     UNION
-    '{' ?s (comete:vocSourceLocation|comete:vocId|comete:vocAlias) "{0}" '}'
+    '{' ?s (comete:vocSourceLocation|comete:vocId|comete:vocAlias) "{1}" '}'
 '}'
