@@ -5,5 +5,9 @@
     '{' ?s ?p <{0}> '}'
     UNION
     '{' ?s ?p ?c .
-        GRAPH <{1}> '{' <{0}> skos:narrowerTransitive ?c '}' '}'
+        GRAPH <{1}> '{'
+            <{0}> skos:narrowerTransitive ?c .
+            ?c skos:inScheme <{1}>
+        '}'
+    '}'
 '}'

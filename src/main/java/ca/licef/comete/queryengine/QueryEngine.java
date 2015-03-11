@@ -152,8 +152,10 @@ public class QueryEngine {
                                       Integer start, Integer limit, Boolean isWithScore,
                                       QueryCache cache, String outputFormat) throws Exception {
         ResultSet rs;
-        String clauses = ca.licef.comete.queryengine.util.Util.buildQueryClauses(queryArray, lang, isWithScore, cache);
-        String query = CoreUtil.getQuery("queryengine/getLearningObjectsAdvancedQueryForCount.sparql", clauses);
+        String[] data = ca.licef.comete.queryengine.util.Util.buildQueryClauses(queryArray, lang, isWithScore, cache);
+        String fromClause = data[0];
+        String clauses = data[1];
+        String query = CoreUtil.getQuery("queryengine/getLearningObjectsAdvancedQueryForCount.sparql", fromClause, clauses);
         Tuple[] res = tripleStore.sparqlSelect_textIndex(query);
         int count = Integer.parseInt(res[0].getValue("count").getContent());
 
@@ -161,7 +163,7 @@ public class QueryEngine {
             String varScore = orderByVariable;
             if (!"?score".equals(orderByVariable))
                 varScore = "";
-            query = CoreUtil.getQuery("queryengine/getLearningObjectsAdvancedQuery.sparql", clauses, orderByVariable, start, limit, varScore);
+            query = CoreUtil.getQuery("queryengine/getLearningObjectsAdvancedQuery.sparql", fromClause, clauses, orderByVariable, start, limit, varScore);
             Tuple[] results = tripleStore.sparqlSelect_textIndex(query);
             rs = buildResultSet(results, count, lang);
         }

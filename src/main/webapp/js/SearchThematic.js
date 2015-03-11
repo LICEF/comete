@@ -243,10 +243,10 @@
         if (this.cbSubconcepts.getValue())
             query[0].subConcepts = true;
         if (this.cbEquivalence.getValue()) {
-            var fromVocs = this.equivalence.getValue();
-            if (fromVocs.length > 0) {
+            var eqVocs = this.equivalence.getValue();
+            if (eqVocs.length > 0) {
                 query[0].equivalent = true;
-                query[0].fromVocs = fromVocs;
+                query[0].eqVocs = eqVocs;
             }
         }
         searchManager.setRequestVocConcept2( query );
@@ -295,7 +295,7 @@
         this.cbSubconcepts.setValue( query[0].subConcepts == true );
         this.cbEquivalence.setValue( query[0].equivalent == true );
         if (this.equivalence.getValue())
-            this.equivalence.setValue(query[0].fromVocs);
+            this.equivalence.setValue(query[0].eqVocs);
     },
     cleanEquivalence: function() {
         this.equivalence.clearValue();

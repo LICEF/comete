@@ -7,9 +7,10 @@ PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX comete: <http://comete.licef.ca/reference#>
 
 SELECT (count(DISTINCT ?s) as ?count)
+{0}
 WHERE '{'
     ?s rdf:type comete:LearningObject .
 
-{0}
+{1}
 
 '}'

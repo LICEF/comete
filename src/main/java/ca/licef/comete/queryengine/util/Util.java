@@ -1,19 +1,18 @@
 package ca.licef.comete.queryengine.util;
 
-import ca.licef.comete.core.Core;
 import ca.licef.comete.queryengine.QueryCache;
 import ca.licef.comete.queryengine.QueryEngine;
 import ca.licef.comete.vocabulary.Vocabulary;
 import licef.DateUtil;
-import licef.tsapi.TripleStore;
 import licef.tsapi.model.Tuple;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.servlet.ServletContext;
-import java.io.File;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * Created with IntelliJ IDEA.
@@ -51,7 +50,8 @@ public class Util {
     /**
      * @return clause element and pre compute size
      */
-    public static String buildQueryClauses(JSONArray queryArray, String lg, boolean isWithScore, QueryCache cache) throws Exception {
+    public static String[] buildQueryClauses(JSONArray queryArray, String lg, boolean isWithScore, QueryCache cache) throws Exception {
+        String fromClause = "";
         String clauses = "";
 
         boolean waitForOperator = false;
@@ -133,41 +133,36 @@ public class Util {
                     String vocUri = Vocabulary.getInstance().getConceptScheme(uri);
                     String neg = condType.startsWith(NOT_CONCEPT_PREFIX)?"Not":"";
                     boolean isSubConcept = obj.has("subConcepts") && obj.getBoolean("subConcepts");
+                    boolean includeEquivalence = obj.has("equivalent") && obj.getBoolean("equivalent");
                     if (isSubConcept)
                         clause = CoreUtil.getQuery("queryengine/advanced" + neg + "VocConceptHierarchyFragment.sparql", uri, vocUri);
                     else
                         clause = CoreUtil.getQuery("queryengine/advanced" + neg + "VocConceptFragment.sparql", uri, vocUri);
 
+                    if (includeEquivalence) {
+                        //for the moment, if equivalence requested, it comes from thematic navigation, so no negation case.
+                        JSONArray eqVocs = (obj.has("eqVocs"))?obj.getJSONArray("eqVocs"):null;
+                        if (eqVocs != null) {
+                            fromClause = "FROM <urn:x-arq:DefaultGraph>\n";
+                            Tuple[] ctxts = Vocabulary.getInstance().getVocContexts();
+                            for (Tuple ctxt : ctxts)
+                                fromClause += "FROM <" + ctxt.getValue("vocUri").getContent() + ">\n";
 
-                    // equivalent external concepts used only for thematic navigation (for the moment)
-                    // So just one clause and little hack for all clauses generation behavior
-                    // add recursively in this test -AM
-                    /*if (obj.has("equivalent") && obj.getBoolean("equivalent")) {
-                        JSONArray fromVocs = (obj.has("fromVocs"))?obj.getJSONArray("fromVocs"):null;
-                        Date d1 = new Date();
-                        Date d2;
-                        JSONArray equivalents = cache.getCachedEquivalentConcepts(uri, isSubConcept, fromVocs);
-                        if (equivalents == null) {
-                            equivalents = getEquivalentConcepts(uri, isSubConcept, fromVocs);
-                            cache.cacheEquivalentConcepts(uri, isSubConcept, fromVocs, equivalents);
-                            d2 = new Date();
+                            ArrayList<String> _eqVocs = new ArrayList<>();
+                            //first add start vocUri -AM
+                            _eqVocs.add(Vocabulary.getInstance().getConceptScheme(uri));
+                            for (int k = 0; k < eqVocs.length(); k++)
+                                _eqVocs.add(eqVocs.getString(k));
+
+                            String vocFilterConstraint = CoreUtil.buildFilterConstraints(_eqVocs, "vocUri", true, "=", "||");
+                            if (isSubConcept)
+                                clause = CoreUtil.getQuery("queryengine/advancedVocConceptEquivalenceHierarchyFragment.sparql", uri, vocFilterConstraint);
+                            else
+                                clause = CoreUtil.getQuery("queryengine/advancedVocConceptEquivalenceFragment.sparql", uri, vocFilterConstraint);
                         }
                         else
-                            d2 = new Date();
-                        long l = d2.getTime() - d1.getTime();
-                        System.out.println("equivalent concepts : " + equivalents.length());
-                        System.out.println("found in (ms) = " + l);
-                        for (int k = 0; k < equivalents.length(); k++) {
-                            String eqUri = equivalents.getString(k);
-                            if (k == 0 && !isSubConcept) //braces for first clause
-                                clause = "\n{ " + clause + " }";
-                            clause += "\nUNION\n";
-                            if (isSubConcept)
-                                clause += makeVocConceptHierarchyClause(TripleStoreService.VOC_GLOBAL_VIEW, eqUri, isWithScore);
-                            else
-                                clause += "{ " + makeVocConceptClause(eqUri, isWithScore) + " }";
-                        }
-                    }*/
+                            clause = "";
+                    }
                 }
                 else if (ADDED_DATE.equals(condType)) {
                     String relOp = obj.getString( "relOp" );
@@ -205,7 +200,7 @@ public class Util {
         if (isFromHarvestedRepoClause)
             clauses += "\n?s comete:hasMetadataRecord ?r .";
 
-        return clauses;
+        return new String[]{fromClause, clauses};
     }
 
     public static String makeAddedDateClause( String relOpStr, String date ) throws Exception{

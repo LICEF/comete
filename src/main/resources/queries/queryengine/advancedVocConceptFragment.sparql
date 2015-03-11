@@ -4,4 +4,3 @@
     ?ctxt comete:vocUri <{1}> .
     ?s ?p <{0}>
 '}'
-
