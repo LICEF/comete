@@ -14,5 +14,5 @@ WHERE '{'
     OPTIONAL '{'
         ?identity foaf:mbox ?mbox 
     '}'
-    FILTER( {0} )
+    FILTER ( {0} )
 '}'

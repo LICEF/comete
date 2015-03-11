@@ -38,7 +38,6 @@ import java.util.Hashtable;
  */
 public class VocabularyManager {
 
-    public static final String VOC_EQUIVALENCE_GRAPH = "voc-equivalence";
     public static final String SKOS_ONTOLOGY_GRAPH = "skos-ontology";
 
     File vocabulariesSourceDir; //init vocabularies

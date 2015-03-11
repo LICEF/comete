@@ -7,7 +7,8 @@ SELECT DISTINCT ?o ?pos
 FROM <{1}>
 WHERE '{'
     <{0}> rdf:type skos:Concept .
-    <{0}> skos:narrower ?o
+    <{0}> skos:narrower ?o .
+    ?o skos:inScheme <{1}> .
     OPTIONAL '{'
         ?o comete:position ?pos
     '}'

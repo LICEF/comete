@@ -368,7 +368,7 @@ public class Metadata {
 
     private String[] manageRecord(String oaiId, String namespace, String repoUri, String record, String datestamp) throws Exception {
         Invoker inv = new Invoker(this, "ca.licef.comete.metadata.Metadata",
-                "digestRecord", new Object[]{record,  namespace, repoUri, oaiId, datestamp});
+                "digestRecord", new Object[]{record, namespace, repoUri, oaiId, datestamp});
         String[] res = (String[])tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
 
         //Identity and vocabulary referencement management
@@ -816,7 +816,7 @@ public class Metadata {
     }
 
     /**
-     * @param applProf If <tt>null</tt>, all the application profiles will be returned.  Otherwise, only the selected application profile will be provided.
+     * @param applProfile If <tt>null</tt>, all the application profiles will be returned.  Otherwise, only the selected application profile will be provided.
      * @param showOnlyInvalidRecords If <tt>true</tt> and applProf is different from <tt>null</tt>, only invalid records will be returned.
      */
     public ResultSet getMetadataRecordApplicationProfiles( int start, int limit, String applProfile, boolean showOnlyInvalidRecords ) throws Exception {

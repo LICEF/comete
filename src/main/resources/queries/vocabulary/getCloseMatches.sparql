@@ -1,8 +1,0 @@
-PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-
-SELECT DISTINCT ?concept ?scheme
-WHERE '{'
-    ?concept skos:inScheme ?scheme 
-    <{0}> ( skos:closeMatch | skos:closeMatch/skos:closeMatch )?concept .
-    FILTER( {1} )
-'}'
