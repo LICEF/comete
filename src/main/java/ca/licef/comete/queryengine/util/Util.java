@@ -112,35 +112,39 @@ public class Util {
                     clause = CoreUtil.getQuery("queryengine/advancedKeywordFragment.sparql",
                                 CoreUtil.formatKeywords(text), lang);
                 }
-                else if (CONTRIBUTE_PREFIX.equals(condType)) {
+                else if (CONTRIBUTE_PREFIX.equals(condType) || condType.equals(NOT_CONTRIBUTE_PREFIX)) {
                     String uri = obj.getString("value");
                     clause = CoreUtil.getQuery("queryengine/advancedContribFragment.sparql", uri);
+                    //negation
+                    if (condType.equals(NOT_CONTRIBUTE_PREFIX))
+                        clause = "MINUS { " + clause + " }\n";
                 }
-                else if (NOT_CONTRIBUTE_PREFIX.equals(condType)) {
-                    String uri = obj.getString("value");
-                    clause = CoreUtil.getQuery("queryengine/advancedNotContribFragment.sparql", uri);
-                }
-                else if (ORGANIZATION_PREFIX.equals(condType)) {
+                else if (ORGANIZATION_PREFIX.equals(condType) || condType.equals(NOT_ORGANIZATION_PREFIX)) {
                     String uri = obj.getString("value");
                     clause = CoreUtil.getQuery("queryengine/advancedOrgFragment.sparql", uri);
+
+                    //negation
+                    if (condType.equals(NOT_ORGANIZATION_PREFIX))
+                        clause = "MINUS { " + clause + " }\n";
                 }
-                else if (NOT_ORGANIZATION_PREFIX.equals(condType)) {
-                    String uri = obj.getString("value");
-                    clause = CoreUtil.getQuery("queryengine/advancedNotOrgFragment.sparql", uri);
-                }
-                else if (condType.startsWith(CONCEPT_PREFIX) || condType.startsWith(NOT_CONCEPT_PREFIX)) {
+                else if (condType.equals(CONCEPT_PREFIX) || condType.startsWith(NOT_CONCEPT_PREFIX)) {
                     String uri = obj.getString("value");
                     String vocUri = Vocabulary.getInstance().getConceptScheme(uri);
-                    String neg = condType.startsWith(NOT_CONCEPT_PREFIX)?"Not":"";
                     boolean isSubConcept = obj.has("subConcepts") && obj.getBoolean("subConcepts");
                     boolean includeEquivalence = obj.has("equivalent") && obj.getBoolean("equivalent");
                     if (isSubConcept)
-                        clause = CoreUtil.getQuery("queryengine/advanced" + neg + "VocConceptHierarchyFragment.sparql", uri, vocUri);
+                        clause = CoreUtil.getQuery("queryengine/advancedVocConceptHierarchyFragment.sparql", uri, vocUri);
                     else
-                        clause = CoreUtil.getQuery("queryengine/advanced" + neg + "VocConceptFragment.sparql", uri, vocUri);
+                        clause = CoreUtil.getQuery("queryengine/advancedVocConceptFragment.sparql", uri, vocUri);
 
+                    //negation
+                    if (condType.equals(NOT_CONCEPT_PREFIX))
+                        clause = "MINUS " + clause;
+
+                    //Equivalence
+                    //for the moment, if equivalence requested, it comes from thematic navigation,
+                    //so new clause to build without negation.
                     if (includeEquivalence) {
-                        //for the moment, if equivalence requested, it comes from thematic navigation, so no negation case.
                         JSONArray eqVocs = (obj.has("eqVocs"))?obj.getJSONArray("eqVocs"):null;
                         if (eqVocs != null) {
                             fromClause = "FROM <urn:x-arq:DefaultGraph>\n";
