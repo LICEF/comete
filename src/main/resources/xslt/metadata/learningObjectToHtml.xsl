@@ -290,11 +290,11 @@
     </xsl:template>
 
     <xsl:template match="foaf:page" mode="resType">
-        <p><xsl:value-of select="comete:getResourceType( @mimeType )"/></p>
+        <span><xsl:value-of select="comete:getResourceType( @mimeType )"/></span><br/>
     </xsl:template>
 
     <xsl:template match="comete:learningResourceType">
-        <p class="LearningResourceType"><xsl:value-of select="@label"/></p>
+        <span class="LearningResourceType"><xsl:value-of select="@label"/></span><br/>
     </xsl:template>
 
     <xsl:template match="foaf:page" mode="link">
