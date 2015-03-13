@@ -429,6 +429,7 @@ public class VocabularyManager {
         tripleStore.sparqlUpdate( CoreUtil.getQuery("vocabulary/inferBroader.sparql", vocUri) );
         tripleStore.sparqlUpdate( CoreUtil.getQuery("vocabulary/inferNarrower.sparql", vocUri) );
         tripleStore.sparqlUpdate( CoreUtil.getQuery("vocabulary/inferNarrowerTransitive.sparql", vocUri) );
+        tripleStore.sparqlUpdate( CoreUtil.getQuery("vocabulary/inferExactMatch.sparql", vocUri) );
         tripleStore.sparqlUpdate( CoreUtil.getQuery("vocabulary/inferCloseMatch.sparql", vocUri) );
         tripleStore.sparqlUpdate( CoreUtil.getQuery("vocabulary/inferNarrowMatch.sparql", vocUri) );
         tripleStore.sparqlUpdate( CoreUtil.getQuery("vocabulary/inferPrefLabel.sparql", vocUri) );
