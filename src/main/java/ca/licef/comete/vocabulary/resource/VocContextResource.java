@@ -84,6 +84,11 @@ public class VocContextResource {
         if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to add vocabulary.").build();
 
+        // Make sure that the id is a valid filename.
+        // Only letters and numbers are allowed.  
+        // Other characters are replaced by underscores.
+        id = id.replaceAll( "[^a-zA-Z0-9]", "_" );
+
         String errorMessage = Vocabulary.getInstance().addNewVocContext(
                 id, uriPrefix, uriSuffix, linkingPredicate, url, fileDetail.getFileName(), uploadedInputStream);
         StringWriter out = new StringWriter();

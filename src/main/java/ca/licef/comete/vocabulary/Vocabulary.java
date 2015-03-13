@@ -102,6 +102,15 @@ public class Vocabulary {
         return predicate;
     }
 
+    public String[] getAllConceptLinkingPredicates() throws Exception {
+        String query = CoreUtil.getQuery("vocabulary/getAllVocConceptLinkingPredicates.sparql");
+        Tuple[] tuples = tripleStore.sparqlSelect(query);
+        String[] res = new  String[ tuples.length ];
+        for( int i = 0; i < tuples.length; i++ )
+            res[ i ] = tuples[ i ].getValue( "p" ).getContent();
+        return( res );
+    }
+
     public String[] getNavigableVocabularies() throws Exception{
         String query = CoreUtil.getQuery("vocabulary/getNavigableVocabularies.sparql");
         Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});

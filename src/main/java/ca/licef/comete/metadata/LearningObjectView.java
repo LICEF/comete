@@ -4,6 +4,7 @@ import ca.licef.comete.core.Core;
 import ca.licef.comete.core.DefaultView;
 import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.Util;
+import ca.licef.comete.vocabularies.COMETE;
 import ca.licef.comete.vocabulary.Vocabulary;
 import licef.CommonNamespaceContext;
 import licef.IOUtil;
@@ -33,6 +34,12 @@ import java.util.*;
 public class LearningObjectView extends DefaultView {
 
     public String getHtml(String uri, Locale locale, String style) throws Exception {
+        TripleStore tripleStore = Core.getInstance().getTripleStore();
+        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.LearningObjectView", "doGetHtml", new Object[] { uri, locale, style } );
+        return( (String)tripleStore.transactionalCall( inv ) );
+    }
+    
+    public String doGetHtml(String uri, Locale locale, String style) throws Exception {
         Set contributes = new HashSet();
         HashMap contribRoles = new HashMap();
         HashMap contribOrganizations = new HashMap();
@@ -164,22 +171,6 @@ public class LearningObjectView extends DefaultView {
             rootElement.appendChild( wrapperElement );
         }
 
-        NodeList subjectElements = doc.getElementsByTagNameNS( CommonNamespaceContext.dctNSURI, "subject" );
-        if( subjectElements.getLength() > 0 ) {
-            for( int i = 0; i < subjectElements.getLength(); i++ ) {
-                Element subjectElement = (Element)subjectElements.item( i );
-                String subjectUri = subjectElement.getAttributeNS( CommonNamespaceContext.rdfNSURI, "resource" );
-                String conceptScheme = Vocabulary.getInstance().getConceptScheme( subjectUri );
-                String vocabLabel = Vocabulary.getInstance().getLabel( conceptScheme, locale.getLanguage() );
-                if( vocabLabel != null )
-                    subjectElement.setAttributeNS( "", "vocabLabel", vocabLabel );
-                String conceptLabel = Vocabulary.getInstance().getLabel( subjectUri, locale.getLanguage() );
-                if( conceptLabel != null ) 
-                    subjectElement.setAttributeNS( "", "conceptLabel", conceptLabel );
-                subjectElement.setAttributeNS( "", "navigable", Vocabulary.getInstance().isVocNavigable( conceptScheme ) + "" );
-            }
-        }
-
         NodeList learningResourceTypeElements = doc.getElementsByTagNameNS( CommonNamespaceContext.cometeNSURI, "learningResourceType" );
         for( int i = 0; i < learningResourceTypeElements.getLength(); i++ ) {
             Element learningResourceTypeElement = (Element)learningResourceTypeElements.item( i );
@@ -194,6 +185,34 @@ public class LearningObjectView extends DefaultView {
             String educationalLevelUri = educationalLevelElement.getAttributeNS( CommonNamespaceContext.rdfNSURI, "resource" );
             String educationalLevelLabel = getVocabularyConceptLabel( educationalLevelUri, locale.getLanguage() );
             educationalLevelElement.setAttributeNS( "", "label", educationalLevelLabel );
+        }
+
+        String[] linkingPredicates = Vocabulary.getInstance().getAllConceptLinkingPredicates();
+        for( int i = 0; i < linkingPredicates.length; i++ ) {
+            String lp = linkingPredicates[ i ];
+            String lpNsUri = CommonNamespaceContext.getInstance().getNamespaceURIFromUri( lp );
+            String lpElementName = lp.substring( lpNsUri.length() );
+
+            // Skip special vocabularies that have already been handled previously.
+            if( lp.equals( COMETE.educationalLevel.getURI() ) || 
+                lp.equals( COMETE.learningResourceType.getURI() ) )
+                continue;
+
+            NodeList conceptElements = doc.getElementsByTagNameNS( lpNsUri, lpElementName );
+            if( conceptElements.getLength() > 0 ) {
+                for( int c = 0; c < conceptElements.getLength(); c++ ) {
+                    Element conceptElement = (Element)conceptElements.item( c );
+                    String conceptUri = conceptElement.getAttributeNS( CommonNamespaceContext.rdfNSURI, "resource" );
+                    String conceptScheme = Vocabulary.getInstance().getConceptScheme( conceptUri );
+                    String vocabLabel = Vocabulary.getInstance().getLabel( conceptScheme, locale.getLanguage() );
+                    if( vocabLabel != null )
+                        conceptElement.setAttributeNS( "", "vocabLabel", vocabLabel );
+                    String conceptLabel = Vocabulary.getInstance().getLabel( conceptUri, locale.getLanguage() );
+                    if( conceptLabel != null ) 
+                        conceptElement.setAttributeNS( "", "conceptLabel", conceptLabel );
+                    conceptElement.setAttributeNS( "", "navigable", Vocabulary.getInstance().isVocNavigable( conceptScheme ) + "" );
+                }
+            }
         }
 
         String expandedXml = XMLUtil.serialize( doc, true );
@@ -221,8 +240,7 @@ public class LearningObjectView extends DefaultView {
     private void getIdentityData( String loUri, Set identities, HashMap identityRoles, HashMap identityOrganizations, HashMap orgNames ) throws Exception {
         TripleStore tripleStore = Core.getInstance().getTripleStore();
         String query = Util.getQuery( "metadata/getLearningObjectIdentityData.sparql", loUri );
-        Invoker inv = new Invoker( tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new String[] { query } );
-        Tuple[] tuples = (Tuple[])tripleStore.transactionalCall( inv );
+        Tuple[] tuples = (Tuple[])tripleStore.sparqlSelect( query );
         for( Tuple tuple : tuples ) {
             String identityUri = tuple.getValue( "identity" ).getContent();
             String predicate = tuple.getValue( "p" ).getContent();
@@ -252,8 +270,7 @@ public class LearningObjectView extends DefaultView {
     }
 
     private String getVocabularyConceptLabel( String subjectUri, String lang ) throws Exception {
-        Invoker inv = new Invoker( null, "ca.licef.comete.core.util.Util", "getResourceLabel", new Object[] { subjectUri, lang, true } );
-        String[] labels = (String[])Core.getInstance().getTripleStore().transactionalCall( inv );
+        String[] labels = (String[])Util.getResourceLabel( subjectUri, lang,true );
         return( labels[ 0 ] );
     }
 
