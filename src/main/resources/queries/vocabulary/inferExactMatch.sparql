@@ -2,8 +2,9 @@ PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
 WITH <{0}>
 INSERT '{'
+    ?s skos:exactMatch ?o .
     ?o skos:exactMatch ?s
 '}'
 WHERE '{'
-    ?s skos:exactMatch ?o
+    ?s skos:exactMatch+ ?o
 '}'
