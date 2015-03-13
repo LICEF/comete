@@ -11,9 +11,9 @@ WHERE '{'
     OPTIONAL '{'
         ?s comete:position ?pos
     '}'
-    OPTIONAL {
+    OPTIONAL '{'
         ?s skos:broader ?o
-    }
+    '}'
     FILTER(!BOUND(?o))
 '}'
 ORDER BY xsd:integer(?pos)
