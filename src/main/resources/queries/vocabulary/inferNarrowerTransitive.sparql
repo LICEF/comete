@@ -1,0 +1,9 @@
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+WITH <{0}>
+INSERT '{'
+    ?s skos:narrowerTransitive ?c
+'}'
+WHERE '{'
+    ?s skos:narrower+ ?c .
+'}'

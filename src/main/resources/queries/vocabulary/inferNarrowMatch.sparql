@@ -1,0 +1,9 @@
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+WITH <{0}>
+INSERT '{'
+    ?o skos:narrowMatch ?s
+'}'
+WHERE '{'
+    ?s skos:broadMatch ?o
+'}'

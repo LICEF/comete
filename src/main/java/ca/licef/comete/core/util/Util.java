@@ -332,8 +332,7 @@ public class Util {
         if (forceVocType ||
             SKOS.ConceptScheme.getURI().equals(type) ||
             SKOS.Concept.getURI().equals(type) ) {
-            //predicate = SKOS.prefLabel.getURI();
-            predicate = RDFS.label; //preferred
+            predicate = SKOS.prefLabel;
             graph = Vocabulary.getInstance().getConceptScheme(uri);
         }
         else if (type.equals(COMETE.LearningObject.getURI()))

@@ -1,0 +1,13 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+WITH <{0}>
+INSERT '{'
+    ?s skos:prefLabel ?o
+'}'
+WHERE '{'
+    ?s rdfs:label ?o .
+    ?s rdf:type ?t .
+    FILTER ( ?t = skos:Concept || ?t = skos:ConceptScheme )
+'}'

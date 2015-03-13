@@ -1,9 +1,7 @@
-'{'
-    ?ctxt rdf:type comete:VocContext .
-    ?ctxt comete:vocConceptLinkingPredicate ?p .
-    ?ctxt comete:vocUri ?vocUri .
-    <{0}> skos:closeMatch* ?c .
-    ?c skos:inScheme ?vocUri .
-    ?s ?p ?c .
-    FILTER ( {1} )
-'}'
+?ctxt rdf:type comete:VocContext .
+?ctxt comete:vocConceptLinkingPredicate ?p .
+?ctxt comete:vocUri ?vocUri .
+<{0}> skos:closeMatch* ?c .
+?c skos:inScheme ?vocUri .
+?s ?p ?c .
+FILTER ( {1} )

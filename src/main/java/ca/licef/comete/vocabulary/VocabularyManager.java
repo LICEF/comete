@@ -419,7 +419,19 @@ public class VocabularyManager {
                 licef.tsapi.Constants.RDFXML, vocUri);
 
         //Generation of inferred triples (for all vocs, navigable or not)
-        tripleStore.doInference(SKOS_ONTOLOGY_GRAPH, vocUri);
+        //tripleStore.doInference(SKOS_ONTOLOGY_GRAPH, vocUri);
+        //Use of tripleStore.doInference replaced with controlled 'manual' inference
+        //to avoid huge generation of scrap (blank nodes, unnecessary inherited properties, ...) -AM
+        doInference(vocUri);
+    }
+
+    private void doInference(String vocUri) throws Exception {
+        tripleStore.sparqlUpdate( CoreUtil.getQuery("vocabulary/inferBroader.sparql", vocUri) );
+        tripleStore.sparqlUpdate( CoreUtil.getQuery("vocabulary/inferNarrower.sparql", vocUri) );
+        tripleStore.sparqlUpdate( CoreUtil.getQuery("vocabulary/inferNarrowerTransitive.sparql", vocUri) );
+        tripleStore.sparqlUpdate( CoreUtil.getQuery("vocabulary/inferCloseMatch.sparql", vocUri) );
+        tripleStore.sparqlUpdate( CoreUtil.getQuery("vocabulary/inferNarrowMatch.sparql", vocUri) );
+        tripleStore.sparqlUpdate( CoreUtil.getQuery("vocabulary/inferPrefLabel.sparql", vocUri) );
     }
 
     public String convertVdexToSkos( String vdexContent ) throws Exception {
