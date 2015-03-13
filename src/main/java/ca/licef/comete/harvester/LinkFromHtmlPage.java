@@ -31,8 +31,7 @@ import licef.XMLUtil;
 
 public class LinkFromHtmlPage {
 
-    public LinkFromHtmlPage(String id, String url) {
-        this.id = id;
+    public LinkFromHtmlPage(String url) {
         this.url = url;
     }
 
@@ -122,11 +121,7 @@ public class LinkFromHtmlPage {
     }
 
     public String toString() {
-        return this.id + " => " + this.url;
-    }
-
-    public String getId() {
-        return this.id;
+        return this.url;
     }
 
     public String getUrl() {
@@ -148,7 +143,6 @@ public class LinkFromHtmlPage {
         }
     }
 
-    private String id;
     private String url;
     private Document doc;
     private String datestamp;

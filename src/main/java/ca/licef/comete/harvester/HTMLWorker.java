@@ -8,18 +8,15 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.codec.digest.DigestUtils;
+import ca.licef.comete.metadata.util.Util;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import com.fasterxml.uuid.impl.UUIDUtil;
-import com.fasterxml.uuid.UUIDType;
 
 import licef.XMLUtil;
 
@@ -44,8 +41,13 @@ public class HTMLWorker extends Worker {
                 LinkFromHtmlPage link = it.next();
                 try {
                     String status = null;
-                    String identifier = link.getId();
                     Node metadataNode = link.getRecord();
+                    String[] data = Util.parseMetadataRecord(metadataNode);
+                    String errorMessage = data[0];
+                    if (errorMessage != null)
+                        throw new Exception(errorMessage);
+
+                    String identifier = data[3];
                     String datestamp = link.getLatestDatestamp();
 
                     String metadata = null;
@@ -56,7 +58,7 @@ public class HTMLWorker extends Worker {
                     digest(identifier, status, datestamp, metadata);
                 }
                 catch( Throwable t ) {
-                    getReport().addError( new Error( link.getId(), link.getUrl(), t ) );
+                    getReport().addError( new Error(link.getUrl(), t ) );
                 }
             }
         }
@@ -105,8 +107,8 @@ public class HTMLWorker extends Worker {
                         else
                             linkUrl = getUrl() + (getUrl().endsWith("/") ? "" : "/") + href;
                         int indexOfAnchorEnd = line.indexOf("</a>", indexOfHrefEnd);
-                        String id = "urn:uuid:" + UUIDUtil.constructUUID( UUIDType.NAME_BASED_SHA1, DigestUtils.shaHex(linkUrl).getBytes( "UTF-8" ) ).toString();
-                        links.add(new LinkFromHtmlPage(id, linkUrl));
+                        //String id = "urn:uuid:" + UUIDUtil.constructUUID( UUIDType.NAME_BASED_SHA1, DigestUtils.shaHex(linkUrl).getBytes( "UTF-8" ) ).toString();
+                        links.add(new LinkFromHtmlPage(linkUrl));
                         workIndex = indexOfAnchorEnd;
                     }
                 }

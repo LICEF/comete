@@ -5,9 +5,10 @@ PREFIX comete: <http://comete.licef.ca/reference#>
 
 SELECT DISTINCT ?s
 WHERE '{'
-    <{0}> comete:vocUri ?vocUri .
     ?s rdf:type comete:LearningObject .
-    ?s dcterms:subject ?concept .
+    <{0}> comete:vocUri ?vocUri .
+    <{0}> comete:vocConceptLinkingPredicate ?p .
+    ?s ?p ?concept .
     GRAPH ?vocUri '{'
         ?concept skos:inScheme ?vocUri
     '}'

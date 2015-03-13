@@ -6,12 +6,11 @@ import ca.licef.comete.core.metadataformat.MetadataFormats;
 import ca.licef.comete.core.Settings;
 import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.ResultSet;
-import ca.licef.comete.core.util.Util;
+import ca.licef.comete.metadata.util.Util;
 import ca.licef.comete.store.Store;
 import ca.licef.comete.vocabularies.COMETE;
 import ca.licef.comete.vocabularies.OAI;
 import com.sun.jersey.core.header.FormDataContentDisposition;
-import licef.CommonNamespaceContext;
 import licef.DateUtil;
 import licef.IOUtil;
 import licef.StringUtil;
@@ -60,6 +59,7 @@ public class Metadata {
     public static File tmpFolder = new File(System.getProperty("java.io.tmpdir"));
 
     TripleStore tripleStore = Core.getInstance().getTripleStore();
+    static ca.licef.comete.core.util.Util CoreUtil;
 
     public static Metadata getInstance() {
         if (instance == null)
@@ -99,7 +99,7 @@ public class Metadata {
     }
 
     public String getLearningObjectURI( String metadataRecordUri ) throws Exception {
-        String query = Util.getQuery( "metadata/getLearningObject.sparql", metadataRecordUri );
+        String query = CoreUtil.getQuery( "metadata/getLearningObject.sparql", metadataRecordUri );
         Tuple[] tuples = tripleStore.sparqlSelect( query );
         if( tuples.length > 0 )
             return( tuples[ 0 ].getValue( "res" ).getContent() );
@@ -108,7 +108,7 @@ public class Metadata {
     }
 
     public String getRecordURI( String oaiID, String namespace ) throws Exception {
-        String query = Util.getQuery( "metadata/getMetadataRecordWith-oai-id.sparql", namespace, oaiID );
+        String query = CoreUtil.getQuery( "metadata/getMetadataRecordWith-oai-id.sparql", namespace, oaiID );
         Tuple[] tuples = tripleStore.sparqlSelect(query);
         if( tuples.length > 0 )
             return( tuples[ 0 ].getValue( "s" ).getContent() );
@@ -200,48 +200,8 @@ public class Metadata {
         return results;
     }
 
-    private String[] parseMetadataRecord(File file) {
-        String errorMessage = null;
-        String content = null;
-        String namespace = null;
-        String pseudoOaiID = null;
-        String xpath = null;
-        try {
-            Node node = XMLUtil.getXMLNode(file);
-            content = XMLUtil.getXMLString( node );
-            String rootname = XMLUtil.getRootTagName(content);
-            Hashtable namespaces = XMLUtil.getAttributes(content, "/");
-            String[] array = StringUtil.split(rootname, ':');
-            rootname = array[array.length - 1].toLowerCase();
-            if ("lom".equals(rootname) && namespaces.containsValue(Constants.IEEE_LOM_NAMESPACE)) {
-                namespace = Constants.IEEE_LOM_NAMESPACE;
-                xpath = "//lom:lom/lom:metaMetadata/lom:identifier/lom:entry";
-            }
-            else if ("dc".equals(rootname) && namespaces.containsValue(Constants.OAI_DC_NAMESPACE)) {
-                namespace = Constants.OAI_DC_NAMESPACE;
-                xpath = "//dc:identifier";
-            }
-            else
-                errorMessage = "Wrong metadata format.";
-
-            //check of 3.1 metaMetadata identifier existence for LOM or dc:identifier for DC.
-            NodeList identifierNodes = XMLUtil.getNodeList( node, xpath );
-            for( int i = 0; i < identifierNodes.getLength(); i++ ) {
-                Node identNode = identifierNodes.item( i );
-                pseudoOaiID = identNode.getTextContent();
-                break;
-            }
-            if (pseudoOaiID == null)
-                errorMessage = "No metametadata identifier field.";
-        } catch (Exception e) {
-            errorMessage = "Error on record parsing.";
-        }
-
-        return new String[] {errorMessage, content, namespace, pseudoOaiID};
-    }
-
     public String[] storeUploadedRecord(File file, File resource) throws Exception {
-        String[] values = parseMetadataRecord(file);
+        String[] values = Util.parseMetadataRecord(file);
 
         String errorMessage = values[0];
 
@@ -276,7 +236,7 @@ public class Metadata {
     }
 
     public Object[] isRecordExists(File record) throws Exception {
-        String[] values = parseMetadataRecord(record);
+        String[] values = Util.parseMetadataRecord(record);
         String errorMessage = values[0];
         String namespace = values[2];
         String pseudoOaiID = values[3];
@@ -325,7 +285,7 @@ public class Metadata {
     }
 
     public void doDeleteLearningObject(String loUri, boolean markStoreRecordForDeletion) throws Exception {
-        String query = Util.getQuery( "metadata/getMetadataRecordFromLO.sparql", loUri ); 
+        String query = CoreUtil.getQuery( "metadata/getMetadataRecordFromLO.sparql", loUri );
         Tuple[] res = tripleStore.sparqlSelect( query );
         for( Tuple tuple : res ) {
             String recordUri = tuple.getValue( "s" ).getContent();
@@ -352,7 +312,7 @@ public class Metadata {
     }
 
     public String[][] getRepositoryRecords(String repoUri) throws Exception {
-        String query = Util.getQuery( "metadata/getRepositoryRecords.sparql", repoUri ); 
+        String query = CoreUtil.getQuery( "metadata/getRepositoryRecords.sparql", repoUri );
         Tuple[] tuples = tripleStore.sparqlSelect( query );
         String[][] res = new String[ tuples.length ][ 2 ];
         for( int i = 0; i < tuples.length; i++ ) {
@@ -396,13 +356,11 @@ public class Metadata {
         if (recordURI != null) {
             isUpdate = true;
             Triple[] _triples = tripleStore.getTriplesWithSubjectPredicate(recordURI, OAI.datestamp);
-            if (_triples.length > 0) {
+            if (_triples.length > 0 && datestamp != null) {
                 Date d1 = DateUtil.toDate(_triples[0].getObject());
                 Date d2 = DateUtil.toDate(datestamp);
-                if (d2.after(d1)) {
-                    String query = Util.getQuery( "metadata/deleteOAIDatestampTriples.sparql", recordURI, OAI.datestamp.getURI() );
-                    tripleStore.sparqlUpdate( query );
-                }
+                if (d2.after(d1))
+                    tripleStore.removeTriplesWithSubjectPredicate(recordURI, OAI.datestamp);
                 else
                     return new String[]{null, null, null, "ignored"};
             }
@@ -414,14 +372,14 @@ public class Metadata {
         else {
             ////Is there another metadata record with the same oai-id ?
             ////if yes, retrieve of the described resource
-            String query = Util.getQuery( "metadata/getLearningObjectFromOtherMetadataRecord.sparql", oaiId );
+            String query = CoreUtil.getQuery( "metadata/getLearningObjectFromOtherMetadataRecord.sparql", oaiId );
             Tuple[] tuples = tripleStore.sparqlSelect( query );
             if (tuples.length > 0)
                 loURI = tuples[0].getValue("res").getContent();
 
             //creation of new one
             if (loURI == null) {
-                loURI = Util.makeURI(COMETE.LearningObject);
+                loURI = CoreUtil.makeURI(COMETE.LearningObject);
                 triples.add( new Triple( loURI, RDF.type, COMETE.LearningObject ) );
                 triples.add( new Triple( loURI, COMETE.added, DateUtil.toISOString(new Date(), null, null) ) );
             }
@@ -429,7 +387,7 @@ public class Metadata {
             storeId = store.createDigitalObject( Store.PATH_RECORDS );
 
             // We remove the leading / beforehand.
-            recordURI = Util.makeURI(storeId.substring( 1 ), COMETE.MetadataRecord.getURI());
+            recordURI = CoreUtil.makeURI(storeId.substring( 1 ), COMETE.MetadataRecord.getURI());
             triples.add(new Triple(recordURI, RDF.type, COMETE.MetadataRecord));
             triples.add(new Triple(recordURI, COMETE.metadataFormat, namespace));
             triples.add(new Triple(recordURI, COMETE.storeDigitalObject, storeId));
@@ -493,7 +451,7 @@ public class Metadata {
         HashMap<String,String> params = new HashMap<String,String>();
         params.put( "loURI", loURI );
         params.put( "recordURI", recordURI );
-        String triplesAsXml = Util.applyXslToDocument( "metadata/process" + StringUtil.capitalize( format ) + "Record", xmlSource, params );
+        String triplesAsXml = CoreUtil.applyXslToDocument( "metadata/process" + StringUtil.capitalize( format ) + "Record", xmlSource, params );
         return( triplesAsXml );
     }
 
@@ -617,7 +575,7 @@ public class Metadata {
      */
 
     private void resetLearningObjectNonPersistentTriples(String recordURI) throws Exception {
-        String query = Util.getQuery( "metadata/deleteLOTriplesToReset.sparql", recordURI );
+        String query = CoreUtil.getQuery( "metadata/deleteLOTriplesToReset.sparql", recordURI );
         tripleStore.sparqlUpdate_textIndex(query);
     }
 
@@ -643,7 +601,7 @@ public class Metadata {
             stylesheet = "metadata/processLomLinking";
 
         StreamSource source = new StreamSource( new StringReader( xml ) );
-        Util.applyXslToDocument( stylesheet, source, parameters );
+        CoreUtil.applyXslToDocument( stylesheet, source, parameters );
     }
 
     /*private void internalFormatToExposedRecords(String loURI, String storeId, MetadataFormat metadataFormat) throws Exception {
@@ -697,7 +655,7 @@ public class Metadata {
         if( !store.isDatastreamExists( storeId, Constants.DATASTREAM_ORIGINAL_DATA ) )
             return;
 
-        String recordURI = Util.makeURI( storeId.substring( 1 ), COMETE.MetadataRecord.getURI() );
+        String recordURI = CoreUtil.makeURI( storeId.substring( 1 ), COMETE.MetadataRecord.getURI() );
         System.out.println( "Expose record : " + recordURI + "..." );
 
         String xml = store.getDatastream( storeId, Constants.DATASTREAM_ORIGINAL_DATA );
@@ -714,7 +672,7 @@ public class Metadata {
             }
 
             StreamSource source = new StreamSource( new StringReader( xml ) );
-            String newXml = Util.applyXslToDocument( stylesheet, source, parameters );
+            String newXml = CoreUtil.applyXslToDocument( stylesheet, source, parameters );
             int resp = store.setDatastream( storeId, "exposed_" + mf.getName(), newXml );
             if (resp == Store.DATASTREAM_STORED)
                 System.out.println("-> " + recordURI + " exposed (" + mf.getName() + " format)");
@@ -747,7 +705,7 @@ public class Metadata {
             boolean isValid = true;
             long startTime = System.currentTimeMillis();
             System.out.println( "Validating record " + recordURI + " against " + profileUri );
-            String reportDataStream = Util.getReportDataStream( profileUri );
+            String reportDataStream = CoreUtil.getReportDataStream( profileUri );
             if( store.isDatastreamExists( storeId, reportDataStream ) )
                 store.deleteDatastream( storeId, reportDataStream );
             try {
@@ -759,7 +717,7 @@ public class Metadata {
                 String errorReport = JDomUtils.parseXml2string(ValidationUtils.collectErrorsAsXml(e.getMessage()),null);
                 if( !store.isDatastreamExists( storeId, reportDataStream ) ) {
                     store.setDatastream( storeId, reportDataStream, errorReport);
-                    tripleStore.insertTriple( new Triple( recordURI, COMETE.validationReportLink, Util.getReportLink( storeId, profileUri ) ) );
+                    tripleStore.insertTriple( new Triple( recordURI, COMETE.validationReportLink, CoreUtil.getReportLink( storeId, profileUri ) ) );
                 }
             }
             finally {
@@ -827,9 +785,9 @@ public class Metadata {
 
     public ResultSet getMetadataRecordApplicationProfilesEff( int start, int limit, String applProfile, boolean showOnlyInvalidRecords ) throws Exception {
         ResultSet rs = new ResultSet();
-        String query = Util.getQuery( "metadata/getAllMetadataRecordsCount.sparql" );
+        String query = CoreUtil.getQuery( "metadata/getAllMetadataRecordsCount.sparql" );
         if( applProfile != null && showOnlyInvalidRecords )
-            query = Util.getQuery( "metadata/getInvalidMetadataRecordsCount.sparql", Util.getApplProfAbbreviation( applProfile ) );
+            query = CoreUtil.getQuery( "metadata/getInvalidMetadataRecordsCount.sparql", CoreUtil.getApplProfAbbreviation( applProfile ) );
         Tuple[] res = tripleStore.sparqlSelect( query );
         int count = Integer.parseInt( res[0].getValue( "count" ).getContent() );
         if( count > 0 ) {
@@ -837,9 +795,9 @@ public class Metadata {
             List<String> recordUris = new ArrayList<String>();
 
             Hashtable<String, String> metadataFormats = new Hashtable<String, String>();
-            query = Util.getQuery( "metadata/getAllMetadataRecordFormats.sparql", start, limit );
+            query = CoreUtil.getQuery( "metadata/getAllMetadataRecordFormats.sparql", start, limit );
             if( applProfile != null && showOnlyInvalidRecords )
-                query = Util.getQuery( "metadata/getInvalidMetadataRecordFormats.sparql", start, limit, Util.getApplProfAbbreviation( applProfile ) );
+                query = CoreUtil.getQuery( "metadata/getInvalidMetadataRecordFormats.sparql", start, limit, CoreUtil.getApplProfAbbreviation( applProfile ) );
             res = tripleStore.sparqlSelect( query );
             for( Tuple tuple : res ) {
                 String uri = tuple.getValue( "s" ).getContent();
@@ -853,7 +811,7 @@ public class Metadata {
             retrieveMetadataRecordRepoInfo( recordUris, metadataRecordRepoTable, repoInfo );
 
             String union = buildMetadataRecordsUnion( recordUris );
-            query = Util.getQuery( "metadata/getMetadataRecordApplicationProfiles.sparql", union );
+            query = CoreUtil.getQuery( "metadata/getMetadataRecordApplicationProfiles.sparql", union );
             Tuple[] tuples = tripleStore.sparqlSelect( query );
             String tempUri = null;
             List<String> applProfList = null;
@@ -952,8 +910,8 @@ public class Metadata {
     }
 
     private void retrieveMetadataRecordRepoInfo( List<String> recordUris, Hashtable<String, String> metadataRecordRepoTable, Hashtable<String, Hashtable<String, String>> repoInfo ) throws Exception {
-        String repoInfoConstraint = Util.buildFilterConstraints( recordUris, "s", true, "=", "||" );
-        String query = Util.getQuery( "metadata/getMetadataRecordRepoInfo.sparql", repoInfoConstraint );
+        String repoInfoConstraint = CoreUtil.buildFilterConstraints( recordUris, "s", true, "=", "||" );
+        String query = CoreUtil.getQuery( "metadata/getMetadataRecordRepoInfo.sparql", repoInfoConstraint );
         Tuple[] resRepoInfo = tripleStore.sparqlSelect( query );
         for( Tuple tuple : resRepoInfo ) {
             String uri = tuple.getValue( "s" ).getContent();
