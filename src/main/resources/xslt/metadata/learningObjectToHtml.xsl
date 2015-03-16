@@ -182,7 +182,6 @@
                                     </xsl:if>
                                     <xsl:if test="count(*[@navigable = 'true'][@vocabLabel]) &gt; 0">
                                         <h2 class="SectionHeader"><xsl:value-of select="$HeaderSubjects"/></h2>
-                                        <ul>
                                         <xsl:for-each-group select="*[@navigable = 'true'][@vocabLabel]" group-by="@vocabLabel">
                                             <xsl:sort select="current-grouping-key()" lang="$lang"/>
                                                 <ul>
@@ -192,7 +191,6 @@
                                                 </xsl:for-each>
                                                 </ul>
                                         </xsl:for-each-group>
-                                        </ul>
                                     </xsl:if>
                                 </div>
                             </td>
