@@ -203,56 +203,56 @@ public class MetadataRecordResource {
             return( Response.status( HttpServletResponse.SC_OK ).entity( xml ).type( MediaType.APPLICATION_XML ).build() );
     }
 
-    //@GET
-    //@Path( "/applicationProfiles" )
-    //@Produces( MediaType.APPLICATION_JSON )
-    //public String getMetadataRecordApplicationProfiles( @DefaultValue( "0" ) @QueryParam( "start" ) String strStart, @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit ) throws Exception {
-    //    int start = -1;
-    //    if( strStart != null ) {
-    //        try {
-    //            start = Integer.parseInt( strStart );
-    //        }
-    //        catch( NumberFormatException e ) {
-    //            throw( new WebApplicationException( e, HttpServletResponse.SC_BAD_REQUEST ) );
-    //        }
-    //    }
+    @GET
+    @Path( "/applicationProfiles" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public String getMetadataRecordApplicationProfiles( @DefaultValue( "0" ) @QueryParam( "start" ) String strStart, @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit ) throws Exception {
+        int start = -1;
+        if( strStart != null ) {
+            try {
+                start = Integer.parseInt( strStart );
+            }
+            catch( NumberFormatException e ) {
+                throw( new WebApplicationException( e, HttpServletResponse.SC_BAD_REQUEST ) );
+            }
+        }
 
-    //    int limit = -1;
-    //    if( strLimit != null ) {
-    //        try {
-    //            limit = Integer.parseInt( strLimit );
-    //        }
-    //        catch( NumberFormatException e ) {
-    //            throw( new WebApplicationException( e, HttpServletResponse.SC_BAD_REQUEST ) );
-    //        }
-    //    }
+        int limit = -1;
+        if( strLimit != null ) {
+            try {
+                limit = Integer.parseInt( strLimit );
+            }
+            catch( NumberFormatException e ) {
+                throw( new WebApplicationException( e, HttpServletResponse.SC_BAD_REQUEST ) );
+            }
+        }
 
-    //    ResultSet rs = Metadata.getInstance().getMetadataRecordApplicationProfiles( start, limit );
+        ResultSet rs = Metadata.getInstance().getMetadataRecordApplicationProfiles( start, limit, null, false );
 
-    //    StringWriter out = new StringWriter();
-    //    JSONWriter json = new JSONWriter( out );
-    //    
-    //    JSONArray records = new JSONArray();
-    //    
-    //    for( ListIterator it = rs.getEntries(); it.hasNext(); ) {
-    //        Map<String, Object> entry = (Map<String, Object>)it.next();
+        StringWriter out = new StringWriter();
+        JSONWriter json = new JSONWriter( out );
+        
+        JSONArray records = new JSONArray();
+        
+        for( ListIterator it = rs.getEntries(); it.hasNext(); ) {
+            Map<String, Object> entry = (Map<String, Object>)it.next();
 
-    //        JSONObject record = new JSONObject();
-    //        record.put( "id", entry.get( "id" ) )
-    //            .put( "profiles", entry.get( "profiles" ) );
-    //        records.put( record );
-    //    }
+            JSONObject record = new JSONObject();
+            record.put( "id", entry.get( "id" ) )
+                .put( "profiles", entry.get( "profiles" ) );
+            records.put( record );
+        }
 
-    //    json.object()
-    //        .key( "records" ).value( records )
-    //        .key( "totalCount" ).value( rs.getTotalRecords() );
+        json.object()
+            .key( "records" ).value( records )
+            .key( "totalCount" ).value( rs.getTotalRecords() );
 
-    //    json.endObject();
+        json.endObject();
 
-    //    out.close();
+        out.close();
 
-    //    return( out.toString() );
-    //}
+        return( out.toString() );
+    }
 
     @GET
     @Path( "/applicationProfilesByColumns" )
