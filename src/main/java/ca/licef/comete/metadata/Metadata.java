@@ -276,7 +276,8 @@ public class Metadata {
     public void deleteRecord(String recordURI, boolean markStoreRecordForDeletion) throws Exception {
         Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", "getLearningObjectURI", new Object[] { recordURI } );
         String loURI = (String)tripleStore.transactionalCall( inv );
-        deleteLearningObject(loURI, markStoreRecordForDeletion);
+        if( loURI != null ) 
+            deleteLearningObject(loURI, markStoreRecordForDeletion);
     }
 
     public void deleteLearningObject(String loUri, boolean markStoreRecordForDeletion) throws Exception {
@@ -296,7 +297,7 @@ public class Metadata {
     }
 
     private void deleteMetadataRecord(String recordURI, String storeId) throws Exception {
-        markStoreRecordForDeletion( storeId );
+        markStoreRecordForDeletion(  storeId );
         tripleStore.removeResource_textIndex(recordURI);
     }
 
