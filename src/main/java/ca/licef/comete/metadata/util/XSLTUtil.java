@@ -184,7 +184,8 @@ public class XSLTUtil {
         if ("9.2".equals(element))
             element = null;
         else {
-            value = StringUtil.toCamelCase(value);
+            if (source.startsWith("LOM"))
+                value = StringUtil.toCamelCase(value);
         }
         if( source == null)
             return null;
@@ -194,15 +195,14 @@ public class XSLTUtil {
         if (value == null || "".equals(value))
             return null;
 
-        TripleStore tripleStore = Core.getInstance().getTripleStore();
-
-        String id = (element == null)?source:source + "-" + element;
+        String id = (element == null || source.startsWith("http"))?source:source + "-" + element;
         String conceptUri = Vocabulary.getInstance().getConcept(id, value);
+
         if( conceptUri != null ) {
             String vocUri = Vocabulary.getInstance().getVocabularyUri(id);
             String predicate = Vocabulary.getInstance().getConceptLinkingPredicateFromUri(vocUri);
             Triple triple = new Triple(loURI, predicate, conceptUri, false);
-            tripleStore.insertTriple(triple);
+            Core.getInstance().getTripleStore().insertTriple(triple);
         }
         else
             System.out.println("-> no concept URI found for " + source + ", " + value);
