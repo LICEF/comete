@@ -199,19 +199,17 @@ public class LearningObjectView extends DefaultView {
                 continue;
 
             NodeList conceptElements = doc.getElementsByTagNameNS( lpNsUri, lpElementName );
-            if( conceptElements.getLength() > 0 ) {
-                for( int c = 0; c < conceptElements.getLength(); c++ ) {
-                    Element conceptElement = (Element)conceptElements.item( c );
-                    String conceptUri = conceptElement.getAttributeNS( CommonNamespaceContext.rdfNSURI, "resource" );
-                    String conceptScheme = Vocabulary.getInstance().getConceptScheme( conceptUri );
-                    String vocabLabel = Vocabulary.getInstance().getLabel( conceptScheme, locale.getLanguage() );
-                    if( vocabLabel != null )
-                        conceptElement.setAttributeNS( "", "vocabLabel", vocabLabel );
-                    String conceptLabel = Vocabulary.getInstance().getLabel( conceptUri, locale.getLanguage() );
-                    if( conceptLabel != null ) 
-                        conceptElement.setAttributeNS( "", "conceptLabel", conceptLabel );
-                    conceptElement.setAttributeNS( "", "navigable", Vocabulary.getInstance().isVocNavigable( conceptScheme ) + "" );
-                }
+            for( int c = 0; c < conceptElements.getLength(); c++ ) {
+                Element conceptElement = (Element)conceptElements.item( c );
+                String conceptUri = conceptElement.getAttributeNS( CommonNamespaceContext.rdfNSURI, "resource" );
+                String conceptScheme = Vocabulary.getInstance().getConceptScheme( conceptUri );
+                String vocabLabel = Vocabulary.getInstance().getLabel( conceptScheme, locale.getLanguage() );
+                if( vocabLabel != null )
+                    conceptElement.setAttributeNS( "", "vocabLabel", vocabLabel );
+                String conceptLabel = Vocabulary.getInstance().getLabel( conceptUri, locale.getLanguage() );
+                if( conceptLabel != null )
+                    conceptElement.setAttributeNS( "", "conceptLabel", conceptLabel );
+                conceptElement.setAttributeNS( "", "navigable", Vocabulary.getInstance().isVocNavigable( conceptScheme ) + "" );
             }
         }
 

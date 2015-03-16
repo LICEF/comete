@@ -432,7 +432,7 @@ public class VocabularyManager {
         tripleStore.sparqlUpdate( CoreUtil.getQuery("vocabulary/inferExactMatch.sparql", vocUri) );
         tripleStore.sparqlUpdate( CoreUtil.getQuery("vocabulary/inferCloseMatch.sparql", vocUri) );
         tripleStore.sparqlUpdate( CoreUtil.getQuery("vocabulary/inferNarrowMatch.sparql", vocUri) );
-        tripleStore.sparqlUpdate( CoreUtil.getQuery("vocabulary/inferPrefLabel.sparql", vocUri) );
+        tripleStore.sparqlUpdate_textIndex( CoreUtil.getQuery("vocabulary/inferPrefLabel.sparql", vocUri) );
     }
 
     public String convertVdexToSkos( String vdexContent ) throws Exception {
