@@ -167,10 +167,14 @@ public class Util {
                         String number = property.getValue();
                         if (number.startsWith("+"))
                             number = number.substring(1);
-                        if (param.getValue().toUpperCase().contains("VOICE"))
+                        if (param.getValue().toUpperCase().contains("VOICE")) {
+                            number = number.replace("/", "-");
                             unescapePut(vcardTable, "tel", number);
-                        else if (param.getValue().toUpperCase().contains("FAX"))
+                        }
+                        else if (param.getValue().toUpperCase().contains("FAX")) {
+                            number = number.replace("/", "-");
                             unescapePut(vcardTable, "fax", number);
+                        }
                     }
                 }
             }
