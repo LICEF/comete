@@ -111,7 +111,6 @@ public class VocabularyManager {
         String location = details[0].getValue("location").getContent();
         String newLocation = null;
         boolean isContentToUpdate = !"".equals(urlLocation) || !"".equals(fileName);
-        boolean needContentUpdate = false;
         if (isContentToUpdate) {
             //possible modification from uploaded file
             if (!"".equals(fileName)) {
@@ -127,17 +126,9 @@ public class VocabularyManager {
                     error = "Not a VDEX or SKOS content.";
                 }
                 else {
-                    if (location.startsWith("http"))
-                        needContentUpdate = true;
-                    else {
+                    if (!location.startsWith("http")) {
                         File content = new File(vocDirConfig, location);
-                        FileInputStream fis = new FileInputStream(content);
-                        FileInputStream fisTmp = new FileInputStream(tmpContentFile);
-                        boolean isSameContent = DigestUtils.shaHex(fisTmp).equals(DigestUtils.shaHex(fis));
-                        fisTmp.close();
-                        fis.close();
                         content.delete();
-                        needContentUpdate = !isSameContent;
                     }
                     File newContent = new File(vocDirConfig, fileName);
                     tmpContentFile.renameTo(newContent);
@@ -151,18 +142,9 @@ public class VocabularyManager {
                 if (format == -1)
                     error = "Not a VDEX or SKOS content.";
                 else {
-                    if (location.startsWith("http")) {
-                        InputStream is = new URL(location).openStream();
-                        InputStream isTmp = new URL(urlLocation).openStream();
-                        boolean isSameContent = DigestUtils.shaHex(isTmp).equals(DigestUtils.shaHex(is));
-                        isTmp.close();
-                        is.close();
-                        needContentUpdate = !isSameContent;
-                    }
-                    else {
+                    if (!location.startsWith("http")) {
                         File content = new File(vocDirConfig, location);
                         content.delete();
-                        needContentUpdate = true;
                     }
                     newLocation = urlLocation;
                 }
@@ -179,8 +161,7 @@ public class VocabularyManager {
         createDecriptor(id, location, uriPrefix, uriSuffix, linkingPredicate);
 
         //update of content
-        if (needContentUpdate)
-           initVocabulary(id, true);
+        initVocabulary(id, true);
 
         return error;
     }
