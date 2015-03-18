@@ -433,7 +433,7 @@
         <xsl:variable name="title" select="if( contains( $uri, 'person' ) ) then $RelatedLearningObjectsToContribLinkLabel else $RelatedLearningObjectsToOrgLinkLabel"/>
         <a>
             <xsl:attribute name="class"><xsl:value-of select="$class"/></xsl:attribute>
-            <xsl:attribute name="href">javascript:<xsl:value-of select="$functionName"/>( '<xsl:value-of select="$uri"/>', '<xsl:value-of select="$label"/>' );</xsl:attribute>
+            <xsl:attribute name="href">javascript:<xsl:value-of select="$functionName"/>( '<xsl:value-of select="$uri"/>', '<xsl:value-of select="replace( $label, '''', '\\''' )"/>' );</xsl:attribute>
             <xsl:value-of select="$label"/>
         </a>
     </xsl:template>
