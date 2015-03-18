@@ -11,6 +11,10 @@ function changeCardItem(item, elem) {
     }
 
     var cardPanel = Ext.getCmp( 'cardPanel' );
+    var currentItem = cardPanel.getLayout().getActiveItem();
+    if( currentItem.beforeQuit )
+        currentItem.beforeQuit();
+
     cardPanel.getLayout().setActiveItem(item);
     currentElem.removeCls('selectedChoice');
     currentElem.addCls('choice');

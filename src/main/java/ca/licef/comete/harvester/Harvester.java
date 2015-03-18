@@ -165,9 +165,9 @@ public class Harvester {
         if (isHarvest(defId))
             throw new Exception( "A harvest is already in progress with this definition." );
 
-        //temporary test to avoid parallel harvests
-        if (getHarvests().length > 0)
-            throw new Exception( "A harvest is already in progress. Only one at a time for this version." );
+        //Uncomment to avoid parallel harvests
+        //if (getHarvests().length > 0)
+        //throw new Exception( "A harvest is already in progress. Only one at a time for this version." );
         ///////////////
 
         File defFolder = new File( HARVESTER_FOLDER, defId );

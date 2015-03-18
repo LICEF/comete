@@ -380,7 +380,7 @@ Ext.define('CollectionModel', {
 
 Ext.define('HarvestDefModel', {
     extend: 'Ext.data.Model',
-    fields: [ 'restUrl', 'name' ]
+    fields: [ 'id', 'restUrl', 'name' ]
 });
 
 var vocabProxy = Ext.create('Ext.data.proxy.Ajax', {

@@ -31,11 +31,18 @@
             scope: this
         } );
 
+        function processIcon(val, cellmetadata, record, row) {
+            var icon = record.get('inProcess') == true?'process.gif':'empty.png';
+            return '<img src="images/' + icon + '"/>';
+        }
+
         this.harvestDefList = Ext.create('Ext.grid.Panel', { 
             store: this.harvestDefStore,
             margin: '0 20 10 10',                
             columns: [ 
-                { dataIndex: 'name', text: tr('Repositories'), flex: 1, height: 28 }
+                { dataIndex: 'id', hidden: true },
+                { dataIndex: 'name', text: tr('Repositories'), flex: 1, height: 28 },
+                { dataIndex: 'inProcess', width: 40, renderer: processIcon }
             ],     
             viewConfig: {
                 loadingText: tr('Loading') + '...',
@@ -46,6 +53,8 @@
         });
 
         this.harvestDefList.on( 'selectionchange', this.harvestDefChanged, this );
+
+        this.harvestDefStore.on( 'load', function() { this.checkHarvestsInProcess(this) }, this );
 
         this.defPanel = Ext.create('Ext.Panel', { 
             layout: 'fit',
@@ -240,6 +249,11 @@
             this.harvestDefStore.loadPage(1);
             this.isDirty = false;
         }
+
+        //Start thread
+        var comp = this;
+        this.threadCheckHarvestsInProcess = 
+            setInterval( function() { comp.checkHarvestsInProcess(comp) }, 20000);
     },
     startHarvest: function() {
         Ext.Ajax.request( {
@@ -247,6 +261,7 @@
             method: 'POST',
             success: function(response, opts) {
                 Ext.Msg.alert('Information', tr('Harvest started.'));
+                this.harvestDefStore.loadPage();
             },
             failure: function(response, opts) {
                 Ext.Msg.alert('Message', response.responseText);  
@@ -260,12 +275,42 @@
             method: 'DELETE',
             success: function(response, opts) {
                 Ext.Msg.alert('Information', tr('Harvest stopped.'));
+                this.harvestDefStore.loadPage();
             },
             failure: function(response, opts) {
                 Ext.Msg.alert('Message', response.responseText);  
             },
             scope: this 
         } );
+    },
+    checkHarvestsInProcess: function(comp) {
+        //hide all processing icons
+        var records = this.harvestDefStore.getData().items;
+        for (var i = 0; i < records.length; i++) {
+            records[i].set('inProcess', false);
+            records[i].commit(); //probably not good use of commit but avoid mark cell as dirty -AM
+        }
+
+        Ext.Ajax.request( {
+            url: 'rest/harvests',
+            method: 'GET',
+            success: function(response, opts) {
+                var array = Ext.JSON.decode(response.responseText, true).harvests;
+                for (var i = 0; i < array.length; i++) {
+                    var record = comp.harvestDefList.getStore().findRecord('id', array[i]);  
+                    record.set('inProcess', true);
+                    record.commit(); //probably not good use of commit but avoid mark cell as dirty -AM
+                }
+            },
+            failure: function(response, opts) {
+                Ext.Msg.alert('Failure', response.responseText);
+            },
+            scope: this
+        } );
+    },
+    beforeQuit: function() {
+        //Stop thread
+        clearInterval(this.threadCheckHarvestsInProcess);
     }
 } );
 

@@ -63,7 +63,7 @@ public class HarvestResource {
             if( "Harvest definition not found.".equals( e.getMessage() ) )
                 return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
             else
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+                return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
         }
     }
 
@@ -82,7 +82,7 @@ public class HarvestResource {
             if( "Harvest not found.".equals( e.getMessage() ) )
                 return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
             else
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+                return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
         }
 
         return Response.ok("Harvest " + id + " stopped.").build();
