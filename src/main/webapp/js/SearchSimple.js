@@ -10,7 +10,7 @@
             style: {  marginLeft: '10px' }
         } );
 
-        if( this._query )
+        if( this._query && this._query[0].value.indexOf( "http" ) != 0 ) 
             this.searchQueryField.setValue( this._query[0].value );
 
         this.searchQueryField.on( 'specialkey', function( f, e ) {
