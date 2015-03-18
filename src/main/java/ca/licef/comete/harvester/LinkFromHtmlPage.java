@@ -1,12 +1,15 @@
 package ca.licef.comete.harvester;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -18,6 +21,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -25,7 +29,9 @@ import org.w3c.dom.NodeList;
 import org.w3c.util.DateParser;
 import org.w3c.util.InvalidDateException;
 
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import licef.XMLUtil;
 
@@ -42,10 +48,35 @@ public class LinkFromHtmlPage {
             HttpResponse response = httpclient.execute( get );
             HttpEntity entity = response.getEntity();
             if (entity != null) {
+                String content = EntityUtils.toString( entity );
                 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
                 factory.setNamespaceAware( true );
-                DocumentBuilder builder = factory.newDocumentBuilder();
-                doc = builder.parse( entity.getContent() );
+
+            parseConcent:
+
+                for( ;; ) {
+                    try {
+                        DocumentBuilder builder = factory.newDocumentBuilder();
+                        doc = builder.parse( new InputSource( new StringReader( content ) ) );
+                        break;
+                    }
+                    catch( SAXParseException e ) {
+                        Matcher m = patternEntityWithoutSemicolon.matcher( e.getMessage() );
+                        if( m.find() ) {
+                            String textEntity = m.group( 1 );
+                            content = content.replaceAll( "&" + textEntity, "&amp;" + textEntity );
+                            continue parseConcent;
+                        }
+                       
+                        m = patternEntityWithoutName.matcher( e.getMessage() );
+                        if( m.find() ) {
+                            content = content.replaceAll( "&", "&amp;" );
+                            continue parseConcent;
+                        }
+                        
+                        throw( e );
+                    }
+                }
 
                 // Try to initialize the datestamp.
                 initDatestamp( response );
@@ -142,6 +173,9 @@ public class LinkFromHtmlPage {
             }
         }
     }
+
+    private Pattern patternEntityWithoutSemicolon = Pattern.compile( "The reference to entity \"(.+?)\" must end with the ';' delimiter." );
+    private Pattern patternEntityWithoutName = Pattern.compile( "The entity name must immediately follow the '&' in the entity reference." );
 
     private String url;
     private Document doc;
