@@ -96,7 +96,7 @@ public class Identity {
                 email = "mailto:" + email;
             if (tel != null && !"".equals(tel))
                 tel = "tel:" + tel;
-            if (fax != null && !"".equals(tel))
+            if (fax != null && !"".equals(fax))
                 fax = "fax:" + fax;
             if ("".equals(org))
                 org = null;
