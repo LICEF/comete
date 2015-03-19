@@ -49,18 +49,16 @@
         function doInitSharingLinks() {
             var titleElement = Ext.get( 'LearningObjectResourceTitle' );
             var title = ( titleElement == null ? null : titleElement.getHtml() );
-            // This must be encoded and the quotes must be replaced.  Check xslt transfo. - FB
-            //var title = '<xsl:value-of select="replace( escape-html-uri( $title ), '''', '\\''' )"/>';
             
             var resLink = encodeURIComponent( getResourceLink() );
 
             var urlFacebook = 'https://www.facebook.com/sharer/sharer.php?u=' + resLink;
             var urlTwitter = 'https://twitter.com/share?url=' + resLink;
-            var urlLinkedin = 'http://www.linkedin.com/shareArticle?mini=true&amp;url=' + resLink + 
-                '&amp;source=Ceres' + 
-                '&amp;title=' + encodeURIComponent( title );
+            var urlLinkedin = 'http://www.linkedin.com/shareArticle?mini=true&url=' + resLink + 
+                '&source=Comete' + 
+                '&title=' + encodeURIComponent( title );
             //var urlEmail = 'mailto:?subject=<xsl:value-of select="escape-html-uri( $ShareByEmailSubject )"/><xsl:value-of select="$ampersand" disable-output-escaping="yes"/>body=<xsl:value-of select="escape-html-uri( $ShareByEmailBody )"/>' + encodeURIComponent( getResourceLink() );
-            var urlEmail = 'mailto:?subject=TheSubject&amp;body=TheBody' + resLink;
+            var urlEmail = 'mailto:?subject=' + tr( 'Check this out!' ) + '&body=' + tr( 'I think that this could interest you: ' ) + resLink;
             
             var shareOnFacebookElement = Ext.get( 'ShareOnFacebookLink' );
             //alert( 'shareOnFacebookElement='+shareOnFacebookElement );
