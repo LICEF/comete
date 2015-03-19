@@ -215,4 +215,30 @@ public class Harvester {
             workers.remove( defId );
     }
 
+    /***********/
+    /* Reports */
+    /***********/
+
+    public String[] getHarvestReports(String defId) throws Exception {
+        ArrayList<String> reports = new ArrayList<String>();
+        File defFolder = new File( HARVESTER_FOLDER, defId );
+
+        for (String fileName : defFolder.list()) {
+            if (fileName.startsWith(defId + "@")) {
+                String content = IOUtil.readStringFromFile(new File(defFolder, fileName));
+                if (content.contains("In progress..."))
+                    continue;
+
+                fileName = fileName.split("@")[1];
+                fileName = fileName.substring(0, fileName.indexOf("."));
+                reports.add(fileName);
+            }
+        }
+        return reports.toArray(new String[reports.size()]);
+    }
+
+    public String getHarvestReport(String defId, String date) throws Exception {
+        File defFolder = new File( HARVESTER_FOLDER, defId );
+        return IOUtil.readStringFromFile(new File(defFolder, defId + "@" + date + ".txt"));
+    }
 }

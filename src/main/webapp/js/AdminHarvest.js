@@ -1,11 +1,12 @@
 ﻿Ext.define( 'Comete.AdminHarvest', {
     extend: 'Ext.panel.Panel',
-    layout: 'border',  
+    layout: 'border',
     initComponent: function( config ) {
+
         this.isDirty = true;
 
         this.harvestDefStore = Ext.create('Ext.data.JsonStore', {
-            model: 'HarvestDefModel',                
+            model: 'HarvestDefModel',
             proxy: harvestDefProxy
         });   
         this.harvestDefStore.sort( 'label', 'ASC' );
@@ -38,7 +39,7 @@
 
         this.harvestDefList = Ext.create('Ext.grid.Panel', { 
             store: this.harvestDefStore,
-            margin: '0 20 10 10',                
+            margin: '0 20 10 10',
             columns: [ 
                 { dataIndex: 'id', hidden: true },
                 { dataIndex: 'name', text: tr('Repositories'), flex: 1, height: 28 },
@@ -105,11 +106,20 @@
             scope: this
         } );
 
+        this.harvestReportsButton = Ext.create('Ext.button.Button', {
+            text: tr('View harvest reports'),
+            disabled: true,
+            handler: this.viewHarvestReports, 
+            scope: this
+        } );
+
         this.harvestPanel = Ext.create('Ext.panel.Panel', { 
             layout: 'hbox',
             border: false,
+            width: 500,
             margin: '30 0 0 10',
-            items: [ this.startHarvestButton, {xtype: 'tbspacer', width: 10}, this.stopHarvestButton ]
+            items: [ this.startHarvestButton, {xtype: 'tbspacer', width: 10}, this.stopHarvestButton, 
+                     {xtype: 'tbfill'}, this.harvestReportsButton ]
         });
 
         var cfg = {
@@ -152,6 +162,7 @@
                 this.deleteButton.setDisabled(false);
                 this.startHarvestButton.setDisabled(false);
                 this.stopHarvestButton.setDisabled(false);
+                this.harvestReportsButton.setDisabled(false);
             }
         }
         else {
@@ -167,6 +178,7 @@
             this.deleteButton.setDisabled(true);
             this.startHarvestButton.setDisabled(true);
             this.stopHarvestButton.setDisabled(true);
+            this.harvestReportsButton.setDisabled(true);
         }
     },
     addHarvestDef: function() {
@@ -282,6 +294,15 @@
             },
             scope: this 
         } );
+    },
+    viewHarvestReports: function() {
+        var viewer = Ext.create('Comete.AdminHarvestReportViewer', {
+            width: 700,
+            height: 500,
+            modal: true,
+            harvestDefId: this.currentHarvestDefId
+        });
+        viewer.show();
     },
     checkHarvestsInProcess: function(comp) {
         //hide all processing icons
@@ -413,3 +434,76 @@ Ext.define( 'Comete.AdminHarvestDefEditor', {
 });
 
 
+Ext.define( 'Comete.AdminHarvestReportViewer', {
+    extend: 'Ext.window.Window',
+    layout: 'border',
+    initComponent: function( config ) {
+
+        this.harvestReportStore = Ext.create('Ext.data.JsonStore', {
+            model: 'HarvestReportModel',
+            proxy: harvestReportProxy
+        });
+
+        this.harvestReportList = Ext.create('Ext.grid.Panel', { 
+            store: this.harvestReportStore,
+            region: 'west',  
+            border: false,
+            columns: [ 
+                { dataIndex: 'name', flex: 1 }
+            ],     
+            hideHeaders: true,
+            margin: '-1 0 0 0',
+            viewConfig: {
+                loadingText: tr('Loading') + '...',
+                stripeRows: false
+            },
+            autoScroll: true
+        });
+
+        this.harvestReportList.on( 'selectionchange', this.harvestReportChanged, this );
+
+        this.reportsPanel = Ext.create('Ext.Panel', { 
+            layout: 'fit',
+            region: 'west',
+            split: true,
+            width: 200,
+            items: this.harvestReportList
+        }); 
+
+        this.content = Ext.create('Ext.panel.Panel', { 
+            region: 'center',
+            border: true,
+            autoScroll: true
+        });
+
+        cfg = {
+            title: tr('Harvest reports'),
+            buttons: [ {text:'OK', handler: this.close, scope: this} ],
+            items: [ this.reportsPanel, this.content ]
+
+        };
+        Ext.apply(this, cfg);
+        this.callParent(arguments); 
+
+        this.harvestReportStore.load({
+            url: 'rest/harvestReports/' + this.harvestDefId
+        });
+    },
+    harvestReportChanged: function( model, selected ) {
+        this.currentHarvestReportRestUrl = null;
+        this.content.update(null);
+        if (selected.length == 1) {
+            this.currentHarvestReportRestUrl = selected[0].getData().restUrl;
+
+            Ext.Ajax.request( {
+                url: this.currentHarvestReportRestUrl + '/html',
+                method: 'GET',
+                success: function(response) {
+                    var report = response.responseText;
+                    this.content.update(report);
+                },
+                scope: this 
+            } );
+        }
+    }
+});

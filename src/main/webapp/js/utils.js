@@ -383,6 +383,11 @@ Ext.define('HarvestDefModel', {
     fields: [ 'id', 'restUrl', 'name' ]
 });
 
+Ext.define('HarvestReportModel', {
+    extend: 'Ext.data.Model',
+    fields: [ 'restUrl', 'name' ]
+});
+
 var vocabProxy = Ext.create('Ext.data.proxy.Ajax', {
     reader: {
         type: 'json',
@@ -408,7 +413,14 @@ var harvestDefProxy = Ext.create('Ext.data.proxy.Ajax', {
     url: 'rest/harvestDefinitions',
     reader: {
         type: 'json',
-        root: 'harvestDefs',        
+        root: 'harvestDefs',
+    }
+});
+
+var harvestReportProxy = Ext.create('Ext.data.proxy.Ajax', {
+    reader: {
+        type: 'json',
+        root: 'harvestReports',
     }
 });
 
