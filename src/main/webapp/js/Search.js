@@ -79,6 +79,11 @@ Ext.define( 'Comete.SearchManager', {
             var uri = Ext.getUrlParam( 'uri' );       
             if (uri != null) 
                 query = [ { key: "uri", value: uri } ];
+            else {
+                var loUuid = Ext.getUrlParam( 'lo-uuid' );
+                if( loUuid != null ) 
+                    query = [ { key: "uri", value: Window.cometeUriPrefix + '/learningobject/' + loUuid } ];
+            }
         }
 
         var isEditable = ( ( 'true' == Ext.getUrlParam( 'editable' ) ) || false );
