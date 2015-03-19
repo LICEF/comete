@@ -41,8 +41,6 @@
     <xsl:variable name="ShareOnTwitter" select="'Partager la fiche sur Twitter'"/>
     <xsl:variable name="ShareOnLinkedin" select="'Partager la fiche sur LinkedIn'"/>
     <xsl:variable name="ShareByEmail" select="'Partager la fiche par courriel'"/>
-    <xsl:variable name="ShareByEmailSubject" select="'À voir!'"/>
-    <xsl:variable name="ShareByEmailBody" select="'Je crois que ça pourrait vous intéresser: '"/>
     <xsl:variable name="AddedDateLabel" select="'Ajoutée'"/>
     <xsl:variable name="CreatedDateLabel" select="'Créée'"/>
     <xsl:variable name="UpdatedDateLabel" select="'Modifiée'"/>

@@ -116,9 +116,12 @@
         this.getSelectionModel().clearSelections();
         this.proxy.url = url;
         this.loStore.loadPage(1, { 
-            callback: function() {
+            callback: function(records, operation) {
                 this.loManager.saveQueryHistory( url, query, currPage, currSelectedLo ); 
                 this.updateResultInfos();
+                var json = Ext.JSON.decode(operation.getResponse().responseText);
+                if (json.selectFirstRecord)
+                    this.getSelectionModel().select(0);
             },
             scope: this
         } );

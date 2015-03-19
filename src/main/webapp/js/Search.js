@@ -72,10 +72,21 @@ Ext.define( 'Comete.SearchManager', {
         var lang = ( Ext.getUrlParam( 'lang' ) || 'en' );
         utilsInit(lang);
 
-        var isEditable = ( ( 'true' == Ext.getUrlParam( 'editable' ) ) || false );
         var query = Ext.getUrlParam( 'query' );
         if (query)
             query = eval(query);
+        else {
+            var uri = Ext.getUrlParam( 'uri' );       
+            if (uri != null) 
+                query = [ { key: "uri", value: uri } ];
+            else {
+                var loUuid = Ext.getUrlParam( 'lo-uuid' );
+                if( loUuid != null ) 
+                    query = [ { key: "uri", value: Window.cometeUriPrefix + '/learningobject/' + loUuid } ];
+            }
+        }
+
+        var isEditable = ( ( 'true' == Ext.getUrlParam( 'editable' ) ) || false );
 
         this.simpleLabel = Ext.create('Comete.ClickableLabel', {
             text: tr('Simple Search'),
@@ -171,6 +182,12 @@ Ext.define( 'Comete.SearchManager', {
         
         Ext.apply(this, cfg);
         this.callParent(arguments); 
+
+        this.on('render', function() {
+            if (query != null)
+                this.setRequest(query);
+        })
+
     }, 
     clear: function() {
         this.loManager.clear();
