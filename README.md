@@ -1,4 +1,4 @@
-(https://github.com/LICEF/comete/blob/master/documentation/cometeLogo.gif)
+!(https://github.com/LICEF/comete/blob/master/documentation/cometeLogo.gif)
 
 Comète is a RDF-based resource manager. 
 Its main goals are :
