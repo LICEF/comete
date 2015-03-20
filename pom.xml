@@ -70,7 +70,7 @@
                         </resource>
                     </webResources>
                 </configuration>
-                <!-- executions>
+                <executions>
                     <execution>
                         <goals>
                             <goal>war</goal>
@@ -79,7 +79,7 @@
                             <warName>comete</warName>
                         </configuration>
                     </execution>
-                </executions -->
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

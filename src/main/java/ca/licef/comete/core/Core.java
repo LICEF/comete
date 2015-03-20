@@ -137,7 +137,7 @@ public class Core {
             tripleStore = new TripleStore(cometeHome + "/database", cometeHome, getUriPrefix() + "/");
             tripleStore.registerVocabulary("http://comete.licef.ca/reference#", COMETE.class);
             tripleStore.setDefaultIndexCfg(new IndexConfig(Constants.indexPredicates, Constants.INDEX_LANGUAGES, null));
-            tripleStore.startServer(false);
+            tripleStore.startServer(true);
             waitTripleStoreUp();
         }
     }
