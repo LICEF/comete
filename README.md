@@ -1,5 +1,4 @@
-Comète
-======
+![Comète](https://github.com/LICEF/comete/blob/master/documentation/cometeLogo.gif)
 
 Comète is a RDF-based web application over Jena Framework.
 
