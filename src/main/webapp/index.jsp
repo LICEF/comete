@@ -34,56 +34,6 @@
     <script type="text/javascript" src="js/SearchCollection.js"></script>
     <script type="text/javascript" src="js/Search.js"></script>
     <script type="text/javascript">
-        function getResourceLink() {
-            var lorElement = Ext.get( 'LearningObjectResource' );
-            if( lorElement == null )
-                return( null );
-            var loUri = lorElement.getAttribute( 'resource' );
-            var loUuid = loUri.substring( loUri.lastIndexOf( '/' ) + 1 );
-            var pathname = '?lang=<%= lang %>&lo-uuid=' + loUuid;
-            var baseUrl = location.protocol + '//' + location.hostname + ( location.port && ':' + location.port ) + 
-                location.pathname.substring( 0, location.pathname.indexOf( '/', 1 ) );
-            return( baseUrl + pathname );
-        }
-
-        function doInitSharingLinks() {
-            var titleElement = Ext.get( 'LearningObjectResourceTitle' );
-            var title = ( titleElement == null ? null : titleElement.getHtml() );
-            
-            var resLink = encodeURIComponent( getResourceLink() );
-
-            var urlFacebook = 'https://www.facebook.com/sharer/sharer.php?u=' + resLink;
-            var urlTwitter = 'https://twitter.com/share?url=' + resLink;
-            var urlLinkedin = 'http://www.linkedin.com/shareArticle?mini=true&url=' + resLink + 
-                '&source=Comete' + 
-                '&title=' + encodeURIComponent( title );
-            //var urlEmail = 'mailto:?subject=<xsl:value-of select="escape-html-uri( $ShareByEmailSubject )"/><xsl:value-of select="$ampersand" disable-output-escaping="yes"/>body=<xsl:value-of select="escape-html-uri( $ShareByEmailBody )"/>' + encodeURIComponent( getResourceLink() );
-            var urlEmail = 'mailto:?subject=' + tr( 'Check this out!' ) + '&body=' + tr( 'I think that this could interest you: ' ) + resLink;
-            
-            var shareOnFacebookElement = Ext.get( 'ShareOnFacebookLink' );
-            //alert( 'shareOnFacebookElement='+shareOnFacebookElement );
-            if( shareOnFacebookElement != null )
-                shareOnFacebookElement.set( { href: urlFacebook } );
-            //alert('urlFacebook='+urlFacebook);
-
-            var shareOnTwitterElement = Ext.get( 'ShareOnTwitter' );
-            if( shareOnTwitterElement != null )
-                shareOnTwitterElement.set( { href: urlTwitter } );
-
-            var shareOnLinkedinElement = Ext.get( 'ShareOnLinkedin' );
-            if( shareOnLinkedinElement != null )
-                shareOnLinkedinElement.set( { href: urlLinkedin } );
-
-            var shareByEmailElement = Ext.get( 'ShareByEmail' );
-            if( shareByEmailElement != null )
-                shareByEmailElement.set( { href: urlEmail } );
-        }
-
-        function initSharingLinks() {
-            // Sleep a bit To allow the page to finish loading.
-            setTimeout( doInitSharingLinks, 500 );
-        }
-
         Window.cometeUriPrefix = '<%= Core.getInstance().getUriPrefix() %>';
     </script>
 </head>
