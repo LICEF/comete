@@ -67,7 +67,7 @@
         this.leftPanel = Ext.create('Ext.Panel', { 
             layout: 'border',
             width: 400,
-            region: 'west',     
+            region: 'west',
             border: false,
             split: true,
             items: this.defPanel
@@ -124,7 +124,7 @@
 
         var cfg = {
             layout: 'border',
-            region: 'center',      
+            region: 'center',
             items: [ this.leftPanel, { border: false, layout: 'vbox', items: [ this.detailsPanel, this.harvestPanel ] } ]
         };
         Ext.apply(this, cfg);
@@ -136,6 +136,7 @@
         if (selected.length == 1) {
             this.currentHarvestDefRestUrl = selected[0].getData().restUrl;
             this.currentHarvestDefId = selected[0].getData().id;
+            this.currentHarvestDefName = selected[0].getData().name;
 
             //fields update
             Ext.Ajax.request( {
@@ -255,7 +256,7 @@
             },
             scope: this 
         } );
-    },    
+    },
     updateData: function() {
         if( this.isDirty ) {
             this.harvestDefStore.loadPage(1);
@@ -300,7 +301,8 @@
             width: 700,
             height: 500,
             modal: true,
-            harvestDefId: this.currentHarvestDefId
+            harvestDefId: this.currentHarvestDefId,
+            harvestDefName: this.currentHarvestDefName
         });
         viewer.show();
     },
@@ -444,6 +446,15 @@ Ext.define( 'Comete.AdminHarvestReportViewer', {
             proxy: harvestReportProxy
         });
 
+        this.harvestReportStore.getProxy().url = 'rest/harvestReports/' + this.harvestDefId;
+
+        this.deleteButton = Ext.create('Ext.button.Button', {
+            text: tr('Delete'),
+            disabled: true,
+            handler: this.deleteReport, 
+            scope: this
+        } );
+
         this.harvestReportList = Ext.create('Ext.grid.Panel', { 
             store: this.harvestReportStore,
             region: 'west',  
@@ -457,7 +468,8 @@ Ext.define( 'Comete.AdminHarvestReportViewer', {
                 loadingText: tr('Loading') + '...',
                 stripeRows: false
             },
-            autoScroll: true
+            autoScroll: true,
+            bbar: [ this.deleteButton ]
         });
 
         this.harvestReportList.on( 'selectionchange', this.harvestReportChanged, this );
@@ -477,7 +489,7 @@ Ext.define( 'Comete.AdminHarvestReportViewer', {
         });
 
         cfg = {
-            title: tr('Harvest reports'),
+            title: tr('Harvest reports for :') + ' ' + this.harvestDefName,
             buttons: [ {text:'OK', handler: this.close, scope: this} ],
             items: [ this.reportsPanel, this.content ]
 
@@ -485,9 +497,7 @@ Ext.define( 'Comete.AdminHarvestReportViewer', {
         Ext.apply(this, cfg);
         this.callParent(arguments); 
 
-        this.harvestReportStore.load({
-            url: 'rest/harvestReports/' + this.harvestDefId
-        });
+        this.harvestReportStore.load();
     },
     harvestReportChanged: function( model, selected ) {
         this.currentHarvestReportRestUrl = null;
@@ -504,6 +514,47 @@ Ext.define( 'Comete.AdminHarvestReportViewer', {
                 },
                 scope: this 
             } );
+
+            if (authorized)  
+                this.deleteButton.setDisabled(false);
         }
+        else
+            this.deleteButton.setDisabled(true);
+    },
+    deleteReport: function() {
+        var records = this.harvestReportList.getSelectionModel().getSelection();
+        if (records.length == 0)
+            return;
+        
+        var promptBox = Ext.Msg;
+        promptBox.buttonText = { cancel: tr("Cancel") };
+        promptBox.show({
+            msg: tr('Do you really want to delete report ?'),
+            buttons: Ext.Msg.OKCANCEL,
+            icon: Ext.Msg.QUESTION,
+            fn: this.deleteReportEff,
+            scope: this
+        });
+    },
+    deleteReportEff: function(button) {
+        if (button != 'ok')
+            return;
+        var waitDialog = Ext.create('Ext.window.MessageBox', {
+        });
+        waitDialog.wait( tr('Please wait') + '...' );
+        Ext.Ajax.request( {
+            url: this.currentHarvestReportRestUrl,
+            method: 'DELETE',
+            success: function(response, opts) {
+                waitDialog.close();
+                this.harvestReportStore.loadPage(1);
+                Ext.Msg.alert('Information', tr('Report deleted.'));
+            },
+            failure: function(response, opts) {
+                waitDialog.close();
+                Ext.Msg.alert('Failure', response.responseText);  
+            },
+            scope: this 
+        } );
     }
 });

@@ -86,7 +86,9 @@
     'Start harvest': 'Démarrer la moisson',
     'Stop harvest': 'Arrêter la moisson',
     'View harvest reports': 'Voir les rapports de moissons',
-    'Harvest reports':'Rapports de moissons',
+    'Harvest reports for :':'Rapports de moissons de :',
+    'Do you really want to delete report ?': 'Voulez-vous vraiment supprimer le rapport ?',
+    'Report deleted.': 'Rapport suprimé.',
 
     'Add vocabulary': 'Ajouter un vocabulaire',
     'Modify vocabulary': 'Modifier le vocabulaire',

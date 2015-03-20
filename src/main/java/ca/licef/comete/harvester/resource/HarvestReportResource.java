@@ -69,4 +69,17 @@ public class HarvestReportResource {
         report = "<html><font face=\"courier\">" + report.replace("\r\n", "<br/>") + "</font></html>";
         return (Response.ok(report).build());
     }
+
+    @DELETE
+    @Path( "{id}/{date}" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response deleteHarvestReport(@Context HttpServletRequest request,
+                                        @PathParam( "id" ) String id,
+                                        @PathParam( "date" ) String date) throws Exception {
+        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to delete harvest report.").build();
+
+        Harvester.getInstance().removeHarvestReport(id, date);
+        return (Response.ok().build());
+    }
 }

@@ -241,4 +241,9 @@ public class Harvester {
         File defFolder = new File( HARVESTER_FOLDER, defId );
         return IOUtil.readStringFromFile(new File(defFolder, defId + "@" + date + ".txt"));
     }
+
+    public void removeHarvestReport(String defId, String date) throws Exception {
+        File defFolder = new File( HARVESTER_FOLDER, defId );
+        (new File(defFolder, defId + "@" + date + ".txt")).delete();
+    }
 }
