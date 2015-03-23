@@ -215,6 +215,11 @@ public class Harvester {
             workers.remove( defId );
     }
 
+    public void clearLastHarvest(String defId) {
+        File lastHarvestFile = getLastHarvestFile( defId );
+        lastHarvestFile.delete();
+    }
+
     /***********/
     /* Reports */
     /***********/

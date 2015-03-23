@@ -1,29 +1,22 @@
 package ca.licef.comete.metadata.resource;
 
-import ca.licef.comete.core.Core;
-import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.Util;
 import ca.licef.comete.metadata.RepositoryManager;
 import ca.licef.comete.security.Security;
 import ca.licef.comete.vocabularies.COMETE;
 import com.sun.jersey.spi.resource.Singleton;
-import licef.StringUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONWriter;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Hashtable;
-import java.util.Locale;
 
 @Singleton
 @Path( "/repositories" )
@@ -65,11 +58,11 @@ public class RepositoryResource {
     @Path( "{id}" )
     @Produces( MediaType.TEXT_PLAIN )
     public Response addOrUpdateRepository( @Context HttpServletRequest request,
-                                           @PathParam( "id" ) String id, @QueryParam( "name" ) String name, @QueryParam( "type" ) String type, @QueryParam( "url" ) String url, @QueryParam( "adminEmail" ) String adminEmail ) throws Exception {
+                                           @PathParam( "id" ) String id, @QueryParam( "name" ) String name, @QueryParam( "type" ) String type, @QueryParam( "url" ) String url, @QueryParam( "adminEmail" ) String adminEmail, @QueryParam( "physicalId" ) String defId ) throws Exception {
         if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to manage repository objects.").build();
 
-        String repoUri = RepositoryManager.getInstance().addOrUpdateRepository( id, name, type, url, adminEmail );
+        String repoUri = RepositoryManager.getInstance().addOrUpdateRepository( id, name, type, url, adminEmail, defId );
         return Response.ok( repoUri ).build();
     }
 

@@ -20,8 +20,8 @@ public class Digester {
     public static final int UPDATED     = 1;
     public static final int DELETED     = 2;
 
-    public void addOrUpdateRepository(String name, String type, String url, String repoId, String adminEmail) throws Exception {
-        RepositoryManager.getInstance().addOrUpdateRepository(repoId, name, type, url, adminEmail);
+    public void addOrUpdateRepository(String name, String type, String url, String repoId, String adminEmail, String defId) throws Exception {
+        RepositoryManager.getInstance().addOrUpdateRepository(repoId, name, type, url, adminEmail, defId);
     }
 
     public int addOrUpdateHarvestedRecord( String oaiID, String namespace, String datestamp, String repoId, String record ) throws Exception {

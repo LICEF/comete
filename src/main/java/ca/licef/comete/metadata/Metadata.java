@@ -6,6 +6,7 @@ import ca.licef.comete.core.metadataformat.MetadataFormats;
 import ca.licef.comete.core.Settings;
 import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.ResultSet;
+import ca.licef.comete.harvester.Harvester;
 import ca.licef.comete.metadata.util.Util;
 import ca.licef.comete.store.Store;
 import ca.licef.comete.vocabularies.COMETE;
@@ -271,6 +272,11 @@ public class Metadata {
             String storeId = records[ i ][ 1 ];
             markStoreRecordForDeletion( storeId );
         }
+
+        //removing lastHarvest mark for future harvesting process
+        Triple[] res = tripleStore.getTriplesWithSubjectPredicate(repoUri, DCTERMS.identifier);
+        String defId = res[0].getObject();
+        Harvester.getInstance().clearLastHarvest(defId);
     }
 
     public void deleteRecord(String recordURI, boolean markStoreRecordForDeletion) throws Exception {

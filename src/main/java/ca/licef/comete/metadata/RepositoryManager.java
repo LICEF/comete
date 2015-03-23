@@ -12,6 +12,7 @@ import licef.reflection.Invoker;
 import licef.tsapi.model.Triple;
 import licef.tsapi.model.Tuple;
 import licef.tsapi.TripleStore;
+import licef.tsapi.vocabulary.DCTERMS;
 import licef.tsapi.vocabulary.RDF;
 import licef.tsapi.vocabulary.FOAF;
 
@@ -42,19 +43,20 @@ public class RepositoryManager {
         return res;
     }
 
-    public String addOrUpdateRepository( String id, String name, String type, String url, String adminEmail ) throws Exception {
+    public String addOrUpdateRepository( String id, String name, String type, String url, String adminEmail, String defId ) throws Exception {
         Invoker inv = new Invoker( this, "ca.licef.comete.metadata.RepositoryManager", 
-            "addOrUpdateRepositoryEff", new Object[] { id, name, type, url, adminEmail } );
+            "addOrUpdateRepositoryEff", new Object[] { id, name, type, url, adminEmail, defId } );
         return( (String)tripleStore.transactionalCall( inv, TripleStore.WRITE_MODE ) );
     }
 
-    public String addOrUpdateRepositoryEff( String id, String name, String type, String url, String adminEmail ) throws Exception {
+    public String addOrUpdateRepositoryEff( String id, String name, String type, String url, String adminEmail, String defId ) throws Exception {
         String repoUri = Util.makeURI( id, COMETE.Repository.getURI() );
 
         Triple[] triples = tripleStore.getTriplesWithSubject( repoUri );
         if( triples.length == 0 ) {
             List<Triple> newTriples = new ArrayList<Triple>();
             newTriples.add( new Triple( repoUri, RDF.type, COMETE.Repository ) );
+            newTriples.add( new Triple( repoUri, DCTERMS.identifier, defId ) );
             if( name != null && !"".equals( name ) )
                 newTriples.add( new Triple( repoUri, FOAF.name, name ) );
             if( type != null && !"".equals( type ) )
@@ -67,7 +69,9 @@ public class RepositoryManager {
         }
         else {
             for( Triple triple : triples ) {
-                if( triple.getPredicate().equals( FOAF.name.getURI() ) && !triple.getObject().equals( name ) ) 
+                if( triple.getPredicate().equals( DCTERMS.identifier.getURI() ) && !triple.getObject().equals( defId ) )
+                    tripleStore.updateObjectTriple( repoUri, DCTERMS.identifier, triple.getObject(), defId );
+                else if( triple.getPredicate().equals( FOAF.name.getURI() ) && !triple.getObject().equals( name ) )
                     tripleStore.updateObjectTriple( repoUri, FOAF.name, triple.getObject(), name );
                 else if( triple.getPredicate().equals( COMETE.repoType.getURI() ) && !triple.getObject().equals( type ) ) 
                     tripleStore.updateObjectTriple( repoUri, COMETE.repoType, triple.getObject(), type );
