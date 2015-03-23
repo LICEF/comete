@@ -116,6 +116,7 @@
     'Edition of multiple metadata records is not currently supported.': 'L\'édition de fiches multiples n\'est présentement pas supportée.',
     'An error occurred when performing {0}.': 'Une erreur est survenue lors de l\'appel à {0}.',
     'Are you sure that you want to delete the selected resources ?': 'Voulez-vous vraiment supprimer les ressources sélectionnées?',
+    'Are you sure that you want to delete all the learning objects of this repository ?': 'Voulez-vous vraiment supprimer toutes les ressources du dépôt sélectionné?',
     'Reset Metamodel': 'Réinitialisation du métamodèle',
     'Reset Learning Object': 'Réinitialisation de la ressource',
     'Are you sure that you want to reset metamodel?': 'Voulez-vous vraiment réinitialiser le métamodèle?',
@@ -123,6 +124,7 @@
     'Reinitialization': 'Réinitialisation',
     'Are you sure that you want to delete this learning object ?': 'Voulez-vous vraiment supprimer cette ressource?',
     'Delete Learning Object': 'Supprimer une ressource',
+    'Delete Learning Objects from Repository': 'Supprimer toutes les ressources d\'un dépôt',
     'Record URI': 'URI de la fiche',
 
     'Person Editor': 'Editeur de personne',

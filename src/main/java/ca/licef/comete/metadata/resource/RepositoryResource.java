@@ -35,14 +35,18 @@ public class RepositoryResource {
         String[][] repositories = RepositoryManager.getInstance().getRepositories();
         StringWriter out = new StringWriter();
         try {
-            JSONWriter json = new JSONWriter( out ).array();
+            JSONWriter json = new JSONWriter( out ).object();
+
+            JSONArray repos = new JSONArray();
+
             for (int i = 0; i < repositories.length; i++) {
-                JSONObject _repo = new JSONObject();
-                _repo.put("uri", repositories[i][0]);
-                _repo.put("label", repositories[i][1]);
-                json.value(_repo);
+                JSONObject repo = new JSONObject();
+                repo.put("uri", repositories[i][0]);
+                repo.put("label", repositories[i][1]);
+                repos.put(repo);
             }
-            json.endArray();
+            json.key( "repositories" ).value( repos );
+            json.endObject();
         }
         catch( JSONException e ) {
             e.printStackTrace();
