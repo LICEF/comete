@@ -61,12 +61,14 @@ function doDeleteLOsFromRepo( repoUri ) {
 var buttonResetMetamodel = new Ext.Button( { 
     text: tr( 'Reset Metamodel' ), 
     handler: function() { 
-        Ext.Msg.show( {
+        var promptBox = Ext.Msg;
+        promptBox.buttonText = { cancel: tr("Cancel") };
+        promptBox.show( {
             title: tr( 'Question' ),
             msg: tr( 'Are you sure that you want to reset metamodel ?' ),
-            buttons: Ext.Msg.YESNO,
+            buttons: Ext.Msg.OKCANCEL,
             fn: function( btn, text ) {
-                if( btn == 'yes' ) {
+                if( btn == 'ok' ) {
                     doResetMetamodel();
                 }
             },
@@ -84,12 +86,14 @@ var buttonResetLO = new Ext.Button( {
         if (uriField.getValue() == '')
             return;
 
-        Ext.Msg.show( {
+        var promptBox = Ext.Msg;
+        promptBox.buttonText = { cancel: tr("Cancel") };
+        promptBox.show( {
             title: tr( 'Question' ),
             msg: tr( 'Are you sure that you want to reset this learning object ?' ),
-            buttons: Ext.Msg.YESNO,
+            buttons: Ext.Msg.OKCANCEL,
             fn: function( btn, text ) {
-                if( btn == 'yes' ) {
+                if( btn == 'ok' ) {
                     doResetLO();
                 }
             },
@@ -111,12 +115,14 @@ var buttonDeleteLO = new Ext.Button( {
         if (uriToDeleteField.getValue() == '')
             return;
 
-        Ext.Msg.show( {
+        var promptBox = Ext.Msg;
+        promptBox.buttonText = { cancel: tr("Cancel") };
+        promptBox.show( {
             title: tr( 'Question' ),
             msg: tr( 'Are you sure that you want to delete this learning object ?' ),
-            buttons: Ext.Msg.YESNO,
+            buttons: Ext.Msg.OKCANCEL,
             fn: function( btn, text ) {
-                if( btn == 'yes' ) {
+                if( btn == 'ok' ) {
                     doDeleteLO();
                 }
             },
@@ -138,12 +144,14 @@ var buttonDeleteLOsFromRepo = new Ext.Button( {
         if (repoUriToDeleteField.getValue() == null )
             return;
 
-        Ext.Msg.show( {
+        var promptBox = Ext.Msg;
+        promptBox.buttonText = { cancel: tr("Cancel") };
+        promptBox.show( {
             title: tr( 'Question' ),
             msg: tr( 'Are you sure that you want to delete all the learning objects of this repository ?' ),
-            buttons: Ext.Msg.YESNO,
+            buttons: Ext.Msg.OKCANCEL,
             fn: function( btn, text ) {
-                if( btn == 'yes' ) {
+                if( btn == 'ok' ) {
                     doDeleteLOsFromRepo( repoUriToDeleteField.getValue() );
                 }
             },
