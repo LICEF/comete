@@ -107,8 +107,8 @@
                     <xsl:apply-templates select="comete:learningResourceType"/>
                 </div>
                 <br clear="all"/>
-                <xsl:apply-templates select="dct:description"/>
                 <xsl:apply-templates select="foaf:page" mode="link"/>
+                <xsl:apply-templates select="dct:description"/>
                 <h2 class="BigSectionHeader"><xsl:value-of select="$HeaderAboutResource"/></h2>
                 <table width="100%">
                     <tr>
@@ -150,7 +150,7 @@
                                                                              else ''"/>
                                         <xsl:with-param name="name" select="$publisher/rdf:RDF/rdf:Description/foaf:name[1]"/> 
                                         <xsl:with-param name="website" select="$publisher/rdf:RDF/rdf:Description/foaf:homepage/@rdf:resource"/>
-                                        <xsl:with-param name="identityLink" select="concat( $publisher/identity/@href, '&amp;style=ceres' )"/>
+                                        <xsl:with-param name="identityLink" select="$publisher/identity/@href"/>
                                     </xsl:call-template>
                                 </xsl:for-each>
                                 </ul>
@@ -327,7 +327,7 @@
                                                              substring-after(rdf:RDF/rdf:Description/foaf:mbox,'mailto:') 
                                                          else 
                                                              rdf:RDF/rdf:Description/foaf:mbox"/>
-                    <xsl:with-param name="identityLink" select="concat( identity/@href, '&amp;style=ceres' )"/>
+                    <xsl:with-param name="identityLink" select="identity/@href"/>
                 </xsl:call-template>
             </xsl:for-each>
         </xsl:if>
@@ -371,7 +371,7 @@
                     <xsl:with-param name="class" select="'CompactRelatedLearningObjectsLink'"/>
                 </xsl:call-template>
                 <a class="CompactContributeLink">
-                    <xsl:attribute name="href">javascript:showAdditionalIdentityInfo( '<xsl:value-of select="$identityLink"/>', 50, 50, 360, 360, 'ceres' );</xsl:attribute>
+                    <xsl:attribute name="href">javascript:showAdditionalIdentityInfo( '<xsl:value-of select="$identityLink"/>', 50, 50, 360, 360 );</xsl:attribute>
                     <img src="images/details.png" width="16" height="16" style="margin-left: 4px; vertical-align: text-bottom;">
                         <xsl:attribute name="alt"><xsl:value-of select="$ContributeLinkLabel"/></xsl:attribute>
                         <xsl:attribute name="title"><xsl:value-of select="$ContributeLinkLabel"/></xsl:attribute>

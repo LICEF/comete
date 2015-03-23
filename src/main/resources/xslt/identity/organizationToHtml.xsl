@@ -29,7 +29,7 @@
             <head>
                 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
                 <title><xsl:value-of select="$title" /></title>
-                <link href="../../../ext-3.2.1/resources/css/ext-all.css" rel="stylesheet" type="text/css"/>
+                <link href="../../../ext-5.0.1/build/packages/ext-theme-crisp/build/resources/ext-theme-crisp-all.css" rel="stylesheet" type="text/css"/>
                 <link href="../../../layout-browser.css" rel="stylesheet" type="text/css"/>
                 <link href="../../../default.css" rel="stylesheet" type="text/css"/>
                 <link href="../../../custom.css" rel="stylesheet" type="text/css"/>
@@ -77,12 +77,13 @@
                         </td>
                     </tr>
                 </table>
+                <br/><br/>
             </body>
         </html>
     </xsl:template>
 
     <xsl:template match="foaf:name">
-        <p class="OrganizationName"><xsl:value-of select="."/></p>
+        <h2 class="OrganizationName"><xsl:value-of select="."/></h2>
     </xsl:template>
 
 </xsl:stylesheet>

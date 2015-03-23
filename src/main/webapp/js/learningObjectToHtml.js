@@ -81,14 +81,11 @@ function doInitSharingLinks() {
     var urlLinkedin = 'http://www.linkedin.com/shareArticle?mini=true&url=' + resLink + 
         '&source=Comete' + 
         '&title=' + encodeURIComponent( title );
-    //var urlEmail = 'mailto:?subject=<xsl:value-of select="escape-html-uri( $ShareByEmailSubject )"/><xsl:value-of select="$ampersand" disable-output-escaping="yes"/>body=<xsl:value-of select="escape-html-uri( $ShareByEmailBody )"/>' + encodeURIComponent( getResourceLink() );
     var urlEmail = 'mailto:?subject=' + tr( 'Check this out!' ) + '&body=' + tr( 'I think that this could interest you: ' ) + resLink;
            
     var shareOnFacebookElement = Ext.get( 'ShareOnFacebookLink' );
-    //alert( 'shareOnFacebookElement='+shareOnFacebookElement );
     if( shareOnFacebookElement != null )
         shareOnFacebookElement.set( { href: urlFacebook } );
-    //alert('urlFacebook='+urlFacebook);
 
     var shareOnTwitterElement = Ext.get( 'ShareOnTwitter' );
     if( shareOnTwitterElement != null )
