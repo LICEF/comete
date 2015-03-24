@@ -119,9 +119,11 @@
             callback: function(records, operation) {
                 this.loManager.saveQueryHistory( url, query, currPage, currSelectedLo ); 
                 this.updateResultInfos();
-                var json = Ext.JSON.decode(operation.getResponse().responseText);
-                if (json.selectFirstRecord)
-                    this.getSelectionModel().select(0);
+                if (operation.getResponse() != null) {
+                    var json = Ext.JSON.decode(operation.getResponse().responseText);
+                    if (json.selectFirstRecord)
+                        this.getSelectionModel().select(0);
+                }
             },
             scope: this
         } );
