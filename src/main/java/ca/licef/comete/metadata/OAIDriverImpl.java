@@ -64,7 +64,12 @@ public class OAIDriverImpl implements OAIDriver {
             Tuple[] tuples = (Tuple[])resp;
             if( tuples.length > 0 ) {
                 String strDatestamp = tuples[ 0 ].getValue( "latestDatestamp" ).getContent().toString();
-                datestamp = datestampFormat.parse( strDatestamp );
+                try {
+                    datestamp = datestampLongFormat.parse( strDatestamp );
+                }
+                catch( ParseException e ) {
+                    datestamp = datestampShortFormat.parse( strDatestamp );
+                }
             }
         }
         catch( Exception e ) {
@@ -236,7 +241,8 @@ public class OAIDriverImpl implements OAIDriver {
         return( localOaiIdentifierPrefix + recordUid );
     }
 
-    private DateFormat datestampFormat = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss'Z'" );
+    private DateFormat datestampLongFormat = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss'Z'" );
+    private DateFormat datestampShortFormat = new SimpleDateFormat( "yyyy-MM-dd" );
     private Map<String,MetadataFormat> formats = new HashMap<String,MetadataFormat>();
     private String localOaiIdentifierPrefix = "oai:" + Core.getInstance().getRepositoryName() + ":";
 

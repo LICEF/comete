@@ -103,7 +103,7 @@
                             <xsl:with-param name="uri" select="$uri"/>
                         </xsl:call-template>
                     </p>
-                    <xsl:apply-templates select="foaf:page" mode="resType"/>
+                    <xsl:apply-templates select="foaf:page" mode="resFileType"/>
                     <xsl:apply-templates select="comete:learningResourceType"/>
                 </div>
                 <br clear="all"/>
@@ -285,12 +285,12 @@
         </img>
     </xsl:template>
 
-    <xsl:template match="foaf:page" mode="resType">
-        <span><xsl:value-of select="comete:getResourceType( @mimeType )"/></span><br/>
+    <xsl:template match="foaf:page" mode="resFileType">
+        <span class="LearningResourceFileType"><xsl:value-of select="comete:getResourceType( @mimeType )"/></span>
     </xsl:template>
 
     <xsl:template match="comete:learningResourceType">
-        <span class="LearningResourceType"><xsl:value-of select="@label"/></span><br/>
+        <span class="LearningResourceType"><xsl:value-of select="@label"/></span>
     </xsl:template>
 
     <xsl:template match="foaf:page" mode="link">

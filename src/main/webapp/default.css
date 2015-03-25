@@ -162,7 +162,15 @@ body {
     color: #99248f;
 }
 
-.LearningResourceType:first-letter {
+.LearningResourceFileType {
+    display: block;
+}
+
+.LearningResourceFileType:first-letter {
+    text-transform: uppercase;
+}
+
+.LearningResourceType {
     display: block;
 }
 
@@ -197,11 +205,6 @@ table.Contributes tr td {
     font-style: italic;
 }
 
-/*table.Contributes tr td {
-    padding: 0px 6px 2px;
-    vertical-align: top;
-}*/
-
 .ContributesRow {
     padding-bottom: 10px !important;
 }
@@ -215,7 +218,7 @@ table.Contributes tr td {
 }
 
 .ContribFullName {
-    font-size: 16px;
+    font-size: 14px;
     bottom-margin: 10px;
     color: #99248f;
 }

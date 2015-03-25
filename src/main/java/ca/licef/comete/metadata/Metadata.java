@@ -32,6 +32,7 @@ import org.ariadne.validation.exception.ValidationException;
 import org.ariadne.validation.utils.ValidationUtils;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.util.DateParser;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -44,6 +45,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -443,8 +445,10 @@ public class Metadata {
         //oai-pmh properties
         if (!isUpdate)
             tripleStore.insertTriple( new Triple( recordURI, OAI.identifier, oaiId ) );
-        if (datestamp != null)
-            tripleStore.insertTriple( new Triple( recordURI, OAI.datestamp, datestamp ) ); //always set. also for previous cases. -AM
+        if (datestamp != null) {
+            Calendar calDatestamp = DateParser.parse( datestamp );
+            tripleStore.insertTriple( new Triple( recordURI, OAI.datestamp, DateUtil.toISOString( calDatestamp.getTime(), null, null ) ) ); //always set. also for previous cases. -AM
+        }
 
         String state = isUpdate?"updated":"added";
 
