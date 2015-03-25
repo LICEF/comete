@@ -187,8 +187,7 @@
             function(cb, value) {
                 this.breadcrumb.showIDsConcepts(value);
                 var uri = this.breadcrumb.getLastElement();
-                if (uri != null)
-                    this.breadcrumb.displayElement(uri);
+                this.breadcrumb.displayElement(uri);
             }, this );
         
 

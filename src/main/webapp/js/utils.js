@@ -325,6 +325,8 @@ Ext.define( 'Comete.Breadcrumb', {
                 scope: this
             }); 
         }
+        else if (this.rootButton != null) 
+            this.rootButton.menu = null;
     },
     displayPath: function(json) {
         if (json != null) { 
