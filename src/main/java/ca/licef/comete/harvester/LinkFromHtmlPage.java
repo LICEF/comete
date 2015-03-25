@@ -1,7 +1,9 @@
 package ca.licef.comete.harvester;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -48,40 +50,21 @@ public class LinkFromHtmlPage {
             HttpResponse response = httpclient.execute( get );
             HttpEntity entity = response.getEntity();
             if (entity != null) {
-                String content = EntityUtils.toString( entity );
                 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
                 factory.setNamespaceAware( true );
-
-            parseConcent:
-
-                for( ;; ) {
-                    try {
-                        DocumentBuilder builder = factory.newDocumentBuilder();
-                        doc = builder.parse( new InputSource( new StringReader( content ) ) );
-                        break;
-                    }
-                    catch( SAXParseException e ) {
-                        Matcher m = patternEntityWithoutSemicolon.matcher( e.getMessage() );
-                        if( m.find() ) {
-                            String textEntity = m.group( 1 );
-                            content = content.replaceAll( "&" + textEntity, "&amp;" + textEntity );
-                            continue parseConcent;
-                        }
-                       
-                        m = patternEntityWithoutName.matcher( e.getMessage() );
-                        if( m.find() ) {
-                            content = content.replaceAll( "&", "&amp;" );
-                            continue parseConcent;
-                        }
-                        
-                        throw( e );
-                    }
+                try {
+                    DocumentBuilder builder = factory.newDocumentBuilder();
+                    doc = builder.parse( entity.getContent() );
+                }
+                catch( SAXParseException e ) {
+                    doc = getRecordWithMalformedXml();
                 }
 
                 // Try to initialize the datestamp.
                 initDatestamp( response );
             }
         }
+
         return( doc );
     }
 
@@ -174,11 +157,82 @@ public class LinkFromHtmlPage {
         }
     }
 
+    private Document getRecordWithMalformedXml() throws IOException, ParserConfigurationException, IllegalStateException, SAXException {
+        Document document = null;
+        String strContent = getRecordAsString();
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware( true );
+
+      parseConcent:
+
+        for( ;; ) {
+            if( strContent != null ) {
+                try {
+                    DocumentBuilder builder = factory.newDocumentBuilder();
+                    document = builder.parse( new InputSource( new StringReader( strContent ) ) );
+                    break;
+                }
+                catch( SAXParseException e ) {
+                    Matcher m = patternEntityWithoutSemicolon.matcher( e.getMessage() );
+                    if( m.find() ) {
+                        String textEntity = m.group( 1 );
+                       
+                        strContent = strContent.replaceAll( "&" + textEntity, "&amp;" + textEntity );
+                        continue parseConcent;
+                    }
+                   
+                    m = patternEntityWithoutName.matcher( e.getMessage() );
+                    if( m.find() ) {
+                        strContent = strContent.replaceAll( "&", "&amp;" );
+                        continue parseConcent;
+                    }
+
+                    throw( e );
+                }
+            }
+        }
+        
+        return( document );
+    }
+
+    private String getRecordAsString() throws IOException, UnsupportedEncodingException {
+        String encoding = getRecordEncoding();
+
+        if( encoding != null ) {
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpGet get = new HttpGet( url );
+            HttpResponse response = httpclient.execute( get );
+            HttpEntity entity = response.getEntity();
+            if( entity != null ) {
+                String str = EntityUtils.toString( entity, encoding );
+                return( str );
+            }
+        }
+
+        return( null );
+    }
+
+    private String getRecordEncoding() throws IOException {
+        if( encoding == null ) {
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpGet get = new HttpGet( url );
+            HttpResponse response = httpclient.execute( get );
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                BufferedInputStream bis = new BufferedInputStream( entity.getContent() );
+                encoding = XMLUtil.detectEncoding( bis );
+            }
+        }
+        return( encoding );
+    }
+
     private Pattern patternEntityWithoutSemicolon = Pattern.compile( "The reference to entity \"(.+?)\" must end with the ';' delimiter." );
     private Pattern patternEntityWithoutName = Pattern.compile( "The entity name must immediately follow the '&' in the entity reference." );
 
     private String url;
     private Document doc;
+    private String encoding;
     private String datestamp;
 
     private static SimpleDateFormat lastModifFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss zzz" );
