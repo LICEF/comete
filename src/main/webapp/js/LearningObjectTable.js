@@ -27,6 +27,7 @@
 
         this.pageBar = Ext.create('Ext.toolbar.Paging', {
             store: this.loStore,
+            inputItemWidth: 45,
             firstText: tr('First Page'),
             prevText: tr('Previous Page'),
             nextText: tr('Next Page'),
