@@ -128,13 +128,8 @@ public class Worker implements Runnable {
     }
 
     protected void updateFromDate() throws IOException {
-        String lastHarvestDate = null;
-        if( !StringUtil.isEmpty( from ) )
-            lastHarvestDate = from;
-        else {
-            String startISODatetime = DateUtil.toISOString(startDate, null, null);
-            lastHarvestDate = startISODatetime.substring(0, startISODatetime.indexOf("T"));
-        }
+        String startISODatetime = DateUtil.toISOString(startDate, null, null);
+        String lastHarvestDate = startISODatetime.substring(0, startISODatetime.indexOf("T"));
         IOUtil.writeStringToFile(lastHarvestDate, Harvester.getLastHarvestFile( id ));
     }
 

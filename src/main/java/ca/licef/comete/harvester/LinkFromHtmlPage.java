@@ -164,8 +164,6 @@ public class LinkFromHtmlPage {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware( true );
 
-      parseConcent:
-
         for( ;; ) {
             if( strContent != null ) {
                 try {
@@ -179,13 +177,13 @@ public class LinkFromHtmlPage {
                         String textEntity = m.group( 1 );
                        
                         strContent = strContent.replaceAll( "&" + textEntity, "&amp;" + textEntity );
-                        continue parseConcent;
+                        continue;
                     }
                    
                     m = patternEntityWithoutName.matcher( e.getMessage() );
                     if( m.find() ) {
                         strContent = strContent.replaceAll( "&", "&amp;" );
-                        continue parseConcent;
+                        continue;
                     }
 
                     throw( e );
