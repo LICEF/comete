@@ -21,6 +21,7 @@
     <xsl:variable name="lang" select="'en'"/>
     <xsl:variable name="title" select="'Resource'"/>
     <xsl:variable name="HeaderAboutResource" select="'About the resource'"/>
+    <xsl:variable name="HeaderLearningResourceTypes" select="'Types'"/>
     <xsl:variable name="HeaderDates" select="'Dates'"/>
     <xsl:variable name="HeaderLanguages" select="'Languages'"/>
     <xsl:variable name="HeaderKeywords" select="'Keywords'"/>
@@ -104,7 +105,6 @@
                         </xsl:call-template>
                     </p>
                     <xsl:apply-templates select="foaf:page" mode="resFileType"/>
-                    <xsl:apply-templates select="comete:learningResourceType"/>
                 </div>
                 <br clear="all"/>
                 <xsl:apply-templates select="foaf:page" mode="link"/>
@@ -116,6 +116,12 @@
                         <xsl:variable name="colWidth" select="if( $isRightColVisible ) then '50%' else '100%'"/>
                         <td valign="top" class="DetailTableLeftSide">
                             <xsl:attribute name="width"><xsl:value-of select="$colWidth"/></xsl:attribute>
+                            <xsl:if test="comete:learningResourceType">
+                                <h2 class="SectionHeader"><xsl:value-of select="$HeaderLearningResourceTypes"/></h2>
+                                <ul>
+                                    <xsl:apply-templates select="comete:learningResourceType"/>
+                                </ul>
+                            </xsl:if>
                             <xsl:if test="dct:created or comete:added or comete:updated ">
                                 <h2 class="SectionHeader"><xsl:value-of select="$HeaderDates"/></h2>
                                 <ul>
@@ -290,7 +296,7 @@
     </xsl:template>
 
     <xsl:template match="comete:learningResourceType">
-        <span class="LearningResourceType"><xsl:value-of select="@label"/></span>
+        <li class="LearningResourceType"><xsl:value-of select="@label"/></li>
     </xsl:template>
 
     <xsl:template match="foaf:page" mode="link">

@@ -170,10 +170,6 @@ body {
     text-transform: uppercase;
 }
 
-.LearningResourceType {
-    display: block;
-}
-
 .LearningResourceType:first-letter {
     text-transform: uppercase;
 }
