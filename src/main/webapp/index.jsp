@@ -34,7 +34,7 @@
     <script type="text/javascript" src="js/SearchCollection.js"></script>
     <script type="text/javascript" src="js/Search.js"></script>
     <script type="text/javascript">
-        Window.cometeUriPrefix = '<%= Core.getInstance().getUriPrefix() %>';
+        window.cometeUriPrefix = '<%= Core.getInstance().getUriPrefix() %>';
     </script>
 </head>
 <body>

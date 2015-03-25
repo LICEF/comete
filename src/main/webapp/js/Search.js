@@ -82,7 +82,7 @@ Ext.define( 'Comete.SearchManager', {
             else {
                 var loUuid = Ext.getUrlParam( 'lo-uuid' );
                 if( loUuid != null ) 
-                    query = [ { key: "uri", value: Window.cometeUriPrefix + '/learningobject/' + loUuid } ];
+                    query = [ { key: "uri", value: window.cometeUriPrefix + '/learningobject/' + loUuid } ];
             }
         }
 
