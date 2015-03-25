@@ -15,6 +15,6 @@ WHERE '{'
     ?s comete:storeDigitalObject ?location .
     ?s oai:oai-datestamp ?strDatestamp .
     BIND ( xsd:dateTime( ?strDatestamp ) AS ?datestamp ) .
-    FILTER ( ?datestamp > "{1}"^^xsd:dateTime && ?datestamp < "{2}"^^xsd:dateTime )
+    FILTER ( ?datestamp >= "{1}"^^xsd:dateTime && ?datestamp <= "{2}"^^xsd:dateTime )
 '}'
 ORDER BY ?datestamp
