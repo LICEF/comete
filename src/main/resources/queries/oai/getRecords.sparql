@@ -7,7 +7,6 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 SELECT ?s ?exposedOaiId ?location
 WHERE '{'
     ?s rdf:type comete:MetadataRecord .
-    ?s comete:metadataFormat <{0}> .
     OPTIONAL '{'
         ?s oai:oai-identifier ?oaiId .
     '}' .
@@ -15,6 +14,6 @@ WHERE '{'
     ?s comete:storeDigitalObject ?location .
     ?s oai:oai-datestamp ?strDatestamp .
     BIND ( xsd:dateTime( ?strDatestamp ) AS ?datestamp ) .
-    FILTER ( ?datestamp >= "{1}"^^xsd:dateTime && ?datestamp <= "{2}"^^xsd:dateTime )
+    FILTER ( ?datestamp >= "{0}"^^xsd:dateTime && ?datestamp <= "{1}"^^xsd:dateTime )
 '}'
 ORDER BY ?datestamp

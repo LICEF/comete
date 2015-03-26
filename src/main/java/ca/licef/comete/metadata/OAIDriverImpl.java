@@ -102,10 +102,10 @@ public class OAIDriverImpl implements OAIDriver {
                 String query = null;
                 if( itemID.startsWith( localOaiIdentifierPrefix ) ) {
                     String recordId = Core.getInstance().getUriPrefix() + "/" + itemID.substring( localOaiIdentifierPrefix.length() );
-                    query = Util.getQuery( "oai/getRecordTimestamp.sparql", recordId, format.getNamespaceURI() );
+                    query = Util.getQuery( "oai/getRecordTimestamp.sparql", recordId );
                 }
                 else
-                    query = Util.getQuery( "oai/getRecordTimestampFromOaiIdentifier.sparql", itemID, format.getNamespaceURI() );
+                    query = Util.getQuery( "oai/getRecordTimestampFromOaiIdentifier.sparql", itemID );
 
                 Invoker inv = new Invoker( tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[] { query } );
                 Object resp = tripleStore.transactionalCall( inv );
@@ -126,6 +126,7 @@ public class OAIDriverImpl implements OAIDriver {
 
                 writer.print( "</metadata>\n" ); 
                 writer.print( "</record>\n" );
+                writer.flush();
             }
             catch( Exception e ) {
                 System.out.println( "Cannot retrieve record header data.  The record will not be generated." );
@@ -212,7 +213,7 @@ public class OAIDriverImpl implements OAIDriver {
             String strFrom = DateUtil.toISOString( effectiveFromDate, null, null );
             String strUntil = DateUtil.toISOString( effectiveUntilDate, null, null );
             try {
-                String query = Util.getQuery( "oai/getRecords.sparql", formatNamespace, strFrom, strUntil );
+                String query = Util.getQuery( "oai/getRecords.sparql", strFrom, strUntil );
                 Invoker inv = new Invoker( tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[] { query } );
                 Object resp = tripleStore.transactionalCall( inv );
 
@@ -223,7 +224,12 @@ public class OAIDriverImpl implements OAIDriver {
                     if( "local".equals( oaiId ) )
                         oaiId = getLocalOaiIdentifier( recordId );
                     String location = tuples[ i ].getValue( "location" ).getContent().toString();
-                    File sourceInfo = new File( Store.getInstance().getLocation() + location + "/" + Constants.DATASTREAM_ORIGINAL_DATA );
+                    String stream = Constants.DATASTREAM_ORIGINAL_DATA;
+                    if( "http://ltsc.ieee.org/xsd/LOM".equals( formatNamespace ) )
+                        stream = Constants.DATASTREAM_EXPOSED_DATA_LOM;
+                    else if( "http://www.openarchives.org/OAI/2.0/oai_dc/".equals( formatNamespace ) )
+                        stream = Constants.DATASTREAM_EXPOSED_DATA_DC;
+                    File sourceInfo = new File( Store.getInstance().getLocation() + location + "/" + stream );
                     Record record = new RecordImpl( oaiId, mdPrefix, sourceInfo );
                     list.add( record );
                 }

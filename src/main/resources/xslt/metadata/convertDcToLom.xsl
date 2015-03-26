@@ -8,7 +8,7 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
     exclude-result-prefixes="dc oai_dc saxon">
 
-    <xsl:output method="xml" indent="yes" cdata-section-elements="lom:entity"/>
+    <xsl:output method="xml" indent="yes" omit-xml-declaration="yes" cdata-section-elements="lom:entity"/>
 
     <xsl:param name="loURI"/>
     <xsl:param name="recordURI"/>

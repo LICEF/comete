@@ -7,7 +7,6 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema>
 SELECT ?datestamp
 WHERE '{'
     ?s rdf:type comete:MetadataRecord .
-    ?s comete:metadataFormat <{1}> .
     ?s oai:oai-identifier "{0}" .
     ?s oai:oai-datestamp ?datestamp .
 '}'

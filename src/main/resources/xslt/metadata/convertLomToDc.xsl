@@ -9,7 +9,7 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     exclude-result-prefixes="lom saxon">
 
-    <xsl:output method="xml" indent="yes"/>
+    <xsl:output method="xml" indent="yes" omit-xml-declaration="yes"/>
 
     <xsl:param name="loURI"/>
     <xsl:param name="recordURI"/>
