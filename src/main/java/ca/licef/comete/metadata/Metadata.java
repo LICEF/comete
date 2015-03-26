@@ -24,6 +24,7 @@ import licef.tsapi.TripleStore;
 import licef.tsapi.vocabulary.DCTERMS;
 import licef.tsapi.vocabulary.RDF;
 import licef.tsapi.vocabulary.FOAF;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.tika.language.LanguageIdentifier;
 import org.ariadne.util.JDomUtils;
 import org.ariadne.validation.Validator;
@@ -112,7 +113,8 @@ public class Metadata {
 
     public String getRecordURI( String oaiID, String namespace ) throws Exception {
         String query = CoreUtil.getQuery( "metadata/getMetadataRecordWith-oai-id.sparql", namespace, oaiID );
-        Tuple[] tuples = tripleStore.sparqlSelect(query);
+        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
+        Tuple[] tuples = (Tuple[])tripleStore.transactionalCall(inv);
         if( tuples.length > 0 )
             return( tuples[ 0 ].getValue( "s" ).getContent() );
         else
@@ -224,18 +226,43 @@ public class Metadata {
         //        errorMessage = "Cannot deploy resource : " + error;
         //}
 
+
         String loURI = null;
         String state = null;
-        if (errorMessage == null)
+        if (errorMessage == null) {
+            String recordURI = getRecordURI(pseudoOaiID, namespace);
+            if (recordURI != null) {
+                if (isSameMetadataRecordAlreadyUploaded(record, recordURI)) {
+                    Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore",
+                            "getTriplesWithSubjectPredicate", new Object[]{recordURI,
+                            COMETE.describes, new String[]{}});
+                    Triple triple = ((Triple[])tripleStore.transactionalCall(inv))[0];
+                    loURI = triple.getObject();
+                    return new String[]{null, loURI, "ignored"};
+                }
+            }
+
             try {
-                String[] res = manageRecord(pseudoOaiID, namespace, null, record, null);
+                String now = DateUtil.toISOString(new Date(), null, null);
+                String[] res = manageRecord(pseudoOaiID, namespace, null, record, now);
                 loURI = res[0];
                 state = res[3];
             } catch (Exception e) {
                 errorMessage = "Error on record parsing.";
             }
+        }
 
         return new String[]{errorMessage, loURI, state};
+    }
+
+    private boolean isSameMetadataRecordAlreadyUploaded(String record, String recordURI) throws Exception{
+        //Retrieve of stored record for similarity test
+        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore",
+                "getTriplesWithSubjectPredicate", new Object[]{recordURI,
+                COMETE.storeDigitalObject, new String[]{}});
+        Triple triple = ((Triple[])tripleStore.transactionalCall(inv))[0];
+        String xml = Store.getInstance().getDatastream(triple.getObject(), Constants.DATASTREAM_ORIGINAL_DATA);
+        return DigestUtils.shaHex(record).equals(DigestUtils.shaHex(xml));
     }
 
     public Object[] isRecordExists(File record) throws Exception {
@@ -445,10 +472,10 @@ public class Metadata {
         //oai-pmh properties
         if (!isUpdate)
             tripleStore.insertTriple( new Triple( recordURI, OAI.identifier, oaiId ) );
-        if (datestamp != null) {
-            Calendar calDatestamp = DateParser.parse( datestamp );
-            tripleStore.insertTriple( new Triple( recordURI, OAI.datestamp, DateUtil.toISOString( calDatestamp.getTime(), null, null ) ) ); //always set. also for previous cases. -AM
-        }
+
+        //Set datestamp with current date -AM
+        String now = DateUtil.toISOString(new Date(), null, null);
+        tripleStore.insertTriple( new Triple( recordURI, OAI.datestamp, now ) );
 
         String state = isUpdate?"updated":"added";
 

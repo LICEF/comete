@@ -30,8 +30,12 @@
                         url: 'rest/metadataRecords',
                         success: function(form, action) {
                             var res = '';
-                            for (i = 0; i < action.result.data.length; i++)
-                                res += '<br/><a href="' + action.result.data[i].uri + '" target="_blank">' + action.result.data[i].uri + '</a> ' + action.result.data[i].state;
+                            for (i = 0; i < action.result.data.length; i++) {
+                                var state = action.result.data[i].state;
+                                if (state == 'ignored')
+                                    state = 'same metadata record => no change';
+                                res += '<br/><a href="' + action.result.data[i].uri + '" target="_blank">' + action.result.data[i].uri + '</a> ' + state;
+                            }
                             Ext.get('result').update( res ); 
                             this.resultLabel.setVisible(true); 
                             this.waitDialog.close();

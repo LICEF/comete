@@ -1,25 +1,20 @@
 package ca.licef.comete.harvester;
 
+import licef.DateUtil;
 import licef.IOUtil;
 import licef.Sha1Util;
+import licef.XMLUtil;
 import org.json.JSONObject;
+import org.w3c.dom.Node;
+
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Date;
-
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-
-import org.w3c.dom.Node;
-
-import licef.DateUtil;
-import licef.StringUtil;
-import licef.XMLUtil;
-import licef.VersionUtil;
 
 public class Worker implements Runnable {
 
