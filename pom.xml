@@ -207,9 +207,9 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>ca.licef.comete</groupId>
+            <groupId>ca.licef</groupId>
             <artifactId>validator</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
+            <version>0.2.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
