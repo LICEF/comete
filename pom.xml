@@ -273,7 +273,7 @@
         <license>
             <name>GPL</name>
             <url>http://www.gnu.org/licenses/gpl.html</url>
-            <comments>Version 2 or 3?  This has not been decided yet</comments>
+            <comments>Version 3</comments>
             <distribution>manual</distribution>
         </license>
     </licenses>

@@ -29,7 +29,7 @@ function doDeleteLO(recordUri) {
     resultLabel.setVisible(true); 
     resultLabel.update( tr('Please wait') );
     Ext.Ajax.request( {
-        url: 'rest/metadataRecords/' + uriToDeleteField.getValue(),
+        url: 'rest/metadataRecords/' + encodeURIComponent(uriToDeleteField.getValue()),
         method: 'DELETE',
         success: function(response, opts) {
             resultLabel.update( response.responseText );

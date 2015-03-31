@@ -43,7 +43,7 @@
     'Select organization': 'Sélectionner une organisation',     
     'Include subcategories': 'Inclure les sous-catégories',
     'Include equivalent categories from :':'Inclure les catégories équivalentes dans :',
-    'Show category IDs': 'Voir les cotes des catégories',
+    'Show category IDs': 'Voir les identifiants des catégories',
     'Automatic Query': 'Requête automatique',
     'Warning': 'Avertissement',
     'No resource found': 'Aucune ressource trouvée',

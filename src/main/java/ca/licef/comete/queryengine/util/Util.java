@@ -61,6 +61,8 @@ public class Util {
 
         boolean isFromHarvestedRepoClause = false;
 
+        boolean includeEquivalence = false;
+
         //if collection, retrieve of right query first
         JSONObject firstCond = (JSONObject)queryArray.get(0);
         if (COLLECTION.equals(firstCond.get("key"))) {
@@ -131,7 +133,8 @@ public class Util {
                     String uri = obj.getString("value");
                     String vocUri = Vocabulary.getInstance().getConceptScheme(uri);
                     boolean isSubConcept = obj.has("subConcepts") && obj.getBoolean("subConcepts");
-                    boolean includeEquivalence = obj.has("equivalent") && obj.getBoolean("equivalent");
+                    includeEquivalence = obj.has("equivalent") && obj.getBoolean("equivalent");
+
                     if (isSubConcept)
                         clause = CoreUtil.getQuery("queryengine/advancedVocConceptHierarchyFragment.sparql", uri, vocUri);
                     else
@@ -204,7 +207,7 @@ public class Util {
         if (isFromHarvestedRepoClause)
             clauses += "\n?s comete:hasMetadataRecord ?r .";
 
-        return new String[]{fromClause, clauses};
+        return new String[]{fromClause, clauses, Boolean.toString(includeEquivalence)};
     }
 
     public static String makeAddedDateClause( String relOpStr, String date ) throws Exception{
