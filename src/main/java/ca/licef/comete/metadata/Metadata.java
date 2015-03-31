@@ -47,6 +47,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -844,51 +845,28 @@ public class Metadata {
                 metadataFormats.put( uri, format );
             }
 
+
+
             Hashtable<String, String> metadataRecordRepoTable = new Hashtable<String, String>();
             Hashtable<String, Hashtable<String, String>> repoInfo = new Hashtable<String, Hashtable<String, String>>();
             retrieveMetadataRecordRepoInfo( recordUris, metadataRecordRepoTable, repoInfo );
 
-            String union = buildMetadataRecordsUnion( recordUris );
-            query = CoreUtil.getQuery( "metadata/getMetadataRecordApplicationProfiles.sparql", union );
-            Tuple[] tuples = tripleStore.sparqlSelect( query );
-            String tempUri = null;
-            List<String> applProfList = null;
-            for( Tuple tuple : tuples ) {
-                String uri = tuple.getValue( "s" ).getContent();
-                String applProf = tuple.getValue( "applProf" ).getContent();
-                if( !uri.equals( tempUri ) ) {
-                    if( applProfList != null ) {
-                        Map entry = new HashMap<String,String>();
-                        entry.put( "id", tempUri );
-                        entry.put( "metadataFormat", metadataFormats.get( tempUri ) );
-                        entry.put( "profiles", applProfList );
-                        String repoUri = metadataRecordRepoTable.get( tempUri );
-                        if( repoUri != null ) {
-                            entry.put( "repoUri", repoUri );
-                            Hashtable<String, String> repoInfoData = repoInfo.get( repoUri );
-                            if( repoInfoData != null ) {
-                                String repoName = repoInfoData.get( "name" );
-                                if( repoName != null )
-                                    entry.put( "repoName", repoName );
-                                String repoAdminEmail = repoInfoData.get( "adminEmail" );
-                                if( repoAdminEmail != null )
-                                    entry.put( "repoAdminEmail", repoAdminEmail );
-                            }
-                        }
-                        rs.addEntry( entry );
-                    }
-                    applProfList = new ArrayList<String>();
-                    tempUri = uri;
-                }
-                if( applProfile == null || applProfile.equals( applProf ))
-                    applProfList.add( applProf );
-            }
-            if( applProfList != null ) {
-                Map<String, Object> entry = new HashMap<String, Object>();
-                entry.put( "id", tempUri );
-                entry.put( "metadataFormat", metadataFormats.get( tempUri ) );
+            Map<String,List<String>> tableApplProfs = getMetadataRecordApplProfTable( recordUris, applProfile );
+            Map<String,List<String>> tableInvalidApplProfs = getMetadataRecordInvalidApplProfTable( recordUris,applProfile );
+            
+            Collections.sort( recordUris );
+            for( String recordUri : recordUris ) {
+                Map entry = new HashMap<String,String>();
+                entry.put( "id", recordUri );
+                entry.put( "metadataFormat", metadataFormats.get( recordUri ) );
+
+                List<String> applProfList = tableApplProfs.get( recordUri );
                 entry.put( "profiles", applProfList );
-                String repoUri = metadataRecordRepoTable.get( tempUri );
+
+                List<String> invalidApplProfList = tableInvalidApplProfs.get( recordUri );
+                entry.put( "invalidProfiles", invalidApplProfList );
+                
+                String repoUri = metadataRecordRepoTable.get( recordUri );
                 if( repoUri != null ) {
                     entry.put( "repoUri", repoUri );
                     Hashtable<String, String> repoInfoData = repoInfo.get( repoUri );
@@ -901,12 +879,71 @@ public class Metadata {
                             entry.put( "repoAdminEmail", repoAdminEmail );
                     }
                 }
+
                 rs.addEntry( entry );
             }
         }
         return( rs );
     }
 
+    private Map<String,List<String>> getMetadataRecordApplProfTable( List<String> recordUris, String applProfile ) throws Exception {
+        Map<String,List<String>> res = new HashMap<String,List<String>>();
+
+        String union = buildMetadataRecordApplProfUnion( recordUris );
+        String query = CoreUtil.getQuery( "metadata/getMetadataRecordApplicationProfiles.sparql", union );
+        Tuple[] tuples = tripleStore.sparqlSelect( query );
+        String tempUri = null;
+        List<String> applProfList = null;
+        for( Tuple tuple : tuples ) {
+            String uri = tuple.getValue( "s" ).getContent();
+            String applProf = tuple.getValue( "applProf" ).getContent();
+            if( !uri.equals( tempUri ) ) {
+                if( applProfList != null )
+                    res.put( tempUri, applProfList );
+                applProfList = new ArrayList<String>();
+                tempUri = uri;
+            }
+            if( applProf != null && !applProf.equals( "" ) ) {
+                if( applProfile == null || applProfile.equals( applProf ) )
+                    applProfList.add( applProf );
+            }
+        }
+        if( applProfList != null )
+            res.put( tempUri, applProfList );
+
+        return( res );
+    }
+
+    private Map<String,List<String>> getMetadataRecordInvalidApplProfTable( List<String> recordUris, String applProfile ) throws Exception {
+        Map<String,List<String>> res = new HashMap<String,List<String>>();
+
+        String union = buildMetadataRecordReportUnion( recordUris );
+        String query = CoreUtil.getQuery( "metadata/getMetadataRecordValidationReports.sparql", union );
+        Tuple[] tuples = tripleStore.sparqlSelect( query );
+        String tempUri = null;
+        List<String> invalidApplProfList = null;
+        for( Tuple tuple : tuples ) {
+            String uri = tuple.getValue( "s" ).getContent();
+            String report = tuple.getValue( "report" ).getContent();
+            if( !uri.equals( tempUri ) ) {
+                if( invalidApplProfList != null )
+                    res.put( tempUri, invalidApplProfList );
+                invalidApplProfList = new ArrayList<String>();
+                tempUri = uri;
+            }
+
+            if( report != null && !"".equals( report ) ) {
+                String applProfUri = CoreUtil.getProfileUriFromReportLink( report );
+                if( applProfile == null || applProfile.equals( applProfUri ) )
+                    invalidApplProfList.add( applProfUri );
+            }
+        }
+        if( invalidApplProfList != null )
+            res.put( tempUri, invalidApplProfList );
+
+        return( res );
+    }
+    
     /*
      * URI Store conversion
      */
@@ -970,7 +1007,7 @@ public class Metadata {
         }
     }
 
-    private String buildMetadataRecordsUnion( List<String> recordUris ) {
+    private String buildMetadataRecordApplProfUnion( List<String> recordUris ) {
         StringBuilder union = new StringBuilder();
         String unionDelimiter = "";
         for( int i = 0; i < recordUris.size(); i++ ) {
@@ -980,6 +1017,22 @@ public class Metadata {
             union.append( "?s comete:describes ?record ." );
             union.append( "?record comete:hasMetadataRecord <" ).append( recordUris.get( i ) ).append( "> ." );
             union.append( "OPTIONAL { ?s comete:applicationProfile ?applProf }" );
+            union.append( "}" );
+            unionDelimiter = " UNION ";
+        }
+        return( union.toString() );
+    }
+
+    private String buildMetadataRecordReportUnion( List<String> recordUris ) {
+        StringBuilder union = new StringBuilder();
+        String unionDelimiter = "";
+        for( int i = 0; i < recordUris.size(); i++ ) {
+            union.append( unionDelimiter );
+            union.append( "{" );
+            union.append( "?s rdf:type comete:MetadataRecord ." );
+            union.append( "?s comete:describes ?record ." );
+            union.append( "?record comete:hasMetadataRecord <" ).append( recordUris.get( i ) ).append( "> ." );
+            union.append( "OPTIONAL { ?s comete:validationReportLink ?report }" );
             union.append( "}" );
             unionDelimiter = " UNION ";
         }

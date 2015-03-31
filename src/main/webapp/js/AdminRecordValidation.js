@@ -65,11 +65,20 @@
             ]
         } );
 
+        this.recordUnchecked = Ext.create( 'Ext.Panel', {
+            layout: 'border',
+            border: 0,
+            items: [
+                { xtype: 'label', text: tr( 'Unchecked' ), margin: '10 0 0 10', cls: 'sectionTitle', region: 'north' },
+                { html: tr( 'The metadata record has not been tested by the validator against this application profile.' ), margin: '10 0 0 10', region: 'center', border: 0 }
+            ]
+        } );
+
         this.recordResultPanel = Ext.create( 'Ext.Panel', {
             width: 600,
             layout: 'card',
             margin: '-1 0 0 0',
-            items: [ this.recordErrorReport, this.recordNotAppl, this.recordValid ],
+            items: [ this.recordErrorReport, this.recordNotAppl, this.recordValid, this.recordUnchecked ],
             region: 'east', 
             split: true
         } );
@@ -121,6 +130,8 @@
                 filename = 'validMark';
             else if( 'false' == isValid )
                 filename = 'invalidMark';
+            else if( '?'== isValid ) 
+                filename = 'unknownMark';
             else 
                 filename = 'notApplMark';
             return( Ext.String.format( '<img src="images/{0}.png">', filename ) );
@@ -391,6 +402,8 @@
                         this.recordResultPanel.getLayout().setActiveItem( 2 );
                     else if( 'notApplicable' == isValid )
                         this.recordResultPanel.getLayout().setActiveItem( 1 );
+                    else if( '?' == isValid )
+                        this.recordResultPanel.getLayout().setActiveItem( 3 );
                     else {
                         var reportLink = './rest/metadataRecords/' + id + '/validationReport/' + applProf + '/xml?syntaxHighlighted=true';
                         var reportHtml = '<iframe width="100%" height="100%" src="' + reportLink + '"></iframe>';
