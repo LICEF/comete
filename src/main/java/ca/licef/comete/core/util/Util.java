@@ -223,6 +223,20 @@ public class Util {
             throw( new Exception( "Unknown application profile: " + profileUri + "." ) );
     }
 
+    public static String getProfileUriFromReportLink( String reportLink ) throws Exception {
+        int indexOfLastSlash = reportLink.lastIndexOf( "/" );
+        if( indexOfLastSlash == -1 )
+            throw( new Exception( "Unknown application profile for report link: " + reportLink ) );
+
+        String truncatedReportLink = reportLink.substring( 0, indexOfLastSlash );
+        indexOfLastSlash = truncatedReportLink.lastIndexOf( "/" );
+        if( indexOfLastSlash == -1 )
+            throw( new Exception( "Unknown application profile for report link: " + reportLink ) );
+
+        String applProfAbbrev = truncatedReportLink.substring( indexOfLastSlash + 1 );
+        return( getApplProfUri( applProfAbbrev ) );
+    }
+
     public static String getApplProfAbbreviation( String profileUri ) throws Exception {
         if( Constants.APPL_PROF_LOM_STRICT.equals( profileUri ) )
             return( Constants.APPL_PROF_ABBR_LOM_STRICT );
@@ -240,6 +254,25 @@ public class Util {
             return( Constants.APPL_PROF_ABBR_OAI_DC );
         else
             throw( new Exception( "Unknown application profile: " + profileUri + "." ) );
+    }
+
+    public static String getApplProfUri( String applProfAbbrev ) throws Exception {
+        if( Constants.APPL_PROF_ABBR_LOM_STRICT.equals( applProfAbbrev ) )
+            return( Constants.APPL_PROF_LOM_STRICT );
+        else if( Constants.APPL_PROF_ABBR_LOM_LOOSE.equals( applProfAbbrev ) )
+            return( Constants.APPL_PROF_LOM_LOOSE );
+        else if( Constants.APPL_PROF_ABBR_LOM_FR_1_0.equals( applProfAbbrev ) )
+            return( Constants.APPL_PROF_LOM_FR_1_0 );
+        else if( Constants.APPL_PROF_ABBR_SCO_LOM_FR_1_0.equals( applProfAbbrev ) )
+            return( Constants.APPL_PROF_SCO_LOM_FR_1_0 );
+        else if( Constants.APPL_PROF_ABBR_SCO_LOM_FR_1_1.equals( applProfAbbrev ) )
+            return( Constants.APPL_PROF_SCO_LOM_FR_1_1 );
+        else if( Constants.APPL_PROF_ABBR_LOM_NORMETIC_1_2.equals( applProfAbbrev ) )
+            return( Constants.APPL_PROF_LOM_NORMETIC_1_2 );
+        else if( Constants.APPL_PROF_ABBR_OAI_DC.equals( applProfAbbrev ) )
+            return( Constants.APPL_PROF_OAI_DC );
+        else
+            throw( new Exception( "Unknown application profile: " + applProfAbbrev + "." ) );
     }
 
     public static String getReportLink( String storeId, String profileUri ) throws Exception {

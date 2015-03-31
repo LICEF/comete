@@ -298,12 +298,17 @@ public class MetadataRecordResource {
             JSONObject record = new JSONObject();
             record.put( "id", entry.get( "id" ) );
             List<String> profiles = (List<String>)entry.get( "profiles" );
+            List<String> invalidProfiles = (List<String>)entry.get( "invalidProfiles" );
             for( int i = 0; i < Constants.lomApplProfiles.length; i++ ) {
                 String isValid = null;
                 if( profiles.contains( Constants.lomApplProfiles[ i ] ) )
                     isValid = "true";
-                else if( Constants.IEEE_LOM_NAMESPACE.equals( entry.get( "metadataFormat" ) ) )
-                    isValid = "false";
+                else if( Constants.IEEE_LOM_NAMESPACE.equals( entry.get( "metadataFormat" ) ) ) {
+                    if( invalidProfiles.contains( Constants.lomApplProfiles[ i ] ) )
+                        isValid = "false";
+                    else
+                        isValid = "?";
+                }
                 else
                     isValid = "notApplicable";
                 record.put( Constants.lomApplProfAbbrevs[ i ], isValid );
@@ -312,12 +317,17 @@ public class MetadataRecordResource {
                 String isValid = null;
                 if( profiles.contains( Constants.dcApplProfiles[ i ] ) )
                     isValid = "true";
-                else if( Constants.OAI_DC_NAMESPACE.equals( entry.get( "metadataFormat" ) ) )
-                    isValid = "false";
+                else if( Constants.OAI_DC_NAMESPACE.equals( entry.get( "metadataFormat" ) ) ) {
+                    if( invalidProfiles.contains( Constants.dcApplProfiles[ i ] ) )
+                        isValid = "false";
+                    else
+                        isValid = "?";
+                }
                 else
                     isValid = "notApplicable";
                 record.put( Constants.dcApplProfAbbrevs[ i ], isValid );
             }
+
             String repoUri = (String)entry.get( "repoUri" );
             if( repoUri != null )
                 record.put( "repoUri", repoUri );

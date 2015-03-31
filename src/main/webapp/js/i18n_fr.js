@@ -204,6 +204,8 @@
     'This application profile is unrelated to this metadata format.': "Ce profil d'application ne concerne pas ce format de métadonnées.",
     'Valid': 'Valide',
     'The metadata record is valid according to this application profile.': "Cette fiche est conforme au profil d'application.",
+    'Unchecked': 'Non traité',
+    'The metadata record has not been tested by the validator against this application profile.': "Cette fiche n'a pas été traitée par le validateur pour ce profil d'application.",
     '<p>Name: {0}</p><p>Contact: <a href="{1}">{1}</a></p>': '<p>Nom: {0}</p><p>Contact: <a href="{1}">{1}</a></p>',
     'List of enabled validations': 'Liste des validations courantes',
     'Save Settings': 'Sauver les paramètres', 
