@@ -356,9 +356,9 @@ public class MetadataRecordResource {
      * Possible values for datastreamType are: xml, lom, and dc.
      */
     @GET
-    @Path( "{id}/{datastreamType}" )
+    @Path( "{path}/{datastreamType}" )
     @Produces( { MediaType.TEXT_HTML, MediaType.APPLICATION_XML } )
-    public Response getMetadataRecordAsXml( @PathParam( "id" ) String id, @PathParam( "datastreamType" ) String datastreamType, @DefaultValue( "false" ) @QueryParam( "syntaxHighlighted" ) String strIsSyntaxHighlighted ) throws Exception {
+    public Response getMetadataRecordAsXml( @PathParam( "path" ) String path, @PathParam( "datastreamType" ) String datastreamType, @DefaultValue( "false" ) @QueryParam( "syntaxHighlighted" ) String strIsSyntaxHighlighted ) throws Exception {
         String datastream = null;
         if( datastreamType.equals( "xml" ) )
             datastream = Constants.DATASTREAM_ORIGINAL_DATA;
@@ -371,7 +371,7 @@ public class MetadataRecordResource {
 
         boolean isSyntaxHighlighted = ( "true".equals( strIsSyntaxHighlighted ) );
         
-        return( getXmlDatastream( Store.PATH_RECORDS + "/" + id, datastream, isSyntaxHighlighted ) );
+        return( getXmlDatastream( path, datastream, isSyntaxHighlighted ) );
     }
 
     private Response getXmlDatastream( String path, String datastream, boolean isSyntaxHighlighted ) throws Exception {

@@ -387,7 +387,8 @@
             }
             else {
                 var id = this.getRecordIdFromUri( this.recordStore.data.items[ pos.row ].id ); 
-                var link = './rest/metadataRecords/' + id + '/xml?syntaxHighlighted=true';
+                var path = encodeURIComponent( '/metadata/records/' + id );
+                var link = './rest/metadataRecords/' + path + '/xml?syntaxHighlighted=true';
                 var html = '<iframe width="100%" height="100%" src="' + link + '"></iframe>';
 
                 if( pos.column == 0 ) {
