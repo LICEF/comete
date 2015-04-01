@@ -44,6 +44,8 @@ public class RepositoryManager {
     }
 
     public String addOrUpdateRepository( String id, String name, String type, String url, String adminEmail, String defId ) throws Exception {
+        if( !adminEmail.startsWith( "mailto:" ) )
+            adminEmail = "mailto:" + adminEmail;
         Invoker inv = new Invoker( this, "ca.licef.comete.metadata.RepositoryManager", 
             "addOrUpdateRepositoryEff", new Object[] { id, name, type, url, adminEmail, defId } );
         return( (String)tripleStore.transactionalCall( inv, TripleStore.WRITE_MODE ) );

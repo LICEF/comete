@@ -380,6 +380,8 @@
                 this.recordDetailsPanel.getLayout().setActiveItem( 2 ); 
                 var repoName = this.recordStore.data.items[ pos.row ].data[ 'repoName' ];
                 var repoAdminEmail = this.recordStore.data.items[ pos.row ].data[ 'repoAdminEmail' ];
+                if( repoAdminEmail.indexOf( 'mailto:' ) == 0 )
+                    repoAdminEmail = repoAdminEmail.substring( 'mailto:'.length );
                 var html = Ext.String.format( tr( '<p>Name: {0}</p><p>Contact: <a href="{1}">{1}</a></p>' ), repoName, repoAdminEmail );
                 this.recordRepoInfoBodyPanel.body.update( html );
             }
