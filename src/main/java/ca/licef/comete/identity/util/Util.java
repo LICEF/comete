@@ -114,6 +114,7 @@ public class Util {
         //PHOTO, LOGO case, value must be without space if url
         vcard = adjustPhoto(vcard, "PHOTO;");
         vcard = adjustPhoto(vcard, "LOGO;");
+
         //ADR case must have 7 values
         vcard = adjustAddress(vcard);
 
@@ -245,7 +246,13 @@ public class Util {
     private static String adjustAddress(String s) {
         String property = "ADR;";
         int index = s.indexOf(property);
-        if (index != -1) {
+        if (index == -1) {
+            property = "ADR:";
+            index = s.indexOf(property);
+            if (index != -1 )
+                return( adjustAddress( s.replace( "ADR:", "ADR;" ) ) );
+        }
+        else {
             int index1b = s.indexOf(":", index) + 1;
             int index2 = indexOfNextVCardProperty(s, index1b);
             String adr = s.substring(index1b, index2);
@@ -258,6 +265,7 @@ public class Util {
             adr = adr.replaceAll("\r\n", "");
             adr = adr.replaceAll("\n", "");
             adr = adr.replaceAll("\r", "");
+
             int i = StringUtil.occurrenceOf(";", adr);
             while (i < 6) {
                 adr += ";";
