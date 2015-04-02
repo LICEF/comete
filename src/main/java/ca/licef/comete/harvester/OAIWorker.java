@@ -166,7 +166,13 @@ public class OAIWorker extends Worker {
                                     }
                                 }
 
-                                digest(identifier, status, datestamp, metadata);
+                                try {
+                                    digest(identifier, status, datestamp, metadata);
+                                }
+                                catch( Throwable t ) {
+                                    // Display the problem but keep processing the other records.
+                                    t.printStackTrace();
+                                }
                             }
                         }
                     }
