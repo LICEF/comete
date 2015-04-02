@@ -35,6 +35,9 @@ public class HarvestDefinitionResource {
             JSONArray defs = new JSONArray();
             for (String defId : definitions) {
                 JSONObject _def = Harvester.getInstance().getDefinition(defId);
+                if (_def == null)
+                    continue;
+
                 JSONObject def = new JSONObject();
                 def.put( "id", defId );
                 def.put( "restUrl", "rest/harvestDefinitions/" + defId );

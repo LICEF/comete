@@ -1,0 +1,10 @@
+PREFIX comete: <http://comete.licef.ca/reference#>
+PREFIX oai: <http://www.openarchives.org/OAI/2.0/>
+
+SELECT ?oaiId ?metadataFormat ?storeId
+WHERE '{'
+    <{0}> oai:oai-identifier ?oaiId .
+    <{0}> comete:metadataFormat ?metadataFormat .
+    <{0}> comete:storeDigitalObject ?storeId
+'}'
+

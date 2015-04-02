@@ -1,7 +1,7 @@
 ﻿function doResetMetamodel() {
     Ext.Ajax.request( {
         url: 'rest/metadataRecords/redigestAll',
-        method: 'GET',
+        method: 'PUT',
         failure: function(response, opts) {
             Ext.Msg.alert('Failure', response.responseText );
         }
@@ -12,9 +12,8 @@ function doResetLO(recordUri) {
     resultLabel.setVisible(true); 
     resultLabel.update( tr('Please wait') );
     Ext.Ajax.request( {
-        url: 'rest/metadataRecords/redigestRecord',
-        params: { recordUri: uriField.getValue() },
-        method: 'GET',
+        url: 'rest/metadataRecords/redigestRecord/' + encodeURIComponent(uriField.getValue()),
+        method: 'PUT',
         success: function(response, opts) {
             resultLabel.update( response.responseText );
         },
@@ -135,7 +134,7 @@ var buttonDeleteLO = new Ext.Button( {
 
 var uriToDeleteField = Ext.create('Ext.form.field.Text', {
     width: 400,
-    emptyText: tr( 'Record ID' )
+    emptyText: tr( 'Record URI' )
 } );
 
 var buttonDeleteLOsFromRepo = new Ext.Button( { 

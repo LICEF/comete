@@ -51,6 +51,9 @@ public class Harvester {
     public JSONObject getDefinition(String defId) throws Exception {
         File defFolder = new File( HARVESTER_FOLDER, defId );
         File defFile = new File( defFolder, defId + ".json" );
+        if (!defFile.exists())
+            return null;
+
         String jsonStr = new String( IOUtil.readFileIntoByteArray( defFile ), "UTF-8" );
         JSONObject obj = new JSONObject( jsonStr );
         //xsl

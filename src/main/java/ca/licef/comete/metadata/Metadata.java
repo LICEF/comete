@@ -1,9 +1,9 @@
 package ca.licef.comete.metadata;
 
 import ca.licef.comete.core.Core;
+import ca.licef.comete.core.Settings;
 import ca.licef.comete.core.metadataformat.MetadataFormat;
 import ca.licef.comete.core.metadataformat.MetadataFormats;
-import ca.licef.comete.core.Settings;
 import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.ResultSet;
 import ca.licef.comete.harvester.Harvester;
@@ -15,15 +15,15 @@ import com.sun.jersey.core.header.FormDataContentDisposition;
 import licef.DateUtil;
 import licef.IOUtil;
 import licef.StringUtil;
-import licef.XMLUtil;
 import licef.ZipUtil;
 import licef.reflection.Invoker;
+import licef.reflection.ThreadInvoker;
+import licef.tsapi.TripleStore;
 import licef.tsapi.model.Triple;
 import licef.tsapi.model.Tuple;
-import licef.tsapi.TripleStore;
 import licef.tsapi.vocabulary.DCTERMS;
-import licef.tsapi.vocabulary.RDF;
 import licef.tsapi.vocabulary.FOAF;
+import licef.tsapi.vocabulary.RDF;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.tika.language.LanguageIdentifier;
 import org.ariadne.util.JDomUtils;
@@ -31,30 +31,11 @@ import org.ariadne.validation.Validator;
 import org.ariadne.validation.exception.InitialisationException;
 import org.ariadne.validation.exception.ValidationException;
 import org.ariadne.validation.utils.ValidationUtils;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.util.DateParser;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
 import javax.xml.transform.stream.StreamSource;
+import java.io.*;
+import java.net.URLEncoder;
+import java.util.*;
 
 public class Metadata {
 
@@ -391,15 +372,17 @@ public class Metadata {
         String recordURI = getRecordURI(oaiId, namespace);
 
         if (recordURI != null) {
-            isUpdate = true;
-            Triple[] _triples = tripleStore.getTriplesWithSubjectPredicate(recordURI, OAI.datestamp);
-            if (_triples.length > 0 && datestamp != null) {
-                Date d1 = DateUtil.toDate(_triples[0].getObject());
-                Date d2 = DateUtil.toDate(datestamp);
-                if (d2.after(d1))
-                    tripleStore.removeTriplesWithSubjectPredicate(recordURI, OAI.datestamp);
-                else
-                    return new String[]{null, null, null, "ignored"};
+            if (datestamp != null) {
+                isUpdate = true;
+                Triple[] _triples = tripleStore.getTriplesWithSubjectPredicate(recordURI, OAI.datestamp);
+                if (_triples.length > 0) {
+                    Date d1 = DateUtil.toDate(_triples[0].getObject());
+                    Date d2 = DateUtil.toDate(datestamp);
+                    if (d2.after(d1))
+                        tripleStore.removeTriplesWithSubjectPredicate(recordURI, OAI.datestamp);
+                    else
+                        return new String[]{null, null, null, "ignored"};
+                }
             }
 
             loURI = getLearningObjectURI(recordURI);
@@ -474,9 +457,11 @@ public class Metadata {
         if (!isUpdate)
             tripleStore.insertTriple( new Triple( recordURI, OAI.identifier, oaiId ) );
 
-        //Set datestamp with current date -AM
-        String now = DateUtil.toISOString(new Date(), null, null);
-        tripleStore.insertTriple( new Triple( recordURI, OAI.datestamp, now ) );
+        //Set datestamp with current date unless not present (redigest case) -AM
+        if (datestamp != null) {
+            String now = DateUtil.toISOString(new Date(), null, null);
+            tripleStore.insertTriple(new Triple(recordURI, OAI.datestamp, now));
+        }
 
         String state = isUpdate?"updated":"added";
 
@@ -609,15 +594,6 @@ public class Metadata {
         }
     }
 
-    /*****
-     * Record's Redigest
-     */
-
-    private void resetLearningObjectNonPersistentTriples(String recordURI) throws Exception {
-        String query = CoreUtil.getQuery( "metadata/deleteLOTriplesToReset.sparql", recordURI );
-        tripleStore.sparqlUpdate_textIndex(query);
-    }
-
     /**
      * This method uses the old XSL transformation to internal format to link voc concepts and identities
      */
@@ -643,48 +619,48 @@ public class Metadata {
         CoreUtil.applyXslToDocument( stylesheet, source, parameters );
     }
 
-    /*private void internalFormatToExposedRecords(String loURI, String storeId, MetadataFormat metadataFormat) throws Exception {
-        if( !Store.getInstance().isDatastreamExists( storeId, Constants.DATASTREAM_INTERNAL_DATA ) )
-            return;
-        String recordUri = Util.makeURI(Util.getIdValue(storeId), COMETE.MetadataRecord);
 
-        System.out.println("Expose record : " + recordUri + "...");
-        String xml = Store.getInstance().getDatastream( storeId, Constants.DATASTREAM_INTERNAL_DATA );
+    /*****
+     * Record's Redigest
+     */
 
-        HashMap<String,String> parameters = new HashMap<String,String>();
-        parameters.put( "loURI", loURI );
+    private void resetLearningObjectNonPersistentTriples(String recordURI) throws Exception {
+        String query = CoreUtil.getQuery( "metadata/deleteLOTriplesToReset.sparql", recordURI );
+        tripleStore.sparqlUpdate_textIndex(query);
+    }
 
-        String stylesheet = null;
-        if( metadataFormat.getNamespace().equals( Constants.OAI_DC_NAMESPACE ))
-            stylesheet = "metadata/convertInternalFormatToDc";
-        else if( metadataFormat.getNamespace().equals( Constants.IEEE_LOM_NAMESPACE) )
-            stylesheet = "metadata/convertInternalFormatToLom";
+    public void redigestAllRecords() throws Exception {
+        (new ThreadInvoker(new Invoker(this, "ca.licef.comete.metadata.Metadata",
+                               "redigestAllRecordsEff", new Object[]{}))).start();
+    }
 
-        StreamSource source = new StreamSource( new StringReader( xml ) );
-        String newXml = Util.applyXslToDocument( stylesheet, source, parameters );
+    public void redigestAllRecordsEff() throws Exception {
+        System.out.println("Start Reset Metamodel at : " + new Date());
 
-        updateExposedFormat(storeId, newXml, metadataFormat, recordUri);
+        String query = CoreUtil.getQuery("metadata/getAllMetadataRecords.sparql");
+        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
+        Tuple[] tuples = (Tuple[])tripleStore.transactionalCall(inv);
 
-        // Generate exposed record for other metadata formats.
-        stylesheet = null;
-        MetadataFormat exposedMetadataFormat = null;
-        if( metadataFormat.getNamespace().equals( Constants.OAI_DC_NAMESPACE )) {
-            stylesheet = "metadata/convertFromInternalFormatDcToLom";
-            exposedMetadataFormat = MetadataFormats.getMetadataFormat( Constants.IEEE_LOM_NAMESPACE );
+        for (Tuple tuple : tuples )
+            redigestRecord(tuple.getValue("s").getContent());
+
+        System.out.println("Reset Metamodel Done at : " + new Date());
+    }
+
+    public void redigestRecord(String recordUri) throws Exception {
+        String query = CoreUtil.getQuery( "metadata/getMetadataRecordToRedigest.sparql", recordUri );
+        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
+        Tuple[] tuples = (Tuple[])tripleStore.transactionalCall(inv);
+        if( tuples.length > 0 ) {
+            Tuple tuple = tuples[0];
+            String oaiId = tuple.getValue("oaiId").getContent();
+            String namespace = tuple.getValue("metadataFormat").getContent();
+            String storeId = tuple.getValue("storeId").getContent();
+            String record = Store.getInstance().getDatastream(storeId, Constants.DATASTREAM_ORIGINAL_DATA);
+            manageRecord(oaiId, namespace, null, record, null);
         }
-        else if( metadataFormat.getNamespace().equals( Constants.IEEE_LOM_NAMESPACE) ) {
-            stylesheet = "metadata/convertFromInternalFormatLomToDc";
-            exposedMetadataFormat = MetadataFormats.getMetadataFormat( Constants.OAI_DC_NAMESPACE );
-        }
+    }
 
-        if( stylesheet != null ) {
-            parameters.put( "recordURI", recordUri );
-            source = new StreamSource( new StringReader( xml ) );
-            newXml = Util.applyXslToDocument( stylesheet, source, parameters );
-
-            updateExposedFormat(storeId, newXml, exposedMetadataFormat, recordUri);
-        }
-    }*/
 
     /*****
      * exposed format management
@@ -1040,5 +1016,4 @@ public class Metadata {
     }
 
     private boolean isValidatorInitialized = false;
-
 }

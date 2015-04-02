@@ -183,6 +183,41 @@ public class MetadataRecordResource {
         return (Response.ok().build());
     }
 
+    @PUT
+    @Path( "redigestAll" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response redigestAllRecords(@Context HttpServletRequest request) throws Exception {
+
+        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to reinit metamodel.").build();
+
+        try {
+            Metadata.getInstance().redigestAllRecords();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error during process : " + e).build();
+        }
+        return Response.ok("ResetAll process started").build();
+    }
+
+    @PUT
+    @Path( "redigestRecord/{id}" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response redigestRecord(@Context HttpServletRequest request,
+                                   @PathParam( "id" ) String recordUri) throws Exception {
+        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to reset records.").build();
+
+        try {
+            Metadata.getInstance().redigestRecord(recordUri);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Not valid record URI.").build();
+        }
+        return Response.ok("Reset Done.").build();
+    }
+
+
     @GET
     @Path( "{id}/validationReport/{applProf}/xml" )
     @Produces( { MediaType.TEXT_HTML, MediaType.APPLICATION_XML } )

@@ -237,11 +237,6 @@
             <version>1.1.4</version>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.34</version>
-        </dependency>
-        <dependency>
             <groupId>com.mckoi</groupId>
             <artifactId>mckoisqldb</artifactId>
             <version>1.0.5</version>
