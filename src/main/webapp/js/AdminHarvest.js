@@ -491,8 +491,8 @@ Ext.define( 'Comete.AdminHarvestReportViewer', {
         cfg = {
             title: tr('Harvest reports for :') + ' ' + this.harvestDefName,
             buttons: [ {text:'OK', handler: this.close, scope: this} ],
+            maximizable: true,
             items: [ this.reportsPanel, this.content ]
-
         };
         Ext.apply(this, cfg);
         this.callParent(arguments); 
