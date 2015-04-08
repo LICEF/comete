@@ -145,8 +145,11 @@ public class OAIWorker extends Worker {
                                                 if( Node.ELEMENT_NODE == tmpNode.getNodeType() ) {
                                                     if( "identifier".equals( tmpNode.getLocalName() ) )
                                                         identifier = tmpNode.getFirstChild().getNodeValue().trim();
-                                                    else if( "datestamp".equals( tmpNode.getLocalName() ) )
-                                                        datestamp = tmpNode.getFirstChild().getNodeValue().trim();
+                                                    else if( "datestamp".equals( tmpNode.getLocalName() ) ) {
+                                                        Node datestampFirstChild = tmpNode.getFirstChild();
+                                                        if( datestampFirstChild != null ) 
+                                                            datestamp = tmpNode.getFirstChild().getNodeValue().trim();
+                                                    }
                                                 }
                                             }
                                         }

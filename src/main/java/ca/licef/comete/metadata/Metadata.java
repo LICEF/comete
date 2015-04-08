@@ -359,6 +359,7 @@ public class Metadata {
     }
 
     public String[] digestRecord(String record, String namespace, String repoURI, String oaiId, String datestamp) throws Exception {
+        System.out.println( "Digesting record oaiId=" + oaiId + " from repoURI=" + repoURI + " datestamp=" + datestamp );        
         ArrayList<Triple> triples = new ArrayList<>();
         String storeId;
         Store store = Store.getInstance();
