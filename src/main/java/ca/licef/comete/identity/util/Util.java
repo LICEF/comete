@@ -94,6 +94,17 @@ public class Util {
         Hashtable<String, String> vcardTable = new Hashtable<String, String>();
         /* Corrections to let ical4j-vcard parser works */
 
+        // Make sure that the BEGIN:VCARD and END:VCARD tags are alone on their lines.
+        Pattern p0 = Pattern.compile( "BEGIN:VCARD(.*)END:VCARD", Pattern.MULTILINE | Pattern.DOTALL );
+        Matcher m0 = p0.matcher( vcard );
+        if( m0.find() )
+            vcard = "BEGIN:VCARD\n" + m0.group( 1 ) + "\nEND:VCARD";
+
+        //Remove leading spaces
+        Pattern p = Pattern.compile( "^\\s+", Pattern.MULTILINE );
+        Matcher m = p.matcher( vcard );
+        vcard = m.replaceAll( "" );
+
         //clear spaces before all properties
         vcard = preAdjustment(vcard);
 

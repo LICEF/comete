@@ -244,8 +244,7 @@
         <dependency>
             <groupId>org.mnode.ical4j</groupId>
             <artifactId>ical4j-vcard</artifactId>
-            <!--version>0.9.4</version-->
-            <version>0.9.6.2</version>
+            <version>1.0-alpha1</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.ez-vcard</groupId>
