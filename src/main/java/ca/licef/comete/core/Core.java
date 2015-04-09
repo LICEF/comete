@@ -1,5 +1,6 @@
 package ca.licef.comete.core;
 
+import ca.licef.comete.backup.Backup;
 import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.vocabularies.COMETE;
 import ca.licef.comete.vocabulary.Vocabulary;
@@ -36,13 +37,14 @@ public class Core {
     private String version;
     private String cometeUrl;
     private String uriPrefix;
+    private String cometeBackupHome;
     private String sparqlEndpoint;
     private String smtpHost;
 
     private static boolean initProcess = false;
 
     public static Core getInstance() {
-        if (core == null || !initProcess) {
+        if (core == null && !initProcess) {
             initProcess = true;
             core = new Core();
         }
@@ -64,14 +66,18 @@ public class Core {
             repositoryName = resBundle.getString("comete.repositoryName");
             adminEmail = resBundle.getString("comete.admin.email");
             version = resBundle.getString("comete.version");
+            cometeBackupHome = resBundle.getString("comete.backup.home");
             sparqlEndpoint = resBundle.getString("sparql.endpoint");
             smtpHost = resBundle.getString("smtp.host");
 
             initTripleStore();
 
+            //Maybe initialization from a backup archive
+            Backup.getInstance().restore(this);
+
             (new ThreadInvoker(new Invoker(Vocabulary.getInstance(),
-                    "ca.licef.comete.vocabulary.Vocabulary",
-                        "initVocabularyModule", new Object[]{}))).start();
+                "ca.licef.comete.vocabulary.Vocabulary",
+                    "initVocabularyModule", new Object[]{}))).start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -119,6 +125,10 @@ public class Core {
 
     public String getUriPrefix() {
         return( uriPrefix );
+    }
+
+    public String getCometeBackupHome() {
+        return cometeBackupHome;
     }
 
     public String getSparqlEndpoint() {

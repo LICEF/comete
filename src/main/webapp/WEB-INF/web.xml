@@ -32,7 +32,8 @@
                          ca.licef.comete.security.resource,
                          ca.licef.comete.vocabulary.resource,
                          ca.licef.comete.identity.resource,
-                         ca.licef.comete.queryengine.resource</param-value>
+                         ca.licef.comete.queryengine.resource,
+                         ca.licef.comete.backup.resource</param-value>
         </init-param>
         <init-param>
             <param-name>com.sun.jersey.config.feature.XmlRootElementProcessing</param-name>

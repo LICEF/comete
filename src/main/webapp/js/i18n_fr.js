@@ -239,7 +239,13 @@
     'Select LOM or zip of LOMs.<br/>Metametadata identifier (field 3.1) <b>must be present</b>.': 'Sélectionner un LOM ou un zip de LOMs.<br/>Le champ metametadata identifier (3.1) <b>doit être présent</b>.',
 
     'Check this out!': 'À voir!',
-    'I think that this could interest you: ': 'Je crois que ça pourrait vous intéresser: '
+    'I think that this could interest you: ': 'Je crois que ça pourrait vous intéresser: ',
+
+
+
+    'Start Backup': 'Lancer un backup',
+    'Are you sure that you want to start a backup process ?': 'Voulez-vous vraiment lancer un backup?'
+
 
 };
 
