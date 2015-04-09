@@ -57,19 +57,25 @@
     <!-- DC:CREATOR -->
     <xsl:template match="lom:lifeCycle/lom:contribute[lom:role/lom:value = 'author']/lom:entity">
         <xsl:variable name="fn" select="saxon:getFN( . )"/>
-        <dc:creator><xsl:value-of select="$fn"/></dc:creator>
+        <xsl:if test="$fn">
+            <dc:creator><xsl:value-of select="$fn"/></dc:creator>
+        </xsl:if>
     </xsl:template>       
     
     <!-- DC:PUBLISHER-->
     <xsl:template match="lom:lifeCycle/lom:contribute[lom:role/lom:value = 'publisher']/lom:entity">
         <xsl:variable name="fn" select="saxon:getFN( . )"/>
-        <dc:publisher><xsl:value-of select="$fn"/></dc:publisher>
+        <xsl:if test="$fn">
+            <dc:publisher><xsl:value-of select="$fn"/></dc:publisher>
+        </xsl:if>
     </xsl:template>       
 
     <!-- DC:CONTRIBUTOR-->
     <xsl:template match="lom:lifeCycle/lom:contribute[not(lom:role/lom:value) or (lom:role/lom:value != 'author' and lom:role/lom:value != 'publisher')]/lom:entity">
         <xsl:variable name="fn" select="saxon:getFN( . )"/>
-        <dc:contributor><xsl:value-of select="$fn"/></dc:contributor>
+        <xsl:if test="$fn">
+            <dc:contributor><xsl:value-of select="$fn"/></dc:contributor>
+        </xsl:if>
     </xsl:template>       
 
     <!-- DC:DATE -->

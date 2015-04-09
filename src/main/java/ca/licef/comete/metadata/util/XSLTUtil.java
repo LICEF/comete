@@ -209,8 +209,15 @@ public class XSLTUtil {
         return "";
     }
 
-    public static String getFN( String vcard ) throws Exception {
-        return( Identity.getInstance().getVCardFormattedName( vcard ) );
+    public static String getFN( String vcard ) {
+        String fn = null;
+        try {
+            fn = Identity.getInstance().getVCardFormattedName( vcard );
+        }
+        catch( Exception e ) {
+            e.printStackTrace();
+        }
+        return( fn );
     }
 
     public static String getVCard( String dcIdentityStr ) {
