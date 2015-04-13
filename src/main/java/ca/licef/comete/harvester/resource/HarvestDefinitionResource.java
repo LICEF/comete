@@ -79,7 +79,7 @@ public class HarvestDefinitionResource {
                                             @FormParam("ns") String ns,
                                             @FormParam("adminEmail") String adminEmail,
                                             @FormParam("xsl") String xsl ) throws Exception {
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to add harvest definition.").build();
 
         String errorMessage = Harvester.getInstance().storeDefinition(id, name, type, url, ns, adminEmail, xsl, false);
@@ -116,7 +116,7 @@ public class HarvestDefinitionResource {
                                             @FormParam("ns") String ns,
                                             @FormParam("adminEmail") String adminEmail,
                                             @FormParam("xsl") String xsl) throws Exception {
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to add harvest definition.").build();
 
         String errorMessage = Harvester.getInstance().storeDefinition(id, name, type, url, ns, adminEmail, xsl, true);
@@ -150,7 +150,7 @@ public class HarvestDefinitionResource {
                                             @PathParam( "id" ) String id,
                                             @FormDataParam("file") InputStream uploadedInputStream,
                                             @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to add harvest definition.").build();
 
         Harvester.getInstance().storeDefinition(id, uploadedInputStream, fileDetail);
@@ -165,7 +165,7 @@ public class HarvestDefinitionResource {
                            @PathParam( "id" ) String id,
                            @FormDataParam("file") InputStream uploadedInputStream,
                            @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to add harvest XSL file.").build();
 
         try {
@@ -185,7 +185,7 @@ public class HarvestDefinitionResource {
     @Produces( MediaType.TEXT_PLAIN )
     public Response deleteHarvestDefinition(@Context HttpServletRequest request,
                                             @PathParam( "id" ) String id) throws Exception {
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to delete harvest definition.").build();
 
         try {

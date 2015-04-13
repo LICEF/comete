@@ -306,7 +306,7 @@ public class QueryEngineResource implements Serializable {
     public Response addCollection(@Context HttpServletRequest request,
                                   @FormParam( "label" ) String label,
                                   @FormParam( "q" ) String query) throws Exception {
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).build();
 
         QueryEngine.getInstance().getCollection().addCollection(label, query);

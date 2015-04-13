@@ -325,7 +325,7 @@ public class OrganizationResource {
     public Response updateOrganization(@Context HttpServletRequest request, @PathParam( "id" ) String id,
                                        @FormParam("mainValues") String mainValues) throws Exception {
 
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to update organizations.").build();
 
         String uri = CoreUtil.makeURI(id, COMETE.Organization.getURI());
@@ -438,7 +438,7 @@ public class OrganizationResource {
                                        @FormParam("uris") String uris,
                                        @FormParam("mainValues") String mainValues) throws Exception {
 
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to merge organizations.").build();
 
         JSONArray uriArray = new JSONArray(uris);
@@ -452,7 +452,7 @@ public class OrganizationResource {
     public Response takeOffPersons(@Context HttpServletRequest request,
                                    @QueryParam("uris") String uris,
                                    @QueryParam("similarGroup") String gId) throws Exception {
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to takeoff organizations.").build();
 
         JSONArray uriArray = new JSONArray(uris);

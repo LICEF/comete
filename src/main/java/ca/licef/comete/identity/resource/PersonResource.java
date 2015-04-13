@@ -286,7 +286,7 @@ public class PersonResource {
     public Response updatePerson(@Context HttpServletRequest request, @PathParam( "id" ) String id,
                                  @FormParam("mainValues") String mainValues) throws Exception {
 
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to update persons.").build();
 
         String uri = CoreUtil.makeURI(id, COMETE.Person.getURI());
@@ -399,7 +399,7 @@ public class PersonResource {
     public Response mergePersons(@Context HttpServletRequest request,
                                  @FormParam("uris") String uris,
                                  @FormParam("mainValues") String mainValues) throws Exception {
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to merge persons.").build();
 
         JSONArray uriArray = new JSONArray(uris);
@@ -413,7 +413,7 @@ public class PersonResource {
     public Response takeOffPersons(@Context HttpServletRequest request,
                                    @QueryParam("uris") String uris,
                                    @QueryParam("similarGroup") String gId) throws Exception {
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to takeoff persons.").build();
 
         JSONArray uriArray = new JSONArray(uris);
@@ -424,7 +424,7 @@ public class PersonResource {
     @GET
     @Path("convertToOrg")
     public Response convertPersonsToOrg(@Context HttpServletRequest request, @QueryParam("uris") String uris) throws Exception {
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to typecast persons.").build();
 
         JSONArray uriArray = new JSONArray(uris);

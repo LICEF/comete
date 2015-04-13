@@ -85,7 +85,7 @@ public class LearningObjectResource {
     public Response deleteLearningObject( @Context HttpServletRequest request,
                                           @PathParam( "id" ) String id ) throws Exception {
 
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to delete records.").build();
 
         String loUri = ca.licef.comete.core.util.Util.makeURI(id, Constants.OBJ_TYPE_LEARNING_OBJECT);

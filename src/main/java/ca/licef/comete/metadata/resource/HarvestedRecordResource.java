@@ -27,7 +27,7 @@ public class HarvestedRecordResource {
                                         @QueryParam( "repoId" ) String repoId,
                                         String record ) throws Exception {
 
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to post records.").build();
 
         String repoUri = Util.makeURI( repoId, Constants.OBJ_TYPE_REPOSITORY );
@@ -42,7 +42,7 @@ public class HarvestedRecordResource {
                                            @PathParam( "oaiID" ) String oaiID,
                                            @QueryParam( "namespace" ) String namespace ) throws Exception {
 
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to delete records.").build();
 
         String res = Metadata.getInstance().deleteHarvestedRecord( oaiID, namespace );

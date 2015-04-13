@@ -1,6 +1,5 @@
 package ca.licef.comete.security;
 
-
 import ca.licef.comete.core.Core;
 import licef.IOUtil;
 
@@ -11,6 +10,8 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.util.Enumeration;
 import java.util.Vector;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,9 +19,6 @@ import java.util.Vector;
  * Date: 13-04-10
  */
 public class Security {
-
-    static File settingDir = new File(Core.getInstance().getCometeHome(), "/conf/security");
-    static File authorized = new File(settingDir, "authorized.ini");
 
     private static Security instance;
 
@@ -31,46 +29,11 @@ public class Security {
     }
 
     public Security() {
-        try {
-            init();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
-    void init() throws Exception {
-        if (!settingDir.exists())
-            IOUtil.createDirectory(settingDir.getAbsolutePath());
-
-        if (!authorized.exists()) {
-            InputStream is = getClass().getResourceAsStream("/conf/security/sample-authorized.ini");
-            OutputStream os = new FileOutputStream(authorized);
-            IOUtil.copy(is, os);
-            is.close();
-            os.close();
-        }
-    }
-
-    public boolean isAuthorized(String ip) throws Exception {
-        //trust local address
-        if (ip.equals(InetAddress.getLocalHost().getHostAddress()) ||
-            "127.0.0.1".equals(ip) || "0:0:0:0:0:0:0:1".equals(ip))
-            return true;
-
-        //check on the trusted list
-        Vector v;
-        try {
-            v = IOUtil.readLines(authorized);
-        } catch (Exception e) {
-            return false;
-        }
-        for (Enumeration e = v.elements(); e.hasMoreElements();) {
-            String line = ((String)e.nextElement()).trim();
-            if (line.startsWith("#") || "".equals(line))
-                continue;
-            if (line.equals(ip))
-                return true;
-        }
-        return false;
+    public boolean isAuthorized( HttpServletRequest req) throws Exception {
+        HttpSession session = req.getSession( true );
+        String login = (String)session.getAttribute( "login" );
+        return( "admin".equals( login ) );
     }
 }

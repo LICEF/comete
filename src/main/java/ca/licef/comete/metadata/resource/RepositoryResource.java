@@ -59,7 +59,7 @@ public class RepositoryResource {
     @Produces( MediaType.TEXT_PLAIN )
     public Response addOrUpdateRepository( @Context HttpServletRequest request,
                                            @PathParam( "id" ) String id, @QueryParam( "name" ) String name, @QueryParam( "type" ) String type, @QueryParam( "url" ) String url, @QueryParam( "adminEmail" ) String adminEmail, @QueryParam( "physicalId" ) String defId ) throws Exception {
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to manage repository objects.").build();
 
         String repoUri = RepositoryManager.getInstance().addOrUpdateRepository( id, name, type, url, adminEmail, defId );
@@ -98,7 +98,7 @@ public class RepositoryResource {
     public Response deleteRecords( @Context HttpServletRequest request,
                                    @PathParam( "id" ) String id ) throws Exception {
 
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to delete records.").build();
 
         String repoUri = Util.makeURI(id, COMETE.Repository);

@@ -55,7 +55,7 @@ public class SettingsResource {
         @FormParam( Constants.APPL_PROF_OAI_DC ) String oaidc 
             ) throws Exception {
 
-        if( !Security.getInstance().isAuthorized( request.getRemoteAddr() ) )
+        if( !Security.getInstance().isAuthorized( request ) )
             return( Response.status( Response.Status.UNAUTHORIZED ).entity( "Not authorized to update validated application profiles." ).build() );
 
         Map<String,Boolean> applProfTable = new HashMap<String,Boolean>();

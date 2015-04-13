@@ -252,7 +252,7 @@
             },
             failure: function(response, opts) {
                 waitDialog.close();
-                Ext.Msg.alert('Failure', response.responseText);  
+                Ext.Msg.alert(tr('Failure'), response.responseText);  
             },
             scope: this 
         } );
@@ -326,7 +326,7 @@
                 }
             },
             failure: function(response, opts) {
-                Ext.Msg.alert('Failure', response.responseText);
+                Ext.Msg.alert(tr('Failure'), response.responseText);
             },
             scope: this
         } );
@@ -417,7 +417,7 @@ Ext.define( 'Comete.AdminHarvestDefEditor', {
                     this.listener.afterAdd();
             },
             failure: function(form, action) { 
-                Ext.Msg.alert('Failure', action.result.error);
+                Ext.Msg.alert(tr('Failure'), action.result.error);
                 waitDialog.close();   
             },
             submitEmptyText: false,
@@ -552,7 +552,7 @@ Ext.define( 'Comete.AdminHarvestReportViewer', {
             },
             failure: function(response, opts) {
                 waitDialog.close();
-                Ext.Msg.alert('Failure', response.responseText);  
+                Ext.Msg.alert(tr('Failure'), response.responseText);  
             },
             scope: this 
         } );

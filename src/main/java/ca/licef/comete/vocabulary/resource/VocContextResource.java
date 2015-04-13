@@ -81,7 +81,7 @@ public class VocContextResource {
                                   @FormDataParam("file") java.io.InputStream uploadedInputStream,
                                   @FormDataParam("file") com.sun.jersey.core.header.FormDataContentDisposition fileDetail ) throws Exception {
 
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to add vocabulary.").build();
 
         // Make sure that the id is a valid filename.
@@ -125,7 +125,7 @@ public class VocContextResource {
                                      @FormDataParam("url") String url,
                                      @FormDataParam("file") java.io.InputStream uploadedInputStream,
                                      @FormDataParam("file") com.sun.jersey.core.header.FormDataContentDisposition fileDetail) throws Exception {
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to modify vocabulary.").build();
 
         String errorMessage = Vocabulary.getInstance().modifyVocabularyContent(
@@ -154,7 +154,7 @@ public class VocContextResource {
     @DELETE
     @Path( "{id}" )
     public Response deleteVocContext(@Context HttpServletRequest request, @PathParam( "id" ) String id ) throws Exception {
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to delete vocabulary.").build();
 
         String uri = Util.makeURI(id, COMETE.VocContext);
@@ -244,7 +244,7 @@ public class VocContextResource {
     public Response addVocContextAlias(@Context HttpServletRequest request, @PathParam( "id" ) String id,
                                        @FormParam( "alias" ) String alias) throws Exception {
 
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to change settings.").build();
 
         String uri = Util.makeURI(id, COMETE.VocContext);
@@ -259,7 +259,7 @@ public class VocContextResource {
                                           @PathParam( "id" ) String id,
                                           @FormParam( "alias" ) String alias,
                                           @FormParam( "prevAlias" ) String prevAlias) throws Exception {
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to change settings.").build();
 
         String uri = Util.makeURI(id, COMETE.VocContext);
@@ -272,7 +272,7 @@ public class VocContextResource {
     @Path( "{id}/aliases" )
     public Response deleteVocContextAlias(@Context HttpServletRequest request, @PathParam( "id" ) String id,
                                           @FormParam( "alias" ) String alias) throws Exception {
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to change settings.").build();
 
         String uri = Util.makeURI(id, COMETE.VocContext);
@@ -283,7 +283,7 @@ public class VocContextResource {
     @POST
     @Path( "{id}/navigable" )
     public Response setVocContextNav(@Context HttpServletRequest request, @PathParam( "id" ) String id) throws Exception {
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to change settings.").build();
 
         String uri = Util.makeURI(id, COMETE.VocContext);
@@ -295,7 +295,7 @@ public class VocContextResource {
     @DELETE
     @Path( "{id}/navigable" )
     public Response deleteVocContextNav(@Context HttpServletRequest request, @PathParam( "id" ) String id) throws Exception {
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to change settings.").build();
 
         String uri = Util.makeURI(id, COMETE.VocContext);

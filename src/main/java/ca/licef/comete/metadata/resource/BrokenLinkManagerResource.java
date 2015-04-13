@@ -36,7 +36,7 @@ public class BrokenLinkManagerResource {
     @Path( "/verification" )
     @Produces( MediaType.TEXT_HTML )
     public Response startVerification( @Context HttpServletRequest request, @FormParam( "notifEmail" ) String notifEmail ) throws Exception {
-        if( !Security.getInstance().isAuthorized( request.getRemoteAddr() ) )
+        if( !Security.getInstance().isAuthorized( request ) )
             return( Response.status( Response.Status.UNAUTHORIZED ).entity( "Not authorized to launch broken links verification." ).build() );
 
         if( checker.isRunning() )

@@ -55,7 +55,7 @@ public class MetadataRecordResource {
                                       @FormDataParam("res") InputStream uploadedInputStreamRes,
                                       @FormDataParam("res") FormDataContentDisposition fileDetailRes) throws Exception {
 
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to upload metadata records.").build();
 
         String resp = null;
@@ -175,7 +175,7 @@ public class MetadataRecordResource {
     @Produces( MediaType.TEXT_PLAIN )
     public Response deleteMetadataRecord( @Context HttpServletRequest request,
                                           @PathParam( "id" ) String id ) throws Exception {
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to delete records.").build();
 
         String metadataRecordUri = Util.makeURI(id, COMETE.MetadataRecord);
@@ -188,7 +188,7 @@ public class MetadataRecordResource {
     @Produces( MediaType.TEXT_PLAIN )
     public Response redigestAllRecords(@Context HttpServletRequest request) throws Exception {
 
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to reinit metamodel.").build();
 
         try {
@@ -205,7 +205,7 @@ public class MetadataRecordResource {
     @Produces( MediaType.TEXT_PLAIN )
     public Response redigestRecord(@Context HttpServletRequest request,
                                    @PathParam( "id" ) String recordUri) throws Exception {
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to reset records.").build();
 
         try {
