@@ -128,14 +128,17 @@ Ext.define( 'Comete.ClickableLabel', {
     initComponent: function( config ) {
         var fn = this.fn;
         var label = this;
+        var selectable = typeof( this.selectable ) == 'undefined' || this.selectable; // By default, a clickable label is selectable. - FB
         var cfg = {
             listeners: {
                 el: {
                     click: function() { 
                         if (!label.selected) {
                             fn.call(); 
-                            label.selected = true;
-                            label.getEl().setStyle( 'cursor', '');
+                            if( selectable ) {
+                                label.selected = true;
+                                label.getEl().setStyle( 'cursor', '');
+                            }
                         }
                     },
                     mouseenter: function(evt) { 

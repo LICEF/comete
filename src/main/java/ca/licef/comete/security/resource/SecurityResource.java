@@ -4,6 +4,7 @@ import ca.licef.comete.security.Security;
 import com.sun.jersey.spi.resource.Singleton;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -22,4 +23,17 @@ public class SecurityResource {
         String res = Boolean.toString(Security.getInstance().isAuthorized(ip));
         return Response.ok(res).build();
     }
+
+    @POST
+    @Path( "authentication" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response authenticate( @Context HttpServletRequest req, @QueryParam( "password" ) String password ) {
+        if( !"toto".equals( password ) )
+            return( Response.ok( "false" ).build() );
+
+        HttpSession session = req.getSession( true );
+        session.setAttribute( "login", "admin" );
+        return( Response.ok( "true" ).build() );
+    }
+
 }
