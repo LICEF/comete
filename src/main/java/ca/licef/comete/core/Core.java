@@ -73,11 +73,16 @@ public class Core {
             initTripleStore();
 
             //Maybe initialization from a backup archive
-            Backup.getInstance().restore(this);
+            boolean isRestore = Backup.getInstance().restore(this);
 
-            (new ThreadInvoker(new Invoker(Vocabulary.getInstance(),
-                "ca.licef.comete.vocabulary.Vocabulary",
-                    "initVocabularyModule", new Object[]{}))).start();
+            if (isRestore)
+                System.out.println("Comete backup restored. No vocabulary module initialization required.");
+            else
+                (new ThreadInvoker(new Invoker(Vocabulary.getInstance(),
+                    "ca.licef.comete.vocabulary.Vocabulary",
+                        "initVocabularyModule", new Object[]{}))).start();
+
+            System.out.println("Comete initialization done.");
         } catch (Exception e) {
             e.printStackTrace();
         }

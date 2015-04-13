@@ -64,12 +64,12 @@ public class Backup {
         }
     }
 
-    public void restore(Core core) throws Exception {
+    public boolean restore(Core core) throws Exception {
         String cometeHome = core.getCometeHome();
         File home = new File(cometeHome);
         File[] files = home.listFiles();
         if (files == null || files.length != 3)  //3: database, pages + backup archive)
-            return;
+            return false;
 
         File archive = null;
         for (File f : files) {
@@ -80,7 +80,7 @@ public class Backup {
         }
 
         if (archive == null)
-            return;
+            return false;
 
         //unzip archive
         ZipUtil.unzipFile(archive.getAbsolutePath(), cometeHome);
@@ -94,5 +94,7 @@ public class Backup {
 
         //delete of the dump file
         (new File(dump)).delete();
+
+        return true;
     }
 }

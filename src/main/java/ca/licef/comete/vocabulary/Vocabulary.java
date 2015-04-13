@@ -39,8 +39,13 @@ public class Vocabulary {
     }
 
     public void initVocabularyModule() throws Exception {
-        tripleStore = Core.getInstance().getTripleStore();
         getVocabularyManager().initVocabularyModule();
+    }
+
+    public TripleStore getTripleStore() {
+        if (tripleStore == null)
+            tripleStore = Core.getInstance().getTripleStore();
+        return tripleStore;
     }
 
     /*********************/
@@ -58,11 +63,11 @@ public class Vocabulary {
         String vocUri = getVocabularyUri(id);
 
         if (vocUri != null && Util.isGraphExists(vocUri)) {
-            String vocCtxt = tripleStore.getTriplesWithPredicateObject(
+            String vocCtxt = getTripleStore().getTriplesWithPredicateObject(
                     COMETE.vocUri, vocUri, null)[0].getSubject();
 
-            Triple[] pref = tripleStore.getTriplesWithSubjectPredicate(vocCtxt, COMETE.vocConceptUriPrefix);
-            Triple[] suf = tripleStore.getTriplesWithSubjectPredicate(vocCtxt, COMETE.vocConceptUriSuffix);
+            Triple[] pref = getTripleStore().getTriplesWithSubjectPredicate(vocCtxt, COMETE.vocConceptUriPrefix);
+            Triple[] suf = getTripleStore().getTriplesWithSubjectPredicate(vocCtxt, COMETE.vocConceptUriSuffix);
 
             if (pref.length != 0)
                 uri = pref[0].getObject() + concept;
@@ -72,11 +77,11 @@ public class Vocabulary {
             if (suf.length != 0)
                 uri += suf[0].getObject();
 
-            if (!tripleStore.isResourceExists(uri, vocUri)) {
+            if (!getTripleStore().isResourceExists(uri, vocUri)) {
                 uri = vocUri + "#" + concept; // or '#' uri
                 if (suf.length != 0)
                     uri += suf[0].getObject();
-                if (!tripleStore.isResourceExists(uri, vocUri))
+                if (!getTripleStore().isResourceExists(uri, vocUri))
                     uri = null;
             }
         }
@@ -86,7 +91,7 @@ public class Vocabulary {
     public String getVocabularyUri(String id) throws Exception {
         String uri = null;
         String query = CoreUtil.getQuery("vocabulary/getVocUri.sparql", ( id.startsWith( "http://" ) ? id : "http://dummy" ), id);
-        Tuple[] tuples = tripleStore.sparqlSelect(query);
+        Tuple[] tuples = getTripleStore().sparqlSelect(query);
         if (tuples.length > 0)
             uri = tuples[0].getValue("vocUri").getContent();
         return uri;
@@ -96,7 +101,7 @@ public class Vocabulary {
         String vocUri = getConceptScheme(uri);
         String predicate = null;
         String query = CoreUtil.getQuery("vocabulary/getVocConceptLinkingPredicateFromUri.sparql", vocUri);
-        Tuple[] tuples = tripleStore.sparqlSelect(query);
+        Tuple[] tuples = getTripleStore().sparqlSelect(query);
         if (tuples.length > 0)
             predicate = tuples[0].getValue("p").getContent();
         return predicate;
@@ -104,7 +109,7 @@ public class Vocabulary {
 
     public String[] getAllConceptLinkingPredicates() throws Exception {
         String query = CoreUtil.getQuery("vocabulary/getAllVocConceptLinkingPredicates.sparql");
-        Tuple[] tuples = tripleStore.sparqlSelect(query);
+        Tuple[] tuples = getTripleStore().sparqlSelect(query);
         String[] res = new  String[ tuples.length ];
         for( int i = 0; i < tuples.length; i++ )
             res[ i ] = tuples[ i ].getValue( "p" ).getContent();
@@ -113,8 +118,8 @@ public class Vocabulary {
 
     public String[] getNavigableVocabularies() throws Exception{
         String query = CoreUtil.getQuery("vocabulary/getNavigableVocabularies.sparql");
-        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
-        Tuple[] tuples = (Tuple[])tripleStore.transactionalCall(inv);
+        Invoker inv = new Invoker(getTripleStore(), "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
+        Tuple[] tuples = (Tuple[])getTripleStore().transactionalCall(inv);
         String[] res = new String[tuples.length];
         for (int i = 0; i < tuples.length; i++)
             res[i] = tuples[i].getValue("vocUri").getContent();
@@ -124,7 +129,7 @@ public class Vocabulary {
     public String getLabel(String uri, String lang) throws Exception {
         Invoker inv = new Invoker(null, "ca.licef.comete.core.util.Util",
                 "getResourceLabel", new Object[]{uri, lang, Boolean.TRUE});
-        String[] label = (String[])tripleStore.transactionalCall(inv);
+        String[] label = (String[])getTripleStore().transactionalCall(inv);
         if (label == null || label[ 0 ] == null || "".equals(label[ 0 ]))
             label = new String[] { uri, null } ;
         return label[0];
@@ -133,7 +138,7 @@ public class Vocabulary {
     public String getConceptScheme(String uri) throws Exception{
         Invoker inv = new Invoker(this, "ca.licef.comete.vocabulary.Vocabulary",
                 "getConceptSchemeEff", new Object[]{uri});
-        return (String)tripleStore.transactionalCall(inv);
+        return (String)getTripleStore().transactionalCall(inv);
     }
 
     public String getConceptSchemeEff(String uri) throws Exception{
@@ -142,7 +147,7 @@ public class Vocabulary {
 
         //Existent prefix case
         String query = CoreUtil.getQuery("vocabulary/getVocContextsDetails.sparql");
-        Tuple[] tuples = tripleStore.sparqlSelect(query);
+        Tuple[] tuples = getTripleStore().sparqlSelect(query);
         for (Tuple tuple : tuples) {
             String prefix = tuple.getValue("prefix").getContent();
             if (uri.startsWith(prefix))
@@ -161,8 +166,8 @@ public class Vocabulary {
     public Object[] getTopConcepts(String uri) throws Exception {
         List<String> topConceptUris = new ArrayList<>();
         String query = CoreUtil.getQuery("vocabulary/getTopConcepts.sparql", uri);
-        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
-        Tuple[] res = (Tuple[])tripleStore.transactionalCall(inv);
+        Invoker inv = new Invoker(getTripleStore(), "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
+        Tuple[] res = (Tuple[])getTripleStore().transactionalCall(inv);
         int nbPos = 0;
         for (Tuple tuple : res) {
             topConceptUris.add(tuple.getValue("s").getContent());
@@ -176,8 +181,8 @@ public class Vocabulary {
     public Object[] getChildren(String uri) throws Exception {
         List<String> childrenUris = new ArrayList<>();
         String query = CoreUtil.getQuery("vocabulary/getChildren.sparql", uri, getConceptScheme(uri));
-        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
-        Tuple[] res = (Tuple[])tripleStore.transactionalCall(inv);
+        Invoker inv = new Invoker(getTripleStore(), "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
+        Tuple[] res = (Tuple[])getTripleStore().transactionalCall(inv);
         int nbPos = 0;
         for (Tuple tuple : res) {
             childrenUris.add(tuple.getValue("o").getContent());
@@ -191,14 +196,14 @@ public class Vocabulary {
     public Tuple[] getHierarchy(String uri) throws Exception {
         String graph = getConceptScheme(uri);
         String query = CoreUtil.getQuery("vocabulary/getConceptHierarchy.sparql", uri, graph);
-        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
-        return (Tuple[])tripleStore.transactionalCall(inv);
+        Invoker inv = new Invoker(getTripleStore(), "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
+        return (Tuple[])getTripleStore().transactionalCall(inv);
     }
 
     public Tuple[] searchConcepts(String terms, String lang) throws Exception {
         Invoker inv = new Invoker(this, "ca.licef.comete.vocabulary.Vocabulary",
                 "searchConceptsEff", new Object[]{terms, lang});
-        return (Tuple[])tripleStore.transactionalCall(inv);
+        return (Tuple[])getTripleStore().transactionalCall(inv);
     }
 
     public Tuple[] searchConceptsEff(String terms, String lang) throws Exception {
@@ -208,7 +213,7 @@ public class Vocabulary {
             fromGraphs += "FROM <" + vocUri + "> \n";
         String query = CoreUtil.getQuery("vocabulary/getConcepts.sparql",
                 CoreUtil.formatKeywords(terms), lang, fromGraphs);
-        return tripleStore.sparqlSelect_textIndex(query);
+        return getTripleStore().sparqlSelect_textIndex(query);
     }
 
     /************/
@@ -217,14 +222,14 @@ public class Vocabulary {
 
     public Tuple[] getVocContexts() throws Exception {
         String query = CoreUtil.getQuery("vocabulary/getVocContexts.sparql");
-        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
-        return (Tuple[])tripleStore.transactionalCall(inv);
+        Invoker inv = new Invoker(getTripleStore(), "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
+        return (Tuple[])getTripleStore().transactionalCall(inv);
     }
 
     public boolean isVocabularyUsed(String uri) throws Exception {
         Invoker inv = new Invoker(getVocabularyManager(), "ca.licef.comete.vocabulary.VocabularyManager",
                 "isVocabularyUsed", new Object[]{uri});
-        return (boolean)tripleStore.transactionalCall(inv);
+        return (boolean)getTripleStore().transactionalCall(inv);
     }
 
     public String addNewVocContext(String id, String uriPrefix, String uriSuffix, String linkingPredicate,
@@ -232,7 +237,7 @@ public class Vocabulary {
         Invoker inv = new Invoker(getVocabularyManager(), "ca.licef.comete.vocabulary.VocabularyManager",
                 "addNewVocContext", new Object[]{id, uriPrefix, uriSuffix, linkingPredicate,
                                               url, fileName, uploadedInputStream});
-        return (String)tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
+        return (String)getTripleStore().transactionalCall(inv, TripleStore.WRITE_MODE);
     }
 
     public String modifyVocabularyContent(String id, String uriPrefix, String uriSuffix, String linkingPredicate,
@@ -240,54 +245,54 @@ public class Vocabulary {
         Invoker inv = new Invoker(getVocabularyManager(), "ca.licef.comete.vocabulary.VocabularyManager",
                 "modifyVocContext", new Object[]{id, uriPrefix, uriSuffix, linkingPredicate,
                                                      url, fileName, uploadedInputStream});
-        return (String)tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
+        return (String)getTripleStore().transactionalCall(inv, TripleStore.WRITE_MODE);
     }
 
     public boolean deleteVocContext(String uri) throws Exception {
         Invoker inv = new Invoker(getVocabularyManager(), "ca.licef.comete.vocabulary.VocabularyManager",
                 "deleteVocContext", new Object[]{uri, false});
-        return (boolean)tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
+        return (boolean)getTripleStore().transactionalCall(inv, TripleStore.WRITE_MODE);
     }
 
     public Tuple[] getVocContextDetails(String uri) throws Exception{
         String query = CoreUtil.getQuery("vocabulary/getVocContextDetails.sparql", uri);
-        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
-        return (Tuple[])tripleStore.transactionalCall(inv);
+        Invoker inv = new Invoker(getTripleStore(), "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
+        return (Tuple[])getTripleStore().transactionalCall(inv);
     }
 
     public Tuple[] getVocContextAliases(String uri) throws Exception {
         String query = CoreUtil.getQuery("vocabulary/getVocAliases.sparql", uri);
-        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
-        return (Tuple[])tripleStore.transactionalCall(inv);
+        Invoker inv = new Invoker(getTripleStore(), "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
+        return (Tuple[])getTripleStore().transactionalCall(inv);
     }
 
     public void addVocContextAlias(String uri, String alias) throws Exception {
-        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "insertTriple",
+        Invoker inv = new Invoker(getTripleStore(), "licef.tsapi.TripleStore", "insertTriple",
                 new Object[]{new Triple(uri, COMETE.vocAlias, alias), new String[]{}});
-        tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
+        getTripleStore().transactionalCall(inv, TripleStore.WRITE_MODE);
     }
 
     public void updateVocContextAlias(String uri, String prevAlias, String alias) throws Exception {
-        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "updateObjectTriple",
+        Invoker inv = new Invoker(getTripleStore(), "licef.tsapi.TripleStore", "updateObjectTriple",
                 new Object[]{uri, COMETE.vocAlias, prevAlias, alias, new String[]{}});
-        tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
+        getTripleStore().transactionalCall(inv, TripleStore.WRITE_MODE);
     }
 
     public void deleteVocContextAlias(String uri, String alias) throws Exception {
-        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "removeTriple",
+        Invoker inv = new Invoker(getTripleStore(), "licef.tsapi.TripleStore", "removeTriple",
                 new Object[]{new Triple(uri, COMETE.vocAlias, alias), new String[]{}});
-        tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
+        getTripleStore().transactionalCall(inv, TripleStore.WRITE_MODE);
     }
 
     public void updateVocContextNavigable(String uri, boolean value) throws Exception {
-        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "updateObjectTriple",
+        Invoker inv = new Invoker(getTripleStore(), "licef.tsapi.TripleStore", "updateObjectTriple",
                 new Object[]{uri, COMETE.vocNavigable, Boolean.toString(!value), Boolean.toString(value), new String[]{}});
-        tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
+        getTripleStore().transactionalCall(inv, TripleStore.WRITE_MODE);
     }
 
     public Boolean isVocNavigable(String uri) throws Exception {
         String query = CoreUtil.getQuery("vocabulary/isVocNavigable.sparql", uri);
-        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
-        return Boolean.parseBoolean(((Tuple[]) tripleStore.transactionalCall(inv))[0].getValue("navigable").getContent());
+        Invoker inv = new Invoker(getTripleStore(), "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
+        return Boolean.parseBoolean(((Tuple[]) getTripleStore().transactionalCall(inv))[0].getValue("navigable").getContent());
     }
 }
