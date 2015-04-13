@@ -1,5 +1,6 @@
 package ca.licef.comete.security.resource;
 
+import ca.licef.comete.security.Security;
 import com.sun.jersey.spi.resource.Singleton;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -23,9 +24,7 @@ public class SecurityResource {
     @Path( "isAuthorized" )
     @Produces( MediaType.TEXT_PLAIN )
     public Response isAuthorized(@Context HttpServletRequest req, @DefaultValue("") @QueryParam("ip") String ip) throws Exception {
-        HttpSession session = req.getSession( true );
-        String login = (String)session.getAttribute( "login" );
-        boolean isAuthorized = "admin".equals( login );
+        boolean isAuthorized = Security.getInstance().isAuthorized( req );
         return( Response.ok( isAuthorized + "" ).build() );
     }
 

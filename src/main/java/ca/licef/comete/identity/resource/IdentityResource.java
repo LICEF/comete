@@ -41,7 +41,7 @@ public class IdentityResource {
                                   @FormDataParam("photo") InputStream uploadedInputStream,
                                   @FormDataParam("photo") FormDataContentDisposition fileDetail) throws Exception {
 
-        boolean b = Security.getInstance().isAuthorized(request.getRemoteAddr());
+        boolean b = Security.getInstance().isAuthorized(request);
         String errorMessage;
         String data = null;
         if (b) {

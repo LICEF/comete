@@ -76,7 +76,7 @@ public class HarvestReportResource {
     public Response deleteHarvestReport(@Context HttpServletRequest request,
                                         @PathParam( "id" ) String id,
                                         @PathParam( "date" ) String date) throws Exception {
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to delete harvest report.").build();
 
         Harvester.getInstance().removeHarvestReport(id, date);

@@ -17,7 +17,7 @@ public class BackupResource {
     @POST
     @Produces( MediaType.TEXT_PLAIN )
     public Response doBackup(@Context HttpServletRequest request) throws Exception {
-        if (!Security.getInstance().isAuthorized(request.getRemoteAddr()))
+        if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to start backup.").build();
 
         try {
