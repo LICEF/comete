@@ -1,6 +1,5 @@
 package ca.licef.comete.security.resource;
 
-import ca.licef.comete.security.Security;
 import com.sun.jersey.spi.resource.Singleton;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -23,11 +22,11 @@ public class SecurityResource {
     @GET
     @Path( "isAuthorized" )
     @Produces( MediaType.TEXT_PLAIN )
-    public Response isAuthorized(@Context HttpServletRequest request, @DefaultValue("") @QueryParam("ip") String ip) throws Exception {
-        if ("".equals(ip))
-            ip = request.getRemoteAddr();
-        String res = Boolean.toString(Security.getInstance().isAuthorized(ip));
-        return Response.ok(res).build();
+    public Response isAuthorized(@Context HttpServletRequest req, @DefaultValue("") @QueryParam("ip") String ip) throws Exception {
+        HttpSession session = req.getSession( true );
+        String login = (String)session.getAttribute( "login" );
+        boolean isAuthorized = "admin".equals( login );
+        return( Response.ok( isAuthorized + "" ).build() );
     }
 
     @POST
@@ -53,7 +52,7 @@ public class SecurityResource {
         String sha1 = null;
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader( new InputStreamReader( getClass().getResourceAsStream( "/conf/adminPassword.txt" ) ) );
+            reader = new BufferedReader( new InputStreamReader( getClass().getResourceAsStream( "/conf/security/adminPassword.txt" ) ) );
             sha1 = reader.readLine();
         }
         catch( IOException e ) {

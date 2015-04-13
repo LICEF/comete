@@ -122,8 +122,8 @@ Ext.define( 'Comete.SearchManager', {
                              searchManager.clear(); }
         } );
 
-        var doAuthenticateAdmin = function() {
-            alert( 'Yeah' );
+        var gotoAdminPage = function() {
+            window.location = 'admin.jsp?lang=' + lang;
         }
 
         var askAdminPassword = function() {
@@ -142,9 +142,8 @@ Ext.define( 'Comete.SearchManager', {
                             url: 'rest/security/authentication?password=' + text,
                             method: 'POST',
                             success: function(response) {
-                                if( 'true' == response.responseText ) {
-                                    Ext.Msg.alert( tr( 'Information' ), tr( 'Authentication succeeded.' ) );
-                                }
+                                if( 'true' == response.responseText )
+                                    gotoAdminPage();
                                 else
                                     Ext.Msg.alert( tr( 'Failure' ), tr( 'Authentication failed.' ) );
                             },
@@ -160,7 +159,12 @@ Ext.define( 'Comete.SearchManager', {
             text: tr('Admin'),
             cls: 'choice',
             selected: false,
-            fn: askAdminPassword,
+            fn: function() {
+                if( authorized )
+                    gotoAdminPage();
+                else
+                    askAdminPassword();
+            },
             selectable: false
         });
 
