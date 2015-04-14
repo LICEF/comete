@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <vocabulary>
-    <id>COMETEv1.0-State</id>
-    <location>State.rdf</location>
-    <conceptUriPrefix>http://comete.licef.ca/rdf/cometev1.0/vocab#State-</conceptUriPrefix>
+    <id>COMETEv1.0-state</id>
+    <location>state.rdf</location>
 </vocabulary>

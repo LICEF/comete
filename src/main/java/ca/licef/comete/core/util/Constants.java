@@ -54,6 +54,10 @@ public class Constants {
     };
     public static final List MIMETYPE_CATEGORIES = Arrays.asList(_MIMETYPE_CATEGORIES);
 
+    //Comete stae voc values
+    public static final String COMETE_STATE_AVAILABLE =  "http://comete.licef.ca/vocab/cometev1.0/state#available";
+    public static final String COMETE_STATE_DELETED =  "http://comete.licef.ca/vocab/cometev1.0/state#deleted";
+
     //********************
     // Object Types (URI)
     //********************
