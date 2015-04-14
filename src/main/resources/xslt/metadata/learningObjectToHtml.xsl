@@ -293,20 +293,20 @@
         <xsl:if test="$isAdmin = 'true'">
             <xsl:variable name="StateLabel">
                 <xsl:choose>
-                    <xsl:when test=". = 'http://comete.licef.ca/rdf/cometev1.0/vocab#State-available'">
+                    <xsl:when test=". = 'http://comete.licef.ca/vocab/cometev1.0/state#available'">
                         <xsl:value-of select="$StateAvailable"/>
                     </xsl:when>
-                    <xsl:when test=". = 'http://comete.licef.ca/rdf/cometev1.0/vocab#State-deleted'">
+                    <xsl:when test=". = 'http://comete.licef.ca/vocab/cometev1.0/state#deleted'">
                         <xsl:value-of select="$StateDeleted"/>
                     </xsl:when>
                 </xsl:choose>
             </xsl:variable>
             <xsl:variable name="StateIconFilename">
                 <xsl:choose>
-                    <xsl:when test=". = 'http://comete.licef.ca/rdf/cometev1.0/vocab#State-available'">
+                    <xsl:when test=". = 'http://comete.licef.ca/vocab/cometev1.0/state#available'">
                         <xsl:value-of select="'available'"/>
                     </xsl:when>
-                    <xsl:when test=". = 'http://comete.licef.ca/rdf/cometev1.0/vocab#State-deleted'">
+                    <xsl:when test=". = 'http://comete.licef.ca/vocab/cometev1.0/state#deleted'">
                         <xsl:value-of select="'deleted'"/>
                     </xsl:when>
                 </xsl:choose>
