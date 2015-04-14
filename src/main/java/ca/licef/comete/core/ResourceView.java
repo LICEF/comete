@@ -13,7 +13,7 @@ public interface ResourceView {
 
     String getRdf(String uri, String includeIncomingLinks, boolean includeRdfMetadataInfos, boolean isHumanReadable ) throws Exception;
     String getIncomingLinks( String uri, boolean isHumanReadable, int offset, int limit, String format ) throws Exception;
-    String getHtml(String uri, Locale locale, String style) throws Exception;
+    String getHtml(String uri, Locale locale, boolean isAdmin, String style) throws Exception;
     Triple[] getTriples(String uri, String includeIncomingLinks, boolean includeRdfMetadataInfos, boolean isHumanReadable ) throws Exception;
     
 }

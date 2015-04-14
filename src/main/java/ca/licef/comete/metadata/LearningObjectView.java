@@ -33,13 +33,13 @@ import java.util.*;
  */
 public class LearningObjectView extends DefaultView {
 
-    public String getHtml(String uri, Locale locale, String style) throws Exception {
+    public String getHtml(String uri, Locale locale, boolean isAdmin, String style) throws Exception {
         TripleStore tripleStore = Core.getInstance().getTripleStore();
-        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.LearningObjectView", "doGetHtml", new Object[] { uri, locale, style } );
+        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.LearningObjectView", "doGetHtml", new Object[] { uri, locale, isAdmin, style } );
         return( (String)tripleStore.transactionalCall( inv ) );
     }
     
-    public String doGetHtml(String uri, Locale locale, String style) throws Exception {
+    public String doGetHtml(String uri, Locale locale, boolean isAdmin, String style) throws Exception {
         Set contributes = new HashSet();
         HashMap contribRoles = new HashMap();
         HashMap contribOrganizations = new HashMap();
@@ -217,18 +217,13 @@ public class LearningObjectView extends DefaultView {
 //System.out.println( "expandedXml="+expandedXml );
 
         String styleSheet = "metadata/learningObjectToHtml";
-        if( "ceres".equals( style ) )
-            styleSheet = "metadata/learningObjectToHtmlForCeres";
-        else if( "refrer".equals( style ) )
-            styleSheet = "metadata/learningObjectToHtmlForRefrer";
-        else if( "endrea".equals( style ) )
-            styleSheet = "metadata/learningObjectToHtmlForEndrea";
 
         Properties props = new Properties();
         props.setProperty( OutputKeys.OMIT_XML_DECLARATION, "yes" );
 
         HashMap<String, String> params = new HashMap<String, String>();
         params.put( "uri", uri );
+        params.put( "isAdmin", isAdmin + "" );
 
         StreamSource source = new StreamSource( new StringReader( expandedXml ) );
         String str = ca.licef.comete.core.util.Util.applyXslToDocument( styleSheet, source, props, params, locale );

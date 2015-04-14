@@ -24,6 +24,7 @@
     <xsl:variable name="OrgLinkedDataLinkLabel" select="'Voir les données liées de l''organisation.'"/>
     <xsl:variable name="RoleAuthor" select="'auteur'"/>
     <xsl:variable name="RolePublisher" select="'éditeur'"/>
+
     <xsl:variable name="ResourceTypeText" select="'Ressource texte'"/>
     <xsl:variable name="ResourceTypeAudio" select="'Ressource audio'"/>
     <xsl:variable name="ResourceTypeVideo" select="'Ressource vidéo'"/>
@@ -36,11 +37,16 @@
     <xsl:variable name="ResourceTypePowerPoint" select="'Document PowerPoint'"/>
     <xsl:variable name="ResourceTypePDF" select="'Document PDF'"/>
     <xsl:variable name="ResourceTypeExcel" select="'Document Excel'"/>
+
     <xsl:variable name="ShareResource" select="'Partagez cette fiche'"/>
     <xsl:variable name="ShareOnFacebook" select="'Partager la fiche sur Facebook'"/>
     <xsl:variable name="ShareOnTwitter" select="'Partager la fiche sur Twitter'"/>
     <xsl:variable name="ShareOnLinkedin" select="'Partager la fiche sur LinkedIn'"/>
     <xsl:variable name="ShareByEmail" select="'Partager la fiche par courriel'"/>
+
+    <xsl:variable name="StateAvailable" select="'Disponible'"/>
+    <xsl:variable name="StateDeleted" select="'Supprimée'"/>
+
     <xsl:variable name="AddedDateLabel" select="'Ajoutée'"/>
     <xsl:variable name="CreatedDateLabel" select="'Créée'"/>
     <xsl:variable name="UpdatedDateLabel" select="'Modifiée'"/>

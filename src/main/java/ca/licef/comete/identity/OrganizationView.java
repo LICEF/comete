@@ -37,10 +37,6 @@ public class OrganizationView extends DefaultView {
 //System.out.println( "expandedXml for Org:"+expandedXml );
 
         String styleSheet = "identity/organizationToHtml";
-        if( "ceres".equals( style ) )
-            styleSheet = "identity/organizationToHtmlForCeres";
-        if( "endrea".equals( style ) )
-            styleSheet = "identity/organizationToHtmlForEndrea";
 
         Properties props = new Properties();
         props.setProperty( OutputKeys.OMIT_XML_DECLARATION, "yes" );

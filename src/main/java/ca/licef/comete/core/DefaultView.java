@@ -49,7 +49,7 @@ public class DefaultView implements ResourceView {
         return( null );
     }
 
-    public String getHtml(String uri, Locale locale, String style) throws Exception {
+    public String getHtml(String uri, Locale locale, boolean isAdmin, String style) throws Exception {
         return "<html><body>n/a</body></html>";
     }
 

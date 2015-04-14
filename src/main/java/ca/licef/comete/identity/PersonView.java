@@ -67,10 +67,6 @@ public class PersonView extends DefaultView {
 //System.out.println( "expandedXml for Person:"+expandedXml );
 
         String styleSheet = "identity/personToHtml";
-        if( "ceres".equals( style ) )
-            styleSheet = "identity/personToHtmlForCeres";
-        else if( "endrea".equals( style ) )
-            styleSheet = "identity/personToHtmlForEndrea";
 
         Properties props = new Properties();
         props.setProperty( OutputKeys.OMIT_XML_DECLARATION, "yes" );
