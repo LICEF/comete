@@ -147,9 +147,8 @@ Ext.define( 'Comete.SearchManager', {
                                 else
                                     Ext.Msg.alert( tr( 'Failure' ), tr( 'Authentication failed.' ) );
                             },
-                scope: this 
-            } );
-
+                            scope: this 
+                        } );
                     }
                 }
             );

@@ -211,6 +211,10 @@
     'Save Settings': 'Sauver les paramètres', 
     'Apply': 'Appliquer', 
 
+    'Admin Authentication': 'Authentification',
+    'Enter password': 'Entrez le mot de passe.',
+    'Authentication failed.': 'Authentification échouée.',
+
     'OK': 'OK',
     'Cancel': 'Annuler',
     'Yes': 'Oui',
