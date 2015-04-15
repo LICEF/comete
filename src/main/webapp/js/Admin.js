@@ -158,4 +158,6 @@ function init() {
             items: [ contentPanel ]
         } ]        
     } );
+
+    updateToolbar();
 }

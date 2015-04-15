@@ -122,51 +122,6 @@ Ext.define( 'Comete.SearchManager', {
                              searchManager.clear(); }
         } );
 
-        var gotoAdminPage = function() {
-            window.location = 'admin.jsp?lang=' + lang;
-        }
-
-        var askAdminPassword = function() {
-            var askPasswordDialog = new Ext.window.MessageBox({
-                cls: 'msgbox',
-                bodyCls: 'popWindow'
-            });
-            askPasswordDialog.buttonText = { cancel: tr( 'Cancel' ) };
-            askPasswordDialog.textField.inputType = 'password';
-            askPasswordDialog.textField.width = 240;
-            askPasswordDialog.textField.center();
-            askPasswordDialog.prompt( tr( 'Admin Authentication' ), tr( 'Enter password' ), 
-                function( buttonId, text, opt ) {
-                    if( buttonId == 'ok' ) {
-                        Ext.Ajax.request( {
-                            url: 'rest/security/authentication?password=' + text,
-                            method: 'POST',
-                            success: function(response) {
-                                if( 'true' == response.responseText )
-                                    gotoAdminPage();
-                                else
-                                    Ext.Msg.alert( tr( 'Failure' ), tr( 'Authentication failed.' ) );
-                            },
-                            scope: this 
-                        } );
-                    }
-                }
-            );
-        }
-
-        this.adminLoginLabel = Ext.create('Comete.ClickableLabel', {
-            text: tr('Admin'),
-            cls: 'choice',
-            selected: false,
-            fn: function() {
-                if( authorized )
-                    gotoAdminPage();
-                else
-                    askAdminPassword();
-            },
-            selectable: false
-        });
-
         var mainMenu = Ext.create('Ext.panel.Panel', {
             region: 'center',
             layout: 'hbox',                     
@@ -175,19 +130,12 @@ Ext.define( 'Comete.SearchManager', {
                       this.advancedLabel, {xtype: 'tbspacer', width: 10}, this.thematicLabel, {xtype: 'tbspacer', width: 10}, this.collectionLabel  ]
         });    
 
-        this.adminMenu = Ext.create('Ext.panel.Panel', {
-            region:  'east',
-            layout: 'hbox',
-            border: false,
-            items: [ this.adminLoginLabel, {xtype: 'tbspacer', width: 10} ]
-        });
-
         var choicePanel = Ext.create('Ext.panel.Panel', {
             layout: 'border',
             border: false,
             height: 40,
             margin: '10 0 0 0',
-            items: [ mainMenu, this.adminMenu ]
+            items: [ mainMenu ]
         });
 
         this.simpleSearchPanel = Ext.create('Comete.SimpleSearch', {
@@ -299,7 +247,6 @@ Ext.onReady( function() {
 } );
 
 function init() {
-    
     var searchManager = Ext.create('Comete.SearchManager', {
         region: 'center',
         border: false
@@ -318,4 +265,6 @@ function init() {
             items: [ searchManager ]
         } ]    
     } );
+
+    updateToolbar();
 }

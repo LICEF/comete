@@ -39,4 +39,15 @@ public class SecurityResource {
         session.setAttribute( "login", "admin" );
         return( Response.ok( "true" ).build() );
     }
+
+    @GET
+    @Path( "logout" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response logout( @Context HttpServletRequest req ) {
+        HttpSession session = req.getSession();
+        if( session != null )
+            session.invalidate();
+        return( Response.ok().build() );
+    }
+
 }

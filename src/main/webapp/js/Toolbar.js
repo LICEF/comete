@@ -16,10 +16,29 @@ var logo = Ext.create('Ext.Img', {
     }
 } );
 
+function gotoAdminPage() {
+    window.location = 'admin.jsp?lang=' + lang;
+}
+
+var adminPageLabel = Ext.create('Comete.ClickableLabel', {
+    text: tr('Admin'),
+    cls: 'choice',
+    selected: false,
+    hidden: true,
+    fn: gotoAdminPage,
+    selectable: false
+});
+
+var pageMenu = Ext.create('Ext.panel.Panel', {
+    layout: 'hbox',
+    border: false,
+    items: [ adminPageLabel ]
+});
+
 var adminLabel = Ext.create('Ext.form.Label', {
-        text: tr( 'Administration' ),
-        cls: 'sectionTitle'
-    } );
+    text: tr( 'Administration' ),
+    cls: 'sectionTitle'
+} );
 
 var frenchButton = Ext.create('Ext.button.Button', {
     text: '&nbsp;Français',
@@ -37,21 +56,48 @@ var aboutButton = Ext.create('Ext.button.Button', {
     text: tr( 'About' ),
     icon: 'images/about.png',
     textAlign: 'left',
-    handler: function() { showAbout(); }
+    handler: showAbout
+} );
+
+var signinButton = Ext.create('Ext.button.Button', {
+    text: tr( 'Sign in' ),
+    hidden: true,
+    textAlign: 'left',
+    handler: askAdminPassword
+} );
+
+var logoutButton = Ext.create('Ext.button.Button', {
+    text: tr( 'Log out' ),
+    hidden: true,
+    textAlign: 'left',
+    handler: logout,
+} );
+
+var pageMenuSeparator = Ext.create( 'Ext.toolbar.Separator', {
+    height: 30
 } );
 
 var tbar = {
     xtype: 'toolbar',
     height: 40,   
-    items: [ logo, '->',  englishButton, frenchButton, aboutButton, {xtype: 'tbspacer', width: 2} ]
+    items: [ logo, , {xtype: 'tbspacer', width: 5}, pageMenuSeparator, pageMenu, '->', 
+             englishButton, frenchButton, aboutButton, signinButton, logoutButton, {xtype: 'tbspacer', width: 2} ]
 };
 
 var tbarAdmin = {
     xtype: 'toolbar',
     height: 40,   
     items: [ logo, {xtype: 'tbspacer', width: 5}, {xtype: 'tbseparator', height: 30}, 
-             adminLabel, '->',  englishButton, frenchButton, aboutButton, {xtype: 'tbspacer', width: 2} ]
+             adminLabel, '->',  englishButton, frenchButton, aboutButton, signinButton, logoutButton, {xtype: 'tbspacer', width: 2} ]
 };
+
+function updateToolbar() {
+    signinButton.setVisible( !authorized );
+    logoutButton.setVisible( authorized );
+    pageMenuSeparator.setVisible( authorized );
+    adminPageLabel.setVisible( authorized );
+    pageMenu.setVisible( authorized );
+}
 
 function showAbout() {
     var aboutWindow = new Ext.window.Window( {
@@ -62,4 +108,50 @@ function showAbout() {
         html: '<iframe width="100%" height="100%" frameborder="0" src="' + lang + '/about.html"></iframe>' 
     } );
     aboutWindow.show();     
+}
+
+function askAdminPassword() {
+    var askPasswordDialog = new Ext.window.MessageBox({
+        cls: 'msgbox',
+        bodyCls: 'popWindow'
+    });
+    askPasswordDialog.buttonText = { cancel: tr( 'Cancel' ) };
+    askPasswordDialog.textField.inputType = 'password';
+    askPasswordDialog.textField.width = 240;
+    askPasswordDialog.textField.center();
+    askPasswordDialog.prompt( tr( 'Admin Authentication' ), tr( 'Enter password' ), 
+        function( buttonId, text, opt ) {
+            if( buttonId == 'ok' ) {
+                Ext.Ajax.request( {
+                    url: 'rest/security/authentication?password=' + text,
+                    method: 'POST',
+                    success: function(response) {
+                        if( 'true' == response.responseText ) {
+                            authorized = true;
+                            updateToolbar();
+                        }
+                        else
+                            Ext.Msg.alert( tr( 'Failure' ), tr( 'Authentication failed.' ) );
+                    },
+                    scope: this 
+                } );
+            }
+        }
+    );
+}
+
+function logout() {
+    Ext.Ajax.request( {
+        url: 'rest/security/logout',
+        method: 'GET',
+        success: function(response) {
+            if( response.status == 200 ) {
+                authorized = false;
+                updateToolbar();
+            }
+            else
+                Ext.Msg.alert( tr( 'Failure' ), tr( 'Attempt to log out failed.' ) );
+        },
+        scope: this 
+    } );
 }
