@@ -26,19 +26,17 @@ WHERE '{'
     '{' ?author text:query ( foaf:name "{0}" ) .
         ?s dcterms:creator ?author '}'
     UNION
-    '{' ?author text:query ( foaf:name "{0}" "lang:{1}" ) .
-        ?s dcterms:creator ?author '}'
-    UNION
     '{' ?publisher text:query ( foaf:name "{0}" ) .
         ?s dcterms:publisher ?publisher '}'
     UNION
-    '{' ?publisher text:query ( foaf:name "{0}" "lang:{1}" ) .
-        ?s dcterms:publisher ?publisher '}'
-    UNION
     '{' ?concept text:query ( skos:prefLabel "{0}" ) .
-        ?s dcterms:subject ?concept '}'
+        ?ctxt rdf:type comete:VocContext .
+        ?ctxt comete:vocConceptLinkingPredicate ?conceptLink .
+        ?s ?conceptLink ?concept '}'
     UNION
     '{' ?concept text:query ( skos:prefLabel "{0}" "lang:{1}" ) .
-        ?s dcterms:subject ?concept '}'
+        ?ctxt rdf:type comete:VocContext .
+        ?ctxt comete:vocConceptLinkingPredicate ?conceptLink .
+        ?s ?conceptLink ?concept '}'
     ?s rdf:type comete:LearningObject
 '}'
