@@ -20,7 +20,6 @@
 
         this.uploadButton = Ext.create('Ext.button.Button', {
             text: tr('Upload'),
-            disabled: !authorized,
             handler: function() {
                 resultLabel.setVisible(false);            
                 this.waitDialog.wait( tr('Please wait') + '...' );

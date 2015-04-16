@@ -211,10 +211,12 @@
     'Save Settings': 'Sauver les paramètres', 
     'Apply': 'Appliquer', 
 
-    'Sign in': 'S\'authentifier',
-    'Admin Authentication': 'Authentification',
-    'Enter password': 'Entrez le mot de passe.',
-    'Authentication failed.': 'Authentification échouée.',
+    'Sign in': 'Connexion',
+    'Sign out': 'Déconnexion',
+    'Authentication': 'Authentification',
+    'Login': 'Identifiant',
+    'Password': 'Mot de passe',
+    'Authentication failed.': 'Erreur d\'authentification.',
     'Attempt to log out failed.': 'Déconnexion échouée.',
 
     'OK': 'OK',

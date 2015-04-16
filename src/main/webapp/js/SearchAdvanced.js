@@ -22,7 +22,7 @@ Ext.define( 'Comete.AdvancedSearch', {
 
         this.saveAsCollectionButton = Ext.create('Ext.button.Button', {
             text: tr('Save as collection') + '...',
-            hidden: !authorized,
+            hidden: true,
             handler: this.saveAsCollection,
             scope: this
         } );

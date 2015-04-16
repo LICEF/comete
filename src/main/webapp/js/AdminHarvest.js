@@ -13,8 +13,7 @@
  
         this.addButton = Ext.create('Ext.button.Button', {
             text: tr('Add'),
-            disabled: !authorized,
-            handler: this.addHarvestDef, 
+            handler: this.addHarvestDef,
             scope: this
         } );
 
@@ -158,13 +157,11 @@
             } );
 
             //buttons
-            if (authorized) {  
-                this.modifyButton.setDisabled(false);
-                this.deleteButton.setDisabled(false);
-                this.startHarvestButton.setDisabled(false);
-                this.stopHarvestButton.setDisabled(false);
-                this.harvestReportsButton.setDisabled(false);
-            }
+            this.modifyButton.setDisabled(false);
+            this.deleteButton.setDisabled(false);
+            this.startHarvestButton.setDisabled(false);
+            this.stopHarvestButton.setDisabled(false);
+            this.harvestReportsButton.setDisabled(false);
         }
         else {
             this.detailsPanel.getComponent(0).setValue("");
@@ -515,8 +512,7 @@ Ext.define( 'Comete.AdminHarvestReportViewer', {
                 scope: this 
             } );
 
-            if (authorized)  
-                this.deleteButton.setDisabled(false);
+            this.deleteButton.setDisabled(false);
         }
         else
             this.deleteButton.setDisabled(true);

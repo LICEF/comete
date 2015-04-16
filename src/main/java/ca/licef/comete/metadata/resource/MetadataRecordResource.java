@@ -55,7 +55,7 @@ public class MetadataRecordResource {
                                       @FormDataParam("res") InputStream uploadedInputStreamRes,
                                       @FormDataParam("res") FormDataContentDisposition fileDetailRes) throws Exception {
 
-        if (!Security.getInstance().isAuthorized(request))
+        if (!Security.getInstance().isContributeAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to upload metadata records.").build();
 
         String resp = null;

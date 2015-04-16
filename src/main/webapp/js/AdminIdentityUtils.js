@@ -74,7 +74,6 @@
         this.clearPhotoButton = Ext.create('Ext.button.Button', {
             margin: '0 0 0 2',
             icon: 'images/delete.png',
-            disabled: !authorized,
             handler: function(){ this.photo.setSrc(null); },
             scope: this
         } );
@@ -98,7 +97,6 @@
         this.setUrlPhotoButton = Ext.create('Ext.button.Button', {
             margin: '0 0 0 2',
             icon: 'images/whiteArrow.png',
-            disabled: !authorized,
             handler: this.setUrlPhoto,
             scope: this
         } );
@@ -114,7 +112,6 @@
         this.uploadButton = Ext.create('Ext.button.Button', {
             margin: '0 0 0 2',
             icon: 'images/whiteArrow.png',
-            disabled: !authorized,
             handler: this.uploadPhoto,
             scope: this
         } );       

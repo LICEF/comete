@@ -258,7 +258,6 @@ public class QueryEngine {
 
     public Tuple[] searchKeywordsEff(String terms, String lang) throws Exception {
         String query = CoreUtil.getQuery("queryengine/lookupKeywords.sparql",CoreUtil.formatKeywords(terms), lang);
-        System.out.println("query = " + query);
         return tripleStore.sparqlSelect_textIndex(query);
     }
 

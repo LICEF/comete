@@ -5,11 +5,6 @@
 var currentElem;
 
 function changeCardItem(item, elem) {
-    if (!authorized) {
-        Ext.MessageBox.alert(tr('Security'), tr('Unauthorized access.'));
-        return;
-    }
-
     var cardPanel = Ext.getCmp( 'cardPanel' );
     var currentItem = cardPanel.getLayout().getActiveItem();
     if( currentItem.beforeQuit )
@@ -30,7 +25,7 @@ function changeCardItem(item, elem) {
 
 Ext.onReady( function() {    
     Ext.QuickTips.init();
-    setAuthorized(function(){init();})
+    setAccountRole(function(){init();});
 } );
 
 function init() {

@@ -243,7 +243,7 @@ Ext.define( 'Comete.SearchManager', {
 
 Ext.onReady( function() {    
     Ext.QuickTips.init();
-    setAuthorized(function(){init();})
+    setAccountRole(function(){init();});
 } );
 
 function init() {

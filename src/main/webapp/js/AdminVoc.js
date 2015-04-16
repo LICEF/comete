@@ -28,8 +28,7 @@
  
         this.addButton = Ext.create('Ext.button.Button', {
             text: tr('Add'),
-            disabled: !authorized,
-            handler: this.addVocabulary, 
+            handler: this.addVocabulary,
             scope: this
         } );
 
@@ -133,7 +132,6 @@
             autoScroll: true,
             plugins: [ cellEditing ],
             bbar: [ { text: tr('Add'),
-                      disabled: !authorized,
                       handler: function() {
                           var alias = Ext.create('VocAliasModel', { alias: tr('New Alias') });
                           this.aliasesCount = this.vocAliasStore.getCount();
@@ -225,10 +223,8 @@
             this.vocAliasProxy.url = this.currentVocContextRestUrl + "/aliases";        
             this.vocAliasStore.load();   
             //buttons
-            if (authorized) {  
-                this.modifyButton.setDisabled(false);     
-                this.deleteButton.setDisabled(false);     
-            }
+            this.modifyButton.setDisabled(false);
+            this.deleteButton.setDisabled(false);
         }
         else {
             this.detailsPanel.getComponent(0).setValue("");

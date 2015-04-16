@@ -1,14 +1,15 @@
-﻿
-/***********************/
-/*** Authorized flag ***/
-/***********************/
-var authorized = false;
-function setAuthorized(callback) {
+﻿/********************/
+/*** Account Role ***/
+/********************/
+var accountRole = "none";
+function setAccountRole(callback) {
     Ext.Ajax.request( {
-        url: 'rest/security/isAuthorized',
+        url: 'rest/security/role',
         method: 'GET',
         success: function(response, opts) {
-            authorized = response.responseText == 'true';
+            var res = response.responseText;
+            if( res == "admin" || res == "publisher" || res == "contributor" )
+                accountRole = res;
             callback.call();
         }
     } );
@@ -22,7 +23,6 @@ function setAuthorized(callback) {
 Ext.override(Ext.Window, {
     constrain: true
 });
-
 
 function utilsInit( lg ) {
     vocabProxy.url = 'rest/voc/all?lang=' + lg;
@@ -830,9 +830,9 @@ Ext.define( 'Comete.ImageButton', {
 
 
 
-/**************************/
-/*** RecordValidation   ***/
-/**************************/
+/************************/
+/*** RecordValidation ***/
+/************************/
 
 Ext.define( 'RecordValidationModel', {
     extend: 'Ext.data.Model',
@@ -850,3 +850,73 @@ Ext.define( 'RecordValidationModel', {
         'repoAdminEmail'
     ]
 } );
+
+
+/********************/
+/*** Login dialog ***/
+/********************/
+
+Ext.define( 'Comete.LoginDialog', {
+    extend: 'Ext.window.Window',
+    layout: 'fit',           
+    initComponent: function( config ) {
+
+        this.login = Ext.create('Ext.form.field.Text', {
+            fieldLabel: tr('Login'),
+            name: 'login',
+            allowBlank: false,
+            enableKeyEvents: true 
+        } );
+
+        this.login.on("keypress", function(tf, event) { 
+            if (event.getKey() == event.ENTER) 
+                this.submit();
+            }, this); 
+
+        this.password = Ext.create('Ext.form.field.Text', {
+            fieldLabel: tr('Password'),
+            name: 'password',
+            inputType: 'password',
+            allowBlank: false,
+            enableKeyEvents: true 
+        } );
+
+        this.password.on("keypress", function(tf, event) { 
+            if (event.getKey() == event.ENTER) 
+                this.submit();
+            }, this);
+
+        this.formPanel = Ext.create('Ext.form.Panel', { 
+            border: false,
+            margin: '10',            
+            items: [ this.login, this.password ]
+        }); 
+
+        cfg = {
+            title: tr( 'Authentication' ),
+            buttons: [ {text:'OK', handler: this.submit, scope: this}, {text:tr('Cancel'), handler: this.close, scope: this}],  
+            items: [ { border: false, items: this.formPanel } ]
+                     
+        };
+        Ext.apply(this, cfg);
+        this.callParent(arguments); 
+    },
+    submit: function() {
+        this.formPanel.submit({
+            url: 'rest/security/authentication',
+            method: 'POST',
+            success: function(form, action) {
+                this.close(); 
+                var res = action.result.role;
+                if( res == "admin" || res == "publisher" || res == "contributor" ) {
+                    accountRole = res;
+                    updateToolbar();
+                }
+            },
+            failure: function(form, action) { 
+                Ext.Msg.alert( tr('Failure'), tr('Authentication failed.') );            
+            },
+            scope: this
+        });
+    }
+});

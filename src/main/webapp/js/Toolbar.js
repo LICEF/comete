@@ -63,14 +63,14 @@ var signinButton = Ext.create('Ext.button.Button', {
     text: tr( 'Sign in' ),
     hidden: true,
     textAlign: 'left',
-    handler: askAdminPassword
+    handler: login
 } );
 
 var logoutButton = Ext.create('Ext.button.Button', {
-    text: tr( 'Log out' ),
+    text: tr( 'Sign out' ),
     hidden: true,
     textAlign: 'left',
-    handler: logout,
+    handler: logout
 } );
 
 var pageMenuSeparator = Ext.create( 'Ext.toolbar.Separator', {
@@ -92,11 +92,11 @@ var tbarAdmin = {
 };
 
 function updateToolbar() {
-    signinButton.setVisible( !authorized );
-    logoutButton.setVisible( authorized );
-    pageMenuSeparator.setVisible( authorized );
-    adminPageLabel.setVisible( authorized );
-    pageMenu.setVisible( authorized );
+    signinButton.setVisible( accountRole == "none");
+    logoutButton.setVisible( accountRole != "none" );
+    pageMenuSeparator.setVisible( accountRole != "none" );
+    adminPageLabel.setVisible( accountRole != "none" );
+    pageMenu.setVisible( accountRole != "none" );
 }
 
 function showAbout() {
@@ -110,34 +110,14 @@ function showAbout() {
     aboutWindow.show();     
 }
 
-function askAdminPassword() {
-    var askPasswordDialog = new Ext.window.MessageBox({
-        cls: 'msgbox',
-        bodyCls: 'popWindow'
+function login() {
+    var loginDialog = Ext.create('Comete.LoginDialog', {
+        width: 300,
+        height: 170,
+        modal: true,
+        resizable: false
     });
-    askPasswordDialog.buttonText = { cancel: tr( 'Cancel' ) };
-    askPasswordDialog.textField.inputType = 'password';
-    askPasswordDialog.textField.width = 240;
-    askPasswordDialog.textField.center();
-    askPasswordDialog.prompt( tr( 'Admin Authentication' ), tr( 'Enter password' ), 
-        function( buttonId, text, opt ) {
-            if( buttonId == 'ok' ) {
-                Ext.Ajax.request( {
-                    url: 'rest/security/authentication?password=' + text,
-                    method: 'POST',
-                    success: function(response) {
-                        if( 'true' == response.responseText ) {
-                            authorized = true;
-                            updateToolbar();
-                        }
-                        else
-                            Ext.Msg.alert( tr( 'Failure' ), tr( 'Authentication failed.' ) );
-                    },
-                    scope: this 
-                } );
-            }
-        }
-    );
+    loginDialog.show();        
 }
 
 function logout() {
@@ -146,7 +126,7 @@ function logout() {
         method: 'GET',
         success: function(response) {
             if( response.status == 200 ) {
-                authorized = false;
+                accountRole = "none";
                 updateToolbar();
             }
             else

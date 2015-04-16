@@ -354,7 +354,7 @@
                     { xtype: 'checkbox', id: 'CBScoLomFR_1_1', boxLabel: 'LOM Scorm LOM FR 1.1', inputValue: 'ScoLomFR_1_1' },
                     { xtype: 'checkbox', id: 'CBLomNormetic_1_2', boxLabel: 'LOM Normetic 1.2', inputValue: 'LomNormetic_1_2' },
                     { xtype: 'checkbox', id: 'CBOAIDC', boxLabel: 'OAI DC', inputValue: 'OAIDC' },
-                    { xtype: 'button', text: tr( 'Save Settings' ), handler: this.saveValidations, scope: this, margin: '10 0 0 0', disabled: !authorized }
+                    { xtype: 'button', text: tr( 'Save Settings' ), handler: this.saveValidations, scope: this, margin: '10 0 0 0' }
                 ] }
             ]
         } );

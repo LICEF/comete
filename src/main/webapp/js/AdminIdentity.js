@@ -105,7 +105,6 @@ Ext.define( 'Comete.Identity', {
         this.store.on( 'load', this.maybeSelect, this );
 
         this.searchField = Ext.create('Ext.form.field.Text', {
-            disabled: !authorized,
             enableKeyEvents: true,
             region: 'center',
             margin: '10 0 0 10'
@@ -140,19 +139,16 @@ Ext.define( 'Comete.Identity', {
         var identityContextMenu = Ext.create('Ext.menu.Menu', {
             items: [ { text: tr('Edit'),
                        handler: this.editIdentity,
-                       disabled: !authorized,
-                       scope: this }, 
+                       scope: this },
                      { text: tr('Merge'),
                        handler: this.merge,
-                       disabled: !authorized,
                        scope: this } ]
         });
 
         if (this.type == 'person') 
             identityContextMenu.add( { text: tr('Convert as organization'),
                                        handler: this.convertToOrg,
-                                       disabled: !authorized,
-                                       scope: this } );        
+                                       scope: this } );
 
         
         this.identityList = Ext.create('Ext.grid.Panel', {                        
@@ -353,14 +349,12 @@ Ext.define( 'Comete.SimilarIdentity', {
 
         this.startButton = Ext.create('Ext.button.Button', {
             text: tr('Start'),
-            disabled: !authorized,
             handler: this.getSimilarGroups,
             scope: this
         } );
 
         this.previousButton = Ext.create('Ext.button.Button', {
             text: tr('Previous'),
-            disabled: !authorized,
             handler: this.showPreviousGroup,
             hidden: true,
             scope: this
@@ -368,7 +362,6 @@ Ext.define( 'Comete.SimilarIdentity', {
 
         this.nextButton = Ext.create('Ext.button.Button', {
             text: tr('Next'),
-            disabled: !authorized,
             handler: this.showNextGroup,
             hidden: true,
             scope: this
