@@ -86,8 +86,6 @@ Ext.define( 'Comete.SearchManager', {
             }
         }
 
-        var isEditable = ( ( 'true' == Ext.getUrlParam( 'editable' ) ) || false );
-
         this.simpleLabel = Ext.create('Comete.ClickableLabel', {
             text: tr('Simple Search'),
             cls: 'selectedChoice',
@@ -179,7 +177,7 @@ Ext.define( 'Comete.SearchManager', {
             region: 'center',
             border: false,
             lang: lang,
-            editable: isEditable,
+            editable: isEditable(),
             _query: query
         } );
 

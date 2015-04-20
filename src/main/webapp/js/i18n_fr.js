@@ -15,6 +15,8 @@
     'Collections': 'Collections',
     'Id': 'Identifiant',
     'Title': 'Titre',
+    'File Type': 'Type de fichier',
+    'State': 'État',
     'Details': 'Détails',
     'Resources': 'Ressources',
     'Edit DC': 'Éditer DC',

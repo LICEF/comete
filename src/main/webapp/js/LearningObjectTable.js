@@ -6,9 +6,9 @@
 
         this.isFirstLoad = true;
 
-        Ext.define('LearninObjectModel', {
+        Ext.define('LearningObjectModel', {
             extend: 'Ext.data.Model',
-            fields: [ 'id', 'title', 'desc', 'location', 'image', 'loAsHtmlLocation', 'metadataFormat', 'type' ]
+            fields: [ 'id', 'title', 'desc', 'location', 'image', 'loAsHtmlLocation', 'metadataFormat', 'type', 'state' ]
         });
 
         this.proxy = Ext.create('Ext.data.proxy.Ajax', {
@@ -20,7 +20,7 @@
         });
 
         this.loStore = Ext.create('Ext.data.JsonStore', {
-            model: 'LearninObjectModel',
+            model: 'LearningObjectModel',
             pageSize: 20,
             proxy: this.proxy
         });
@@ -44,6 +44,14 @@
             return res;
         },
 
+        this.renderState = function( value, metaData, lo ) {
+            var indexOfHash = value.lastIndexOf( '#' );
+            if( indexOfHash == -1 )
+                return( '' );
+            var stateFilename = value.substring( indexOfHash + 1 );
+            return Ext.String.format( '<img src="images/state-{0}.png" height="40"/>', stateFilename );
+        },
+
         this.renderTitle = function( value, metaData, lo ) {
             var xf = Ext.util.Format;
             descr = xf.ellipsis( xf.stripTags( lo.data.desc ), 200 );
@@ -56,10 +64,11 @@
             cls: 'lo-grid',
             scroll: 'vertical',
             columns: [ 
-                { width: 60, dataIndex: 'image', sortable: true, renderer: this.renderImage},
-                { text: tr( 'Id' ), width: 100,  dataIndex: 'id', hidden: !this.editable },
+                { text: tr( 'State' ), width: 60,  dataIndex: 'state', hidden: !this.editable, renderer: this.renderState },
+                { text: tr( 'File Type' ), width: 60, dataIndex: 'image', sortable: true, renderer: this.renderImage},
+                { text: tr( 'Id' ), width: 100,  dataIndex: 'id', hidden: true /*!this.editable*/ },
                 { text: tr( 'Title' ), flex: 1, dataIndex: 'title', sortable: true, renderer: this.renderTitle },
-                { text: tr( 'Type' ), width: 80,  dataIndex: 'type', sortable: true, renderer: this.renderType, hidden: !this.editable}
+                { text: tr( 'Type' ), width: 80,  dataIndex: 'type', sortable: true, renderer: this.renderType, hidden: true /*!this.editable*/ }
             ],          
             viewConfig: {
                 loadingText: tr('Loading') + '...',

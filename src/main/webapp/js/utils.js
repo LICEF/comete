@@ -15,6 +15,9 @@ function setAccountRole(callback) {
     } );
 }
 
+function isEditable() {
+    return( accountRole == 'admin' );
+}
 
 /**************************************************/
 /*** Miscellaneous utility functions or objects ***/

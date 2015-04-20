@@ -5,11 +5,12 @@ public class ResultEntry {
     public ResultEntry() {
     }
 
-    public ResultEntry( String id, String title, String location, String metadataFormat, String type ) {
+    public ResultEntry( String id, String title, String location, String metadataFormat, boolean isHidden, String type ) {
         this.id = id;
         this.title = title;
         this.location = location;
         this.metadataFormat = metadataFormat;
+        this.isHidden = isHidden;
         this.type = type; 
     }
 
@@ -85,6 +86,14 @@ public class ResultEntry {
         this.metadataFormat = metadataFormat;
     }
 
+    public boolean isHidden() {
+        return( isHidden );
+    }
+
+    public void setHidden( boolean isHidden ) {
+        this.isHidden = isHidden;
+    }
+
     public String getType() {
         return( type );
     }
@@ -102,6 +111,7 @@ public class ResultEntry {
     private String creationDate;
     private String modificationDate;
     private String metadataFormat;
+    private boolean isHidden;
     private String type;
 
 }

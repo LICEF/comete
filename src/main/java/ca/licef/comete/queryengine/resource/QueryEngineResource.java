@@ -6,6 +6,7 @@ import ca.licef.comete.queryengine.QueryCache;
 import ca.licef.comete.queryengine.QueryEngine;
 import ca.licef.comete.queryengine.ResultEntry;
 import ca.licef.comete.queryengine.util.FeedUtil;
+import ca.licef.comete.security.Role;
 import ca.licef.comete.security.Security;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.sun.jersey.spi.container.servlet.PerSession;
@@ -47,7 +48,8 @@ public class QueryEngineResource implements Serializable {
     @GET
     @Path( "searchJson" )
     @Produces( MediaType.APPLICATION_JSON )
-    public Response searchJson( @DefaultValue( "" ) @QueryParam( "q" ) String query,
+    public Response searchJson( @Context HttpServletRequest req, 
+        @DefaultValue( "" ) @QueryParam( "q" ) String query,
         @DefaultValue( "" ) @QueryParam( "f" ) String filters,
         @DefaultValue( "0" ) @QueryParam( "start" ) String strStart, @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit,
         @DefaultValue( "default" ) @QueryParam( "style" ) String style,
@@ -77,8 +79,10 @@ public class QueryEngineResource implements Serializable {
         try {
             if (cache == null)
                 cache = new QueryCache();
+            boolean isShowHiddenRes = !Security.getInstance().isAuthorized( req, new Role[] { Role.ADMIN } );
+System.out.println( "isShowHiddenRes="+isShowHiddenRes );            
             rs = QueryEngine.getInstance().search(
-                    query, filters, lang, "json", Integer.valueOf(start), Integer.valueOf(limit), style, cache);
+                    query, filters, lang, isShowHiddenRes, "json", Integer.valueOf(start), Integer.valueOf(limit), style, cache);
         }
         catch( Exception e ) {
             throw( new WebApplicationException( e, HttpServletResponse.SC_INTERNAL_SERVER_ERROR ) );
@@ -102,7 +106,8 @@ public class QueryEngineResource implements Serializable {
                     .put( "image", entry.getImage() )
                     .put( "loAsHtmlLocation", entry.getLoAsHtmlLocation() )
                     .put( "metadataFormat", entry.getMetadataFormat() )
-                    .put( "type", entry.getType() );
+                    .put( "type", entry.getType() )
+                    .put( "hidden", entry.isHidden() );
                 learningObjects.put( learningObject );
             }
 
@@ -208,22 +213,24 @@ public class QueryEngineResource implements Serializable {
     @GET
     @Path( "searchAtom" )
     @Produces( MediaType.APPLICATION_ATOM_XML )
-    public SyndFeed searchAtom( @DefaultValue( "" ) @QueryParam( "q" ) String query,
+    public SyndFeed searchAtom( @Context HttpServletRequest req, @DefaultValue( "" ) @QueryParam( "q" ) String query,
         @DefaultValue( "0" ) @QueryParam( "start" ) String strStart, @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit,
         @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) {
-        return( searchFeed( FEED_ATOM, query, strStart, strLimit, lang ) );
+        boolean isShowHiddenRes = !Security.getInstance().isAuthorized( req );
+        return( searchFeed( FEED_ATOM, query, strStart, strLimit, lang, isShowHiddenRes ) );
     }
 
     @GET
     @Path( "searchRss" )
     @Produces( "application/rss+xml" )
-    public SyndFeed searchRss( @DefaultValue( "" ) @QueryParam( "q" ) String query,
+    public SyndFeed searchRss( @Context HttpServletRequest req, @DefaultValue( "" ) @QueryParam( "q" ) String query,
         @DefaultValue( "0" ) @QueryParam( "start" ) String strStart, @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit,
         @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) {
-        return( searchFeed( FEED_RSS, query, strStart, strLimit, lang ) );
+        boolean isShowHiddenRes = !Security.getInstance().isAuthorized( req );
+        return( searchFeed( FEED_RSS, query, strStart, strLimit, lang, isShowHiddenRes ) );
     }
 
-    private SyndFeed searchFeed( String feedType, String query, String strStart, String strLimit, String lang ) {
+    private SyndFeed searchFeed( String feedType, String query, String strStart, String strLimit, String lang, boolean isShowHiddenRes ) {
         int start = -1;
         if( strStart != null ) {
             try {
@@ -248,7 +255,7 @@ public class QueryEngineResource implements Serializable {
         try {
             if (cache == null)
                 cache = new QueryCache();
-            rs = QueryEngine.getInstance().search( query, "", lang, feedType, start, limit, null, cache );
+            rs = QueryEngine.getInstance().search( query, "", lang, isShowHiddenRes, feedType, start, limit, null, cache );
         }
         catch( Exception e ) {
             throw( new WebApplicationException( e, HttpServletResponse.SC_INTERNAL_SERVER_ERROR ) );

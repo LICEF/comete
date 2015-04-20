@@ -1,5 +1,6 @@
 package ca.licef.comete.security.resource;
 
+import ca.licef.comete.security.Role;
 import ca.licef.comete.security.Security;
 import com.sun.jersey.spi.resource.Singleton;
 import org.json.JSONException;
@@ -22,15 +23,15 @@ public class SecurityResource {
     @Path( "role" )
     @Produces( MediaType.TEXT_PLAIN )
     public Response getRole(@Context HttpServletRequest req) throws Exception {
-        String role = Security.getInstance().getRole(req);
-        return( Response.ok( role ).build() );
+        Role role = Security.getInstance().getRole(req);
+        return( Response.ok( role.getValue() ).build() );
     }
 
     @POST
     @Path( "authentication" )
     @Produces( MediaType.APPLICATION_JSON )
     public Response authenticate( @Context HttpServletRequest req, @FormParam( "login" ) String login, @FormParam( "password" ) String password ) {
-        String role;
+        Role role;
         try {
             role = Security.getInstance().authenticate(login, password);
             if (role == null)
@@ -44,7 +45,7 @@ public class SecurityResource {
         try {
             JSONWriter json = new JSONWriter( out ).object();
             json.key("success").value(true);
-            json.key("role").value(role);
+            json.key("role").value(role.getValue());
             json.endObject();
         }
         catch( JSONException e ) {

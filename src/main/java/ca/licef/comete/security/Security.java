@@ -11,6 +11,9 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Vector;
 
 /**
@@ -23,11 +26,6 @@ public class Security {
     static File settingsDir = new File(Core.getInstance().getCometeHome(), "/conf/security");
 
     //authorization levels
-    public static final String ADMIN_ROLE = "admin";
-    public static final String PUBLISHER_ROLE = "publisher";
-    public static final String CONTRIBUTOR_ROLE = "contributor";
-    public static final String NONE_ROLE = "none";
-
     private static Security instance;
 
     public static Security getInstance() {
@@ -52,34 +50,40 @@ public class Security {
         }
     }
 
-    public String authenticate(String login, String password) throws Exception {
+    public Role authenticate(String login, String password) throws Exception {
         File account = new File(settingsDir, login + ".txt");
         Vector lines = IOUtil.readLines(account);
         String accountPasswordSha1 = (String)lines.get(0);
         String hashedPassword = Sha1Util.hash(password);
         if (hashedPassword.equals(accountPasswordSha1))
-            return (String)lines.get(1);
+            return Role.get( (String)lines.get(1) );
         else
-            return null;
+            return Role.NONE;
     }
 
-    public String getRole(HttpServletRequest req) throws Exception {
+    public Role getRole(HttpServletRequest req) {
         HttpSession session = req.getSession( true );
-        String role = (String)session.getAttribute( "role" );
-        if (role == null || "".equals(role))
-            role = NONE_ROLE;
+        Role role = (Role)session.getAttribute( "role" );
+        if (role == null )
+            role = Role.NONE;
         return role;
     }
 
-    public boolean isAuthorized(HttpServletRequest req) throws Exception {
-        String accountAccess = getRole(req);
-        return accountAccess.equals(ADMIN_ROLE);
+    public boolean isAuthorized(HttpServletRequest req, Role[] roles ) {
+        Role userRole = getRole( req );
+        Set<Role> roleSet = new HashSet<Role>( Arrays.asList( roles ) );
+        return( roleSet.contains( userRole ) );
     }
 
-    public boolean isContributeAuthorized(HttpServletRequest req) throws Exception {
-        String accountAccess = getRole(req);
-        return ( accountAccess.equals(ADMIN_ROLE) ||
-                 accountAccess.equals(PUBLISHER_ROLE) ||
-                 accountAccess.equals(CONTRIBUTOR_ROLE) );
+    public boolean isAuthorized(HttpServletRequest req) {
+        Role accountAccess = getRole(req);
+        return accountAccess.equals(Role.ADMIN);
+    }
+
+    public boolean isContributeAuthorized(HttpServletRequest req) {
+        Role accountAccess = getRole(req);
+        return ( accountAccess.equals(Role.ADMIN) ||
+                 accountAccess.equals(Role.PUBLISHER) ||
+                 accountAccess.equals(Role.CONTRIBUTOR) );
     }
 }

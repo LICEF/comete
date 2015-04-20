@@ -37,7 +37,7 @@ public class QueryEngine {
         return collection;
     }
 
-    public ResultSet search( String query, String filters, String lang, String outputFormat,
+    public ResultSet search( String query, String filters, String lang, boolean isShowHiddenRes, String outputFormat,
                              Integer start, Integer limit, String style, QueryCache cache) throws Exception {
 
         JSONArray queryArray = new JSONArray(query);
@@ -72,19 +72,19 @@ public class QueryEngine {
 
         if (isSimpleSearch) {
             Invoker inv = new Invoker(this, "ca.licef.comete.queryengine.QueryEngine",
-                    "simpleSearch", new Object[]{firstCond.getString("value"), lang, orderByVariable, start, limit, outputFormat});
+                    "simpleSearch", new Object[]{firstCond.getString("value"), lang, isShowHiddenRes, orderByVariable, start, limit, outputFormat});
             rs = (ResultSet)tripleStore.transactionalCall(inv);
         }
 
         if (isExplicitLORequested) {
             Invoker inv = new Invoker(this, "ca.licef.comete.queryengine.QueryEngine",
-                    "singleSearch", new Object[]{firstCond.getString("value"), lang, start, limit});
+                    "singleSearch", new Object[]{firstCond.getString("value"), lang, isShowHiddenRes, start, limit});
             rs = (ResultSet)tripleStore.transactionalCall(inv);
         }
 
         if (isAdvancedSearch) {
             Invoker inv = new Invoker(this, "ca.licef.comete.queryengine.QueryEngine",
-                    "advancedSearch", new Object[]{queryArray, lang, orderByVariable,
+                    "advancedSearch", new Object[]{queryArray, lang, isShowHiddenRes, orderByVariable,
                         start, limit, Boolean.valueOf(isWithScore), cache, outputFormat});
             rs = (ResultSet)tripleStore.transactionalCall(inv);
         }
@@ -94,7 +94,7 @@ public class QueryEngine {
         return rs;
     }
 
-    public ResultSet simpleSearch(String keywords, String lang, String orderByVariable, Integer start, Integer limit, String outputFormat) throws Exception {
+    public ResultSet simpleSearch(String keywords, String lang, boolean isShowHiddenRes, String orderByVariable, Integer start, Integer limit, String outputFormat) throws Exception {
         ResultSet rs;
         int count;
         String keywordsFormattedForRegex = null;
@@ -104,12 +104,12 @@ public class QueryEngine {
         //count
         Tuple[] res;
         if (showAllRecords) {
-            _query = CoreUtil.getQuery("queryengine/getLearningObjectsCount.sparql");
+            _query = CoreUtil.getQuery("queryengine/getLearningObjectsCount.sparql" );
             res = tripleStore.sparqlSelect(_query);
         }
         else {
             keywordsFormattedForRegex = ca.licef.comete.core.util.Util.formatKeywords(keywords);
-            _query = CoreUtil.getQuery("queryengine/getLearningObjectsByKeywordsCount.sparql", keywordsFormattedForRegex, lang);
+            _query = CoreUtil.getQuery("queryengine/getLearningObjectsByKeywordsCount.sparql", keywordsFormattedForRegex, lang );
             res = tripleStore.sparqlSelect_textIndex(_query);
         }
         count = Integer.parseInt(res[0].getValue("count").getContent());
@@ -119,10 +119,12 @@ public class QueryEngine {
             Tuple[] results;
             if (showAllRecords) {
                 _query = CoreUtil.getQuery("queryengine/getLearningObjects.sparql", start, limit);
+System.out.println( "query1="+_query );                
                 results = tripleStore.sparqlSelect(_query);
             }
             else {
                 _query = CoreUtil.getQuery("queryengine/getLearningObjectsByKeywords.sparql", keywordsFormattedForRegex, lang, orderByVariable, start, limit);
+System.out.println( "query1="+_query );                
                 results = tripleStore.sparqlSelect_textIndex(_query);
             }
             rs = buildResultSet(results, count, lang);
@@ -139,8 +141,8 @@ public class QueryEngine {
         return rs;
     }
 
-    public ResultSet singleSearch(String uri, String lang, int start, int limit) throws Exception {
-        String _query = CoreUtil.getQuery("queryengine/getLearningObject.sparql", uri);
+    public ResultSet singleSearch(String uri, String lang, boolean isShowHiddenRes, int start, int limit) throws Exception {
+        String _query = CoreUtil.getQuery("queryengine/getLearningObject.sparql", uri );
         Tuple[] results = tripleStore.sparqlSelect(_query);
         ResultSet rs = buildResultSet(results, 1, lang);
         rs.setAdditionalData("selectFirstRecord", "true");
@@ -148,7 +150,7 @@ public class QueryEngine {
         return rs;
     }
 
-    public ResultSet advancedSearch( JSONArray queryArray, String lang, String orderByVariable,
+    public ResultSet advancedSearch( JSONArray queryArray, String lang, boolean isShowHiddenRes, String orderByVariable,
                                       Integer start, Integer limit, Boolean isWithScore,
                                       QueryCache cache, String outputFormat) throws Exception {
         ResultSet rs;
@@ -159,7 +161,7 @@ public class QueryEngine {
 
         String queryType = includeEquivalence?"Thematic":"Advanced";
 
-        String query = CoreUtil.getQuery("queryengine/getLearningObjects" + queryType + "QueryForCount.sparql", fromClause, clauses);
+        String query = CoreUtil.getQuery("queryengine/getLearningObjects" + queryType + "QueryForCount.sparql", fromClause, clauses );
         Tuple[] res = tripleStore.sparqlSelect_textIndex(query);
         int count = Integer.parseInt(res[0].getValue("count").getContent());
 
@@ -225,6 +227,9 @@ public class QueryEngine {
             entry.setCreationDate( CoreUtil.manageDateString(tuple.getValue("added").getContent()));
             entry.setModificationDate( CoreUtil.manageDateString(tuple.getValue("updated").getContent()));
             
+            //hidden
+            entry.setHidden( false );
+
             //type
             /*
             Hashtable<String, String>[] res =

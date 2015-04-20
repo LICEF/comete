@@ -402,7 +402,6 @@ public class Metadata {
             if (loURI == null) {
                 loURI = CoreUtil.makeURI(COMETE.LearningObject);
                 triples.add( new Triple( loURI, RDF.type, COMETE.LearningObject ) );
-                triples.add( new Triple( loURI, COMETE.state, Constants.COMETE_STATE_AVAILABLE ) );
                 triples.add( new Triple( loURI, COMETE.added, DateUtil.toISOString(new Date(), null, null) ) );
             }
 
