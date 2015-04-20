@@ -8,8 +8,7 @@ function setAccountRole(callback) {
         method: 'GET',
         success: function(response, opts) {
             var res = response.responseText;
-            if( res == "admin" || res == "publisher" || res == "contributor" )
-                accountRole = res;
+            accountRole = res;
             callback.call();
         }
     } );

@@ -44,9 +44,6 @@
     <xsl:variable name="ShareOnLinkedin" select="'Partager la fiche sur LinkedIn'"/>
     <xsl:variable name="ShareByEmail" select="'Partager la fiche par courriel'"/>
 
-    <xsl:variable name="StateAvailable" select="'Disponible'"/>
-    <xsl:variable name="StateDeleted" select="'Supprimée'"/>
-
     <xsl:variable name="AddedDateLabel" select="'Ajoutée'"/>
     <xsl:variable name="CreatedDateLabel" select="'Créée'"/>
     <xsl:variable name="UpdatedDateLabel" select="'Modifiée'"/>

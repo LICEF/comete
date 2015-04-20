@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum Role {
+
     ADMIN( "admin" ), PUBLISHER( "publisher" ), CONTRIBUTOR( "contributor" ), NONE( "none" );
     
     private Role( String value ) {

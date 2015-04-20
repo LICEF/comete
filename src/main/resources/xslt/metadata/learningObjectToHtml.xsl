@@ -59,9 +59,6 @@
     <xsl:variable name="ShareOnLinkedin" select="'Share the resource on LinkedIn'"/>
     <xsl:variable name="ShareByEmail" select="'Share the resource by email'"/>
 
-    <xsl:variable name="StateAvailable" select="'Available'"/>
-    <xsl:variable name="StateDeleted" select="'Deleted'"/>
-
     <xsl:variable name="AddedDateLabel" select="'Added'"/>
     <xsl:variable name="CreatedDateLabel" select="'Created'"/>
     <xsl:variable name="UpdatedDateLabel" select="'Last modified'"/>
@@ -102,7 +99,6 @@
                 <div id="LearningObjectResource">
                 <xsl:attribute name="resource"><xsl:value-of select="$uri"/></xsl:attribute>
                 <div id="ResourceHeader">
-                    <xsl:apply-templates select="comete:state"/>
                     <xsl:apply-templates select="foaf:page" mode="icon"/>
                     <p class="LearningObjectTitle">
                         <span id="LearningObjectResourceTitle" property="http://purl.org/dc/terms/title"><xsl:value-of select="$title"/></span>
@@ -287,36 +283,6 @@
             </xsl:call-template>
         </xsl:variable>
         <li><a><xsl:attribute name="href">javascript:setRequestKeyword( '<xsl:value-of select="$keyword"/>', '<xsl:value-of select="@xml:lang"/>' );</xsl:attribute><xsl:value-of select="."/></a></li>
-    </xsl:template>
-
-    <xsl:template match="comete:state">
-        <xsl:if test="$isAdmin = 'true'">
-            <xsl:variable name="StateLabel">
-                <xsl:choose>
-                    <xsl:when test=". = 'http://comete.licef.ca/vocab/cometev1.0/state#available'">
-                        <xsl:value-of select="$StateAvailable"/>
-                    </xsl:when>
-                    <xsl:when test=". = 'http://comete.licef.ca/vocab/cometev1.0/state#deleted'">
-                        <xsl:value-of select="$StateDeleted"/>
-                    </xsl:when>
-                </xsl:choose>
-            </xsl:variable>
-            <xsl:variable name="StateIconFilename">
-                <xsl:choose>
-                    <xsl:when test=". = 'http://comete.licef.ca/vocab/cometev1.0/state#available'">
-                        <xsl:value-of select="'available'"/>
-                    </xsl:when>
-                    <xsl:when test=". = 'http://comete.licef.ca/vocab/cometev1.0/state#deleted'">
-                        <xsl:value-of select="'deleted'"/>
-                    </xsl:when>
-                </xsl:choose>
-            </xsl:variable>
-            <img id="StateIcon" height="20" border="0" style="float: right; vertical-align: middle;">
-                <xsl:attribute name="src"><xsl:value-of select="concat( 'images/state-', $StateIconFilename, '.png' )"/></xsl:attribute>
-                <xsl:attribute name="alt"><xsl:value-of select="$StateLabel"/></xsl:attribute>
-                <xsl:attribute name="title"><xsl:value-of select="$StateLabel"/></xsl:attribute>
-            </img>
-        </xsl:if>
     </xsl:template>
 
     <xsl:template match="foaf:page" mode="icon">

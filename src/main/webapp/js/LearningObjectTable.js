@@ -44,11 +44,8 @@
             return res;
         },
 
-        this.renderState = function( value, metaData, lo ) {
-            var indexOfHash = value.lastIndexOf( '#' );
-            if( indexOfHash == -1 )
-                return( '' );
-            var stateFilename = value.substring( indexOfHash + 1 );
+        this.renderHidden = function( value, metaData, lo ) {
+            var stateFilename = ( value == 'true' ? 'hidden' : 'visible' );
             return Ext.String.format( '<img src="images/state-{0}.png" height="40"/>', stateFilename );
         },
 
@@ -64,9 +61,9 @@
             cls: 'lo-grid',
             scroll: 'vertical',
             columns: [ 
-                { text: tr( 'State' ), width: 60,  dataIndex: 'state', hidden: !this.editable, renderer: this.renderState },
+                { text: tr( 'Visible' ), width: 60,  dataIndex: 'hidden', hidden: !this.editable, renderer: this.renderHidden },
                 { text: tr( 'File Type' ), width: 60, dataIndex: 'image', sortable: true, renderer: this.renderImage},
-                { text: tr( 'Id' ), width: 100,  dataIndex: 'id', hidden: true /*!this.editable*/ },
+                { text: tr( 'Id' ), width: 100,  dataIndex: 'id', hidden: true/*!this.editable*/ },
                 { text: tr( 'Title' ), flex: 1, dataIndex: 'title', sortable: true, renderer: this.renderTitle },
                 { text: tr( 'Type' ), width: 80,  dataIndex: 'type', sortable: true, renderer: this.renderType, hidden: true /*!this.editable*/ }
             ],          
