@@ -19,7 +19,7 @@
         this.vocConceptProxy = Ext.create('Ext.data.proxy.Ajax', {
             reader: {
                 type: 'json',
-                root: 'concepts'
+                rootProperty: 'concepts'
             }
         });
 
@@ -30,7 +30,7 @@
         this.conceptProxy = Ext.create('Ext.data.proxy.Ajax', {
             reader: {
                 type: 'json',
-                root: 'concepts'
+                rootProperty: 'concepts'
             }
         });
 

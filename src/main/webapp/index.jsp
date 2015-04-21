@@ -7,10 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
     <link rel="shortcut icon" href="images/comete.ico" type="image/x-icon">
 
-    <link rel="stylesheet" type="text/css" href="ext-5.0.1/build/packages/ext-theme-crisp/build/resources/ext-theme-crisp-all.css" />
+    <link rel="stylesheet" type="text/css" href="ext-5.1.0/build/packages/ext-theme-crisp/build/resources/ext-theme-crisp-all.css" />
     <link rel="stylesheet" type="text/css" href="default.css">    
 
-    <script type="text/javascript" src="ext-5.0.1/build/ext-all.js"></script>
+    <script type="text/javascript" src="ext-5.1.0/build/ext-all.js"></script>
 
     <script type="text/javascript" src="js/i18n.js"></script>
     <% 

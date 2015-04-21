@@ -398,21 +398,21 @@ Ext.define('HarvestReportModel', {
 var vocabProxy = Ext.create('Ext.data.proxy.Ajax', {
     reader: {
         type: 'json',
-        root: 'vocabularies'
+        rootProperty: 'vocabularies'
     }
 });
 
 var vocCtxtProxy = Ext.create('Ext.data.proxy.Ajax', {
     reader: {
         type: 'json',
-        root: 'vocContexts'
+        rootProperty: 'vocContexts'
     }
 });
 
 var collectionProxy = Ext.create('Ext.data.proxy.Ajax', {
     reader: {
         type: 'json',
-        root: 'collections'
+        rootProperty: 'collections'
     }
 });
 
@@ -420,14 +420,14 @@ var harvestDefProxy = Ext.create('Ext.data.proxy.Ajax', {
     url: 'rest/harvestDefinitions',
     reader: {
         type: 'json',
-        root: 'harvestDefs',
+        rootProperty: 'harvestDefs',
     }
 });
 
 var harvestReportProxy = Ext.create('Ext.data.proxy.Ajax', {
     reader: {
         type: 'json',
-        root: 'harvestReports',
+        rootProperty: 'harvestReports',
     }
 });
 
@@ -445,7 +445,7 @@ Ext.define( 'Comete.VocConceptPicker', {
         this.conceptProxy = Ext.create('Ext.data.proxy.Ajax', {
             reader: {
                 type: 'json',
-                root: 'concepts'
+                rootProperty: 'concepts'
             }
         });
 
@@ -682,7 +682,7 @@ Ext.define( 'Comete.IdentityFinderPanel', {
         this.proxy = Ext.create('Ext.data.proxy.Ajax', {
             reader: {
                 type: 'json',
-                root: (this.type == 'person')?'persons':'organizations',
+                rootProperty: (this.type == 'person')?'persons':'organizations',
                 totalProperty: 'totalCount'
             }
         });

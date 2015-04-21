@@ -5,7 +5,7 @@
         
         this.currentCollection = null;
 
-        Ext.define('CollectionModel', {
+        Ext.define('CollectionsModel', {
             extend: 'Ext.data.Model',
             fields: [ 'id', 'label', 'query' ]
         });
@@ -14,12 +14,12 @@
             url: 'rest/queryEngine/collections',
             reader: {
                 type: 'json',
-                root: 'collections'
+                rootProperty: 'collections'
             }
         });
 
         this.collectionStore = Ext.create('Ext.data.JsonStore', {
-            model: 'CollectionModel',
+            model: 'CollectionsModel',
             proxy: this.collectionProxy
         });
 

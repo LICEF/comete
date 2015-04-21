@@ -14,7 +14,7 @@
         this.proxy = Ext.create('Ext.data.proxy.Ajax', {
             url: this.queryUrl,
             reader: {
-                root: 'learningObjects',
+                rootProperty: 'learningObjects',
                 totalProperty: 'totalCount'
             }
         });
