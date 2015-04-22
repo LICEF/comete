@@ -87,10 +87,25 @@ public class LearningObjectResource {
                                           @PathParam( "id" ) String id ) throws Exception {
 
         if (!Security.getInstance().isAuthorized(request))
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to delete records.").build();
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to delete learning objects.").build();
 
-        String loUri = ca.licef.comete.core.util.Util.makeURI(id, Constants.OBJ_TYPE_LEARNING_OBJECT);
+        String loUri = ca.licef.comete.core.util.Util.makeURI(id, COMETE.LearningObject);
         Metadata.getInstance().deleteLearningObject(loUri, true);
+        return (Response.ok().build());
+    }
+
+    @POST
+    @Path( "delete" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response deleteLearningObjects( @Context HttpServletRequest request, @FormParam( "ids" ) String ids ) throws Exception {
+        if (!Security.getInstance().isAuthorized(request))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to delete learning objects").build();
+
+        String[] idArray = ids.split( "," );
+        for( int i = 0; i < idArray.length; i++ ) {
+            String loUri = ca.licef.comete.core.util.Util.makeURI(idArray[ i ], COMETE.LearningObject);
+            Metadata.getInstance().deleteLearningObject( loUri, true );
+        }
         return (Response.ok().build());
     }
 

@@ -128,6 +128,8 @@ function logout() {
             if( response.status == 200 ) {
                 accountRole = "none";
                 updateToolbar();
+                if( window.searchManager )
+                    window.searchManager.setEditable( isEditable() );
             }
             else
                 Ext.Msg.alert( tr( 'Failure' ), tr( 'Attempt to log out failed.' ) );

@@ -235,6 +235,9 @@ Ext.define( 'Comete.SearchManager', {
     },
     closeDialog: function() {
         IdentityDetailsWindow.close();
+    },
+    setEditable: function( isEditable ) {
+        this.loManager.setEditable( isEditable );
     }
 } );
 

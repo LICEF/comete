@@ -913,6 +913,8 @@ Ext.define( 'Comete.LoginDialog', {
                 if( res == "admin" || res == "publisher" || res == "contributor" ) {
                     accountRole = res;
                     updateToolbar();
+                    if( window.searchManager )
+                        window.searchManager.setEditable( isEditable() );
                 }
             },
             failure: function(form, action) { 

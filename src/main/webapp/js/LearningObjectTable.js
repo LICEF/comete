@@ -1,5 +1,10 @@
 ﻿Ext.define( 'Comete.LearningObjectTable', {
     extend: 'Ext.grid.Panel',
+    selModel: {
+        type: 'rowmodel',
+        mode: 'MULTI'
+        //pruneRemoved: false
+    },
     initComponent: function (config) { 
 
         this.queryUrl = 'rest/queryEngine/searchJson?lang=' + this.lang;
@@ -33,28 +38,110 @@
             nextText: tr('Next Page'),
             lastText: tr('Last Page'),
             afterPageText: tr('of {0}')
-        } ),
+        } );
+
         this.pageBar.remove( this.pageBar.getComponent(10) ); //refresh button
         this.pageBar.remove( this.pageBar.getComponent(9) ); //separator
+
+        this.showLearningObjects = function() {
+            var promptBox = Ext.Msg;
+            promptBox.buttonText = { cancel: tr("Cancel") };
+            promptBox.show( {
+                title: tr( 'Question' ),
+                msg: tr( 'Are you sure that you want to show the selected resources ?' ),
+                buttons: Ext.Msg.OKCANCEL,
+                fn: function( btn, text ) {
+                    if( btn == 'ok' )
+                        this.doShowLOs();
+                },
+                scope: this,
+                minWidth: 250,
+                multiline: false,
+                icon: Ext.Msg.QUESTION
+            } );
+        }
+
+        this.hideLearningObjects = function() {
+            var promptBox = Ext.Msg;
+            promptBox.buttonText = { cancel: tr("Cancel") };
+            promptBox.show( {
+                title: tr( 'Question' ),
+                msg: tr( 'Are you sure that you want to hide the selected resources ?' ),
+                buttons: Ext.Msg.OKCANCEL,
+                fn: function( btn, text ) {
+                    if( btn == 'ok' )
+                        this.doHideLOs();
+                },
+                scope: this,
+                minWidth: 250,
+                multiline: false,
+                icon: Ext.Msg.QUESTION
+            } );
+        }
+
+        this.doDeleteLOs = function() {
+            var selectedLOs = this.getSelected();
+            if( selectedLOs ) {
+                var listOfLOs = selectedLOs.map( function( lo ) { return( lo.getData().id ); } ).join( ',' );
+                Ext.Ajax.request( {
+                    url: 'rest/learningObjects/delete?ids=' + listOfLOs,
+                    method: 'POST',
+                    params: {
+                        ids: listOfLOs
+                    },
+                    success: function(response, opts) {
+                        this.loStore.reload();
+                    },
+                    failure: function(response, opts) {
+                        Ext.Msg.alert('Failure', response.responseText );
+                    },
+                    scope: this
+                } );
+            }
+        }
+
+        this.deleteLearningObjects = function() {
+            var promptBox = Ext.Msg;
+            promptBox.buttonText = { cancel: tr("Cancel") };
+            promptBox.show( {
+                title: tr( 'Question' ),
+                msg: tr( 'Are you sure that you want to delete the selected resources ?' ),
+                buttons: Ext.Msg.OKCANCEL,
+                fn: function( btn, text ) {
+                    if( btn == 'ok' )
+                        this.doDeleteLOs();
+                },
+                scope: this,
+                minWidth: 250,
+                multiline: false,
+                icon: Ext.Msg.QUESTION
+            } );
+        }
+
+        var loContextMenu = Ext.create('Ext.menu.Menu', {
+            items: [ { text: tr('Show'), handler: this.showLearningObjects, scope: this },
+                     { text: tr('Hide'), handler: this.hideLearningObjects, scope: this },
+                     { text: tr('Delete'), handler: this.deleteLearningObjects, scope: this } ]
+        });
 
         this.renderImage = function( value ) {
             var res = "";
             if (value != "n/a")
                 res = "<img src=\"" + value + "\" height=\"48\" width=\"48\">";
             return res;
-        },
+        };
 
         this.renderHidden = function( value, metaData, lo ) {
             var stateFilename = ( value == 'true' ? 'hidden' : 'visible' );
             return Ext.String.format( '<img src="images/state-{0}.png" height="40"/>', stateFilename );
-        },
+        };
 
         this.renderTitle = function( value, metaData, lo ) {
             var xf = Ext.util.Format;
             descr = xf.ellipsis( xf.stripTags( lo.data.desc ), 200 );
             return Ext.String.format( '<div class="resourceTitle"><b>{0}</b></div><div class="resourceDesc">{1}</div>', 
                        value == 'null' ? '' : value, descr );
-        },
+        };
 
         cfg = {
             store: this.loStore,
@@ -69,9 +156,21 @@
             ],          
             viewConfig: {
                 loadingText: tr('Loading') + '...',
-                stripeRows: false
+                stripeRows: false,
+                listeners: {
+                    itemcontextmenu: function( view, rec, node, index, event ) {
+                        if( this.editable ) {
+                            event.stopEvent(); // stops the default event. i.e. Windows Context Menu
+                            loContextMenu.showAt( event.getXY() ); // show context menu where user right clicked
+                            return( false );
+                        }
+                        else
+                            return( true );
+                    },
+                    scope: this
+                }
             },
-            hideHeaders: !this.editable,
+            hideHeaders: true/*!this.editable*/,
             bbar: this.pageBar
         };
         Ext.apply(this, cfg);
@@ -85,7 +184,7 @@
     },    
     getSelected: function() {
         if( this.getSelectionModel().getSelection().length > 0 )
-            return this.getSelectionModel().getSelection()[0];
+            return this.getSelectionModel().getSelection();
         else
             return null;
     },
@@ -93,14 +192,14 @@
         var currSelectedLo = null;
         selected = this.getSelected();
         if (selected)
-            currSelectedLo = selected.getData().id;
+            currSelectedLo = selected[ 0 ].getData().id;
         return currSelectedLo;
     },
     getSelectedLoHtmlLocation: function() {
         var selectedLo = this.getSelected();
         if (!selectedLo)
             return(null);
-        return (selectedLo.getData().loAsHtmlLocation);
+        return (selectedLo[ 0 ].getData().loAsHtmlLocation);
     },
     updateResultInfos: function() { 
         var nbResults = this.loStore.getTotalCount();
@@ -161,6 +260,10 @@
                 this.getSelectionModel().select( [ selectedRecord ] );
         }
         this.loManager.updateQueryHistoryButtons();
+    },
+    setEditable: function( isEditable ) {
+        this.editable = isEditable;
+        this.columns[ 0 ].setVisible( isEditable );
     },
     clear: function() {
         this.loStore.loadRawData([]);
