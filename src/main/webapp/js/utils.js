@@ -18,6 +18,15 @@ function isEditable() {
     return( accountRole == 'admin' );
 }
 
+function isPublisher() {
+    return( accountRole == 'publisher' || accountRole == 'admin' );
+}
+
+function isAdmin() {
+    return( accountRole == 'admin' );
+}
+
+
 /**************************************************/
 /*** Miscellaneous utility functions or objects ***/
 /**************************************************/
@@ -908,14 +917,8 @@ Ext.define( 'Comete.LoginDialog', {
             url: 'rest/security/authentication',
             method: 'POST',
             success: function(form, action) {
-                this.close(); 
-                var res = action.result.role;
-                if( res == "admin" || res == "publisher" || res == "contributor" ) {
-                    accountRole = res;
-                    updateToolbar();
-                    if( window.searchManager )
-                        window.searchManager.setEditable( isEditable() );
-                }
+                this.close();
+                window.location.reload(); 
             },
             failure: function(form, action) { 
                 Ext.Msg.alert( tr('Failure'), tr('Authentication failed.') );            

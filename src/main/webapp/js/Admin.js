@@ -46,6 +46,7 @@ function init() {
         text: tr('Harvest'),
         cls: 'choice',
         selected: false,
+        hidden: !isAdmin(),
         fn: function() { changeCardItem(1, harvestLabel); }
     } );
 
@@ -53,6 +54,7 @@ function init() {
         text: tr('Identity Management'),
         cls: 'choice',
         selected: false,
+        hidden: !isAdmin(),
         fn: function() { changeCardItem(2, identityLabel); }
     } );
 
@@ -60,6 +62,7 @@ function init() {
         text: tr('Vocabulary Management'),
         cls: 'choice',
         selected: false,
+        hidden: !isAdmin(),
         fn: function() { changeCardItem(3, vocabularyLabel); }
     } );
 
@@ -67,6 +70,7 @@ function init() {
         text: tr('Record Validation'),
         cls: 'choice',
         selected: false,
+        hidden: !isAdmin(),
         fn: function() { changeCardItem(4, recordValidationLabel); }
     } );
 
@@ -74,6 +78,7 @@ function init() {
         text: tr('Broken Links Management'),
         cls: 'choice',
         selected: false,
+        hidden: !isAdmin(),
         fn: function() { changeCardItem(5, brokenLinksLabel); }
     } );
 
@@ -81,6 +86,7 @@ function init() {
         text: tr('Other'),
         cls: 'choice',
         selected: false,
+        hidden: !isAdmin(),
         fn: function() { changeCardItem(6, miscLabel); }
     } );
 
@@ -140,6 +146,7 @@ function init() {
         layout: 'border',
         region: 'center',
         border: false,
+        hidden: !isPublisher(),
         items: [ { region: 'north', border: false, items: [ choicePanel ] }, cardPanel ]
     });
 

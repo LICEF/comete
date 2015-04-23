@@ -184,10 +184,6 @@
     setFeedButtonsVisible: function(visible) {
         this.resultAtomButton.setVisible(visible);
         this.resultRssButton.setVisible(visible);
-    },
-    setEditable: function( isEditable ) {
-        this.editable = isEditable;
-        this.learningObjectTable.setEditable( isEditable );
     }
 } );
 

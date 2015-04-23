@@ -305,11 +305,6 @@
         }
         this.loManager.updateQueryHistoryButtons();
     },
-    setEditable: function( isEditable ) {
-        this.editable = isEditable;
-        this.columns[ 0 ].setVisible( isEditable );
-        this.loStore.reload();
-    },
     clear: function() {
         this.loStore.loadRawData([]);
     }

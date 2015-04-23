@@ -125,12 +125,8 @@ function logout() {
         url: 'rest/security/logout',
         method: 'GET',
         success: function(response) {
-            if( response.status == 200 ) {
-                accountRole = "none";
-                updateToolbar();
-                if( window.searchManager )
-                    window.searchManager.setEditable( isEditable() );
-            }
+            if( response.status == 200 )
+                window.location.reload();
             else
                 Ext.Msg.alert( tr( 'Failure' ), tr( 'Attempt to log out failed.' ) );
         },

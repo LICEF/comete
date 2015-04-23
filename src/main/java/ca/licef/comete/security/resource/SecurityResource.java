@@ -45,7 +45,6 @@ public class SecurityResource {
         try {
             JSONWriter json = new JSONWriter( out ).object();
             json.key("success").value(true);
-            json.key("role").value(role.getValue());
             json.endObject();
         }
         catch( JSONException e ) {
