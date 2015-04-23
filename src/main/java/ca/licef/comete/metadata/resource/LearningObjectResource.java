@@ -80,6 +80,47 @@ public class LearningObjectResource {
         throw( new WebApplicationException( HttpServletResponse.SC_BAD_REQUEST ) ); // Unsupported format.
     }
 
+    @GET
+    @Path( "{id}/state" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response getLearningObjectState( @Context HttpServletRequest request, @PathParam( "id" ) String id ) throws Exception {
+
+        if (!Security.getInstance().isAuthorized(request))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to retrieve the state of a learning object.").build();
+
+        String loUri = ca.licef.comete.core.util.Util.makeURI(id, COMETE.LearningObject);
+        String state = Metadata.getInstance().getLearningObjectState(loUri);
+        return (Response.ok( state ).build());
+    }
+
+    @PUT
+    @Path( "{id}/state" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response setLearningObjectState( @Context HttpServletRequest request, @PathParam( "id" ) String id, @QueryParam( "value" ) String state ) throws Exception {
+
+        if (!Security.getInstance().isAuthorized(request))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to update the state of a learning object.").build();
+
+        String loUri = ca.licef.comete.core.util.Util.makeURI(id, COMETE.LearningObject);
+        Metadata.getInstance().setLearningObjectState(loUri, state);
+        return (Response.ok().build());
+    }
+
+    @POST
+    @Path( "setState" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response setLearningObjectsState( @Context HttpServletRequest request, @FormParam( "ids" ) String ids, @FormParam( "state" ) String state ) throws Exception {
+        if (!Security.getInstance().isAuthorized(request))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to update the state of a learning object.").build();
+
+        String[] idArray = ids.split( "," );
+        for( int i = 0; i < idArray.length; i++ ) {
+            String loUri = ca.licef.comete.core.util.Util.makeURI(idArray[ i ], COMETE.LearningObject);
+            Metadata.getInstance().setLearningObjectState( loUri, state );
+        }
+        return (Response.ok().build());
+    }
+
     @DELETE
     @Path( "{id}" )
     @Produces( MediaType.TEXT_PLAIN )

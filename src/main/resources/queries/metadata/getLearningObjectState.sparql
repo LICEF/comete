@@ -1,0 +1,5 @@
+PREFIX comete: <http://comete.licef.ca/reference#>
+
+SELECT ?state WHERE '{'
+    <{0}> comete:state ?state 
+'}'

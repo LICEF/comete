@@ -5,7 +5,7 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX comete: <http://comete.licef.ca/reference#>
 
-SELECT DISTINCT ?s ?location ?format ?added ?updated
+SELECT DISTINCT ?s ?location ?format ?added ?updated ?state
 WHERE '{'
     '{' (?s ?score) text:query ( dcterms:title "{0}" ) '}'
     UNION
@@ -50,8 +50,12 @@ WHERE '{'
     OPTIONAL '{'
         ?s comete:updated ?updated
     '}'
-    ?s rdf:type comete:LearningObject
+    OPTIONAL '{'
+        ?s comete:state ?state
+    '}'
+    ?s rdf:type comete:LearningObject .
+    {2}
 '}'
-ORDER BY DESC({2})
-OFFSET {3,number,#}
-LIMIT {4,number,#}
+ORDER BY DESC({3})
+OFFSET {4,number,#}
+LIMIT {5,number,#}

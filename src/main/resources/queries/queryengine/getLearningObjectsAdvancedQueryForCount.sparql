@@ -10,6 +10,6 @@ SELECT (count(DISTINCT ?s) as ?count)
 {0}
 WHERE '{'
     ?s rdf:type comete:LearningObject .
-
 {1}
+{2}
 '}'

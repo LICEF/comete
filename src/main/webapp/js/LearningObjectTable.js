@@ -43,6 +43,28 @@
         this.pageBar.remove( this.pageBar.getComponent(10) ); //refresh button
         this.pageBar.remove( this.pageBar.getComponent(9) ); //separator
 
+        this.doShowLOs = function() {
+            var selectedLOs = this.getSelected();
+            if( selectedLOs ) {
+                var listOfLOs = selectedLOs.map( function( lo ) { return( lo.getData().id ); } ).join( ',' );
+                Ext.Ajax.request( {
+                    url: 'rest/learningObjects/setState',
+                    method: 'POST',
+                    params: {
+                        ids: listOfLOs,
+                        state: 'visible'
+                    },
+                    success: function(response, opts) {
+                        this.loStore.reload();
+                    },
+                    failure: function(response, opts) {
+                        Ext.Msg.alert('Failure', response.responseText );
+                    },
+                    scope: this
+                } );
+            }
+        }
+
         this.showLearningObjects = function() {
             var promptBox = Ext.Msg;
             promptBox.buttonText = { cancel: tr("Cancel") };
@@ -59,6 +81,28 @@
                 multiline: false,
                 icon: Ext.Msg.QUESTION
             } );
+        }
+
+        this.doHideLOs = function() {
+            var selectedLOs = this.getSelected();
+            if( selectedLOs ) {
+                var listOfLOs = selectedLOs.map( function( lo ) { return( lo.getData().id ); } ).join( ',' );
+                Ext.Ajax.request( {
+                    url: 'rest/learningObjects/setState',
+                    method: 'POST',
+                    params: {
+                        ids: listOfLOs,
+                        state: 'hidden'
+                    },
+                    success: function(response, opts) {
+                        this.loStore.reload();
+                    },
+                    failure: function(response, opts) {
+                        Ext.Msg.alert('Failure', response.responseText );
+                    },
+                    scope: this
+                } );
+            }
         }
 
         this.hideLearningObjects = function() {
@@ -84,7 +128,7 @@
             if( selectedLOs ) {
                 var listOfLOs = selectedLOs.map( function( lo ) { return( lo.getData().id ); } ).join( ',' );
                 Ext.Ajax.request( {
-                    url: 'rest/learningObjects/delete?ids=' + listOfLOs,
+                    url: 'rest/learningObjects/delete',
                     method: 'POST',
                     params: {
                         ids: listOfLOs
@@ -132,7 +176,7 @@
         };
 
         this.renderHidden = function( value, metaData, lo ) {
-            var stateFilename = ( value == 'true' ? 'hidden' : 'visible' );
+            var stateFilename = ( value ? 'hidden' : 'visible' );
             return Ext.String.format( '<img src="images/state-{0}.png" height="40"/>', stateFilename );
         };
 
@@ -264,6 +308,7 @@
     setEditable: function( isEditable ) {
         this.editable = isEditable;
         this.columns[ 0 ].setVisible( isEditable );
+        this.loStore.reload();
     },
     clear: function() {
         this.loStore.loadRawData([]);

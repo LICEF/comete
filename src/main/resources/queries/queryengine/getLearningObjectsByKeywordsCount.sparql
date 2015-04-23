@@ -38,5 +38,6 @@ WHERE '{'
         ?ctxt rdf:type comete:VocContext .
         ?ctxt comete:vocConceptLinkingPredicate ?conceptLink .
         ?s ?conceptLink ?concept '}'
-    ?s rdf:type comete:LearningObject
+    ?s rdf:type comete:LearningObject .
+    {2}
 '}'

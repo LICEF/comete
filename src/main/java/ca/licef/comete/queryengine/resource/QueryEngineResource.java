@@ -79,8 +79,7 @@ public class QueryEngineResource implements Serializable {
         try {
             if (cache == null)
                 cache = new QueryCache();
-            boolean isShowHiddenRes = !Security.getInstance().isAuthorized( req, new Role[] { Role.ADMIN } );
-System.out.println( "isShowHiddenRes="+isShowHiddenRes );            
+            boolean isShowHiddenRes = Security.getInstance().isAuthorized( req, new Role[] { Role.ADMIN } );
             rs = QueryEngine.getInstance().search(
                     query, filters, lang, isShowHiddenRes, "json", Integer.valueOf(start), Integer.valueOf(limit), style, cache);
         }
@@ -216,7 +215,7 @@ System.out.println( "isShowHiddenRes="+isShowHiddenRes );
     public SyndFeed searchAtom( @Context HttpServletRequest req, @DefaultValue( "" ) @QueryParam( "q" ) String query,
         @DefaultValue( "0" ) @QueryParam( "start" ) String strStart, @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit,
         @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) {
-        boolean isShowHiddenRes = !Security.getInstance().isAuthorized( req );
+        boolean isShowHiddenRes = Security.getInstance().isAuthorized( req );
         return( searchFeed( FEED_ATOM, query, strStart, strLimit, lang, isShowHiddenRes ) );
     }
 
@@ -226,7 +225,7 @@ System.out.println( "isShowHiddenRes="+isShowHiddenRes );
     public SyndFeed searchRss( @Context HttpServletRequest req, @DefaultValue( "" ) @QueryParam( "q" ) String query,
         @DefaultValue( "0" ) @QueryParam( "start" ) String strStart, @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit,
         @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) {
-        boolean isShowHiddenRes = !Security.getInstance().isAuthorized( req );
+        boolean isShowHiddenRes = Security.getInstance().isAuthorized( req );
         return( searchFeed( FEED_RSS, query, strStart, strLimit, lang, isShowHiddenRes ) );
     }
 

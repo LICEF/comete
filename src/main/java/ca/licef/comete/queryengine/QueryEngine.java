@@ -103,13 +103,14 @@ public class QueryEngine {
 
         //count
         Tuple[] res;
+        String stateCondition = ( isShowHiddenRes ? "" : "FILTER( NOT EXISTS { ?s comete:state \"hidden\" } )" );
         if (showAllRecords) {
-            _query = CoreUtil.getQuery("queryengine/getLearningObjectsCount.sparql" );
+            _query = CoreUtil.getQuery("queryengine/getLearningObjectsCount.sparql", stateCondition );
             res = tripleStore.sparqlSelect(_query);
         }
         else {
             keywordsFormattedForRegex = ca.licef.comete.core.util.Util.formatKeywords(keywords);
-            _query = CoreUtil.getQuery("queryengine/getLearningObjectsByKeywordsCount.sparql", keywordsFormattedForRegex, lang );
+            _query = CoreUtil.getQuery("queryengine/getLearningObjectsByKeywordsCount.sparql", keywordsFormattedForRegex, lang, stateCondition );
             res = tripleStore.sparqlSelect_textIndex(_query);
         }
         count = Integer.parseInt(res[0].getValue("count").getContent());
@@ -118,13 +119,11 @@ public class QueryEngine {
         if (count != 0) {
             Tuple[] results;
             if (showAllRecords) {
-                _query = CoreUtil.getQuery("queryengine/getLearningObjects.sparql", start, limit);
-System.out.println( "query1="+_query );                
+                _query = CoreUtil.getQuery("queryengine/getLearningObjects.sparql", stateCondition, start, limit);
                 results = tripleStore.sparqlSelect(_query);
             }
             else {
-                _query = CoreUtil.getQuery("queryengine/getLearningObjectsByKeywords.sparql", keywordsFormattedForRegex, lang, orderByVariable, start, limit);
-System.out.println( "query1="+_query );                
+                _query = CoreUtil.getQuery("queryengine/getLearningObjectsByKeywords.sparql", keywordsFormattedForRegex, lang, stateCondition, orderByVariable, start, limit);
                 results = tripleStore.sparqlSelect_textIndex(_query);
             }
             rs = buildResultSet(results, count, lang);
@@ -157,11 +156,12 @@ System.out.println( "query1="+_query );
         String[] data = ca.licef.comete.queryengine.util.Util.buildQueryClauses(queryArray, lang, isWithScore, cache);
         String fromClause = data[0];
         String clauses = data[1];
+        String stateCondition = ( isShowHiddenRes ? "" : "FILTER( NOT EXISTS { ?s comete:state \"hidden\" } )" );
         boolean includeEquivalence = Boolean.parseBoolean(data[2]);
 
         String queryType = includeEquivalence?"Thematic":"Advanced";
 
-        String query = CoreUtil.getQuery("queryengine/getLearningObjects" + queryType + "QueryForCount.sparql", fromClause, clauses );
+        String query = CoreUtil.getQuery("queryengine/getLearningObjects" + queryType + "QueryForCount.sparql", fromClause, clauses, stateCondition );
         Tuple[] res = tripleStore.sparqlSelect_textIndex(query);
         int count = Integer.parseInt(res[0].getValue("count").getContent());
 
@@ -169,7 +169,7 @@ System.out.println( "query1="+_query );
             String varScore = orderByVariable;
             if (!"?score".equals(orderByVariable))
                 varScore = "";
-            query = CoreUtil.getQuery("queryengine/getLearningObjects" + queryType + "Query.sparql", fromClause, clauses, orderByVariable, start, limit, varScore);
+            query = CoreUtil.getQuery("queryengine/getLearningObjects" + queryType + "Query.sparql", fromClause, clauses, stateCondition, orderByVariable, start, limit, varScore);
             Tuple[] results = tripleStore.sparqlSelect_textIndex(query);
             rs = buildResultSet(results, count, lang);
         }
@@ -188,6 +188,7 @@ System.out.println( "query1="+_query );
             String objId = tuple.getValue("s").getContent();
             String location = tuple.getValue( "location").getContent();
             String format = tuple.getValue("format").getContent();
+            String state = tuple.getValue("state").getContent();
             String id = CoreUtil.getIdValue(objId);
 
             // mimetype icon as result image
@@ -228,7 +229,7 @@ System.out.println( "query1="+_query );
             entry.setModificationDate( CoreUtil.manageDateString(tuple.getValue("updated").getContent()));
             
             //hidden
-            entry.setHidden( false );
+            entry.setHidden( "hidden".equals( state ) );
 
             //type
             /*

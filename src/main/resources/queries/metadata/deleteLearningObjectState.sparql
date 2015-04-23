@@ -1,0 +1,8 @@
+PREFIX comete: <http://comete.licef.ca/reference#>
+
+DELETE '{'
+    <{0}> comete:state "hidden" 
+'}'
+WHERE '{'
+    <{0}> comete:state "hidden" 
+'}'
