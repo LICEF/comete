@@ -1,0 +1,12 @@
+PREFIX oai: <http://www.openarchives.org/OAI/2.0/>
+
+DELETE '{'
+    <{0}> oai:oai-datestamp ?o
+'}'
+INSERT '{'
+    <{0}> oai:oai-datestamp "{1}"
+'}'
+WHERE '{'
+    <{0}> oai:oai-datestamp ?o
+'}'
+

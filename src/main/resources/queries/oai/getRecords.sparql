@@ -12,8 +12,10 @@ WHERE '{'
     '}' .
     BIND ( IF (bound( ?oaiId ), ?oaiId, "local") AS ?exposedOaiId ) .
     ?s comete:storeDigitalObject ?location .
+    ?s comete:describes ?lo .
     ?s oai:oai-datestamp ?strDatestamp .
     BIND ( xsd:dateTime( ?strDatestamp ) AS ?datestamp ) .
+    #FILTER ( NOT EXISTS '{' ?lo comete:state "hidden" '}' )
     FILTER ( ?datestamp >= "{0}"^^xsd:dateTime && ?datestamp <= "{1}"^^xsd:dateTime )
 '}'
 ORDER BY ?datestamp

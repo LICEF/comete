@@ -307,12 +307,22 @@ public class Metadata {
     }
 
     public void doSetLearningObjectState(String loUri, String state) throws Exception {
+        String recordUri = getMetadataRecordUriFromLO( loUri );
+        ArrayList<Triple> triples = new ArrayList<Triple>();
         if( "visible".equals( state ) ) {
             String query = CoreUtil.getQuery( "metadata/deleteLearningObjectState.sparql", loUri );
             tripleStore.sparqlUpdate(query);
         }
         else if( "hidden".equals( state ) )
-            tripleStore.insertTriple( new Triple( loUri, COMETE.state, "hidden" ) );
+            triples.add( new Triple( loUri, COMETE.state, "hidden" ) );
+        tripleStore.insertTriples( triples );
+        updateOaiDatestamp( recordUri, new Date() );
+    }
+
+    public void updateOaiDatestamp( String recordUri, Date date ) throws Exception {
+        String dateValue = DateUtil.toISOString(new Date(), null, null);
+        String query = CoreUtil.getQuery( "metadata/updateOaiDatestamp.sparql", recordUri, dateValue );
+        tripleStore.sparqlUpdate_textIndex(query);
     }
 
     public void deleteRecord(String recordURI, boolean markStoreRecordForDeletion) throws Exception {
@@ -322,13 +332,22 @@ public class Metadata {
             deleteLearningObject(loURI, markStoreRecordForDeletion);
     }
 
+    public String getMetadataRecordUriFromLO(String loUri) throws Exception {
+        String query = CoreUtil.getQuery( "metadata/getRecordUriFromLO.sparql", loUri );
+        Tuple[] res = tripleStore.sparqlSelect( query );
+        if( res.length == 0 )
+            return( null );
+        String recordUri = res[ 0 ].getValue( "s" ).getContent();
+        return( recordUri );
+    }
+
     public void deleteLearningObject(String loUri, boolean markStoreRecordForDeletion) throws Exception {
         Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", "doDeleteLearningObject", new Object[] { loUri, markStoreRecordForDeletion } );
         tripleStore.transactionalCall( inv, TripleStore.WRITE_MODE );
     }
 
     public void doDeleteLearningObject(String loUri, boolean markStoreRecordForDeletion) throws Exception {
-        String query = CoreUtil.getQuery( "metadata/getMetadataRecordFromLO.sparql", loUri );
+        String query = CoreUtil.getQuery( "metadata/getRecordUriAndStoreIdFromLO.sparql", loUri );
         Tuple[] res = tripleStore.sparqlSelect( query );
         for( Tuple tuple : res ) {
             String recordUri = tuple.getValue( "s" ).getContent();
@@ -385,7 +404,7 @@ public class Metadata {
 
     public String[] digestRecord(String record, String namespace, String repoURI, String oaiId, String datestamp) throws Exception {
         System.out.println( "Digesting record oaiId=" + oaiId + " from repoURI=" + repoURI + " datestamp=" + datestamp );        
-        ArrayList<Triple> triples = new ArrayList<>();
+        ArrayList<Triple> triples = new ArrayList<Triple>();
         String storeId;
         Store store = Store.getInstance();
         boolean isUpdate = false;

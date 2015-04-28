@@ -93,29 +93,20 @@ public class OAIDriverImpl implements OAIDriver {
 
     // In this case, sourceInfo is the full path to the source file.
     public void writeRecordXML(String itemID, String mdPrefix, String sourceInfo, PrintWriter writer) throws RepositoryException {
-        TripleStore tripleStore = Core.getInstance().getTripleStore();
         MetadataFormat format = formats.get( mdPrefix );
         if( format != null ) {
             String oaiIdentifier = null;
             String datestamp = null;
+            String state = null;
             try {
-                String query = null;
-                if( itemID.startsWith( localOaiIdentifierPrefix ) ) {
-                    String recordId = Core.getInstance().getUriPrefix() + "/" + itemID.substring( localOaiIdentifierPrefix.length() );
-                    query = Util.getQuery( "oai/getRecordTimestamp.sparql", recordId );
-                }
-                else
-                    query = Util.getQuery( "oai/getRecordTimestampFromOaiIdentifier.sparql", itemID );
-
-                Invoker inv = new Invoker( tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[] { query } );
-                Object resp = tripleStore.transactionalCall( inv );
-
-                Tuple[] tuples = (Tuple[])resp;
-                if( tuples.length > 0 )
-                    datestamp = tuples[ 0 ].getValue( "datestamp" ).getContent().toString();
+                datestamp = getRecordDatestamp( itemID, localOaiIdentifierPrefix );
+                state = getRecordState( itemID, localOaiIdentifierPrefix );
 
                 writer.print( "<record>\n" );
-                writer.print( "<header>\n" ); 
+                writer.print( "<header" );
+                if( "hidden".equals( state ) ) 
+                    writer.print( " status=\"deleted\"" );
+                writer.print( ">\n" ); 
                 writer.print( "<identifier>" + itemID + "</identifier>" );
                 writer.print( "<datestamp>" + datestamp + "</datestamp>\n" );
                 writer.print( "</header>\n" ); 
@@ -214,6 +205,7 @@ public class OAIDriverImpl implements OAIDriver {
             String strUntil = DateUtil.toISOString( effectiveUntilDate, null, null );
             try {
                 String query = Util.getQuery( "oai/getRecords.sparql", strFrom, strUntil );
+
                 Invoker inv = new Invoker( tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[] { query } );
                 Object resp = tripleStore.transactionalCall( inv );
 
@@ -245,6 +237,43 @@ public class OAIDriverImpl implements OAIDriver {
     private String getLocalOaiIdentifier( String recordId ) {
         String recordUid = recordId.substring( recordId.lastIndexOf( "/" ) + 1 ); 
         return( localOaiIdentifierPrefix + recordUid );
+    }
+
+    private String getRecordDatestamp( String itemID, String localOaiIdentifierPrefix ) throws Exception {
+        String datestamp = null;
+        TripleStore tripleStore = Core.getInstance().getTripleStore();
+        String query = null;
+        if( itemID.startsWith( localOaiIdentifierPrefix ) ) {
+            String recordId = Core.getInstance().getUriPrefix() + "/" + itemID.substring( localOaiIdentifierPrefix.length() );
+            query = Util.getQuery( "oai/getRecordTimestamp.sparql", recordId );
+        }
+        else
+            query = Util.getQuery( "oai/getRecordTimestampFromOaiIdentifier.sparql", itemID );
+
+        Invoker inv = new Invoker( tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[] { query } );
+        Object resp = tripleStore.transactionalCall( inv );
+
+        Tuple[] tuples = (Tuple[])resp;
+        if( tuples.length > 0 )
+            datestamp = tuples[ 0 ].getValue( "datestamp" ).getContent().toString();
+        return( datestamp );
+    }
+
+    private String getRecordState( String itemID, String localOaiIdentifierPrefix ) throws Exception {
+        TripleStore tripleStore = Core.getInstance().getTripleStore();
+        String query = null;
+        if( itemID.startsWith( localOaiIdentifierPrefix ) ) {
+            String recordId = Core.getInstance().getUriPrefix() + "/" + itemID.substring( localOaiIdentifierPrefix.length() );
+            query = Util.getQuery( "oai/getRecordState.sparql", recordId );
+        }
+        else
+            query = Util.getQuery( "oai/getRecordStateFromOaiIdentifier.sparql", itemID );
+
+        Invoker inv = new Invoker( tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[] { query } );
+        Object resp = tripleStore.transactionalCall( inv );
+
+        Tuple[] tuples = (Tuple[])resp;
+        return( tuples.length == 0 ? "visible" : "hidden" );
     }
 
     private DateFormat datestampLongFormat = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss'Z'" );
