@@ -97,14 +97,14 @@ public class OAIDriverImpl implements OAIDriver {
         if( format != null ) {
             String oaiIdentifier = null;
             String datestamp = null;
-            String state = null;
+            Set<String> states = null;
             try {
                 datestamp = getRecordDatestamp( itemID, localOaiIdentifierPrefix );
-                state = getRecordState( itemID, localOaiIdentifierPrefix );
+                states = new HashSet<String>( Arrays.asList( getRecordStates( itemID, localOaiIdentifierPrefix ) ) );
 
                 writer.print( "<record>\n" );
                 writer.print( "<header" );
-                if( "hidden".equals( state ) ) 
+                if( states.contains( "hidden" ) )
                     writer.print( " status=\"deleted\"" );
                 writer.print( ">\n" ); 
                 writer.print( "<identifier>" + itemID + "</identifier>" );
@@ -259,21 +259,26 @@ public class OAIDriverImpl implements OAIDriver {
         return( datestamp );
     }
 
-    private String getRecordState( String itemID, String localOaiIdentifierPrefix ) throws Exception {
+    private String[] getRecordStates( String itemID, String localOaiIdentifierPrefix ) throws Exception {
         TripleStore tripleStore = Core.getInstance().getTripleStore();
         String query = null;
         if( itemID.startsWith( localOaiIdentifierPrefix ) ) {
             String recordId = Core.getInstance().getUriPrefix() + "/" + itemID.substring( localOaiIdentifierPrefix.length() );
-            query = Util.getQuery( "oai/getRecordState.sparql", recordId );
+            query = Util.getQuery( "oai/getRecordStates.sparql", recordId );
         }
         else
-            query = Util.getQuery( "oai/getRecordStateFromOaiIdentifier.sparql", itemID );
+            query = Util.getQuery( "oai/getRecordStatesFromOaiIdentifier.sparql", itemID );
 
         Invoker inv = new Invoker( tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[] { query } );
-        Object resp = tripleStore.transactionalCall( inv );
-
-        Tuple[] tuples = (Tuple[])resp;
-        return( tuples.length == 0 ? "visible" : "hidden" );
+        Tuple[] res = (Tuple[])tripleStore.transactionalCall( inv );
+        String[] states = new String[ res.length ];
+        for( int t = 0, s = 0; t < res.length; t++ ) {
+            if( "hidden".equals( res[ t ].getValue( "state" ).getContent() ) ) {
+                states[ s ] = "hidden";
+                s++;
+            }
+        }
+        return( states );
     }
 
     private DateFormat datestampLongFormat = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss'Z'" );
