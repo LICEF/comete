@@ -290,21 +290,19 @@ public class Metadata {
         Harvester.getInstance().clearLastHarvest(defId);
     }
 
-    public String[] getLearningObjectStates(String loUri) throws Exception {
+    public Set<String> getLearningObjectStates(String loUri) throws Exception {
         Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", "doGetLearningObjectStates", new Object[] { loUri } );
-        return( (String[])tripleStore.transactionalCall( inv ) );
+        return( (Set<String>)tripleStore.transactionalCall( inv ) );
     }
 
-    public String[] doGetLearningObjectStates(String loUri) throws Exception {
+    public Set<String> doGetLearningObjectStates(String loUri) throws Exception {
+        Set<String> states = new HashSet<String>();
         String query = CoreUtil.getQuery( "metadata/getLearningObjectStates.sparql", loUri );
         Tuple[] res = tripleStore.sparqlSelect( query );
-        String[] states = new String[ res.length ];
-        for( int t = 0, s = 0; t < res.length; t++ ) {
-            if( "hidden".equals( res[ t ].getValue( "state" ).getContent() ) ) {
-                states[ s ] = "hidden";
-                s++;
-            }
-        }
+        for( int t = 0, s = 0; t < res.length; t++ )
+            states.add( res[ t ].getValue( "state" ).getContent() );
+        if( !states.contains( "hidden" ) )
+            states.add( "visible" );
         return( states );
     }
 
@@ -314,12 +312,8 @@ public class Metadata {
     }
 
     public Boolean doIsLearningObjectHidden(String loUri) throws Exception {
-        String[] states = getLearningObjectStates( loUri );
-        for( int i = 0; i < states.length; i++ ) {
-            if( "hidden".equals( states[ i ] ) )
-                return( Boolean.TRUE );
-        }
-        return( Boolean.FALSE );
+        Set<String> states = getLearningObjectStates( loUri );
+        return( Boolean.valueOf( states.contains( "hidden" ) ) );
     }
 
     public void setLearningObjectHidden(String loUri, boolean isHidden) throws Exception {

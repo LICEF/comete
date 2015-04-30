@@ -14,6 +14,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Locale;
+import java.util.Set;
 
 
 @Singleton
@@ -78,6 +79,18 @@ public class LearningObjectResource {
         if( "json".equals( format ) )
             return( Response.status( HttpServletResponse.SC_OK ).entity( links ).type( MediaType.APPLICATION_JSON ).build() ); 
         throw( new WebApplicationException( HttpServletResponse.SC_BAD_REQUEST ) ); // Unsupported format.
+    }
+
+    @GET
+    @Path( "{id}/states" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response getStates( @Context HttpServletRequest request, @PathParam( "id" ) String id ) throws Exception {
+        if (!Security.getInstance().isAuthorized(request))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to retrieve the states of a learning object.").build();
+
+        String loUri = ca.licef.comete.core.util.Util.makeURI(id, COMETE.LearningObject);
+        Set<String> states = Metadata.getInstance().getLearningObjectStates(loUri);
+        return (Response.ok( states + "" ).build());
     }
 
     @GET
