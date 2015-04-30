@@ -48,11 +48,11 @@
             if( selectedLOs ) {
                 var listOfLOs = selectedLOs.map( function( lo ) { return( lo.getData().id ); } ).join( ',' );
                 Ext.Ajax.request( {
-                    url: 'rest/learningObjects/setState',
+                    url: 'rest/learningObjects/setHidden',
                     method: 'POST',
                     params: {
                         ids: listOfLOs,
-                        state: 'visible'
+                        value: 'false'
                     },
                     success: function(response, opts) {
                         this.loStore.reload();
@@ -88,11 +88,11 @@
             if( selectedLOs ) {
                 var listOfLOs = selectedLOs.map( function( lo ) { return( lo.getData().id ); } ).join( ',' );
                 Ext.Ajax.request( {
-                    url: 'rest/learningObjects/setState',
+                    url: 'rest/learningObjects/setHidden',
                     method: 'POST',
                     params: {
                         ids: listOfLOs,
-                        state: 'hidden'
+                        value: 'true'
                     },
                     success: function(response, opts) {
                         this.loStore.reload();

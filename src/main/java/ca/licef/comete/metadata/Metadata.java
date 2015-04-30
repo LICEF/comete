@@ -290,32 +290,50 @@ public class Metadata {
         Harvester.getInstance().clearLastHarvest(defId);
     }
 
-    public String getLearningObjectState(String loUri) throws Exception {
-        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", "doGetLearningObjectState", new Object[] { loUri } );
-        return( (String)tripleStore.transactionalCall( inv ) );
+    public String[] getLearningObjectStates(String loUri) throws Exception {
+        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", "doGetLearningObjectStates", new Object[] { loUri } );
+        return( (String[])tripleStore.transactionalCall( inv ) );
     }
 
-    public String doGetLearningObjectState(String loUri) throws Exception {
-        String query = CoreUtil.getQuery( "metadata/getLearningObjectState.sparql", loUri );
+    public String[] doGetLearningObjectStates(String loUri) throws Exception {
+        String query = CoreUtil.getQuery( "metadata/getLearningObjectStates.sparql", loUri );
         Tuple[] res = tripleStore.sparqlSelect( query );
-        return( res.length == 0 ? "visible" : "hidden" );
+        String[] states = new String[ res.length ];
+        for( int t = 0, s = 0; t < res.length; t++ ) {
+            if( "hidden".equals( res[ t ].getValue( "state" ).getContent() ) ) {
+                states[ s ] = "hidden";
+                s++;
+            }
+        }
+        return( states );
     }
 
-    public void setLearningObjectState(String loUri, String state) throws Exception {
-        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", "doSetLearningObjectState", new Object[] { loUri, state } );
+    public boolean isLearningObjectHidden(String loUri) throws Exception {
+        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", "doIsLearningObjectHidden", new Object[] { loUri } );
+        return( ((Boolean)tripleStore.transactionalCall( inv )).booleanValue() );
+    }
+
+    public Boolean doIsLearningObjectHidden(String loUri) throws Exception {
+        String[] states = getLearningObjectStates( loUri );
+        for( int i = 0; i < states.length; i++ ) {
+            if( "hidden".equals( states[ i ] ) )
+                return( Boolean.TRUE );
+        }
+        return( Boolean.FALSE );
+    }
+
+    public void setLearningObjectHidden(String loUri, boolean isHidden) throws Exception {
+        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", "doSetLearningObjectHidden", new Object[] { loUri, isHidden } );
         tripleStore.transactionalCall( inv, TripleStore.WRITE_MODE );
     }
 
-    public void doSetLearningObjectState(String loUri, String state) throws Exception {
+    public void doSetLearningObjectHidden(String loUri, boolean isHidden) throws Exception {
         String recordUri = getMetadataRecordUriFromLO( loUri );
-        ArrayList<Triple> triples = new ArrayList<Triple>();
-        if( "visible".equals( state ) ) {
-            String query = CoreUtil.getQuery( "metadata/deleteLearningObjectState.sparql", loUri );
-            tripleStore.sparqlUpdate(query);
-        }
-        else if( "hidden".equals( state ) )
-            triples.add( new Triple( loUri, COMETE.state, "hidden" ) );
-        tripleStore.insertTriples( triples );
+        Triple hiddenTriple = new Triple( loUri, COMETE.state, "hidden" );
+        if( isHidden )
+            tripleStore.insertTriple( hiddenTriple );
+        else 
+            tripleStore.removeTriple( hiddenTriple );
         updateOaiDatestamp( recordUri, new Date() );
     }
 

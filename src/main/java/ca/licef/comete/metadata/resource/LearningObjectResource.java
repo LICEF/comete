@@ -81,42 +81,28 @@ public class LearningObjectResource {
     }
 
     @GET
-    @Path( "{id}/state" )
+    @Path( "{id}/hidden" )
     @Produces( MediaType.TEXT_PLAIN )
-    public Response getLearningObjectState( @Context HttpServletRequest request, @PathParam( "id" ) String id ) throws Exception {
-
+    public Response isLearningObjectHidden( @Context HttpServletRequest request, @PathParam( "id" ) String id ) throws Exception {
         if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to retrieve the state of a learning object.").build();
 
         String loUri = ca.licef.comete.core.util.Util.makeURI(id, COMETE.LearningObject);
-        String state = Metadata.getInstance().getLearningObjectState(loUri);
-        return (Response.ok( state ).build());
-    }
-
-    @PUT
-    @Path( "{id}/state" )
-    @Produces( MediaType.TEXT_PLAIN )
-    public Response setLearningObjectState( @Context HttpServletRequest request, @PathParam( "id" ) String id, @QueryParam( "value" ) String state ) throws Exception {
-
-        if (!Security.getInstance().isAuthorized(request))
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to update the state of a learning object.").build();
-
-        String loUri = ca.licef.comete.core.util.Util.makeURI(id, COMETE.LearningObject);
-        Metadata.getInstance().setLearningObjectState(loUri, state);
-        return (Response.ok().build());
+        boolean isHidden = Metadata.getInstance().isLearningObjectHidden(loUri);
+        return (Response.ok( isHidden + "" ).build());
     }
 
     @POST
-    @Path( "setState" )
+    @Path( "setHidden" )
     @Produces( MediaType.TEXT_PLAIN )
-    public Response setLearningObjectsState( @Context HttpServletRequest request, @FormParam( "ids" ) String ids, @FormParam( "state" ) String state ) throws Exception {
+    public Response setLearningObjectsHidden( @Context HttpServletRequest request, @FormParam( "ids" ) String ids, @FormParam( "value" ) String isHidden ) throws Exception {
         if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to update the state of a learning object.").build();
 
         String[] idArray = ids.split( "," );
         for( int i = 0; i < idArray.length; i++ ) {
             String loUri = ca.licef.comete.core.util.Util.makeURI(idArray[ i ], COMETE.LearningObject);
-            Metadata.getInstance().setLearningObjectState( loUri, state );
+            Metadata.getInstance().setLearningObjectHidden( loUri, "true".equals( isHidden ) );
         }
         return (Response.ok().build());
     }
