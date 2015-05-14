@@ -260,10 +260,11 @@ public class Vocabulary {
         return (Tuple[])getTripleStore().transactionalCall(inv);
     }
 
-    public Tuple[] getVocContextAliases(String uri) throws Exception {
-        String query = CoreUtil.getQuery("vocabulary/getVocAliases.sparql", uri);
-        Invoker inv = new Invoker(getTripleStore(), "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
-        return (Tuple[])getTripleStore().transactionalCall(inv);
+    public Triple[] getVocContextAliases(String uri) throws Exception {
+        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore",
+                "getTriplesWithSubjectPredicate", new Object[]{
+                    uri, COMETE.vocAlias, new String[]{} } );
+        return (Triple[])getTripleStore().transactionalCall(inv);
     }
 
     public void addVocContextAlias(String uri, String alias) throws Exception {

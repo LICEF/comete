@@ -85,12 +85,11 @@ public class Metadata {
     }
 
     public String getLearningObjectURI( String metadataRecordUri ) throws Exception {
-        String query = CoreUtil.getQuery( "metadata/getLearningObject.sparql", metadataRecordUri );
-        Tuple[] tuples = tripleStore.sparqlSelect( query );
-        if( tuples.length > 0 )
-            return( tuples[ 0 ].getValue( "res" ).getContent() );
-        else
+        Triple[] triples = tripleStore.getTriplesWithSubjectPredicate(metadataRecordUri, COMETE.describes);
+        if( triples.length == 0 )
             return( null );
+        else
+            return( triples[ 0 ].getObject() );
     }
 
     public String getRecordURI( String oaiID, String namespace ) throws Exception {
@@ -297,10 +296,9 @@ public class Metadata {
 
     public Set<String> doGetLearningObjectStates(String loUri) throws Exception {
         Set<String> states = new HashSet<String>();
-        String query = CoreUtil.getQuery( "metadata/getLearningObjectStates.sparql", loUri );
-        Tuple[] res = tripleStore.sparqlSelect( query );
-        for( int t = 0, s = 0; t < res.length; t++ )
-            states.add( res[ t ].getValue( "state" ).getContent() );
+        Triple[] triples = tripleStore.getTriplesWithSubjectPredicate(loUri, COMETE.describes);
+        for( Triple t : triples )
+            states.add( t.getObject() );
         if( !states.contains( "hidden" ) )
             states.add( "visible" );
         return( states );
@@ -345,12 +343,11 @@ public class Metadata {
     }
 
     public String getMetadataRecordUriFromLO(String loUri) throws Exception {
-        String query = CoreUtil.getQuery( "metadata/getRecordUriFromLO.sparql", loUri );
-        Tuple[] res = tripleStore.sparqlSelect( query );
-        if( res.length == 0 )
+        Triple[] triples = tripleStore.getTriplesWithPredicateObject(COMETE.describes, loUri, null);
+        if( triples.length == 0 )
             return( null );
-        String recordUri = res[ 0 ].getValue( "s" ).getContent();
-        return( recordUri );
+        else
+            return( triples[ 0 ].getSubject() );
     }
 
     public void deleteLearningObject(String loUri, boolean markStoreRecordForDeletion) throws Exception {
@@ -694,12 +691,13 @@ public class Metadata {
     public void redigestAllRecordsEff() throws Exception {
         System.out.println("Start Reset Metamodel at : " + new Date());
 
-        String query = CoreUtil.getQuery("metadata/getAllMetadataRecords.sparql");
-        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
-        Tuple[] tuples = (Tuple[])tripleStore.transactionalCall(inv);
+        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore",
+                "getTriplesWithPredicateObject", new Object[]{
+                    RDF.type, COMETE.MetadataRecord.getURI(), null, new String[]{} } );
+        Triple[] triples = ((Triple[])tripleStore.transactionalCall(inv));
 
-        for (Tuple tuple : tuples )
-            redigestRecord(tuple.getValue("s").getContent());
+        for (Triple triple : triples)
+            redigestRecord(triple.getSubject());
 
         System.out.println("Reset Metamodel Done at : " + new Date());
     }

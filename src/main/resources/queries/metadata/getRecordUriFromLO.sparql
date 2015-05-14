@@ -1,7 +1,0 @@
-PREFIX comete: <http://comete.licef.ca/reference#>
-
-SELECT ?s
-WHERE '{'
-    ?s comete:describes <{0}> .
-'}'
-

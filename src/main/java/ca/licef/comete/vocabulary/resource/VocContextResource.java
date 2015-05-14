@@ -6,6 +6,7 @@ import ca.licef.comete.vocabularies.COMETE;
 import ca.licef.comete.vocabulary.Vocabulary;
 import com.sun.jersey.multipart.FormDataParam;
 import com.sun.jersey.spi.resource.Singleton;
+import licef.tsapi.model.Triple;
 import licef.tsapi.model.Tuple;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -211,15 +212,15 @@ public class VocContextResource {
     @Produces( MediaType.APPLICATION_JSON )
     public Response getVocContextAliases(@PathParam( "id" ) String id) throws Exception {
         String uri = Util.makeURI(id, COMETE.VocContext);
-        Tuple[] aliases = Vocabulary.getInstance().getVocContextAliases(uri);
+        Triple[] aliases = Vocabulary.getInstance().getVocContextAliases(uri);
         StringWriter out = new StringWriter();
         try {
             JSONWriter json = new JSONWriter( out ).object();
 
             JSONArray vocAliases = new JSONArray();
-            for (int i = 0; i < aliases.length; i++) {
+            for (Triple triple : aliases) {
                 JSONObject alias = new JSONObject();
-                alias.put("alias", aliases[i].getValue("alias").getContent());
+                alias.put("alias", triple.getObject());
                 vocAliases.put(alias);
             }
             json.key( "vocAliases" ).value( vocAliases );
