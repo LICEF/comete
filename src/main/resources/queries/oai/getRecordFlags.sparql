@@ -2,10 +2,10 @@ PREFIX comete: <http://comete.licef.ca/reference#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema>
 
-SELECT ?state
+SELECT ?flag
 WHERE '{'
     <{0}> rdf:type comete:MetadataRecord .
     <{0}> comete:describes ?lo .
-    ?lo comete:state ?state
+    ?lo comete:flag ?flag
 '}'
 

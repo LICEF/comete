@@ -102,8 +102,8 @@ public class COMETE {
     /** <p>Type of repository like OAI or HTML</p> */
     public static final DatatypeProperty repoType = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#repoType" );
     
-    /** <p>State of the resource specifying whether it's hidden or not.</p> */
-    public static final DatatypeProperty state = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#state" );
+    /** <p>Flag of the resource specifying whether a resource is inactive, invalid, pending, has broken link, etc.</p> */
+    public static final DatatypeProperty flag = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#flag" );
     
     /** <p>modification date of object into the system</p> */
     public static final DatatypeProperty updated = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#updated" );

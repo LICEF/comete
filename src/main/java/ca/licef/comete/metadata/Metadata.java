@@ -289,19 +289,19 @@ public class Metadata {
         Harvester.getInstance().clearLastHarvest(defId);
     }
 
-    public Set<String> getLearningObjectStates(String loUri) throws Exception {
-        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", "doGetLearningObjectStates", new Object[] { loUri } );
+    public Set<String> getLearningObjectFlags(String loUri) throws Exception {
+        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", "doGetLearningObjectFlags", new Object[] { loUri } );
         return( (Set<String>)tripleStore.transactionalCall( inv ) );
     }
 
-    public Set<String> doGetLearningObjectStates(String loUri) throws Exception {
-        Set<String> states = new HashSet<String>();
+    public Set<String> doGetLearningObjectFlags(String loUri) throws Exception {
+        Set<String> flags = new HashSet<String>();
         Triple[] triples = tripleStore.getTriplesWithSubjectPredicate(loUri, COMETE.describes);
         for( Triple t : triples )
-            states.add( t.getObject() );
-        if( !states.contains( "hidden" ) )
-            states.add( "visible" );
-        return( states );
+            flags.add( t.getObject() );
+        if( !flags.contains( "hidden" ) )
+            flags.add( "visible" );
+        return( flags );
     }
 
     public boolean isLearningObjectHidden(String loUri) throws Exception {
@@ -310,8 +310,8 @@ public class Metadata {
     }
 
     public Boolean doIsLearningObjectHidden(String loUri) throws Exception {
-        Set<String> states = getLearningObjectStates( loUri );
-        return( Boolean.valueOf( states.contains( "hidden" ) ) );
+        Set<String> flags = getLearningObjectFlags( loUri );
+        return( Boolean.valueOf( flags.contains( "hidden" ) ) );
     }
 
     public void setLearningObjectHidden(String loUri, boolean isHidden) throws Exception {
@@ -321,7 +321,7 @@ public class Metadata {
 
     public void doSetLearningObjectHidden(String loUri, boolean isHidden) throws Exception {
         String recordUri = getMetadataRecordUriFromLO( loUri );
-        Triple hiddenTriple = new Triple( loUri, COMETE.state, "hidden" );
+        Triple hiddenTriple = new Triple( loUri, COMETE.flag, "hidden" );
         if( isHidden )
             tripleStore.insertTriple( hiddenTriple );
         else 

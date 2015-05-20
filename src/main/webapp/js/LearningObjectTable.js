@@ -176,25 +176,25 @@
         };
 
         this.renderHidden = function( value, metaData, lo ) {
-            var stateFilename = ( value ? 'hidden' : 'visible' );
-            var stateLabel = ( value ? tr( 'Hidden' ) : tr( 'Visible' ) );
-            return Ext.String.format( '<img src="images/state-{0}.png" title="{1}" alt="{1}" height="20"/>', stateFilename, stateLabel );
+            var flagFilename = ( value ? 'hidden' : 'visible' );
+            var flagLabel = ( value ? tr( 'Hidden' ) : tr( 'Visible' ) );
+            return Ext.String.format( '<img src="images/flag-{0}.png" title="{1}" alt="{1}" height="20"/>', flagFilename, flagLabel );
         };
 
         this.renderPending = function( value, metaData, lo ) {
-            return( value ? Ext.String.format( '<img src="images/state-pending.png" title="{0}" alt="{0}" height="20"/>', tr( 'Pending' ) ) : '' );
+            return( value ? Ext.String.format( '<img src="images/flag-pending.png" title="{0}" alt="{0}" height="20"/>', tr( 'Pending' ) ) : '' );
         };
 
         this.renderInactive = function( value, metaData, lo ) {
-            return( value ? Ext.String.format( '<img src="images/state-inactive.png" title="{0}" alt="{0}" height="20"/>', tr( 'Inactive' ) ) : '' );
+            return( value ? Ext.String.format( '<img src="images/flag-inactive.png" title="{0}" alt="{0}" height="20"/>', tr( 'Inactive' ) ) : '' );
         };
 
         this.renderInvalid = function( value, metaData, lo ) {
-            return( value ? Ext.String.format( '<img src="images/state-invalid.png" title="{0}" alt="{0}" height="20"/>', tr( 'Invalid' ) ) : '' );
+            return( value ? Ext.String.format( '<img src="images/flag-invalid.png" title="{0}" alt="{0}" height="20"/>', tr( 'Invalid' ) ) : '' );
         };
 
         this.renderBrokenLink = function( value, metaData, lo ) {
-            return( value ? Ext.String.format( '<img src="images/state-brokenLink.png" title="{0}" alt="{0}" height="20"/>', tr( 'Broken Link' ) ) : '' );
+            return( value ? Ext.String.format( '<img src="images/flag-brokenLink.png" title="{0}" alt="{0}" height="20"/>', tr( 'Broken Link' ) ) : '' );
         };
 
         this.renderTitle = function( value, metaData, lo ) {

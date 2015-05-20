@@ -82,15 +82,15 @@ public class LearningObjectResource {
     }
 
     @GET
-    @Path( "{id}/states" )
+    @Path( "{id}/flags" )
     @Produces( MediaType.TEXT_PLAIN )
-    public Response getStates( @Context HttpServletRequest request, @PathParam( "id" ) String id ) throws Exception {
+    public Response getFlags( @Context HttpServletRequest request, @PathParam( "id" ) String id ) throws Exception {
         if (!Security.getInstance().isAuthorized(request))
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to retrieve the states of a learning object.").build();
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to retrieve the flags of a learning object.").build();
 
         String loUri = ca.licef.comete.core.util.Util.makeURI(id, COMETE.LearningObject);
-        Set<String> states = Metadata.getInstance().getLearningObjectStates(loUri);
-        return (Response.ok( states + "" ).build());
+        Set<String> flags = Metadata.getInstance().getLearningObjectFlags(loUri);
+        return (Response.ok( flags + "" ).build());
     }
 
     @GET
@@ -98,7 +98,7 @@ public class LearningObjectResource {
     @Produces( MediaType.TEXT_PLAIN )
     public Response isLearningObjectHidden( @Context HttpServletRequest request, @PathParam( "id" ) String id ) throws Exception {
         if (!Security.getInstance().isAuthorized(request))
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to retrieve the state of a learning object.").build();
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to retrieve the flag of a learning object.").build();
 
         String loUri = ca.licef.comete.core.util.Util.makeURI(id, COMETE.LearningObject);
         boolean isHidden = Metadata.getInstance().isLearningObjectHidden(loUri);
@@ -110,7 +110,7 @@ public class LearningObjectResource {
     @Produces( MediaType.TEXT_PLAIN )
     public Response setLearningObjectsHidden( @Context HttpServletRequest request, @FormParam( "ids" ) String ids, @FormParam( "value" ) String isHidden ) throws Exception {
         if (!Security.getInstance().isAuthorized(request))
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to update the state of a learning object.").build();
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to update the flag of a learning object.").build();
 
         String[] idArray = ids.split( "," );
         for( int i = 0; i < idArray.length; i++ ) {

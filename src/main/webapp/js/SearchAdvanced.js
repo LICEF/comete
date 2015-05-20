@@ -227,7 +227,7 @@ Ext.define( 'Comete.QueryCondition', {
             ]
         });
 
-        this.stateStore = Ext.create('Ext.data.Store', {
+        this.flagStore = Ext.create('Ext.data.Store', {
             fields: ['id', 'label'],
             data: [
                 {'id':'hidden', label: tr('Hidden')},
@@ -251,8 +251,8 @@ Ext.define( 'Comete.QueryCondition', {
                 {'id':'!org', 'label': tr('not from organization') },
                 {'id':'vocConcept', 'label': tr('related to the category') },
                 {'id':'!vocConcept', 'label': tr('not related to the category') },
-                {'id':'state', 'label': tr('having state') },
-                {'id':'!state', 'label': tr('not having state') }
+                {'id':'flag', 'label': tr('having flag') },
+                {'id':'!flag', 'label': tr('not having flag') }
             ]
         });
 
@@ -360,8 +360,8 @@ Ext.define( 'Comete.QueryCondition', {
             this.element = this.createConceptCond();
         else if (type == 'addedDate')
             this.element = this.createAddedDateCond();
-        else if (type == 'state')
-            this.element = this.createStateCond();
+        else if (type == 'flag')
+            this.element = this.createFlagCond();
         this.setCondPanel(this.element);
     },
     andOrSelected: function(combo) {
@@ -391,11 +391,11 @@ Ext.define( 'Comete.QueryCondition', {
         });
         return panel;
     },    
-    createStateCond: function() {
-        var stateCombo = Ext.create('Ext.form.field.ComboBox', {
+    createFlagCond: function() {
+        var flagCombo = Ext.create('Ext.form.field.ComboBox', {
             valueField: 'id', 
             displayField: 'label',
-            store: this.stateStore,
+            store: this.flagStore,
             editable: false,
             width: 100,
             tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div></tpl></div>'
@@ -404,7 +404,7 @@ Ext.define( 'Comete.QueryCondition', {
         var panel = Ext.create('Ext.panel.Panel', {
             layout: 'hbox',
             border: false,
-            items: [ stateCombo ]
+            items: [ flagCombo ]
         });
 
         return panel;
