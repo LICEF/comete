@@ -227,6 +227,17 @@ Ext.define( 'Comete.QueryCondition', {
             ]
         });
 
+        this.stateStore = Ext.create('Ext.data.Store', {
+            fields: ['id', 'label'],
+            data: [
+                {'id':'hidden', label: tr('Hidden')},
+                {'id':'inactive', label: tr('Inactive')},
+                {'id':'invalid', label: tr('Invalid')},
+                {'id':'brokenLink', label: tr('Broken Link')},
+                {'id':'pending', label: tr('Pending')}
+            ]
+        });
+
         this.choiceStore = Ext.create('Ext.data.Store', {
             fields: ['id', 'label'],
             data : [
@@ -239,7 +250,9 @@ Ext.define( 'Comete.QueryCondition', {
                 {'id':'org', 'label': tr('from organization') },
                 {'id':'!org', 'label': tr('not from organization') },
                 {'id':'vocConcept', 'label': tr('related to the category') },
-                {'id':'!vocConcept', 'label': tr('not related to the category') }
+                {'id':'!vocConcept', 'label': tr('not related to the category') },
+                {'id':'state', 'label': tr('having state') },
+                {'id':'!state', 'label': tr('not having state') }
             ]
         });
 
@@ -347,6 +360,8 @@ Ext.define( 'Comete.QueryCondition', {
             this.element = this.createConceptCond();
         else if (type == 'addedDate')
             this.element = this.createAddedDateCond();
+        else if (type == 'state')
+            this.element = this.createStateCond();
         this.setCondPanel(this.element);
     },
     andOrSelected: function(combo) {
@@ -376,6 +391,24 @@ Ext.define( 'Comete.QueryCondition', {
         });
         return panel;
     },    
+    createStateCond: function() {
+        var stateCombo = Ext.create('Ext.form.field.ComboBox', {
+            valueField: 'id', 
+            displayField: 'label',
+            store: this.stateStore,
+            editable: false,
+            width: 100,
+            tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div></tpl></div>'
+        });
+
+        var panel = Ext.create('Ext.panel.Panel', {
+            layout: 'hbox',
+            border: false,
+            items: [ stateCombo ]
+        });
+
+        return panel;
+    },
     createKeywordCond: function() { 
         var keywordProxy = Ext.create( 'Ext.data.proxy.Ajax', {
             reader: {

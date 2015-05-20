@@ -180,6 +180,8 @@
     'not from organization': 'ne provenant pas de l\'organisation',
     'related to the category': 'relatives à la catégorie',
     'not related to the category': 'non relatives à la catégorie',
+    'having state': 'ayant le statut',
+    'not having state': 'n\'ayant pas le statut',
     'and subcategories': 'et ses sous-catégories',
     'where the addition date': 'dont la date d\'ajout',
     'is the': 'est le',
