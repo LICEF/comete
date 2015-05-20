@@ -3,7 +3,7 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX comete: <http://comete.licef.ca/reference#>
 
-SELECT DISTINCT ?s ?location ?format ?added ?updated ?state
+SELECT DISTINCT ?s ?location ?format ?added ?updated
 WHERE '{'
     ?s rdf:type comete:LearningObject .
     OPTIONAL '{'
@@ -17,9 +17,6 @@ WHERE '{'
     '}'
     OPTIONAL '{'
         ?s comete:updated ?updated
-    '}'
-    OPTIONAL '{'
-        ?s comete:state ?state
     '}'
     {0}
 '}'

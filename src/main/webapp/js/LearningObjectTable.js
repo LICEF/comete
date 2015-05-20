@@ -13,7 +13,7 @@
 
         Ext.define('LearningObjectModel', {
             extend: 'Ext.data.Model',
-            fields: [ 'id', 'title', 'desc', 'location', 'image', 'loAsHtmlLocation', 'metadataFormat', 'type', 'state' ]
+            fields: [ 'id', 'title', 'desc', 'location', 'image', 'loAsHtmlLocation', 'metadataFormat', 'type', 'hidden', 'pending', 'inactive', 'invalid', 'brokenLink'  ]
         });
 
         this.proxy = Ext.create('Ext.data.proxy.Ajax', {
@@ -177,7 +177,24 @@
 
         this.renderHidden = function( value, metaData, lo ) {
             var stateFilename = ( value ? 'hidden' : 'visible' );
-            return Ext.String.format( '<img src="images/state-{0}.png" height="40"/>', stateFilename );
+            var stateLabel = ( value ? tr( 'Hidden' ) : tr( 'Visible' ) );
+            return Ext.String.format( '<img src="images/state-{0}.png" title="{1}" alt="{1}" height="20"/>', stateFilename, stateLabel );
+        };
+
+        this.renderPending = function( value, metaData, lo ) {
+            return( value ? Ext.String.format( '<img src="images/state-pending.png" title="{0}" alt="{0}" height="20"/>', tr( 'Pending' ) ) : '' );
+        };
+
+        this.renderInactive = function( value, metaData, lo ) {
+            return( value ? Ext.String.format( '<img src="images/state-inactive.png" title="{0}" alt="{0}" height="20"/>', tr( 'Inactive' ) ) : '' );
+        };
+
+        this.renderInvalid = function( value, metaData, lo ) {
+            return( value ? Ext.String.format( '<img src="images/state-invalid.png" title="{0}" alt="{0}" height="20"/>', tr( 'Invalid' ) ) : '' );
+        };
+
+        this.renderBrokenLink = function( value, metaData, lo ) {
+            return( value ? Ext.String.format( '<img src="images/state-brokenLink.png" title="{0}" alt="{0}" height="20"/>', tr( 'Broken Link' ) ) : '' );
         };
 
         this.renderTitle = function( value, metaData, lo ) {
@@ -192,11 +209,15 @@
             cls: 'lo-grid',
             scroll: 'vertical',
             columns: [ 
-                { text: tr( 'Visible' ), width: 60,  dataIndex: 'hidden', hidden: !this.editable, renderer: this.renderHidden },
                 { text: tr( 'File Type' ), width: 60, dataIndex: 'image', sortable: true, renderer: this.renderImage},
                 { text: tr( 'Id' ), width: 100,  dataIndex: 'id', hidden: true/*!this.editable*/ },
                 { text: tr( 'Title' ), flex: 1, dataIndex: 'title', sortable: true, renderer: this.renderTitle },
-                { text: tr( 'Type' ), width: 80,  dataIndex: 'type', sortable: true, renderer: this.renderType, hidden: true /*!this.editable*/ }
+                { text: tr( 'Type' ), width: 80,  dataIndex: 'type', sortable: true, renderer: this.renderType, hidden: true /*!this.editable*/ },
+                { text: tr( 'Visible' ), width: 30,  dataIndex: 'hidden', hidden: !this.editable, renderer: this.renderHidden },
+                { text: tr( 'Pending' ), width: 30,  dataIndex: 'pending', hidden: !this.editable, renderer: this.renderPending },
+                { text: tr( 'Inactive' ), width: 30,  dataIndex: 'inactive', hidden: !this.editable, renderer: this.renderInactive },
+                { text: tr( 'Invalid' ), width: 30,  dataIndex: 'invalid', hidden: !this.editable, renderer: this.renderInvalid },
+                { text: tr( 'Broken Link' ), width: 30,  dataIndex: 'brokenLink', hidden: !this.editable, renderer: this.renderBrokenLink }
             ],          
             viewConfig: {
                 loadingText: tr('Loading') + '...',

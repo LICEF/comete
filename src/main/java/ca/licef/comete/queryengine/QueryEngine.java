@@ -6,6 +6,7 @@ import ca.licef.comete.vocabularies.COMETE;
 import licef.IOUtil;
 import licef.reflection.Invoker;
 import licef.tsapi.TripleStore;
+import licef.tsapi.model.Triple;
 import licef.tsapi.model.Tuple;
 import licef.tsapi.vocabulary.DCTERMS;
 import org.json.JSONArray;
@@ -103,7 +104,7 @@ public class QueryEngine {
 
         //count
         Tuple[] res;
-        String stateCondition = ( isShowHiddenRes ? "" : "FILTER( NOT EXISTS { ?s comete:state \"hidden\" } )" );
+        String stateCondition = ( isShowHiddenRes ? "" : "FILTER( NOT EXISTS { ?s comete:state ?state } )" );
         if (showAllRecords) {
             _query = CoreUtil.getQuery("queryengine/getLearningObjectsCount.sparql", stateCondition );
             res = tripleStore.sparqlSelect(_query);
@@ -156,7 +157,7 @@ public class QueryEngine {
         String[] data = ca.licef.comete.queryengine.util.Util.buildQueryClauses(queryArray, lang, isWithScore, cache);
         String fromClause = data[0];
         String clauses = data[1];
-        String stateCondition = ( isShowHiddenRes ? "" : "FILTER( NOT EXISTS { ?s comete:state \"hidden\" } )" );
+        String stateCondition = ( isShowHiddenRes ? "" : "FILTER( NOT EXISTS { ?s comete:state ?state } )" );
         boolean includeEquivalence = Boolean.parseBoolean(data[2]);
 
         String queryType = includeEquivalence?"Thematic":"Advanced";
@@ -188,7 +189,7 @@ public class QueryEngine {
             String objId = tuple.getValue("s").getContent();
             String location = tuple.getValue( "location").getContent();
             String format = tuple.getValue("format").getContent();
-            String state = tuple.getValue("state").getContent();
+            //String state = tuple.getValue("state").getContent();
             String id = CoreUtil.getIdValue(objId);
 
             // mimetype icon as result image
@@ -228,8 +229,21 @@ public class QueryEngine {
             entry.setCreationDate( CoreUtil.manageDateString(tuple.getValue("added").getContent()));
             entry.setModificationDate( CoreUtil.manageDateString(tuple.getValue("updated").getContent()));
             
-            //hidden
-            entry.setHidden( "hidden".equals( state ) );
+            //states
+            Triple[] triples = tripleStore.getTriplesWithSubjectPredicate( objId, COMETE.state );
+            for( int i = 0; i < triples.length; i++ ) {
+                Triple triple = triples[ i ];
+                if( "hidden".equals( triple.getObject() ) )
+                    entry.setHidden( true );
+                else if( "pending".equals( triple.getObject() ) )
+                    entry.setPending( true );
+                else if( "inactive".equals( triple.getObject() ) )
+                    entry.setInactive( true );
+                else if( "invalid".equals( triple.getObject() ) )
+                    entry.setInvalid( true );
+                else if( "brokenLink".equals( triple.getObject() ) )
+                    entry.setBrokenLink( true );
+            }
 
             //type
             /*

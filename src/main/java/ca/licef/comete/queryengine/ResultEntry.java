@@ -5,12 +5,17 @@ public class ResultEntry {
     public ResultEntry() {
     }
 
-    public ResultEntry( String id, String title, String location, String metadataFormat, boolean isHidden, String type ) {
+    public ResultEntry( String id, String title, String location, String metadataFormat, 
+            boolean isHidden, boolean isPending, boolean isInactive, boolean isInvalid, boolean isBrokenLink, String type ) {
         this.id = id;
         this.title = title;
         this.location = location;
         this.metadataFormat = metadataFormat;
         this.isHidden = isHidden;
+        this.isPending = isPending;
+        this.isInactive = isInactive;
+        this.isInvalid = isInvalid;
+        this.isBrokenLink = isBrokenLink;
         this.type = type; 
     }
 
@@ -94,6 +99,38 @@ public class ResultEntry {
         this.isHidden = isHidden;
     }
 
+    public boolean isPending() {
+        return( isPending );
+    }
+
+    public void setPending( boolean isPending ) {
+        this.isPending = isPending;
+    }
+
+    public boolean isInactive() {
+        return( isInactive );
+    }
+
+    public void setInactive( boolean isInactive ) {
+        this.isInactive = isInactive;
+    }
+
+    public boolean isInvalid() {
+        return( isInvalid );
+    }
+
+    public void setInvalid( boolean isInvalid ) {
+        this.isInvalid = isInvalid;
+    }
+
+    public boolean isBrokenLink() {
+        return( isBrokenLink );
+    }
+
+    public void setBrokenLink( boolean isBrokenLink ) {
+        this.isBrokenLink = isBrokenLink;
+    }
+
     public String getType() {
         return( type );
     }
@@ -112,6 +149,10 @@ public class ResultEntry {
     private String modificationDate;
     private String metadataFormat;
     private boolean isHidden;
+    private boolean isPending;
+    private boolean isInactive;
+    private boolean isInvalid;
+    private boolean isBrokenLink;
     private String type;
 
 }

@@ -35,6 +35,13 @@
     'No resource available': 'Aucune ressource disponible',
     'No records available': 'Aucune fiche disponible',
 
+    'Hidden': 'Caché',
+    'Visible': 'Visible',
+    'Pending': 'En attente',
+    'Inactive': 'Inactif',
+    'Invalid': 'Invalide',
+    'Broken Link': 'Lien brisé',
+
     'Go back one query': 'Aller à la requête précédente',
     'Go forward one query': 'Aller à la requête suivante',
     'Select classification': 'Sélectionner une classification',     
