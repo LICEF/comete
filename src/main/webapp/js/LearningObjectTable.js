@@ -145,21 +145,25 @@
         }
 
         this.deleteLearningObjects = function() {
-            var promptBox = Ext.Msg;
-            promptBox.buttonText = { cancel: tr("Cancel") };
-            promptBox.show( {
-                title: tr( 'Question' ),
-                msg: tr( 'Are you sure that you want to delete the selected resources ?' ),
-                buttons: Ext.Msg.OKCANCEL,
-                fn: function( btn, text ) {
-                    if( btn == 'ok' )
-                        this.doDeleteLOs();
-                },
-                scope: this,
-                minWidth: 250,
-                multiline: false,
-                icon: Ext.Msg.QUESTION
+            var applyModifDialog = Ext.create( 'Comete.ApplyModifDialog', {
+                modal: true
             } );
+            applyModifDialog.show();
+            //var promptBox = Ext.Msg;
+            //promptBox.buttonText = { cancel: tr("Cancel") };
+            //promptBox.show( {
+            //    title: tr( 'Question' ),
+            //    msg: tr( 'Are you sure that you want to delete the selected resources ?' ),
+            //    buttons: Ext.Msg.OKCANCEL,
+            //    fn: function( btn, text ) {
+            //        if( btn == 'ok' )
+            //            this.doDeleteLOs();
+            //    },
+            //    scope: this,
+            //    minWidth: 250,
+            //    multiline: false,
+            //    icon: Ext.Msg.QUESTION
+            //} );
         }
 
         var loContextMenu = Ext.create('Ext.menu.Menu', {

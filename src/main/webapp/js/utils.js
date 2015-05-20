@@ -740,7 +740,7 @@ Ext.define( 'Comete.IdentityFinderPanel', {
             this.aListener.ifpSelectionChanged(view, record);
         }, this);
 
-        cfg = {
+        var cfg = {
             border: false,
             items: [ { layout: 'border', region: 'north', border: false, height: 25, margin: '10',
                        items: [ { layout: 'fit', region: 'center', border: false, items: this.searchField }, 
@@ -903,7 +903,7 @@ Ext.define( 'Comete.LoginDialog', {
             items: [ this.login, this.password ]
         }); 
 
-        cfg = {
+        var cfg = {
             title: tr( 'Authentication' ),
             buttons: [ {text:'OK', handler: this.submit, scope: this}, {text:tr('Cancel'), handler: this.close, scope: this}],  
             items: [ { border: false, items: this.formPanel } ]
@@ -926,4 +926,54 @@ Ext.define( 'Comete.LoginDialog', {
             scope: this
         });
     }
+});
+
+
+/***********************************/
+/*** Confirm Modification dialog ***/
+/***********************************/
+
+Ext.define( 'Comete.ApplyModifDialog', {
+    extend: 'Ext.window.Window',
+    layout: 'fit',           
+    initComponent: function( config ) {
+
+        this.formPanel = Ext.create('Ext.form.Panel', { 
+            border: false,
+            margin: '10',            
+            items: [ 
+                { html: tr( 'Apply the modifications on' ) },
+                { xtype: 'radiogroup', id: 'RBGroupApplyModif', width: '100%', height: 80, columns: 1, items: [
+                    { xtype: 'radio', boxLabel: tr( 'the selected resources.' ), id: 'RBApplyModifOnSelectedRes', name: 'RBApplyModif' },
+                    { xtype: 'radio', boxLabel: tr( 'all the found resources.' ), id: 'RBApplyModifOnFoundRes', name: 'RBApplyModif' }
+                ] }
+            ]
+        }); 
+
+        var cfg = {
+            title: tr( 'Confirmation' ),
+            width: 300,
+            height: 160,
+            resizable: false,
+            buttons: [ {text:'OK', handler: this.submit, scope: this}, {text:tr('Cancel'), handler: this.close, scope: this}],  
+            items: [ { border: false, items: this.formPanel } ]
+                     
+        };
+        Ext.apply(this, cfg);
+        this.callParent(arguments); 
+    }//,
+    //submit: function() {
+    //    this.formPanel.submit({
+    //        url: 'rest/security/authentication',
+    //        method: 'POST',
+    //        success: function(form, action) {
+    //            this.close();
+    //            window.location.reload(); 
+    //        },
+    //        failure: function(form, action) { 
+    //            Ext.Msg.alert( tr('Failure'), tr('Authentication failed.') );            
+    //        },
+    //        scope: this
+    //    });
+    //}
 });

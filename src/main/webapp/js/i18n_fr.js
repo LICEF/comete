@@ -267,8 +267,11 @@
 
 
     'Start Backup': 'Lancer un backup',
-    'Are you sure that you want to start a backup process ?': 'Voulez-vous vraiment lancer un backup?'
+    'Are you sure that you want to start a backup process ?': 'Voulez-vous vraiment lancer un backup?',
 
+    'Apply the modifications on': 'Appliquer les modifications sur',
+    'the selected resources.': 'les ressources sélectionées.',
+    'all the found resources.': 'toutes les ressources trouvées.'
 
 };
 
