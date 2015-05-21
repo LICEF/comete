@@ -104,7 +104,7 @@ public class OAIDriverImpl implements OAIDriver {
 
                 writer.print( "<record>\n" );
                 writer.print( "<header" );
-                if( flags.contains( "hidden" ) )
+                if( flags.size() > 0 )
                     writer.print( " status=\"deleted\"" );
                 writer.print( ">\n" ); 
                 writer.print( "<identifier>" + itemID + "</identifier>" );
@@ -271,11 +271,17 @@ public class OAIDriverImpl implements OAIDriver {
 
         Invoker inv = new Invoker( tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[] { query } );
         Tuple[] res = (Tuple[])tripleStore.transactionalCall( inv );
+        String[] aFlagsToCheck = new String[] { "inactive", "invalid", "pending", "brokenLink" };
+        List<String> flagsToCheck = Arrays.asList( aFlagsToCheck );
         String[] flags = new String[ res.length ];
         for( int t = 0, s = 0; t < res.length; t++ ) {
-            if( "hidden".equals( res[ t ].getValue( "flag" ).getContent() ) ) {
-                flags[ s ] = "hidden";
-                s++;
+            for( String flag : flagsToCheck  ) {
+                if( flag.equals( res[ t ].getValue( "flag" ).getContent() ) ) {
+                    flags[ s ] = flag;
+                    s++;
+                    flagsToCheck.remove( flag );
+                    break;
+                }
             }
         }
         return( flags );

@@ -232,9 +232,7 @@ public class QueryEngine {
             Triple[] triples = tripleStore.getTriplesWithSubjectPredicate( objId, COMETE.flag );
             for( int i = 0; i < triples.length; i++ ) {
                 Triple triple = triples[ i ];
-                if( "hidden".equals( triple.getObject() ) )
-                    entry.setHidden( true );
-                else if( "pending".equals( triple.getObject() ) )
+                if( "pending".equals( triple.getObject() ) )
                     entry.setPending( true );
                 else if( "inactive".equals( triple.getObject() ) )
                     entry.setInactive( true );

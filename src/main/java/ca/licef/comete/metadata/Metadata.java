@@ -301,8 +301,14 @@ public class Metadata {
         Triple[] triples = tripleStore.getTriplesWithSubjectPredicate(loUri, COMETE.describes);
         for( Triple t : triples )
             flags.add( t.getObject() );
-        if( !flags.contains( "hidden" ) )
-            flags.add( "visible" );
+        if( !flags.contains( "inactive" ) )
+            flags.add( "active" );
+        if( !flags.contains( "brokenLink" ) )
+            flags.add( "validLink" );
+        if( !flags.contains( "pending" ) )
+            flags.add( "accepted" );
+        if( !flags.contains( "invalid" ) )
+            flags.add( "valid" );
         return( flags );
     }
 

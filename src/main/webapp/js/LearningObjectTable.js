@@ -13,7 +13,7 @@
 
         Ext.define('LearningObjectModel', {
             extend: 'Ext.data.Model',
-            fields: [ 'id', 'title', 'desc', 'location', 'image', 'loAsHtmlLocation', 'metadataFormat', 'type', 'hidden', 'pending', 'inactive', 'invalid', 'brokenLink'  ]
+            fields: [ 'id', 'title', 'desc', 'location', 'image', 'loAsHtmlLocation', 'metadataFormat', 'type', 'pending', 'inactive', 'invalid', 'brokenLink'  ]
         });
 
         this.proxy = Ext.create('Ext.data.proxy.Ajax', {
@@ -43,28 +43,6 @@
         this.pageBar.remove( this.pageBar.getComponent(10) ); //refresh button
         this.pageBar.remove( this.pageBar.getComponent(9) ); //separator
 
-        this.doShowLOs = function() {
-            var selectedLOs = this.getSelected();
-            if( selectedLOs ) {
-                var listOfLOs = selectedLOs.map( function( lo ) { return( lo.getData().id ); } ).join( ',' );
-                Ext.Ajax.request( {
-                    url: 'rest/learningObjects/setHidden',
-                    method: 'POST',
-                    params: {
-                        ids: listOfLOs,
-                        value: 'false'
-                    },
-                    success: function(response, opts) {
-                        this.loStore.reload();
-                    },
-                    failure: function(response, opts) {
-                        Ext.Msg.alert('Failure', response.responseText );
-                    },
-                    scope: this
-                } );
-            }
-        }
-
         this.setFlag = function( flag, value ) {
             var applyModifDialog = Ext.create( 'Comete.ApplyModifDialog', {
                 caller: this,
@@ -80,64 +58,6 @@
                 scope: this
             } );
             applyModifDialog.show();
-        }
-
-        this.showLearningObjects = function() {
-            var promptBox = Ext.Msg;
-            promptBox.buttonText = { cancel: tr("Cancel") };
-            promptBox.show( {
-                title: tr( 'Question' ),
-                msg: tr( 'Are you sure that you want to show the selected resources ?' ),
-                buttons: Ext.Msg.OKCANCEL,
-                fn: function( btn, text ) {
-                    if( btn == 'ok' )
-                        this.doShowLOs();
-                },
-                scope: this,
-                minWidth: 250,
-                multiline: false,
-                icon: Ext.Msg.QUESTION
-            } );
-        }
-
-        this.doHideLOs = function() {
-            var selectedLOs = this.getSelected();
-            if( selectedLOs ) {
-                var listOfLOs = selectedLOs.map( function( lo ) { return( lo.getData().id ); } ).join( ',' );
-                Ext.Ajax.request( {
-                    url: 'rest/learningObjects/setHidden',
-                    method: 'POST',
-                    params: {
-                        ids: listOfLOs,
-                        value: 'true'
-                    },
-                    success: function(response, opts) {
-                        this.loStore.reload();
-                    },
-                    failure: function(response, opts) {
-                        Ext.Msg.alert('Failure', response.responseText );
-                    },
-                    scope: this
-                } );
-            }
-        }
-
-        this.hideLearningObjects = function() {
-            var promptBox = Ext.Msg;
-            promptBox.buttonText = { cancel: tr("Cancel") };
-            promptBox.show( {
-                title: tr( 'Question' ),
-                msg: tr( 'Are you sure that you want to hide the selected resources ?' ),
-                buttons: Ext.Msg.OKCANCEL,
-                fn: function( btn, text ) {
-                    if( btn == 'ok' )
-                        this.doHideLOs();
-                },
-                scope: this,
-                minWidth: 250,
-                multiline: false,
-                icon: Ext.Msg.QUESTION
-            } );
         }
 
         this.doSetFlagForSelectedLOs = function( flag, value ) {
@@ -180,24 +100,23 @@
         }
 
         var loContextMenu = Ext.create('Ext.menu.Menu', {
-            items: [ { text: tr('Show'), handler: this.showLearningObjects, scope: this },
-                     { text: tr('Hide'), handler: this.hideLearningObjects, scope: this },
-                     { text: tr('Modify Flags'), menu: {
-                         items: [
-                            { text: tr( 'Active' ), handler: function() { this.setFlag( 'Inactive', false ); }, scope: this },
-                            { text: tr( 'Inactive' ), handler: function() { this.setFlag( 'Inactive', true ); }, scope: this },
-                            '-',
-                            { text: tr( 'Valid' ), handler: function() { this.setFlag( 'Invalid', false ); }, scope: this },
-                            { text: tr( 'Invalid' ), handler: function() { this.setFlag( 'Invalid', true ); }, scope: this },
-                            '-',
-                            { text: tr( 'Valid Link' ), handler: function() { this.setFlag( 'BrokenLink', false ); }, scope: this },
-                            { text: tr( 'Broken Link' ), handler: function() { this.setFlag( 'BrokenLink', true ); }, scope: this },
-                            '-',
-                            { text: tr( 'Accepted' ), handler: function() { this.setFlag( 'Pending', false ); }, scope: this  },
-                            { text: tr( 'Pending' ), handler: function() { this.setFlag( 'Pending', true ); }, scope: this  }
-                         ]
-                     } },
-                     { text: tr('Delete'), handler: this.deleteLearningObjects, scope: this } ]
+            items: [ 
+                { text: tr('Modify Flags'), menu: {
+                     items: [
+                        { text: tr( 'Active' ), handler: function() { this.setFlag( 'Inactive', false ); }, scope: this },
+                        { text: tr( 'Inactive' ), handler: function() { this.setFlag( 'Inactive', true ); }, scope: this },
+                        '-',
+                        { text: tr( 'Valid' ), handler: function() { this.setFlag( 'Invalid', false ); }, scope: this },
+                        { text: tr( 'Invalid' ), handler: function() { this.setFlag( 'Invalid', true ); }, scope: this },
+                        '-',
+                        { text: tr( 'Valid Link' ), handler: function() { this.setFlag( 'BrokenLink', false ); }, scope: this },
+                        { text: tr( 'Broken Link' ), handler: function() { this.setFlag( 'BrokenLink', true ); }, scope: this },
+                        '-',
+                        { text: tr( 'Accepted' ), handler: function() { this.setFlag( 'Pending', false ); }, scope: this  },
+                        { text: tr( 'Pending' ), handler: function() { this.setFlag( 'Pending', true ); }, scope: this  }
+                     ]
+                } },
+                { text: tr('Delete'), handler: this.deleteLearningObjects, scope: this } ]
         });
 
         this.renderImage = function( value ) {
@@ -205,12 +124,6 @@
             if (value != "n/a")
                 res = "<img src=\"" + value + "\" height=\"48\" width=\"48\">";
             return res;
-        };
-
-        this.renderHidden = function( value, metaData, lo ) {
-            var flagFilename = ( value ? 'hidden' : 'visible' );
-            var flagLabel = ( value ? tr( 'Hidden' ) : tr( 'Visible' ) );
-            return Ext.String.format( '<img src="images/flag-{0}.png" title="{1}" alt="{1}" height="20"/>', flagFilename, flagLabel );
         };
 
         this.renderPending = function( value, metaData, lo ) {
@@ -245,7 +158,6 @@
                 { text: tr( 'Id' ), width: 100,  dataIndex: 'id', hidden: true/*!this.editable*/ },
                 { text: tr( 'Title' ), flex: 1, dataIndex: 'title', sortable: true, renderer: this.renderTitle },
                 { text: tr( 'Type' ), width: 80,  dataIndex: 'type', sortable: true, renderer: this.renderType, hidden: true /*!this.editable*/ },
-                { text: tr( 'Visible' ), width: 30,  dataIndex: 'hidden', hidden: !this.editable, renderer: this.renderHidden },
                 { text: tr( 'Pending' ), width: 30,  dataIndex: 'pending', hidden: !this.editable, renderer: this.renderPending },
                 { text: tr( 'Inactive' ), width: 30,  dataIndex: 'inactive', hidden: !this.editable, renderer: this.renderInactive },
                 { text: tr( 'Invalid' ), width: 30,  dataIndex: 'invalid', hidden: !this.editable, renderer: this.renderInvalid },

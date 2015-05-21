@@ -96,33 +96,6 @@ public class LearningObjectResource {
     }
 
     @GET
-    @Path( "{id}/hidden" )
-    @Produces( MediaType.TEXT_PLAIN )
-    public Response isLearningObjectHidden( @Context HttpServletRequest request, @PathParam( "id" ) String id ) throws Exception {
-        if (!Security.getInstance().isAuthorized(request))
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to retrieve the flag of a learning object.").build();
-
-        String loUri = ca.licef.comete.core.util.Util.makeURI(id, COMETE.LearningObject);
-        boolean isHidden = Metadata.getInstance().getLearningObjectFlag(loUri, "hidden");
-        return (Response.ok( isHidden + "" ).build());
-    }
-
-    @POST
-    @Path( "setHidden" )
-    @Produces( MediaType.TEXT_PLAIN )
-    public Response setLearningObjectsHidden( @Context HttpServletRequest request, @FormParam( "ids" ) String ids, @FormParam( "value" ) String isHidden ) throws Exception {
-        if (!Security.getInstance().isAuthorized(request))
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to update the flag of a learning object.").build();
-
-        String[] idArray = ids.split( "," );
-        for( int i = 0; i < idArray.length; i++ ) {
-            String loUri = ca.licef.comete.core.util.Util.makeURI(idArray[ i ], COMETE.LearningObject);
-            Metadata.getInstance().setLearningObjectFlag( loUri, "hidden", "true".equals( isHidden ) );
-        }
-        return (Response.ok().build());
-    }
-
-    @GET
     @Path( "{id}/inactive" )
     @Produces( MediaType.TEXT_PLAIN )
     public Response isLearningObjectInactive( @Context HttpServletRequest request, @PathParam( "id" ) String id ) throws Exception {
