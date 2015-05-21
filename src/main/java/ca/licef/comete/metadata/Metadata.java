@@ -306,28 +306,37 @@ public class Metadata {
         return( flags );
     }
 
-    public boolean isLearningObjectHidden(String loUri) throws Exception {
-        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", "doIsLearningObjectHidden", new Object[] { loUri } );
+    public boolean getLearningObjectFlag( String loUri, String flag ) throws Exception {
+        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", "doGetLearningObjectFlag", new Object[] { loUri, flag } );
         return( ((Boolean)tripleStore.transactionalCall( inv )).booleanValue() );
     }
 
-    public Boolean doIsLearningObjectHidden(String loUri) throws Exception {
+    public Boolean doGetLearningObjectFlag(String loUri, String flag) throws Exception {
         Set<String> flags = getLearningObjectFlags( loUri );
-        return( Boolean.valueOf( flags.contains( "hidden" ) ) );
+        return( Boolean.valueOf( flags.contains( flag ) ) );
     }
 
-    public void setLearningObjectHidden(String loUri, boolean isHidden) throws Exception {
-        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", "doSetLearningObjectHidden", new Object[] { loUri, isHidden } );
+    public void setLearningObjectsFlagByQuery( String query, String lang, boolean isShowHiddenRes, String flag, boolean value ) throws Exception {
+        ResultSet rs = QueryEngine.getInstance().search( query, "", lang, isShowHiddenRes, "json", 0, Integer.MAX_VALUE, "default", null );
+        for( ListIterator it = rs.getEntries(); it.hasNext(); ) {
+            ResultEntry entry = (ResultEntry)it.next();
+            String loUri = CoreUtil.makeURI( entry.getId(), COMETE.LearningObject );
+            setLearningObjectFlag( loUri, flag, value );
+        }
+    }
+
+    public void setLearningObjectFlag(String loUri, String flag, boolean value) throws Exception {
+        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", "doSetLearningObjectFlag", new Object[] { loUri, flag, value } );
         tripleStore.transactionalCall( inv, TripleStore.WRITE_MODE );
     }
 
-    public void doSetLearningObjectHidden(String loUri, boolean isHidden) throws Exception {
+    public void doSetLearningObjectFlag(String loUri, String flag, boolean value) throws Exception {
         String recordUri = getMetadataRecordUriFromLO( loUri );
-        Triple hiddenTriple = new Triple( loUri, COMETE.flag, "hidden" );
-        if( isHidden )
-            tripleStore.insertTriple( hiddenTriple );
+        Triple flaggedTriple = new Triple( loUri, COMETE.flag, flag );
+        if( value )
+            tripleStore.insertTriple( flaggedTriple );
         else 
-            tripleStore.removeTriple( hiddenTriple );
+            tripleStore.removeTriple( flaggedTriple );
         updateOaiDatestamp( recordUri, new Date() );
     }
 

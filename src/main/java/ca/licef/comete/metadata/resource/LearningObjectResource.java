@@ -103,7 +103,7 @@ public class LearningObjectResource {
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to retrieve the flag of a learning object.").build();
 
         String loUri = ca.licef.comete.core.util.Util.makeURI(id, COMETE.LearningObject);
-        boolean isHidden = Metadata.getInstance().isLearningObjectHidden(loUri);
+        boolean isHidden = Metadata.getInstance().getLearningObjectFlag(loUri, "hidden");
         return (Response.ok( isHidden + "" ).build());
     }
 
@@ -117,8 +117,109 @@ public class LearningObjectResource {
         String[] idArray = ids.split( "," );
         for( int i = 0; i < idArray.length; i++ ) {
             String loUri = ca.licef.comete.core.util.Util.makeURI(idArray[ i ], COMETE.LearningObject);
-            Metadata.getInstance().setLearningObjectHidden( loUri, "true".equals( isHidden ) );
+            Metadata.getInstance().setLearningObjectFlag( loUri, "hidden", "true".equals( isHidden ) );
         }
+        return (Response.ok().build());
+    }
+
+    @GET
+    @Path( "{id}/inactive" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response isLearningObjectInactive( @Context HttpServletRequest request, @PathParam( "id" ) String id ) throws Exception {
+        if (!Security.getInstance().isAuthorized(request))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to retrieve the flag of a learning object.").build();
+
+        String loUri = ca.licef.comete.core.util.Util.makeURI(id, COMETE.LearningObject);
+        boolean isInactive = Metadata.getInstance().getLearningObjectFlag(loUri, "inactive");
+        return (Response.ok( isInactive + "" ).build());
+    }
+
+    @POST
+    @Path( "setInactive" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response setLearningObjectsInactive( @Context HttpServletRequest request, @FormParam( "ids" ) String ids, @FormParam( "value" ) String isInactive ) throws Exception {
+        if (!Security.getInstance().isAuthorized(request))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to update the flag of a learning object.").build();
+
+        String[] idArray = ids.split( "," );
+        for( int i = 0; i < idArray.length; i++ ) {
+            String loUri = ca.licef.comete.core.util.Util.makeURI(idArray[ i ], COMETE.LearningObject);
+            Metadata.getInstance().setLearningObjectFlag( loUri, "inactive", "true".equals( isInactive ) );
+        }
+        return (Response.ok().build());
+    }
+
+    @GET
+    @Path( "{id}/brokenLink" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response isLearningObjectBrokenLink( @Context HttpServletRequest request, @PathParam( "id" ) String id ) throws Exception {
+        if (!Security.getInstance().isAuthorized(request))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to retrieve the flag of a learning object.").build();
+
+        String loUri = ca.licef.comete.core.util.Util.makeURI(id, COMETE.LearningObject);
+        boolean isBrokenLink = Metadata.getInstance().getLearningObjectFlag(loUri, "brokenLink");
+        return (Response.ok( isBrokenLink + "" ).build());
+    }
+
+    @POST
+    @Path( "setBrokenLink" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response setLearningObjectsBrokenLink( @Context HttpServletRequest request, @FormParam( "ids" ) String ids, @FormParam( "value" ) String isBrokenLink ) throws Exception {
+        if (!Security.getInstance().isAuthorized(request))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to update the flag of a learning object.").build();
+
+        String[] idArray = ids.split( "," );
+        for( int i = 0; i < idArray.length; i++ ) {
+            String loUri = ca.licef.comete.core.util.Util.makeURI(idArray[ i ], COMETE.LearningObject);
+            Metadata.getInstance().setLearningObjectFlag( loUri, "brokenLink", "true".equals( isBrokenLink ) );
+        }
+        return (Response.ok().build());
+    }
+
+    @GET
+    @Path( "{id}/pending" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response isLearningObjectPending( @Context HttpServletRequest request, @PathParam( "id" ) String id ) throws Exception {
+        if (!Security.getInstance().isAuthorized(request))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to retrieve the flag of a learning object.").build();
+
+        String loUri = ca.licef.comete.core.util.Util.makeURI(id, COMETE.LearningObject);
+        boolean isPending = Metadata.getInstance().getLearningObjectFlag(loUri, "pending");
+        return (Response.ok( isPending + "" ).build());
+    }
+
+    @POST
+    @Path( "setPending" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response setLearningObjectsPending( @Context HttpServletRequest request, @FormParam( "ids" ) String ids, @FormParam( "value" ) String isPending ) throws Exception {
+        if (!Security.getInstance().isAuthorized(request))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to update the flag of a learning object.").build();
+
+        String[] idArray = ids.split( "," );
+        for( int i = 0; i < idArray.length; i++ ) {
+            String loUri = ca.licef.comete.core.util.Util.makeURI(idArray[ i ], COMETE.LearningObject);
+            Metadata.getInstance().setLearningObjectFlag( loUri, "pending", "true".equals( isPending ) );
+        }
+        return (Response.ok().build());
+    }
+
+    @GET
+    @Path( "setFlagByQuery" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response setLearningObjectsFlagByQuery( @Context HttpServletRequest req, @QueryParam( "query" ) String query, @QueryParam( "lang" ) String lang, @QueryParam( "flag" ) String flag, @QueryParam( "value" ) String value ) throws Exception {
+        if (!Security.getInstance().isAuthorized(req))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to the flag of a learning object").build();
+
+        String decodedQuery = query;
+        try {
+            decodedQuery = URLDecoder.decode( query, "UTF-8" );
+        }
+        catch( UnsupportedEncodingException e ) {
+            e.printStackTrace();
+        }
+
+        Metadata.getInstance().setLearningObjectsFlagByQuery( decodedQuery, lang, true, flag, Boolean.valueOf( value ).booleanValue() );
+
         return (Response.ok().build());
     }
 
@@ -152,7 +253,7 @@ public class LearningObjectResource {
     }
 
     @GET
-    @Path( "delete" )
+    @Path( "deleteByQuery" )
     @Produces( MediaType.TEXT_PLAIN )
     public Response deleteLearningObjectsByQuery( @Context HttpServletRequest req, @QueryParam( "query" ) String query, @QueryParam( "lang" ) String lang ) throws Exception {
         if (!Security.getInstance().isAuthorized(req))

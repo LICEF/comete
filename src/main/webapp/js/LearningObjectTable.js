@@ -65,6 +65,23 @@
             }
         }
 
+        this.setFlag = function( flag, value ) {
+            var applyModifDialog = Ext.create( 'Comete.ApplyModifDialog', {
+                caller: this,
+                modal: true,
+                submit: function() {
+                    var isApplyOnSelectedRes = applyModifDialog.isApplyOnSelectedRes();
+                    applyModifDialog.close(); 
+                    if( isApplyOnSelectedRes )
+                        this.doSetFlagForSelectedLOs( flag, value );
+                    else
+                        window.searchManager.setFlagForFoundLearningObjects( flag, value );
+                },
+                scope: this
+            } );
+            applyModifDialog.show();
+        }
+
         this.showLearningObjects = function() {
             var promptBox = Ext.Msg;
             promptBox.buttonText = { cancel: tr("Cancel") };
@@ -123,15 +140,16 @@
             } );
         }
 
-        this.doDeleteSelectedLOs = function() {
+        this.doSetFlagForSelectedLOs = function( flag, value ) {
             var selectedLOs = this.getSelected();
             if( selectedLOs ) {
                 var listOfLOs = selectedLOs.map( function( lo ) { return( lo.getData().id ); } ).join( ',' );
                 Ext.Ajax.request( {
-                    url: 'rest/learningObjects/delete',
+                    url: 'rest/learningObjects/set' + flag,
                     method: 'POST',
                     params: {
-                        ids: listOfLOs
+                        ids: listOfLOs,
+                        value: value
                     },
                     success: function(response, opts) {
                         this.loStore.reload();
@@ -164,6 +182,21 @@
         var loContextMenu = Ext.create('Ext.menu.Menu', {
             items: [ { text: tr('Show'), handler: this.showLearningObjects, scope: this },
                      { text: tr('Hide'), handler: this.hideLearningObjects, scope: this },
+                     { text: tr('Modify Flags'), menu: {
+                         items: [
+                            { text: tr( 'Active' ), handler: function() { this.setFlag( 'Inactive', false ); }, scope: this },
+                            { text: tr( 'Inactive' ), handler: function() { this.setFlag( 'Inactive', true ); }, scope: this },
+                            '-',
+                            { text: tr( 'Valid' ), handler: function() { this.setFlag( 'Invalid', false ); }, scope: this },
+                            { text: tr( 'Invalid' ), handler: function() { this.setFlag( 'Invalid', true ); }, scope: this },
+                            '-',
+                            { text: tr( 'Valid Link' ), handler: function() { this.setFlag( 'BrokenLink', false ); }, scope: this },
+                            { text: tr( 'Broken Link' ), handler: function() { this.setFlag( 'BrokenLink', true ); }, scope: this },
+                            '-',
+                            { text: tr( 'Accepted' ), handler: function() { this.setFlag( 'Pending', false ); }, scope: this  },
+                            { text: tr( 'Pending' ), handler: function() { this.setFlag( 'Pending', true ); }, scope: this  }
+                         ]
+                     } },
                      { text: tr('Delete'), handler: this.deleteLearningObjects, scope: this } ]
         });
 

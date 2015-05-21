@@ -17,6 +17,7 @@
     'Title': 'Titre',
     'File Type': 'Type de fichier',
     'Flag': 'Indicateur',
+    'Modify Flags': 'Modifier les indicateurs',
     'Details': 'Détails',
     'Resources': 'Ressources',
     'Edit DC': 'Éditer DC',
@@ -38,9 +39,12 @@
     'Hidden': 'Caché',
     'Visible': 'Visible',
     'Pending': 'En attente',
+    'Active': 'Actif',
     'Inactive': 'Inactif',
     'Invalid': 'Invalide',
     'Broken Link': 'Lien brisé',
+    'Valid Link': 'Lien valide',
+    'Accepted': 'Accepté',
 
     'Go back one query': 'Aller à la requête précédente',
     'Go forward one query': 'Aller à la requête suivante',
@@ -96,6 +100,7 @@
     'Stop harvest': 'Arrêter la moisson',
     'View harvest reports': 'Voir les rapports de moissons',
     'Harvest reports for :':'Rapports de moissons de :',
+    'Harvest started.': 'Moisson démarrée.',
     'Do you really want to delete report ?': 'Voulez-vous vraiment supprimer le rapport ?',
     'Report deleted.': 'Rapport suprimé.',
 

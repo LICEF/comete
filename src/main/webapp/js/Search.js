@@ -238,11 +238,30 @@ Ext.define( 'Comete.SearchManager', {
     },
     deleteFoundLearningObjects: function() {
         Ext.Ajax.request( {
-            url: 'rest/learningObjects/delete',
+            url: 'rest/learningObjects/deleteByQuery',
             method: 'GET',
             params: {
                 query: encodeURIComponent( JSON.stringify( this.loManager.learningObjectTable.getQuery() ) ),
                 lang: lang
+            },
+            success: function(response, opts) {
+                this.loManager.learningObjectTable.reload();
+            },
+            failure: function(response, opts) {
+                Ext.Msg.alert('Failure', response.responseText );
+            },
+            scope: this
+        } );
+    },
+    setFlagForFoundLearningObjects: function( flag, value ) {
+        Ext.Ajax.request( {
+            url: 'rest/learningObjects/setFlagByQuery',
+            method: 'GET',
+            params: {
+                query: encodeURIComponent( JSON.stringify( this.loManager.learningObjectTable.getQuery() ) ),
+                lang: lang,
+                flag: flag.toLowerCase(),
+                value: value
             },
             success: function(response, opts) {
                 this.loManager.learningObjectTable.reload();
