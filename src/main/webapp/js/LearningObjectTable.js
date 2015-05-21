@@ -64,8 +64,9 @@
             var selectedLOs = this.getSelected();
             if( selectedLOs ) {
                 var listOfLOs = selectedLOs.map( function( lo ) { return( lo.getData().id ); } ).join( ',' );
+                var action = (flag == "All")?'clearFlags':'set' + flag;
                 Ext.Ajax.request( {
-                    url: 'rest/learningObjects/set' + flag,
+                    url: 'rest/learningObjects/' + action,
                     method: 'POST',
                     params: {
                         ids: listOfLOs,
@@ -113,7 +114,9 @@
                         { text: tr( 'Broken Link' ), handler: function() { this.setFlag( 'BrokenLink', true ); }, scope: this },
                         '-',
                         { text: tr( 'Accepted' ), handler: function() { this.setFlag( 'Pending', false ); }, scope: this  },
-                        { text: tr( 'Pending' ), handler: function() { this.setFlag( 'Pending', true ); }, scope: this  }
+                        { text: tr( 'Pending' ), handler: function() { this.setFlag( 'Pending', true ); }, scope: this  },
+                        '-',
+                        { text: tr( 'Delete all flags' ), handler: function() { this.setFlag( 'All' ); }, scope: this  },
                      ]
                 } },
                 { text: tr('Delete'), handler: this.deleteLearningObjects, scope: this } ]

@@ -346,6 +346,20 @@ public class Metadata {
         updateOaiDatestamp( recordUri, new Date() );
     }
 
+    public void clearLearningObjectFlags(String loUri) throws Exception {
+        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", "doClearLearningObjectFlags", new Object[] { loUri } );
+        tripleStore.transactionalCall( inv, TripleStore.WRITE_MODE );
+    }
+
+    public void doClearLearningObjectFlags(String loUri) throws Exception {
+        Triple[] triples = tripleStore.getTriplesWithSubjectPredicate(loUri, COMETE.flag);
+        if (triples.length > 0) {
+            tripleStore.removeTriplesWithSubjectPredicate(loUri, COMETE.flag);
+            String recordUri = getMetadataRecordUriFromLO( loUri );
+            updateOaiDatestamp(recordUri, new Date());
+        }
+    }
+
     public void updateOaiDatestamp( String recordUri, Date date ) throws Exception {
         String dateValue = DateUtil.toISOString(new Date(), null, null);
         String query = CoreUtil.getQuery( "metadata/updateOaiDatestamp.sparql", recordUri, dateValue );

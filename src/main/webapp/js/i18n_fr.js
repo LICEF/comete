@@ -45,6 +45,7 @@
     'Broken Link': 'Lien brisé',
     'Valid Link': 'Lien valide',
     'Accepted': 'Accepté',
+    'Delete all flags': 'Supprimer tous les indicateurs',
 
     'Go back one query': 'Aller à la requête précédente',
     'Go forward one query': 'Aller à la requête suivante',

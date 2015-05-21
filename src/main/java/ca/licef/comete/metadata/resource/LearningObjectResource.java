@@ -176,6 +176,21 @@ public class LearningObjectResource {
         return (Response.ok().build());
     }
 
+    @POST
+    @Path( "clearFlags" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response clearLearningObjectsFlags( @Context HttpServletRequest request, @FormParam( "ids" ) String ids ) throws Exception {
+        if (!Security.getInstance().isAuthorized(request))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to update the flag of a learning object.").build();
+
+        String[] idArray = ids.split( "," );
+        for( int i = 0; i < idArray.length; i++ ) {
+            String loUri = ca.licef.comete.core.util.Util.makeURI(idArray[ i ], COMETE.LearningObject);
+            Metadata.getInstance().clearLearningObjectFlags( loUri );
+        }
+        return (Response.ok().build());
+    }
+
     @GET
     @Path( "setFlagByQuery" )
     @Produces( MediaType.TEXT_PLAIN )
