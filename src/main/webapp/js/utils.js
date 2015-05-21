@@ -938,14 +938,27 @@ Ext.define( 'Comete.ApplyModifDialog', {
     layout: 'fit',           
     initComponent: function( config ) {
 
+        this.rbApplyOnSelectedRes = Ext.create('Ext.form.field.Radio', {
+            id: 'RBApplyModifOnSelectedRes',
+            boxLabel: tr( 'the selected resources.' ),
+            name: 'RBApplyModif',
+            value: true
+        });
+
+        this.rbApplyOnFoundRes = Ext.create('Ext.form.field.Radio', {
+            id: 'RBApplyModifOnFoundRes',
+            boxLabel: tr( 'all the found resources.' ),
+            name: 'RBApplyModif'
+        });
+
         this.formPanel = Ext.create('Ext.form.Panel', { 
             border: false,
             margin: '10',            
             items: [ 
                 { html: tr( 'Apply the modifications on' ) },
                 { xtype: 'radiogroup', id: 'RBGroupApplyModif', width: '100%', height: 80, columns: 1, items: [
-                    { xtype: 'radio', boxLabel: tr( 'the selected resources.' ), id: 'RBApplyModifOnSelectedRes', name: 'RBApplyModif' },
-                    { xtype: 'radio', boxLabel: tr( 'all the found resources.' ), id: 'RBApplyModifOnFoundRes', name: 'RBApplyModif' }
+                    this.rbApplyOnSelectedRes,
+                    this.rbApplyOnFoundRes
                 ] }
             ]
         }); 
@@ -955,25 +968,17 @@ Ext.define( 'Comete.ApplyModifDialog', {
             width: 300,
             height: 160,
             resizable: false,
-            buttons: [ {text:'OK', handler: this.submit, scope: this}, {text:tr('Cancel'), handler: this.close, scope: this}],  
+            buttons: [ {text:'OK', handler: this.submit, scope: this.caller}, {text:tr('Cancel'), handler: this.close, scope: this}],  
             items: [ { border: false, items: this.formPanel } ]
                      
         };
         Ext.apply(this, cfg);
         this.callParent(arguments); 
-    }//,
-    //submit: function() {
-    //    this.formPanel.submit({
-    //        url: 'rest/security/authentication',
-    //        method: 'POST',
-    //        success: function(form, action) {
-    //            this.close();
-    //            window.location.reload(); 
-    //        },
-    //        failure: function(form, action) { 
-    //            Ext.Msg.alert( tr('Failure'), tr('Authentication failed.') );            
-    //        },
-    //        scope: this
-    //    });
-    //}
+    },
+    isApplyOnSelectedRes: function() {
+        return( this.rbApplyOnSelectedRes.getValue() );
+    },
+    isApplyOnFoundRes: function() {
+        return( this.rbApplyOnFoundRes.getValue() );
+    }
 });

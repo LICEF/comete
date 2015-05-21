@@ -235,6 +235,23 @@ Ext.define( 'Comete.SearchManager', {
     },
     closeDialog: function() {
         IdentityDetailsWindow.close();
+    },
+    deleteFoundLearningObjects: function() {
+        Ext.Ajax.request( {
+            url: 'rest/learningObjects/delete',
+            method: 'GET',
+            params: {
+                query: encodeURIComponent( JSON.stringify( this.loManager.learningObjectTable.getQuery() ) ),
+                lang: lang
+            },
+            success: function(response, opts) {
+                this.loManager.learningObjectTable.reload();
+            },
+            failure: function(response, opts) {
+                Ext.Msg.alert('Failure', response.responseText );
+            },
+            scope: this
+        } );
     }
 } );
 

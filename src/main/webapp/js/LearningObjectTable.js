@@ -123,7 +123,7 @@
             } );
         }
 
-        this.doDeleteLOs = function() {
+        this.doDeleteSelectedLOs = function() {
             var selectedLOs = this.getSelected();
             if( selectedLOs ) {
                 var listOfLOs = selectedLOs.map( function( lo ) { return( lo.getData().id ); } ).join( ',' );
@@ -146,24 +146,19 @@
 
         this.deleteLearningObjects = function() {
             var applyModifDialog = Ext.create( 'Comete.ApplyModifDialog', {
-                modal: true
+                caller: this,
+                modal: true,
+                submit: function() {
+                    var isApplyOnSelectedRes = applyModifDialog.isApplyOnSelectedRes();
+                    applyModifDialog.close(); 
+                    if( isApplyOnSelectedRes )
+                        this.doDeleteSelectedLOs();
+                    else
+                        window.searchManager.deleteFoundLearningObjects();
+                },
+                scope: this
             } );
             applyModifDialog.show();
-            //var promptBox = Ext.Msg;
-            //promptBox.buttonText = { cancel: tr("Cancel") };
-            //promptBox.show( {
-            //    title: tr( 'Question' ),
-            //    msg: tr( 'Are you sure that you want to delete the selected resources ?' ),
-            //    buttons: Ext.Msg.OKCANCEL,
-            //    fn: function( btn, text ) {
-            //        if( btn == 'ok' )
-            //            this.doDeleteLOs();
-            //    },
-            //    scope: this,
-            //    minWidth: 250,
-            //    multiline: false,
-            //    icon: Ext.Msg.QUESTION
-            //} );
         }
 
         var loContextMenu = Ext.create('Ext.menu.Menu', {
@@ -284,7 +279,11 @@
         this.loManager.setResultText( label );
         this.loManager.setFeedButtonsVisible(atLeastOneResult);
     },
+    getQuery: function() {
+        return( this._query );
+    },
     setRequest: function( query ) {
+        this._query = query;
         var url = this.queryUrl + '&q=' + encodeURIComponent( JSON.stringify(query) );
         var currPage = this.getCurrentPage();
         var currSelectedLo = this.getSelectedId();
@@ -332,6 +331,9 @@
     },
     clear: function() {
         this.loStore.loadRawData([]);
+    },
+    reload: function() {
+        this.loStore.reload();
     }
 } );
 

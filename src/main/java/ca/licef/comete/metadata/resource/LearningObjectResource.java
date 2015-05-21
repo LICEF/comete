@@ -13,6 +13,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Locale;
 import java.util.Set;
 
@@ -146,6 +148,26 @@ public class LearningObjectResource {
             String loUri = ca.licef.comete.core.util.Util.makeURI(idArray[ i ], COMETE.LearningObject);
             Metadata.getInstance().deleteLearningObject( loUri, true );
         }
+        return (Response.ok().build());
+    }
+
+    @GET
+    @Path( "delete" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response deleteLearningObjectsByQuery( @Context HttpServletRequest req, @QueryParam( "query" ) String query, @QueryParam( "lang" ) String lang ) throws Exception {
+        if (!Security.getInstance().isAuthorized(req))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to delete learning objects").build();
+
+        String decodedQuery = query;
+        try {
+            decodedQuery = URLDecoder.decode( query, "UTF-8" );
+        }
+        catch( UnsupportedEncodingException e ) {
+            e.printStackTrace();
+        }
+
+        Metadata.getInstance().deleteLearningObjectsByQuery( decodedQuery, lang, true );
+
         return (Response.ok().build());
     }
 

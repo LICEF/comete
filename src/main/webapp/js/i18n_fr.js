@@ -124,7 +124,6 @@
     'Metadata Editor': 'Éditeur de métadonnées',
     'Edition of multiple metadata records is not currently supported.': 'L\'édition de fiches multiples n\'est présentement pas supportée.',
     'An error occurred when performing {0}.': 'Une erreur est survenue lors de l\'appel à {0}.',
-    'Are you sure that you want to delete the selected resources ?': 'Voulez-vous vraiment supprimer les ressources sélectionnées?',
     'Are you sure that you want to show the selected resources ?': 'Voulez-vous vraiment montrer les ressources sélectionnées?',
     'Are you sure that you want to hide the selected resources ?': 'Voulez-vous vraiment cacher les ressources sélectionnées?',
     'Are you sure that you want to delete all the learning objects of this repository ?': 'Voulez-vous vraiment supprimer toutes les ressources du dépôt sélectionné?',

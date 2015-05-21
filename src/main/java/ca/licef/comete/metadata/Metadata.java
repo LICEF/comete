@@ -8,6 +8,8 @@ import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.ResultSet;
 import ca.licef.comete.harvester.Harvester;
 import ca.licef.comete.metadata.util.Util;
+import ca.licef.comete.queryengine.QueryEngine;
+import ca.licef.comete.queryengine.ResultEntry;
 import ca.licef.comete.store.Store;
 import ca.licef.comete.vocabularies.COMETE;
 import ca.licef.comete.vocabularies.OAI;
@@ -348,6 +350,15 @@ public class Metadata {
             return( null );
         else
             return( triples[ 0 ].getSubject() );
+    }
+
+    public void deleteLearningObjectsByQuery( String query, String lang, boolean isShowHiddenRes ) throws Exception {
+        ResultSet rs = QueryEngine.getInstance().search( query, "", lang, isShowHiddenRes, "json", 0, Integer.MAX_VALUE, "default", null );
+        for( ListIterator it = rs.getEntries(); it.hasNext(); ) {
+            ResultEntry entry = (ResultEntry)it.next();
+            String loUri = CoreUtil.makeURI( entry.getId(), COMETE.LearningObject );
+            deleteLearningObject( loUri, true );
+        }
     }
 
     public void deleteLearningObject(String loUri, boolean markStoreRecordForDeletion) throws Exception {
