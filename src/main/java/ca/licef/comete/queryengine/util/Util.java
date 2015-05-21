@@ -34,6 +34,8 @@ public class Util {
     public static final String NOT_ORGANIZATION_PREFIX = "!org";
     public static final String CONCEPT_PREFIX = "vocConcept";
     public static final String NOT_CONCEPT_PREFIX = "!vocConcept";
+    public static final String FLAG_PREFIX = "flag";
+    public static final String NOT_FLAG_PREFIX = "!flag";
     public static final String ADDED_DATE = "addedDate";
     public static final String FROM_HARVESTED_REPO = "fromHarvestedRepo";
 
@@ -170,6 +172,14 @@ public class Util {
                         else
                             clause = "";
                     }
+                }
+                else if (FLAG_PREFIX.equals(condType) || condType.equals(NOT_FLAG_PREFIX)) {
+                    String flag = obj.getString("value");
+                    clause = CoreUtil.getQuery("queryengine/advancedFlagFragment.sparql", flag);
+
+                    //negation
+                    if (condType.equals(NOT_FLAG_PREFIX))
+                        clause = "MINUS { " + clause + " }\n";
                 }
                 else if (ADDED_DATE.equals(condType)) {
                     String relOp = obj.getString( "relOp" );

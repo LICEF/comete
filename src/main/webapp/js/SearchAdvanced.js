@@ -230,7 +230,6 @@ Ext.define( 'Comete.QueryCondition', {
         this.flagStore = Ext.create('Ext.data.Store', {
             fields: ['id', 'label'],
             data: [
-                {'id':'hidden', label: tr('Hidden')},
                 {'id':'inactive', label: tr('Inactive')},
                 {'id':'invalid', label: tr('Invalid')},
                 {'id':'brokenLink', label: tr('Broken Link')},
@@ -238,10 +237,8 @@ Ext.define( 'Comete.QueryCondition', {
             ]
         });
 
-        this.choiceStore = Ext.create('Ext.data.Store', {
-            fields: ['id', 'label'],
-            data : [
-                {'id':'title', 'label': tr('whose title contains')},
+        var choices = [
+                {'id':'title', 'label': tr('whose title contains') },
                 {'id':'description', 'label': tr('whose description contains') },
                 {'id':'keyword', 'label': tr('having keyword') },
                 {'id':'addedDate', 'label': tr('where the addition date') },
@@ -250,10 +247,18 @@ Ext.define( 'Comete.QueryCondition', {
                 {'id':'org', 'label': tr('from organization') },
                 {'id':'!org', 'label': tr('not from organization') },
                 {'id':'vocConcept', 'label': tr('related to the category') },
-                {'id':'!vocConcept', 'label': tr('not related to the category') },
-                {'id':'flag', 'label': tr('having flag') },
-                {'id':'!flag', 'label': tr('not having flag') }
-            ]
+                {'id':'!vocConcept', 'label': tr('not related to the category') }
+            ];
+
+
+        if (isAdmin()) {
+            choices.push( {'id':'flag', 'label': tr('having flag') }, 
+                          {'id':'!flag', 'label': tr('not having flag') } );
+        }
+
+        this.choiceStore = Ext.create('Ext.data.Store', {
+            fields: ['id', 'label'],
+            data: choices
         });
 
         this.andOr = Ext.create('Ext.form.field.ComboBox', {
@@ -293,6 +298,8 @@ Ext.define( 'Comete.QueryCondition', {
             hidden: true
         });
 
+        var separator = (isAdmin()?'<tpl if="xindex == 10"><hr /></tpl>':'');
+ 
         this.typeCond = Ext.create('Ext.form.field.ComboBox', {
             valueField: 'id',
             displayField: 'label',
@@ -300,7 +307,7 @@ Ext.define( 'Comete.QueryCondition', {
             width: 240,
             editable: false,
             value: 'title',
-            tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div></tpl></div>'
+            tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div>' + separator + '</tpl></div>'
         });
 
         this.typeCond.on('select', this.typeCondSelected, this);
@@ -391,24 +398,6 @@ Ext.define( 'Comete.QueryCondition', {
         });
         return panel;
     },    
-    createFlagCond: function() {
-        var flagCombo = Ext.create('Ext.form.field.ComboBox', {
-            valueField: 'id', 
-            displayField: 'label',
-            store: this.flagStore,
-            editable: false,
-            width: 100,
-            tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div></tpl></div>'
-        });
-
-        var panel = Ext.create('Ext.panel.Panel', {
-            layout: 'hbox',
-            border: false,
-            items: [ flagCombo ]
-        });
-
-        return panel;
-    },
     createKeywordCond: function() { 
         var keywordProxy = Ext.create( 'Ext.data.proxy.Ajax', {
             reader: {
@@ -580,6 +569,24 @@ Ext.define( 'Comete.QueryCondition', {
         });
  
         return panel;
+    },
+    createFlagCond: function() {
+        var flagCombo = Ext.create('Ext.form.field.ComboBox', {
+            valueField: 'id', 
+            displayField: 'label',
+            store: this.flagStore,
+            editable: false,
+            width: 100,
+            tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div></tpl></div>'
+        });
+
+        var panel = Ext.create('Ext.panel.Panel', {
+            layout: 'hbox',
+            border: false,
+            items: [ flagCombo ]
+        });
+
+        return panel;
     }, 
     setText: function(text, lang) {
         var titleField = this.typeCondPanel.getComponent(0).getComponent(0);
@@ -650,6 +657,9 @@ Ext.define( 'Comete.QueryCondition', {
 
             this.data = year + '-' + ( month < 10 ? '0' : '' ) + month + '-' + ( day < 10 ? '0' : '' ) + day;
         }
+        else if(this.typeCond.getValue().endsWith('flag'))
+            this.data = this.typeCondPanel.getComponent(0).getComponent(0).getValue();
+
         if (this.data == null || this.data == "")
             return null;
 

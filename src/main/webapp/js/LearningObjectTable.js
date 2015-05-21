@@ -125,11 +125,6 @@
                 res = "<img src=\"" + value + "\" height=\"48\" width=\"48\">";
             return res;
         };
-
-        this.renderPending = function( value, metaData, lo ) {
-            return( value ? Ext.String.format( '<img src="images/flag-pending.png" title="{0}" alt="{0}" height="20"/>', tr( 'Pending' ) ) : '' );
-        };
-
         this.renderInactive = function( value, metaData, lo ) {
             return( value ? Ext.String.format( '<img src="images/flag-inactive.png" title="{0}" alt="{0}" height="20"/>', tr( 'Inactive' ) ) : '' );
         };
@@ -140,6 +135,10 @@
 
         this.renderBrokenLink = function( value, metaData, lo ) {
             return( value ? Ext.String.format( '<img src="images/flag-brokenLink.png" title="{0}" alt="{0}" height="20"/>', tr( 'Broken Link' ) ) : '' );
+        };
+
+        this.renderPending = function( value, metaData, lo ) {
+            return( value ? Ext.String.format( '<img src="images/flag-pending.png" title="{0}" alt="{0}" height="20"/>', tr( 'Pending' ) ) : '' );
         };
 
         this.renderTitle = function( value, metaData, lo ) {
@@ -158,10 +157,10 @@
                 { text: tr( 'Id' ), width: 100,  dataIndex: 'id', hidden: true/*!this.editable*/ },
                 { text: tr( 'Title' ), flex: 1, dataIndex: 'title', sortable: true, renderer: this.renderTitle },
                 { text: tr( 'Type' ), width: 80,  dataIndex: 'type', sortable: true, renderer: this.renderType, hidden: true /*!this.editable*/ },
-                { text: tr( 'Pending' ), width: 30,  dataIndex: 'pending', hidden: !this.editable, renderer: this.renderPending },
                 { text: tr( 'Inactive' ), width: 30,  dataIndex: 'inactive', hidden: !this.editable, renderer: this.renderInactive },
                 { text: tr( 'Invalid' ), width: 30,  dataIndex: 'invalid', hidden: !this.editable, renderer: this.renderInvalid },
-                { text: tr( 'Broken Link' ), width: 30,  dataIndex: 'brokenLink', hidden: !this.editable, renderer: this.renderBrokenLink }
+                { text: tr( 'Broken Link' ), width: 30,  dataIndex: 'brokenLink', hidden: !this.editable, renderer: this.renderBrokenLink },
+                { text: tr( 'Pending' ), width: 30,  dataIndex: 'pending', hidden: !this.editable, renderer: this.renderPending }
             ],          
             viewConfig: {
                 loadingText: tr('Loading') + '...',

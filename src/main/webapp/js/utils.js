@@ -940,22 +940,22 @@ Ext.define( 'Comete.ApplyModifDialog', {
 
         this.rbApplyOnSelectedRes = Ext.create('Ext.form.field.Radio', {
             id: 'RBApplyModifOnSelectedRes',
-            boxLabel: tr( 'the selected resources.' ),
+            boxLabel: tr( 'the selected resources' ),
             name: 'RBApplyModif',
             value: true
         });
 
         this.rbApplyOnFoundRes = Ext.create('Ext.form.field.Radio', {
             id: 'RBApplyModifOnFoundRes',
-            boxLabel: tr( 'all the found resources.' ),
+            boxLabel: tr( 'all the found resources' ),
             name: 'RBApplyModif'
         });
 
         this.formPanel = Ext.create('Ext.form.Panel', { 
             border: false,
-            margin: '10',            
+            margin: '10',
             items: [ 
-                { html: tr( 'Apply the modifications on' ) },
+                { border: false, html: tr( 'Apply the modifications on' ) + ':<br/><br/>' },
                 { xtype: 'radiogroup', id: 'RBGroupApplyModif', width: '100%', height: 80, columns: 1, items: [
                     this.rbApplyOnSelectedRes,
                     this.rbApplyOnFoundRes
@@ -966,7 +966,7 @@ Ext.define( 'Comete.ApplyModifDialog', {
         var cfg = {
             title: tr( 'Confirmation' ),
             width: 300,
-            height: 160,
+            height: 180,
             resizable: false,
             buttons: [ {text:'OK', handler: this.submit, scope: this.caller}, {text:tr('Cancel'), handler: this.close, scope: this}],  
             items: [ { border: false, items: this.formPanel } ]
