@@ -123,6 +123,33 @@ public class LearningObjectResource {
     }
 
     @GET
+    @Path( "{id}/invalid" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response isLearningObjectInvalid( @Context HttpServletRequest request, @PathParam( "id" ) String id ) throws Exception {
+        if (!Security.getInstance().isAuthorized(request))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to retrieve the flag of a learning object.").build();
+
+        String loUri = ca.licef.comete.core.util.Util.makeURI(id, COMETE.LearningObject);
+        boolean isInvalid = Metadata.getInstance().getLearningObjectFlag(loUri, "invalid");
+        return (Response.ok( isInvalid + "" ).build());
+    }
+
+    @POST
+    @Path( "setInvalid" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response setLearningObjectsInvalid( @Context HttpServletRequest request, @FormParam( "ids" ) String ids, @FormParam( "value" ) String isInvalid ) throws Exception {
+        if (!Security.getInstance().isAuthorized(request))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to update the flag of a learning object.").build();
+
+        String[] idArray = ids.split( "," );
+        for( int i = 0; i < idArray.length; i++ ) {
+            String loUri = ca.licef.comete.core.util.Util.makeURI(idArray[ i ], COMETE.LearningObject);
+            Metadata.getInstance().setLearningObjectFlag( loUri, "invalid", "true".equals( isInvalid ) );
+        }
+        return (Response.ok().build());
+    }
+
+    @GET
     @Path( "{id}/brokenLink" )
     @Produces( MediaType.TEXT_PLAIN )
     public Response isLearningObjectBrokenLink( @Context HttpServletRequest request, @PathParam( "id" ) String id ) throws Exception {
