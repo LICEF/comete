@@ -183,6 +183,8 @@
     'not from organization': 'ne provenant pas de l\'organisation',
     'related to the category': 'relatives à la catégorie',
     'not related to the category': 'non relatives à la catégorie',
+    'from the harvested repository': 'provenant du dépôt',
+    'not from the harvested repository': 'ne provenant pas du dépôt',
     'having flag': 'ayant l\'indicateur',
     'not having flag': 'n\'ayant pas l\'indicateur',
     'and subcategories': 'et ses sous-catégories',

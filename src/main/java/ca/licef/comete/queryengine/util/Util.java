@@ -34,10 +34,11 @@ public class Util {
     public static final String NOT_ORGANIZATION_PREFIX = "!org";
     public static final String CONCEPT_PREFIX = "vocConcept";
     public static final String NOT_CONCEPT_PREFIX = "!vocConcept";
+    public static final String FROM_HARVESTED_REPO = "fromHarvestedRepo";
+    public static final String NOT_FROM_HARVESTED_REPO = "!fromHarvestedRepo";
     public static final String FLAG_PREFIX = "flag";
     public static final String NOT_FLAG_PREFIX = "!flag";
     public static final String ADDED_DATE = "addedDate";
-    public static final String FROM_HARVESTED_REPO = "fromHarvestedRepo";
 
     public static final String REL_OP_GTE = "gte";
     public static final String REL_OP_GT = "gt";
@@ -60,8 +61,6 @@ public class Util {
 
         String orClauses = "";
         String firstClause = null;
-
-        boolean isFromHarvestedRepoClause = false;
 
         boolean includeEquivalence = false;
 
@@ -173,6 +172,14 @@ public class Util {
                             clause = "";
                     }
                 }
+                else if (FROM_HARVESTED_REPO.equals(condType) || condType.equals(NOT_FROM_HARVESTED_REPO)) {
+                    String uri = obj.getString("value");
+                    clause = CoreUtil.getQuery("queryengine/advancedFromHarvestedRepoFragment.sparql", uri);
+
+                    //negation
+                    if (condType.equals(NOT_FROM_HARVESTED_REPO))
+                        clause = "MINUS { " + clause + " }\n";
+                }
                 else if (FLAG_PREFIX.equals(condType) || condType.equals(NOT_FLAG_PREFIX)) {
                     String flag = obj.getString("value");
                     clause = CoreUtil.getQuery("queryengine/advancedFlagFragment.sparql", flag);
@@ -185,11 +192,6 @@ public class Util {
                     String relOp = obj.getString( "relOp" );
                     String date = obj.getString( "value" );
                     clause = makeAddedDateClause( relOp, date );
-                }
-                else if (FROM_HARVESTED_REPO.equals(condType)) {
-                    isFromHarvestedRepoClause = true;
-                    String uri = obj.getString("value");
-                    clause = CoreUtil.getQuery("queryengine/advancedFromHarvestedRepoFragment.sparql", uri);
                 }
 
                 if (clause != null) {
@@ -212,10 +214,6 @@ public class Util {
         }
         //last cond
         clauses += orClauses;
-
-        //mini hack. clause block splitted in java to have this clause once... -AM
-        if (isFromHarvestedRepoClause)
-            clauses += "\n?s comete:hasMetadataRecord ?r .";
 
         return new String[]{fromClause, clauses, Boolean.toString(includeEquivalence)};
     }

@@ -237,6 +237,11 @@ Ext.define( 'Comete.QueryCondition', {
             ]
         });
 
+        this.repositoryStore = Ext.create('Ext.data.Store', {
+            model: 'RepositoryModel',
+            proxy: repositoryProxy
+        });
+
         var choices = [
                 {'id':'title', 'label': tr('whose title contains') },
                 {'id':'description', 'label': tr('whose description contains') },
@@ -252,7 +257,9 @@ Ext.define( 'Comete.QueryCondition', {
 
 
         if (isAdmin()) {
-            choices.push( {'id':'flag', 'label': tr('having flag') }, 
+            choices.push( {'id':'fromHarvestedRepo', 'label': tr('from the harvested repository') }, 
+                          {'id':'!fromHarvestedRepo', 'label': tr('not from the harvested repository') },
+                          {'id':'flag', 'label': tr('having flag') }, 
                           {'id':'!flag', 'label': tr('not having flag') } );
         }
 
@@ -305,6 +312,9 @@ Ext.define( 'Comete.QueryCondition', {
             displayField: 'label',
             store: this.choiceStore,
             width: 240,
+            listConfig: {
+                maxHeight: 400
+            },
             editable: false,
             value: 'title',
             tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div>' + separator + '</tpl></div>'
@@ -317,7 +327,6 @@ Ext.define( 'Comete.QueryCondition', {
             border: false,
             items: this.createTextCond()
         });
-
  
         cfg = {
             margin: '0 0 5 0',
@@ -367,8 +376,10 @@ Ext.define( 'Comete.QueryCondition', {
             this.element = this.createConceptCond();
         else if (type == 'addedDate')
             this.element = this.createAddedDateCond();
-        else if (type == 'flag')
+        else if (type == 'flag' || type == '!flag')
             this.element = this.createFlagCond();
+        else if (type == 'fromHarvestedRepo' || type == '!fromHarvestedRepo')
+            this.element = this.createFromHarvestedRepoCond();
         this.setCondPanel(this.element);
     },
     andOrSelected: function(combo) {
@@ -576,7 +587,25 @@ Ext.define( 'Comete.QueryCondition', {
             displayField: 'label',
             store: this.flagStore,
             editable: false,
-            width: 100,
+            width: 120,
+            tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div></tpl></div>'
+        });
+
+        var panel = Ext.create('Ext.panel.Panel', {
+            layout: 'hbox',
+            border: false,
+            items: [ flagCombo ]
+        });
+
+        return panel;
+    }, 
+    createFromHarvestedRepoCond: function() {
+        var flagCombo = Ext.create('Ext.form.field.ComboBox', {
+            valueField: 'uri', 
+            displayField: 'label',
+            store: this.repositoryStore,
+            editable: false,
+            width: 200,
             tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div></tpl></div>'
         });
 
@@ -657,6 +686,8 @@ Ext.define( 'Comete.QueryCondition', {
 
             this.data = year + '-' + ( month < 10 ? '0' : '' ) + month + '-' + ( day < 10 ? '0' : '' ) + day;
         }
+        else if(this.typeCond.getValue().endsWith('fromHarvestedRepo'))
+            this.data = this.typeCondPanel.getComponent(0).getComponent(0).getValue();
         else if(this.typeCond.getValue().endsWith('flag'))
             this.data = this.typeCondPanel.getComponent(0).getComponent(0).getValue();
 

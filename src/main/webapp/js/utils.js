@@ -404,6 +404,11 @@ Ext.define('HarvestReportModel', {
     fields: [ 'restUrl', 'name' ]
 });
 
+Ext.define('RepositoryModel', {
+    extend: 'Ext.data.Model',
+    fields: [ 'uri', 'label' ]
+});
+
 var vocabProxy = Ext.create('Ext.data.proxy.Ajax', {
     reader: {
         type: 'json',
@@ -437,6 +442,14 @@ var harvestReportProxy = Ext.create('Ext.data.proxy.Ajax', {
     reader: {
         type: 'json',
         rootProperty: 'harvestReports',
+    }
+});
+
+var repositoryProxy = Ext.create('Ext.data.proxy.Ajax', {
+    url: 'rest/repositories',
+    reader: {
+        type: 'json',
+        root: 'repositories'
     }
 });
 
