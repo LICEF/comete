@@ -64,14 +64,17 @@
             var selectedLOs = this.getSelected();
             if( selectedLOs ) {
                 var listOfLOs = selectedLOs.map( function( lo ) { return( lo.getData().id ); } ).join( ',' );
-                var action = (flag == "All")?'clearFlags':'set' + flag;
+                var action = (flag == 'all')?'clearFlags':'setFlag';
+                var params = {
+                    ids: listOfLOs,
+                    value: value
+                };
+                if( flag != 'all' ) 
+                    params.flag = flag;
                 Ext.Ajax.request( {
                     url: 'rest/learningObjects/' + action,
                     method: 'POST',
-                    params: {
-                        ids: listOfLOs,
-                        value: value
-                    },
+                    params: params,
                     success: function(response, opts) {
                         this.loStore.reload();
                     },
@@ -104,19 +107,19 @@
             items: [ 
                 { text: tr('Modify Flags'), menu: {
                      items: [
-                        { text: tr( 'Active' ), handler: function() { this.setFlag( 'Inactive', false ); }, scope: this },
-                        { text: tr( 'Inactive' ), handler: function() { this.setFlag( 'Inactive', true ); }, scope: this },
+                        { text: tr( 'Active' ), handler: function() { this.setFlag( 'inactive', false ); }, scope: this },
+                        { text: tr( 'Inactive' ), handler: function() { this.setFlag( 'inactive', true ); }, scope: this },
                         '-',
-                        { text: tr( 'Valid' ), handler: function() { this.setFlag( 'Invalid', false ); }, scope: this },
-                        { text: tr( 'Invalid' ), handler: function() { this.setFlag( 'Invalid', true ); }, scope: this },
+                        { text: tr( 'Valid' ), handler: function() { this.setFlag( 'invalid', false ); }, scope: this },
+                        { text: tr( 'Invalid' ), handler: function() { this.setFlag( 'invalid', true ); }, scope: this },
                         '-',
-                        { text: tr( 'Valid Link' ), handler: function() { this.setFlag( 'BrokenLink', false ); }, scope: this },
-                        { text: tr( 'Broken Link' ), handler: function() { this.setFlag( 'BrokenLink', true ); }, scope: this },
+                        { text: tr( 'Valid Link' ), handler: function() { this.setFlag( 'brokenLink', false ); }, scope: this },
+                        { text: tr( 'Broken Link' ), handler: function() { this.setFlag( 'brokenLink', true ); }, scope: this },
                         '-',
-                        { text: tr( 'Accepted' ), handler: function() { this.setFlag( 'Pending', false ); }, scope: this  },
-                        { text: tr( 'Pending' ), handler: function() { this.setFlag( 'Pending', true ); }, scope: this  },
+                        { text: tr( 'Accepted' ), handler: function() { this.setFlag( 'pending', false ); }, scope: this  },
+                        { text: tr( 'Pending' ), handler: function() { this.setFlag( 'pending', true ); }, scope: this  },
                         '-',
-                        { text: tr( 'Delete all flags' ), handler: function() { this.setFlag( 'All' ); }, scope: this  },
+                        { text: tr( 'Delete all flags' ), handler: function() { this.setFlag( 'all' ); }, scope: this  },
                      ]
                 } },
                 { text: tr('Delete'), handler: this.deleteLearningObjects, scope: this } ]
