@@ -323,6 +323,11 @@ public class Metadata {
     }
 
     public void setLearningObjectsFlagByQuery( String query, String lang, boolean isShowHiddenRes, String flag, boolean value ) throws Exception {
+        (new ThreadInvoker(new Invoker(this, "ca.licef.comete.metadata.Metadata",
+                               "doSetLearningObjectsFlagByQuery", new Object[]{ query, lang, isShowHiddenRes, flag, value }))).start();
+    }
+
+    public void doSetLearningObjectsFlagByQuery( String query, String lang, boolean isShowHiddenRes, String flag, boolean value ) throws Exception {
         ResultSet rs = QueryEngine.getInstance().search( query, "", lang, isShowHiddenRes, "json", 0, Integer.MAX_VALUE, "default", null );
         for( ListIterator it = rs.getEntries(); it.hasNext(); ) {
             ResultEntry entry = (ResultEntry)it.next();
@@ -382,6 +387,11 @@ public class Metadata {
     }
 
     public void deleteLearningObjectsByQuery( String query, String lang, boolean isShowHiddenRes ) throws Exception {
+        (new ThreadInvoker(new Invoker(this, "ca.licef.comete.metadata.Metadata",
+                               "doDeleteLearningObjectsByQuery", new Object[]{ query, lang, isShowHiddenRes }))).start();
+    }
+
+    public void doDeleteLearningObjectsByQuery( String query, String lang, boolean isShowHiddenRes ) throws Exception {
         ResultSet rs = QueryEngine.getInstance().search( query, "", lang, isShowHiddenRes, "json", 0, Integer.MAX_VALUE, "default", null );
         for( ListIterator it = rs.getEntries(); it.hasNext(); ) {
             ResultEntry entry = (ResultEntry)it.next();
