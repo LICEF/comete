@@ -351,6 +351,20 @@ public class Metadata {
         updateOaiDatestamp( recordUri, new Date() );
     }
 
+    public void clearLearningObjectsFlagByQuery( String query, String lang, boolean isShowHiddenRes ) throws Exception {
+        (new ThreadInvoker(new Invoker(this, "ca.licef.comete.metadata.Metadata",
+                "doClearLearningObjectsFlagByQuery", new Object[]{ query, lang, isShowHiddenRes }))).start();
+    }
+
+    public void doClearLearningObjectsFlagByQuery( String query, String lang, boolean isShowHiddenRes ) throws Exception {
+        ResultSet rs = QueryEngine.getInstance().search( query, "", lang, isShowHiddenRes, "json", 0, Integer.MAX_VALUE, "default", null );
+        for( ListIterator it = rs.getEntries(); it.hasNext(); ) {
+            ResultEntry entry = (ResultEntry)it.next();
+            String loUri = CoreUtil.makeURI( entry.getId(), COMETE.LearningObject );
+            clearLearningObjectFlags( loUri );
+        }
+    }
+
     public void clearLearningObjectFlags(String loUri) throws Exception {
         Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", "doClearLearningObjectFlags", new Object[] { loUri } );
         tripleStore.transactionalCall( inv, TripleStore.WRITE_MODE );

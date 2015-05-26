@@ -255,8 +255,9 @@ Ext.define( 'Comete.SearchManager', {
         } );
     },
     setFlagForFoundLearningObjects: function( flag, value ) {
+        var action = (flag == 'all')?'clearFlagsByQuery':'setFlagByQuery';
         Ext.Ajax.request( {
-            url: 'rest/learningObjects/setFlagByQuery',
+            url: 'rest/learningObjects/' + action,
             method: 'GET',
             params: {
                 query: encodeURIComponent( JSON.stringify( this.loManager.learningObjectTable.getQuery() ) ),

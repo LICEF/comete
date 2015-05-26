@@ -157,6 +157,26 @@ public class LearningObjectResource {
         return (Response.ok().build());
     }
 
+    @GET
+    @Path( "clearFlagsByQuery" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response clearLearningObjectsFlagByQuery( @Context HttpServletRequest req, @QueryParam( "query" ) String query, @QueryParam( "lang" ) String lang ) throws Exception {
+        if (!Security.getInstance().isAuthorized(req))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to the flag of a learning object").build();
+
+        String decodedQuery = query;
+        try {
+            decodedQuery = URLDecoder.decode( query, "UTF-8" );
+        }
+        catch( UnsupportedEncodingException e ) {
+            e.printStackTrace();
+        }
+
+        Metadata.getInstance().clearLearningObjectsFlagByQuery( decodedQuery, lang, true );
+
+        return (Response.ok().build());
+    }
+
     @DELETE
     @Path( "{id}" )
     @Produces( MediaType.TEXT_PLAIN )
