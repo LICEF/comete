@@ -223,8 +223,8 @@
     vocabularySelected: function(combo, records) {        
         searchManager.clear();
         this.breadcrumb.clear();
-        this.currentVocRestUrl = records[0].getData().restUrl;
-        this.currentVocUri = records[0].getData().uri;
+        this.currentVocRestUrl = records.getData().restUrl;
+        this.currentVocUri = records.getData().uri;
         this.vocConceptProxy.url = this.currentVocRestUrl + '/topConcepts?showIds=' + this.cbId.getValue() + '&lang=' + this.lang;        
         this.vocConceptStore.load();
         this.currentVocConceptUri = null;
