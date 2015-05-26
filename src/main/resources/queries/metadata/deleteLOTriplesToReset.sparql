@@ -17,5 +17,5 @@ WHERE '{'
              ?p = comete:learningResourceType || ?p = comete:educationalLevel ||
              ?p = comete:extraInfo || ?p = dcterms:format ||
              ?p = dcterms:language || ?p = comete:keyword ||
-             ?p = comete:flag || ?p = ?conceptLink )
+             ?p = ?conceptLink )
 '}'
