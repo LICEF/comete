@@ -60,6 +60,27 @@
             applyModifDialog.show();
         }
 
+        this.doDeleteSelectedLOs = function() {
+            var selectedLOs = this.getSelected();
+            if( selectedLOs ) {
+                var listOfLOs = selectedLOs.map( function( lo ) { return( lo.getData().id ); } ).join( ',' );
+                Ext.Ajax.request( {
+                    url: 'rest/learningObjects/delete',
+                    method: 'POST',
+                    params: {
+                        ids: listOfLOs
+                    },
+                    success: function(response, opts) {
+                        this.loStore.reload();
+                    },
+                    failure: function(response, opts) {
+                        Ext.Msg.alert('Failure', response.responseText );
+                    },
+                    scope: this
+                } );
+            }
+        }
+
         this.doSetFlagForSelectedLOs = function( flag, value ) {
             var selectedLOs = this.getSelected();
             if( selectedLOs ) {
