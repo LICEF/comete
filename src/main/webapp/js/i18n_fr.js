@@ -102,6 +102,7 @@
     'View harvest reports': 'Voir les rapports de moissons',
     'Harvest reports for :':'Rapports de moissons de :',
     'Harvest started.': 'Moisson démarrée.',
+    'Harvest stopped.': 'Moisson arrêtée.',
     'Do you really want to delete report ?': 'Voulez-vous vraiment supprimer le rapport ?',
     'Report deleted.': 'Rapport suprimé.',
 
@@ -213,6 +214,8 @@
     'Start Verification': 'Lancer la vérification',
     'Email for notification (optional)': 'Courriel pour notification (optionnel)',
     'Validation in progress...': 'Validation en cours...',
+    'In progress...': 'Traitement en cours...',
+    'The request has been received and is currently being processed.': 'Le système est en train de traiter la requête.',
     '{0} Completed.': '{0} complète.',
     'This process can take several minutes to complete.<br/><br/>Come again later to retrieve the report.': 'Cette tâche peut prendre quelques minutes à s\'exécuter.<br/><br/>Revenez un peu plus tard pour consulter le rapport.',
     'Show all application profiles': "Voir tous les profils d'application",

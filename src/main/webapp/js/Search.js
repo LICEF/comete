@@ -245,6 +245,7 @@ Ext.define( 'Comete.SearchManager', {
                 lang: lang
             },
             success: function(response, opts) {
+                Ext.Msg.alert(tr( 'In progress...' ), tr( 'The request has been received and is currently being processed.' ) );
                 this.loManager.learningObjectTable.reload();
             },
             failure: function(response, opts) {
@@ -264,6 +265,7 @@ Ext.define( 'Comete.SearchManager', {
                 value: value
             },
             success: function(response, opts) {
+                Ext.Msg.alert(tr( 'In progress...' ), tr( 'The request has been received and is currently being processed.' ) );
                 this.loManager.learningObjectTable.reload();
             },
             failure: function(response, opts) {
