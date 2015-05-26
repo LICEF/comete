@@ -18,10 +18,11 @@ import java.util.Date;
 
 public class Worker implements Runnable {
 
-    public Worker( String id, String url, String metadataNamespace ) {
+    public Worker( String id, String url, String metadataNamespace, boolean isPendingByDefault ) {
         this.id = id;
         this.url = url;
         this.metadataNamespace = metadataNamespace;
+        this.isPendingByDefault = isPendingByDefault;
         this.digester = new Digester();
 
         initRepository();
@@ -60,7 +61,7 @@ public class Worker implements Runnable {
                 getReport().incrementDeleted();
         }
         else {
-            int resp = digester.addOrUpdateHarvestedRecord(identifier, getMetadataNamespace(), datestamp, getRepoId(), metadata);
+            int resp = digester.addOrUpdateHarvestedRecord(identifier, getMetadataNamespace(), datestamp, getRepoId(), metadata, isPendingByDefault);
             if (resp == Digester.ADDED)
                 getReport().incrementAdded();
             else if (resp == Digester.UPDATED)
@@ -86,6 +87,10 @@ public class Worker implements Runnable {
 
     public String getMetadataNamespace() {
         return( metadataNamespace );
+    }
+
+    public boolean isPendingByDefault() {
+        return( isPendingByDefault );
     }
 
     public String getRepoId() {
@@ -136,6 +141,7 @@ public class Worker implements Runnable {
     private String id;
     private String url;
     private String metadataNamespace;
+    private boolean isPendingByDefault;
     private String repoId;
     private String xslt;
     private String from;

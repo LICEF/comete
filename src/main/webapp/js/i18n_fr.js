@@ -90,6 +90,7 @@
     'Repositories': 'Répertoires',
     'Protocol': 'Protocole',
     'Admin email': 'Courriel admin',
+    'Default flag': 'Indicateur de défaut',
     'Add repository': 'Ajouter un répertoire',
     'Modify repository': 'Modifier le répertoire',
     'Repository added.': 'Répertoire ajouté.',

@@ -85,6 +85,7 @@
                      { fieldLabel: 'URL', editable: false },
                      { fieldLabel: 'Format', editable: false },
                      { fieldLabel: tr('Admin email'), editable: false },
+                     { fieldLabel: tr('Default flag'), readOnly:true , xtype: 'checkboxfield', boxLabel: tr( 'Pending' ) },
                      { fieldLabel: 'XSL', xtype: 'textarea', editable: false,
                        inputAttrTpl: 'wrap="off" spellcheck="false"', height: 180 }
                    ]
@@ -151,7 +152,8 @@
                     var format = (jsonDetails.metadataNamespace == 'http://ltsc.ieee.org/xsd/LOM')?'IEEE LOM':'OAI DC';
                     this.detailsPanel.getComponent(4).setValue(format);
                     this.detailsPanel.getComponent(5).setValue(jsonDetails.adminEmail);
-                    this.detailsPanel.getComponent(6).setValue(jsonDetails.xsl);
+                    this.detailsPanel.getComponent(6).setValue(jsonDetails.isPendingByDefault);
+                    this.detailsPanel.getComponent(7).setValue(jsonDetails.xsl);
                 },
                 scope: this 
             } );
@@ -378,6 +380,7 @@ Ext.define( 'Comete.AdminHarvestDefEditor', {
                        value: 'http://ltsc.ieee.org/xsd/LOM',
                        tpl: '<div><tpl for="."><div class="x-boundlist-item">{name}</div></tpl></div>' },
                      { name: 'adminEmail', fieldLabel: tr('Admin email') },
+                     { name: 'isPendingByDefault', fieldLabel: tr('Default flag'), xtype: 'checkboxfield', boxLabel: tr( 'Pending' ) },
                      { fieldLabel: 'XSL',
                        name: 'xsl',
                        xtype: 'textarea', 
@@ -428,7 +431,8 @@ Ext.define( 'Comete.AdminHarvestDefEditor', {
         this.formPanel.getComponent(3).setValue(this.values.url);
         this.formPanel.getComponent(4).setValue(this.values.metadataNamespace);
         this.formPanel.getComponent(5).setValue(this.values.adminEmail);
-        this.formPanel.getComponent(6).setValue(this.values.xsl);
+        this.formPanel.getComponent(6).setValue(this.values.isPendingByDefault);
+        this.formPanel.getComponent(7).setValue(this.values.xsl);
     }        
 });
 

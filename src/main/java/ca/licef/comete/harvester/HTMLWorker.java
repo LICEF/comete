@@ -22,8 +22,8 @@ import licef.XMLUtil;
 
 public class HTMLWorker extends Worker {
 
-    public HTMLWorker( String id, String url, String metadataNamespace ) {
-        super( id, url, metadataNamespace );
+    public HTMLWorker( String id, String url, String metadataNamespace, boolean isPendingByDefault ) {
+        super( id, url, metadataNamespace, isPendingByDefault );
     }
 
     @Override

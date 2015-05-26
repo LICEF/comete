@@ -61,8 +61,8 @@ public class Metadata {
         return learningObjectView;
     }
 
-    public String storeHarvestedRecord(String oaiID, String namespace, String repoUri, String record, String datestamp) throws Exception {
-        String[] res = manageRecord(oaiID, namespace, repoUri, record, datestamp);
+    public String storeHarvestedRecord(String oaiID, String namespace, String repoUri, String record, String datestamp, boolean isPendingByDefault) throws Exception {
+        String[] res = manageRecord(oaiID, namespace, repoUri, record, datestamp, isPendingByDefault);
         String state = res[3];
         if (!"ignored".equals(state)) {
             MetadataFormat metadataFormat = MetadataFormats.getMetadataFormat(namespace);
@@ -227,7 +227,7 @@ public class Metadata {
 
             try {
                 String now = DateUtil.toISOString(new Date(), null, null);
-                String[] res = manageRecord(pseudoOaiID, namespace, null, record, now);
+                String[] res = manageRecord(pseudoOaiID, namespace, null, record, now, false);
                 loURI = res[0];
                 state = res[3];
             } catch (Exception e) {
@@ -447,9 +447,9 @@ public class Metadata {
      * Record's digest
      */
 
-    private String[] manageRecord(String oaiId, String namespace, String repoUri, String record, String datestamp) throws Exception {
+    private String[] manageRecord(String oaiId, String namespace, String repoUri, String record, String datestamp, boolean isPendingByDefault) throws Exception {
         Invoker inv = new Invoker(this, "ca.licef.comete.metadata.Metadata",
-                "digestRecord", new Object[]{record, namespace, repoUri, oaiId, datestamp});
+                "digestRecord", new Object[]{record, namespace, repoUri, oaiId, datestamp, isPendingByDefault});
         String[] res = (String[])tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
 
         //Identity and vocabulary referencement management
@@ -461,7 +461,7 @@ public class Metadata {
         return res;
     }
 
-    public String[] digestRecord(String record, String namespace, String repoURI, String oaiId, String datestamp) throws Exception {
+    public String[] digestRecord(String record, String namespace, String repoURI, String oaiId, String datestamp, boolean isPendingByDefault) throws Exception {
         System.out.println( "Digesting record oaiId=" + oaiId + " from repoURI=" + repoURI + " datestamp=" + datestamp );        
         ArrayList<Triple> triples = new ArrayList<Triple>();
         String storeId;
@@ -506,6 +506,8 @@ public class Metadata {
                 loURI = CoreUtil.makeURI(COMETE.LearningObject);
                 triples.add( new Triple( loURI, RDF.type, COMETE.LearningObject ) );
                 triples.add( new Triple( loURI, COMETE.added, DateUtil.toISOString(new Date(), null, null) ) );
+                if( isPendingByDefault )
+                    triples.add( new Triple( loURI, COMETE.flag, "pending" ) );
             }
 
             storeId = store.createDigitalObject( Store.PATH_RECORDS );
@@ -762,7 +764,7 @@ public class Metadata {
             String namespace = tuple.getValue("metadataFormat").getContent();
             String storeId = tuple.getValue("storeId").getContent();
             String record = Store.getInstance().getDatastream(storeId, Constants.DATASTREAM_ORIGINAL_DATA);
-            manageRecord(oaiId, namespace, null, record, null);
+            manageRecord(oaiId, namespace, null, record, null, false);
         }
     }
 
