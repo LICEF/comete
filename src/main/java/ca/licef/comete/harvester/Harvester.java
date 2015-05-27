@@ -72,7 +72,7 @@ public class Harvester {
     }
 
     public String storeDefinition(String defId, String name, String type, String url, String ns,
-                                  String adminEmail, boolean isPendingByDefault, String xsl, boolean isUpdate) throws Exception {
+                                  String adminEmail, boolean isPendingByDefault, boolean isCheckingBrokenLink, String xsl, boolean isUpdate) throws Exception {
         if ("".equals(defId))
             return "ID is mandatory";
 
@@ -96,6 +96,7 @@ public class Harvester {
         if (!"".equals(adminEmail))
             harvestDef.put("adminEmail", adminEmail);
         harvestDef.put("isPendingByDefault", isPendingByDefault);
+        harvestDef.put("isCheckingBrokenLink", isCheckingBrokenLink);
 
         IOUtil.writeStringToFile(harvestDef.toString(), new File(defFolder, defId + ".json"));
 
@@ -192,12 +193,13 @@ public class Harvester {
         String type = (String)json.get( "type" );
         String url = (String)json.get( "url" );
         boolean isPendingByDefault = ((Boolean)json.get( "isPendingByDefault" )).booleanValue();
+        boolean isCheckingBrokenLink = ((Boolean)json.get( "isCheckingBrokenLink" )).booleanValue();
         String metadataNamespace = (String)json.get( "metadataNamespace" );
         Worker worker = null;
         if( "OAI".equals( type ) )
-            worker = new OAIWorker( defId, url, metadataNamespace, isPendingByDefault );
+            worker = new OAIWorker( defId, url, metadataNamespace, isPendingByDefault, isCheckingBrokenLink );
         else if( "HTML".equals( type ) )
-            worker = new HTMLWorker( defId, url, metadataNamespace, isPendingByDefault );
+            worker = new HTMLWorker( defId, url, metadataNamespace, isPendingByDefault, isCheckingBrokenLink );
         worker.setXslt( getXsl(defId) );
         worker.setFrom( from );
         workers.put( defId, worker );
@@ -244,6 +246,8 @@ public class Harvester {
                 reports.add(fileName);
             }
         }
+        java.util.Collections.sort(reports); 
+        java.util.Collections.reverse(reports); 
         return reports.toArray(new String[reports.size()]);
     }
 

@@ -24,10 +24,10 @@ public class BrokenLinkManagerResource {
     @Path( "/verification" )
     @Produces( MediaType.TEXT_HTML )
     public Response getVerification() throws Exception {
-        if( !checker.isRunning() )
+        if( !BrokenLinkChecker.getInstance().isRunning() )
             return( Response.status( Response.Status.NOT_FOUND ).entity( "No verification in progress." ).build() );
         else {
-            int progress = checker.getProgress();
+            int progress = BrokenLinkChecker.getInstance().getProgress();
             return( Response.status( Response.Status.OK ).entity( "Verification in progress: " + progress + "%." ).build() );
         }
     }
@@ -39,11 +39,11 @@ public class BrokenLinkManagerResource {
         if( !Security.getInstance().isAuthorized( request ) )
             return( Response.status( Response.Status.UNAUTHORIZED ).entity( "Not authorized to launch broken links verification." ).build() );
 
-        if( checker.isRunning() )
+        if( BrokenLinkChecker.getInstance().isRunning() )
             return( Response.status( 503 /* Service unavailable */ ).entity( "The Broken Link Manager is already in the process of validating broken links." ).build() );
 
         try {
-            checker.start( notifEmail );
+            BrokenLinkChecker.getInstance().start( notifEmail );
 
             return Response.ok( "Verification started on " + (new Date()) ).build();
         }
@@ -56,13 +56,13 @@ public class BrokenLinkManagerResource {
     @Path( "/report" )
     @Produces( MediaType.TEXT_HTML )
     public Response getReport( @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) throws Exception {
-        if( checker.isReportAvailable( lang ) ) {
+        if( BrokenLinkChecker.getInstance().isReportAvailable( lang ) ) {
             StringWriter str = new StringWriter();
             BufferedWriter output = null;
             BufferedReader input = null;
             try {
                 output = new BufferedWriter( str );
-                input = new BufferedReader( new FileReader( checker.getReport( lang ) ) );
+                input = new BufferedReader( new FileReader( BrokenLinkChecker.getInstance().getReport( lang ) ) );
 
                 char[] buffer = new char[ 4096 ];
                 int readChars = 0;
@@ -88,14 +88,12 @@ public class BrokenLinkManagerResource {
     @Path( "/report" )
     @Produces( MediaType.TEXT_HTML )
     public Response getReportAvailability( @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) throws Exception {
-        if( checker.isReportAvailable( lang ) ) {
+        if( BrokenLinkChecker.getInstance().isReportAvailable( lang ) ) {
             String reportLocation = Core.getInstance().getCometeUrl() + "/rest/brokenLinkManager/report?lang="+lang;
             return( Response.status( Response.Status.OK ).header( "report-location", reportLocation ).build() );
         }
         else 
             return( Response.status( Response.Status.NOT_FOUND ).build() );
     }
-
-    private BrokenLinkChecker checker = new BrokenLinkChecker();
 
 }

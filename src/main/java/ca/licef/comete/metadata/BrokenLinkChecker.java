@@ -38,6 +38,12 @@ public class BrokenLinkChecker implements Runnable {
     public BrokenLinkChecker() {
     }
 
+    public static BrokenLinkChecker getInstance() {
+        if (instance == null)
+            instance = new BrokenLinkChecker();
+        return (instance);
+    }
+
     public void start( String notifMail ) throws Exception {
         if( master == null ) {
             this.notifMail = notifMail;
@@ -143,8 +149,15 @@ public class BrokenLinkChecker implements Runnable {
         return( totalLinkCount == 0 ? 100 : ( totalLinkCount - linksToProcess.size() ) * 100 / totalLinkCount );
     }
 
-    // Based from DeadlinkWork class found in ori-oai-indexing module. - FB
     public Result testUrlLocation(URL urlLocation) throws IOException {
+        Result result = testUrlLocationInt( urlLocation );
+        if( result.status >= 300 && result.status < 400 )
+            result = testUrlLocationInt( new URL( result.redirectionUrl ) );
+        return( result ); 
+    }
+
+    // Based from DeadlinkWork class found in ori-oai-indexing module. - FB
+    private Result testUrlLocationInt(URL urlLocation) throws IOException {
         String redirectionUrl = null;
 
         // Case of an HTTP URL
@@ -397,9 +410,7 @@ public class BrokenLinkChecker implements Runnable {
                     if( link == null )
                         break;
 
-                    Result result = testUrlLocation( new URL( link ) );
-                    if( result.status >= 300 && result.status < 400 )
-                        result = testUrlLocation( new URL( result.redirectionUrl ) );
+                    Result result = testUrlLocation( new URL( link ) ); 
                     boolean isValid = ( result.status == 200 );
                     if( isValid )
                         strRes = "VALID";
@@ -433,5 +444,7 @@ public class BrokenLinkChecker implements Runnable {
     private Thread master;
 
     private String notifMail;
+
+    private static BrokenLinkChecker instance;
 
 }

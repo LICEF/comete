@@ -79,11 +79,13 @@ public class HarvestDefinitionResource {
                                             @FormParam("ns") String ns,
                                             @FormParam("adminEmail") String adminEmail,
                                             @FormParam("isPendingByDefault") String isPendingByDefault,
+                                            @FormParam("isCheckingBrokenLink") String isCheckingBrokenLink,
                                             @FormParam("xsl") String xsl ) throws Exception {
         if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to add harvest definition.").build();
 
-        String errorMessage = Harvester.getInstance().storeDefinition(id, name, type, url, ns, adminEmail, "on".equals(isPendingByDefault), xsl, false);
+        String errorMessage = Harvester.getInstance().storeDefinition(id, name, type, url, ns, adminEmail, 
+            "on".equals(isPendingByDefault), "on".equals(isCheckingBrokenLink), xsl, false);
         StringWriter out = new StringWriter();
         try {
             JSONWriter json = new JSONWriter( out ).object();
@@ -117,11 +119,13 @@ public class HarvestDefinitionResource {
                                             @FormParam("ns") String ns,
                                             @FormParam("adminEmail") String adminEmail,
                                             @FormParam("isPendingByDefault") String isPendingByDefault,
+                                            @FormParam("isCheckingBrokenLink") String isCheckingBrokenLink,
                                             @FormParam("xsl") String xsl) throws Exception {
         if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to add harvest definition.").build();
 
-        String errorMessage = Harvester.getInstance().storeDefinition(id, name, type, url, ns, adminEmail, "on".equals( isPendingByDefault ), xsl, true);
+        String errorMessage = Harvester.getInstance().storeDefinition(id, name, type, url, ns, adminEmail, 
+            "on".equals( isPendingByDefault ), "on".equals( isCheckingBrokenLink ), xsl, true);
         StringWriter out = new StringWriter();
         try {
             JSONWriter json = new JSONWriter( out ).object();

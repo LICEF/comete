@@ -36,6 +36,7 @@ import org.ariadne.validation.utils.ValidationUtils;
 
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.*;
 
@@ -61,8 +62,8 @@ public class Metadata {
         return learningObjectView;
     }
 
-    public String storeHarvestedRecord(String oaiID, String namespace, String repoUri, String record, String datestamp, boolean isPendingByDefault) throws Exception {
-        String[] res = manageRecord(oaiID, namespace, repoUri, record, datestamp, isPendingByDefault);
+    public String storeHarvestedRecord(String oaiID, String namespace, String repoUri, String record, String datestamp, boolean isPendingByDefault, boolean isCheckingBrokenLink) throws Exception {
+        String[] res = manageRecord(oaiID, namespace, repoUri, record, datestamp, isPendingByDefault, isCheckingBrokenLink);
         String state = res[3];
         if (!"ignored".equals(state)) {
             MetadataFormat metadataFormat = MetadataFormats.getMetadataFormat(namespace);
@@ -227,7 +228,7 @@ public class Metadata {
 
             try {
                 String now = DateUtil.toISOString(new Date(), null, null);
-                String[] res = manageRecord(pseudoOaiID, namespace, null, record, now, false);
+                String[] res = manageRecord(pseudoOaiID, namespace, null, record, now, false, false);
                 loURI = res[0];
                 state = res[3];
             } catch (Exception e) {
@@ -461,9 +462,9 @@ public class Metadata {
      * Record's digest
      */
 
-    private String[] manageRecord(String oaiId, String namespace, String repoUri, String record, String datestamp, boolean isPendingByDefault) throws Exception {
+    private String[] manageRecord(String oaiId, String namespace, String repoUri, String record, String datestamp, boolean isPendingByDefault, boolean isCheckingBrokenLink) throws Exception {
         Invoker inv = new Invoker(this, "ca.licef.comete.metadata.Metadata",
-                "digestRecord", new Object[]{record, namespace, repoUri, oaiId, datestamp, isPendingByDefault});
+                "digestRecord", new Object[]{record, namespace, repoUri, oaiId, datestamp, isPendingByDefault, isCheckingBrokenLink});
         String[] res = (String[])tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
 
         //Identity and vocabulary referencement management
@@ -475,7 +476,7 @@ public class Metadata {
         return res;
     }
 
-    public String[] digestRecord(String record, String namespace, String repoURI, String oaiId, String datestamp, boolean isPendingByDefault) throws Exception {
+    public String[] digestRecord(String record, String namespace, String repoURI, String oaiId, String datestamp, boolean isPendingByDefault, boolean isCheckingBrokenLink) throws Exception {
         System.out.println( "Digesting record oaiId=" + oaiId + " from repoURI=" + repoURI + " datestamp=" + datestamp );        
         ArrayList<Triple> triples = new ArrayList<Triple>();
         String storeId;
@@ -561,6 +562,10 @@ public class Metadata {
         Triple[] extractedTriples = Triple.readTriplesFromXml(extractedTriplesAsXml);
         triples.addAll(Arrays.asList(extractedTriples));
 
+
+        if( isCheckingBrokenLink ) 
+            manageBrokenLinks( loURI, triples );
+
         //format adjustment
         manageFormat(loURI, triples);
 
@@ -636,6 +641,32 @@ public class Metadata {
             Triple tripleFormat = new Triple( loURI, DCTERMS.format, format );
             triples.add(tripleFormat);
         }
+    }
+
+    private void manageBrokenLinks( String loURI, ArrayList<Triple> triples ) throws Exception {
+        boolean isBrokenLinkFound = false;
+        for (Triple triple : triples) {
+            if (FOAF.page.getURI().equals(triple.getPredicate())) {
+                String location = triple.getObject();
+                if( location != null && !location.startsWith( "http" ) )
+                    location = "http://" + location;
+                try {
+                    BrokenLinkChecker.Result result = BrokenLinkChecker.getInstance().testUrlLocation( new URL( location ) );
+                    boolean isValid = ( result.status == 200 );
+                    if( !isValid ) {
+                        isBrokenLinkFound = true;
+                        break;
+                    }
+                }
+                catch( IOException e ) {
+                    // Assume that the link is broken if the testUrlLocation() method cannot complete.
+                    isBrokenLinkFound = true;
+                    break;
+                }
+            }
+        }
+        if( isBrokenLinkFound )
+            triples.add( new Triple( loURI, COMETE.flag, "brokenLink" ) );
     }
 
     private void manageLanguages( String recordURI, String loURI, ArrayList<Triple> triples ) {
@@ -778,7 +809,7 @@ public class Metadata {
             String namespace = tuple.getValue("metadataFormat").getContent();
             String storeId = tuple.getValue("storeId").getContent();
             String record = Store.getInstance().getDatastream(storeId, Constants.DATASTREAM_ORIGINAL_DATA);
-            manageRecord(oaiId, namespace, null, record, null, false);
+            manageRecord(oaiId, namespace, null, record, null, false, false);
         }
     }
 

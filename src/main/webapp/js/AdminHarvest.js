@@ -85,7 +85,8 @@
                      { fieldLabel: 'URL', editable: false },
                      { fieldLabel: 'Format', editable: false },
                      { fieldLabel: tr('Admin email'), editable: false },
-                     { fieldLabel: tr('Default flag'), readOnly:true , xtype: 'checkboxfield', boxLabel: tr( 'Pending' ) },
+                     { fieldLabel: tr('Actions'), readOnly:true , xtype: 'checkboxfield', boxLabel: tr( 'Mark resources as Pending' ) },
+                     { readOnly:true , xtype: 'checkboxfield', boxLabel: tr( 'Mark resources that have broken links' ) },
                      { fieldLabel: 'XSL', xtype: 'textarea', editable: false,
                        inputAttrTpl: 'wrap="off" spellcheck="false"', height: 180 }
                    ]
@@ -153,7 +154,8 @@
                     this.detailsPanel.getComponent(4).setValue(format);
                     this.detailsPanel.getComponent(5).setValue(jsonDetails.adminEmail);
                     this.detailsPanel.getComponent(6).setValue(jsonDetails.isPendingByDefault);
-                    this.detailsPanel.getComponent(7).setValue(jsonDetails.xsl);
+                    this.detailsPanel.getComponent(7).setValue(jsonDetails.isCheckingBrokenLink);
+                    this.detailsPanel.getComponent(8).setValue(jsonDetails.xsl);
                 },
                 scope: this 
             } );
@@ -380,7 +382,8 @@ Ext.define( 'Comete.AdminHarvestDefEditor', {
                        value: 'http://ltsc.ieee.org/xsd/LOM',
                        tpl: '<div><tpl for="."><div class="x-boundlist-item">{name}</div></tpl></div>' },
                      { name: 'adminEmail', fieldLabel: tr('Admin email') },
-                     { name: 'isPendingByDefault', fieldLabel: tr('Default flag'), xtype: 'checkboxfield', boxLabel: tr( 'Pending' ) },
+                     { name: 'isPendingByDefault', fieldLabel: tr('Actions'), xtype: 'checkboxfield', boxLabel: tr( 'Mark resources as Pending' ) },
+                     { name: 'isCheckingBrokenLink', xtype: 'checkboxfield', boxLabel: tr( 'Mark resources that have broken links' ) },
                      { fieldLabel: 'XSL',
                        name: 'xsl',
                        xtype: 'textarea', 
@@ -389,7 +392,7 @@ Ext.define( 'Comete.AdminHarvestDefEditor', {
                        emptyText: tr('Optional field') } ]
         }); 
 
-        cfg = {
+        var cfg = {
             title: (this.mode == 'modify')?tr('Modify repository'):tr('Add repository'),
             buttons: [ {text:'OK', handler: this.ok, scope: this}, {text:tr('Cancel'), handler: this.close, scope: this}],
             items: [ { border: false, items: this.formPanel } ]
@@ -432,7 +435,8 @@ Ext.define( 'Comete.AdminHarvestDefEditor', {
         this.formPanel.getComponent(4).setValue(this.values.metadataNamespace);
         this.formPanel.getComponent(5).setValue(this.values.adminEmail);
         this.formPanel.getComponent(6).setValue(this.values.isPendingByDefault);
-        this.formPanel.getComponent(7).setValue(this.values.xsl);
+        this.formPanel.getComponent(7).setValue(this.values.isCheckingBrokenLink);
+        this.formPanel.getComponent(8).setValue(this.values.xsl);
     }        
 });
 
@@ -489,7 +493,7 @@ Ext.define( 'Comete.AdminHarvestReportViewer', {
             autoScroll: true
         });
 
-        cfg = {
+        var cfg = {
             title: tr('Harvest reports for :') + ' ' + this.harvestDefName,
             buttons: [ {text:'OK', handler: this.close, scope: this} ],
             maximizable: true,
