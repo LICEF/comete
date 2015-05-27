@@ -85,7 +85,7 @@
                      { fieldLabel: 'URL', editable: false },
                      { fieldLabel: 'Format', editable: false },
                      { fieldLabel: tr('Admin email'), editable: false },
-                     { fieldLabel: tr('Actions'), readOnly:true , xtype: 'checkboxfield', boxLabel: tr( 'Mark resources as Pending' ) },
+                     { fieldLabel: tr('Actions'), readOnly:true , xtype: 'checkboxfield', boxLabel: tr( 'Mark resources as "Pending for approval"' ) },
                      { readOnly:true , xtype: 'checkboxfield', boxLabel: tr( 'Mark resources that have broken links' ) },
                      { fieldLabel: 'XSL', xtype: 'textarea', editable: false,
                        inputAttrTpl: 'wrap="off" spellcheck="false"', height: 180 }
@@ -382,7 +382,7 @@ Ext.define( 'Comete.AdminHarvestDefEditor', {
                        value: 'http://ltsc.ieee.org/xsd/LOM',
                        tpl: '<div><tpl for="."><div class="x-boundlist-item">{name}</div></tpl></div>' },
                      { name: 'adminEmail', fieldLabel: tr('Admin email') },
-                     { name: 'isPendingByDefault', fieldLabel: tr('Actions'), xtype: 'checkboxfield', boxLabel: tr( 'Mark resources as Pending' ) },
+                     { name: 'isPendingByDefault', fieldLabel: tr('Actions'), xtype: 'checkboxfield', boxLabel: tr( 'Mark resources as "Pending for approval"' ) },
                      { name: 'isCheckingBrokenLink', xtype: 'checkboxfield', boxLabel: tr( 'Mark resources that have broken links' ) },
                      { fieldLabel: 'XSL',
                        name: 'xsl',

@@ -137,8 +137,8 @@
                         { text: tr( 'Valid Link' ), handler: function() { this.setFlag( 'brokenLink', false ); }, scope: this },
                         { text: tr( 'Broken Link' ), handler: function() { this.setFlag( 'brokenLink', true ); }, scope: this },
                         '-',
-                        { text: tr( 'Accepted' ), handler: function() { this.setFlag( 'pending', false ); }, scope: this  },
-                        { text: tr( 'Pending' ), handler: function() { this.setFlag( 'pending', true ); }, scope: this  },
+                        { text: tr( 'Approved' ), handler: function() { this.setFlag( 'pending', false ); }, scope: this  },
+                        { text: tr( 'Pending for approval' ), handler: function() { this.setFlag( 'pending', true ); }, scope: this  },
                         '-',
                         { text: tr( 'Delete all flags' ), handler: function() { this.setFlag( 'all' ); }, scope: this  },
                      ]
@@ -165,7 +165,7 @@
         };
 
         this.renderPending = function( value, metaData, lo ) {
-            return( value ? Ext.String.format( '<img src="images/flag-pending.png" title="{0}" alt="{0}" height="20"/>', tr( 'Pending' ) ) : '' );
+            return( value ? Ext.String.format( '<img src="images/flag-pending.png" title="{0}" alt="{0}" height="20"/>', tr( 'Pending for approval' ) ) : '' );
         };
 
         this.renderTitle = function( value, metaData, lo ) {
@@ -187,7 +187,7 @@
                 { text: tr( 'Inactive' ), width: 30,  dataIndex: 'inactive', hidden: !this.editable, renderer: this.renderInactive },
                 { text: tr( 'Invalid' ), width: 30,  dataIndex: 'invalid', hidden: !this.editable, renderer: this.renderInvalid },
                 { text: tr( 'Broken Link' ), width: 30,  dataIndex: 'brokenLink', hidden: !this.editable, renderer: this.renderBrokenLink },
-                { text: tr( 'Pending' ), width: 30,  dataIndex: 'pending', hidden: !this.editable, renderer: this.renderPending }
+                { text: tr( 'Pending for approval' ), width: 30,  dataIndex: 'pending', hidden: !this.editable, renderer: this.renderPending }
             ],          
             viewConfig: {
                 loadingText: tr('Loading') + '...',

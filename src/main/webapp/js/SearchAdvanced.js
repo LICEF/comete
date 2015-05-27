@@ -233,7 +233,7 @@ Ext.define( 'Comete.QueryCondition', {
                 {'id':'inactive', label: tr('Inactive')},
                 {'id':'invalid', label: tr('Invalid')},
                 {'id':'brokenLink', label: tr('Broken Link')},
-                {'id':'pending', label: tr('Pending')}
+                {'id':'pending', label: tr('Pending for approval')}
             ]
         });
 
@@ -587,7 +587,7 @@ Ext.define( 'Comete.QueryCondition', {
             displayField: 'label',
             store: this.flagStore,
             editable: false,
-            width: 120,
+            width: 180,
             tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div></tpl></div>'
         });
 
