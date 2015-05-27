@@ -187,7 +187,7 @@
                 { text: tr( 'Inactive' ), width: 30,  dataIndex: 'inactive', hidden: !this.editable, renderer: this.renderInactive },
                 { text: tr( 'Invalid' ), width: 30,  dataIndex: 'invalid', hidden: !this.editable, renderer: this.renderInvalid },
                 { text: tr( 'Broken Link' ), width: 30,  dataIndex: 'brokenLink', hidden: !this.editable, renderer: this.renderBrokenLink },
-                { text: tr( 'Pending for approval' ), width: 30,  dataIndex: 'pending', hidden: !this.editable, renderer: this.renderPending }
+                { text: tr( 'Pending for approval' ), width: 35,  dataIndex: 'pending', hidden: !this.editable, renderer: this.renderPending }
             ],          
             viewConfig: {
                 loadingText: tr('Loading') + '...',
