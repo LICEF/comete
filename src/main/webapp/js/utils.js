@@ -224,7 +224,6 @@ Ext.define( 'Comete.Breadcrumb', {
                 })
         }
         else {
-            
             var handler = null;
             if (!manageRoot)
                 handler = function() {this.goElement(button, true);}
@@ -238,9 +237,9 @@ Ext.define( 'Comete.Breadcrumb', {
                 scope: this
             });   
 
-            button.on( 'arrowclick', function(b) { 
-                if (b.menu != null) 
-                    b.showMenu();
+            button.on( 'arrowclick', function(b) {
+                if (b.getMenu() != null)
+                    b.showMenu(this);
                 else
                     this.showDynamicMenu(b, restUrl, manageRoot);
             }, this);
