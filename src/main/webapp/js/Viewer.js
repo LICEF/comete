@@ -9,9 +9,12 @@ Ext.define( 'Comete.Viewer', {
         Ext.apply(this, cfg);
         this.callParent(arguments); 
     },
+    clear: function() {
+        this.update('');
+    },
     setContent: function( url, callback ) {
         if( url == null || url == '')
-            this.update( '' );
+            this.clear();
         else {
             Ext.Ajax.request( {
                 url: url,

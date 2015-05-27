@@ -114,6 +114,7 @@
         this.setResultText( '' );
         this.setFeedButtonsVisible(false);
         this.learningObjectTable.clear();
+        this.viewer.clear();
     },
     isViewerCollapsed: function() {
         return( this.viewer.isContentCollapsed() );
