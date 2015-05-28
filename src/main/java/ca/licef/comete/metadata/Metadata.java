@@ -563,9 +563,6 @@ public class Metadata {
         triples.addAll(Arrays.asList(extractedTriples));
 
 
-        if( isCheckingBrokenLink ) 
-            manageBrokenLinks( loURI, triples );
-
         //format adjustment
         manageFormat(loURI, triples);
 
@@ -574,6 +571,9 @@ public class Metadata {
 
         //triples insertions
         tripleStore.insertTriples_textIndex(triples);
+
+        if( isCheckingBrokenLink ) 
+            manageBrokenLinks( loURI, triples );
 
         //automatic exposition to harvesting
         exposeRecords(loURI, storeId, metadataFormat);
@@ -665,8 +665,7 @@ public class Metadata {
                 }
             }
         }
-        if( isBrokenLinkFound )
-            triples.add( new Triple( loURI, COMETE.flag, "brokenLink" ) );
+        setLearningObjectFlag( loURI, "brokenLink", isBrokenLinkFound );
     }
 
     private void manageLanguages( String recordURI, String loURI, ArrayList<Triple> triples ) {
