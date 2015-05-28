@@ -13,8 +13,8 @@ import licef.XMLUtil;
 
 public class OAIWorker extends Worker {
 
-    public OAIWorker( String id, String url, String metadataNamespace, boolean isPendingByDefault, boolean isCheckingBrokenLink ) {
-        super( id, url, metadataNamespace, isPendingByDefault, isCheckingBrokenLink );
+    public OAIWorker( String id, String url, String metadataNamespace, boolean isPendingByDefault, boolean isCheckingBrokenLink, boolean isCheckingInvalid ) {
+        super( id, url, metadataNamespace, isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid );
     }
 
     @Override

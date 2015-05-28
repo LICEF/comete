@@ -24,9 +24,11 @@ public class Digester {
         RepositoryManager.getInstance().addOrUpdateRepository(repoId, name, type, url, adminEmail, defId);
     }
 
-    public int addOrUpdateHarvestedRecord( String oaiID, String namespace, String datestamp, String repoId, String record, boolean isPendingByDefault, boolean isCheckingBrokenLink ) throws Exception {
+    public int addOrUpdateHarvestedRecord( String oaiID, String namespace, String datestamp, String repoId, String record, 
+            boolean isPendingByDefault, boolean isCheckingBrokenLink, boolean isCheckingInvalid ) throws Exception {
         String repoUri = Util.makeURI(repoId, COMETE.Repository );
-        String res = Metadata.getInstance().storeHarvestedRecord(oaiID, namespace, repoUri, record, datestamp, isPendingByDefault, isCheckingBrokenLink);
+        String res = Metadata.getInstance().storeHarvestedRecord(oaiID, namespace, repoUri, record, datestamp, 
+            isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid);
         if ("added".equals(res))
             return ADDED;
         else if ("updated".equals(res))
