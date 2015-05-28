@@ -100,6 +100,7 @@ public class BrokenLinkChecker implements Runnable {
     public void run() {
         try {
             validateLinks();
+            markResourcesWithBrokenLinks();
             writeReport();
             if( notifMail != null && !"".equals( notifMail.trim() ) )
                 notifyListener();
@@ -231,6 +232,28 @@ public class BrokenLinkChecker implements Runnable {
             }
         }
         System.out.println( "Ending validation of links: "+ ( new Date() ) );        
+    }
+
+    private void markResourcesWithBrokenLinks() {
+        for( Iterator it = learningObjectLinks.keySet().iterator(); it.hasNext(); ) {
+            String loUri = (String)it.next();
+            List<String> links = learningObjectLinks.get( loUri );
+            boolean isBrokenLinkFound = false;
+            for( int l = 0; l < links.size(); l++ ) {
+                String url = links.get( l );
+                String strResult = results.get( url );
+                if( strResult != null && strResult.indexOf( "INVALID" ) != -1 ) {
+                    isBrokenLinkFound = true;
+                    break;
+                }
+            }
+            try {
+                Metadata.getInstance().setLearningObjectFlag( loUri, "brokenLink", isBrokenLinkFound ); 
+            }
+            catch( Exception e ) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void writeReport() {
