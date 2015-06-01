@@ -44,8 +44,9 @@ public class BrokenLinkChecker implements Runnable {
         return (instance);
     }
 
-    public void start( String notifMail ) throws Exception {
+    public void start( boolean setBrokenLinkFlag, String notifMail ) throws Exception {
         if( master == null ) {
+            this.setBrokenLinkFlag = setBrokenLinkFlag;
             this.notifMail = notifMail;
 
             // Remove previous report.
@@ -100,7 +101,8 @@ public class BrokenLinkChecker implements Runnable {
     public void run() {
         try {
             validateLinks();
-            markResourcesWithBrokenLinks();
+            if( setBrokenLinkFlag )
+                markResourcesWithBrokenLinks();
             writeReport();
             if( notifMail != null && !"".equals( notifMail.trim() ) )
                 notifyListener();
@@ -466,6 +468,7 @@ public class BrokenLinkChecker implements Runnable {
     private Worker[] worker;
     private Thread master;
 
+    private boolean setBrokenLinkFlag;
     private String notifMail;
 
     private static BrokenLinkChecker instance;
