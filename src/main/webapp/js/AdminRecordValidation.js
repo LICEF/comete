@@ -94,6 +94,7 @@
             },
             url: 'rest/metadataRecords/applicationProfilesByColumns',
             extraParams: {
+                lang: lang,
                 showOnlyColumn: this.showOnlyColumn,
                 showOnlyInvalid: this.showOnlyInvalid
             }
@@ -143,6 +144,7 @@
             selType: 'cellmodel',
             columns: [
                 { id: 'ColIdentifier', text: tr( 'Identifier' ), dataIndex: 'id', renderer: renderIdentifier },
+                { id: 'ColTitle', text: tr( 'Title' ), width: 400, dataIndex: 'title' },
                 { id: 'ColLomStrict', text: tr( 'LOM Strict' ), width: 120, dataIndex: 'LomStrict', renderer: renderValidResult, dataApplProf: 'http://ltsc.ieee.org/xsd/LOM/strict' },
                 { id: 'ColLomLoose', text: tr( 'LOM Loose' ), width: 120, dataIndex: 'LomLoose', renderer: renderValidResult, dataApplProf: 'http://ltsc.ieee.org/xsd/LOM/loose' },
                 { id: 'ColLomFR', text: tr( 'LOM FR' ), width: 120, dataIndex: 'LomFR', renderer: renderValidResult, dataApplProf: 'http://lom-fr.fr/validation/LomFRv1.0/core' },
@@ -313,6 +315,7 @@
             layout: 'border',
             width: '100%', 
             height: 400,
+            resizable: true,
             region: 'north',
             split: true,
             margin: '-1 -1 -1 -1',
@@ -391,11 +394,11 @@
                 var link = './rest/metadataRecords/' + path + '/xml?syntaxHighlighted=true';
                 var html = '<iframe width="100%" height="100%" src="' + link + '"></iframe>';
 
-                if( pos.column == 0 ) {
+                if( pos.column <= 1 ) {
                     this.recordDetailsPanel.getLayout().setActiveItem( 0 ); 
                     this.recordFullViewer.body.update( html );
                 }
-                else if( pos.column > 0 ) {
+                else if( pos.column > 1 ) {
                     this.recordDetailsPanel.getLayout().setActiveItem( 1 ); 
                     this.recordHalfViewer.body.update( html );
 

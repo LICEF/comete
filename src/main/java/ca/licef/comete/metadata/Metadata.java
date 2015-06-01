@@ -942,21 +942,21 @@ public class Metadata {
         return( Validator.getValidator() );
     }
     
-    public ResultSet getMetadataRecordApplicationProfiles( int start, int limit, String applProfile ) throws Exception {
-        return( getMetadataRecordApplicationProfiles( start, limit, applProfile, false ) );
+    public ResultSet getMetadataRecordApplicationProfiles( int start, int limit, String lang, String applProfile ) throws Exception {
+        return( getMetadataRecordApplicationProfiles( start, limit, lang, applProfile, false ) );
     }
 
     /**
      * @param applProfile If <tt>null</tt>, all the application profiles will be returned.  Otherwise, only the selected application profile will be provided.
      * @param showOnlyInvalidRecords If <tt>true</tt> and applProf is different from <tt>null</tt>, only invalid records will be returned.
      */
-    public ResultSet getMetadataRecordApplicationProfiles( int start, int limit, String applProfile, boolean showOnlyInvalidRecords ) throws Exception {
+    public ResultSet getMetadataRecordApplicationProfiles( int start, int limit, String lang, String applProfile, boolean showOnlyInvalidRecords ) throws Exception {
         Invoker inv = new Invoker( this, "ca.licef.comete.metadata.Metadata", 
-            "getMetadataRecordApplicationProfilesEff", new Object[] { start, limit, applProfile, showOnlyInvalidRecords } );
+            "getMetadataRecordApplicationProfilesEff", new Object[] { start, limit, lang, applProfile, showOnlyInvalidRecords } );
         return( (ResultSet)tripleStore.transactionalCall( inv ) );
     }
 
-    public ResultSet getMetadataRecordApplicationProfilesEff( int start, int limit, String applProfile, boolean showOnlyInvalidRecords ) throws Exception {
+    public ResultSet getMetadataRecordApplicationProfilesEff( int start, int limit, String lang, String applProfile, boolean showOnlyInvalidRecords ) throws Exception {
         ResultSet rs = new ResultSet();
         String query = CoreUtil.getQuery( "metadata/getAllMetadataRecordsCount.sparql" );
         if( applProfile != null && showOnlyInvalidRecords )
@@ -979,19 +979,21 @@ public class Metadata {
                 metadataFormats.put( uri, format );
             }
 
-
-
             Hashtable<String, String> metadataRecordRepoTable = new Hashtable<String, String>();
             Hashtable<String, Hashtable<String, String>> repoInfo = new Hashtable<String, Hashtable<String, String>>();
             retrieveMetadataRecordRepoInfo( recordUris, metadataRecordRepoTable, repoInfo );
 
             Map<String,List<String>> tableApplProfs = getMetadataRecordApplProfTable( recordUris, applProfile );
             Map<String,List<String>> tableInvalidApplProfs = getMetadataRecordInvalidApplProfTable( recordUris,applProfile );
-            
+
             Collections.sort( recordUris );
             for( String recordUri : recordUris ) {
                 Map entry = new HashMap<String,String>();
                 entry.put( "id", recordUri );
+                Triple[] triples = tripleStore.getTriplesWithSubjectPredicate( recordUri, COMETE.describes );
+                String loUri = (String)triples[ 0 ].getObject();
+                String[] loTitles = tripleStore.getBestLocalizedLiteralObject( loUri, DCTERMS.title, lang );
+                entry.put( "title", loTitles[ 0 ] );
                 entry.put( "metadataFormat", metadataFormats.get( recordUri ) );
 
                 List<String> applProfList = tableApplProfs.get( recordUri );
@@ -1077,7 +1079,7 @@ public class Metadata {
 
         return( res );
     }
-    
+   
     /*
      * URI Store conversion
      */
