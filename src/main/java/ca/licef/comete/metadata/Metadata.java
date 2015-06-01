@@ -629,11 +629,8 @@ public class Metadata {
     private void manageFormat( String loURI, ArrayList<Triple> triples ) throws Exception{
         String format = null, location = null;
         for (Triple triple : triples) {
-            if (FOAF.page.getURI().equals(triple.getPredicate())) {
+            if (FOAF.page.getURI().equals(triple.getPredicate()))
                 location = triple.getObject();
-                if( location != null && !location.startsWith( "http" ) )
-                    location = "http://" + location;
-            }
             else if (DCTERMS.format.getURI().equals(triple.getPredicate()))
                 format = triple.getObject();
         }
