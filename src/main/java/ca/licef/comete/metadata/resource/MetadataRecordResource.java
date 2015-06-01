@@ -241,7 +241,7 @@ public class MetadataRecordResource {
     @GET
     @Path( "/applicationProfiles" )
     @Produces( MediaType.APPLICATION_JSON )
-    public String getMetadataRecordApplicationProfiles( @DefaultValue( "0" ) @QueryParam( "start" ) String strStart, @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit ) throws Exception {
+    public String getMetadataRecordApplicationProfiles( @DefaultValue( "0" ) @QueryParam( "start" ) String strStart, @QueryParam( "lang" ) String lang, @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit ) throws Exception {
         int start = -1;
         if( strStart != null ) {
             try {
@@ -262,7 +262,7 @@ public class MetadataRecordResource {
             }
         }
 
-        ResultSet rs = Metadata.getInstance().getMetadataRecordApplicationProfiles( start, limit, null, false );
+        ResultSet rs = Metadata.getInstance().getMetadataRecordApplicationProfiles( start, limit, lang, null, false );
 
         StringWriter out = new StringWriter();
         JSONWriter json = new JSONWriter( out );
@@ -292,7 +292,7 @@ public class MetadataRecordResource {
     @GET
     @Path( "/applicationProfilesByColumns" )
     @Produces( MediaType.APPLICATION_JSON )
-    public String getApplicationProfilesByColumn( @DefaultValue( "0" ) @QueryParam( "start" ) String strStart, @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit, @QueryParam( "showOnlyColumn" ) String showOnlyColumn, @QueryParam( "showOnlyInvalid" ) String showOnlyInvalid ) throws Exception {
+    public String getApplicationProfilesByColumn( @DefaultValue( "0" ) @QueryParam( "start" ) String strStart, @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit, @QueryParam( "lang" ) String lang, @QueryParam( "showOnlyColumn" ) String showOnlyColumn, @QueryParam( "showOnlyInvalid" ) String showOnlyInvalid ) throws Exception {
         int start = -1;
         if( strStart != null ) {
             try {
@@ -316,11 +316,11 @@ public class MetadataRecordResource {
         ResultSet rs = null;
         if( showOnlyColumn != null && !"".equals( showOnlyColumn ) ) 
             if( "true".equals( showOnlyInvalid ) ) 
-                rs = Metadata.getInstance().getMetadataRecordApplicationProfiles( start, limit, showOnlyColumn, true );
+                rs = Metadata.getInstance().getMetadataRecordApplicationProfiles( start, limit, lang, showOnlyColumn, true );
             else
-                rs = Metadata.getInstance().getMetadataRecordApplicationProfiles( start, limit, showOnlyColumn, false );
+                rs = Metadata.getInstance().getMetadataRecordApplicationProfiles( start, limit, lang, showOnlyColumn, false );
         else
-            rs = Metadata.getInstance().getMetadataRecordApplicationProfiles( start, limit, null );
+            rs = Metadata.getInstance().getMetadataRecordApplicationProfiles( start, limit, lang, null );
 
         StringWriter out = new StringWriter();
         JSONWriter json = new JSONWriter( out );
@@ -332,6 +332,7 @@ public class MetadataRecordResource {
 
             JSONObject record = new JSONObject();
             record.put( "id", entry.get( "id" ) );
+            record.put( "title", entry.get( "title" ) );
             List<String> profiles = (List<String>)entry.get( "profiles" );
             List<String> invalidProfiles = (List<String>)entry.get( "invalidProfiles" );
             for( int i = 0; i < Constants.lomApplProfiles.length; i++ ) {

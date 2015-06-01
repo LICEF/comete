@@ -861,6 +861,7 @@ Ext.define( 'RecordValidationModel', {
     extend: 'Ext.data.Model',
     fields: [ 
         'id', 
+        'title',
         'LomStrict', 
         'LomLoose', 
         'LomFR', 

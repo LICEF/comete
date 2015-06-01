@@ -215,6 +215,7 @@
     'Browse the <a href="{0}" target="_blank">last report</a>': 'Voir le <a href="{0}" target="_blank">rapport le plus récent</a>',
     'Launching broken links validation task': 'Lancement de la tâche de vérification des liens brisés.',
     'Start Verification': 'Lancer la vérification',
+    'Set "Broken Link" resource flag': 'Affecter l\'indicateur de "Lien Brisé" des ressources',
     'Email for notification (optional)': 'Courriel pour notification (optionnel)',
     'Validation in progress...': 'Validation en cours...',
     'In progress...': 'Traitement en cours...',
