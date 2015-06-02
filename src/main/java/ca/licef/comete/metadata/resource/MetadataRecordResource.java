@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -53,7 +54,10 @@ public class MetadataRecordResource {
                                       @FormDataParam("file") InputStream uploadedInputStream,
                                       @FormDataParam("file") FormDataContentDisposition fileDetail,
                                       @FormDataParam("res") InputStream uploadedInputStreamRes,
-                                      @FormDataParam("res") FormDataContentDisposition fileDetailRes) throws Exception {
+                                      @FormDataParam("res") FormDataContentDisposition fileDetailRes,
+                                      @QueryParam("isPendingByDefault") String isPendingByDefault,
+                                      @QueryParam("isCheckingBrokenLink") String isCheckingBrokenLink,
+                                      @QueryParam("isCheckingInvalid") String isCheckingInvalid) throws Exception {
 
         if (!Security.getInstance().isContributeAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to upload metadata records.").build();
@@ -107,7 +111,8 @@ public class MetadataRecordResource {
             resp = out.toString();
         }
         else
-            resp = doUploadEff((File)files[1], (File)files[2]);
+            resp = doUploadEff((File)files[1], (File)files[2], 
+                "true".equals( isPendingByDefault ), "true".equals( isCheckingBrokenLink ), "true".equals( isCheckingInvalid ));
 
         return Response.ok(resp).build();
     }
@@ -117,7 +122,7 @@ public class MetadataRecordResource {
     @Produces( MediaType.TEXT_HTML )
     public Response completeUpload( @Context HttpServletRequest request) throws Exception {
         Object[] filesData = fileCache.get(request.getSession().getId());
-        String val = doUploadEff((File)filesData[0], (File)filesData[1]);
+        String val = doUploadEff((File)filesData[0], (File)filesData[1], false, false, false);
         fileCache.remove(request.getSession().getId());
         return Response.ok(val).build();
     }
@@ -134,8 +139,8 @@ public class MetadataRecordResource {
         return Response.ok().build();
     }
 
-    String doUploadEff(File record, File resource) throws Exception {
-        Object[] results = Metadata.getInstance().storeUploadedContent(record, resource);
+    String doUploadEff(File record, File resource, boolean isPendingByDefault, boolean isCheckingBrokenLink, boolean isCheckingInvalid) throws Exception {
+        Object[] results = Metadata.getInstance().storeUploadedContent(record, resource, isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid);
         String errorMessage = (String)results[0];
         String[][] data = (String[][])results[1];
 
