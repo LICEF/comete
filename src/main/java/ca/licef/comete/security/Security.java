@@ -69,15 +69,15 @@ public class Security {
         return role;
     }
 
+    public boolean isAuthorized(HttpServletRequest req) {
+        Role accountAccess = getRole(req);
+        return accountAccess.equals(Role.ADMIN);
+    }
+
     public boolean isAuthorized(HttpServletRequest req, Role[] roles ) {
         Role userRole = getRole( req );
         Set<Role> roleSet = new HashSet<Role>( Arrays.asList( roles ) );
         return( roleSet.contains( userRole ) );
-    }
-
-    public boolean isAuthorized(HttpServletRequest req) {
-        Role accountAccess = getRole(req);
-        return accountAccess.equals(Role.ADMIN);
     }
 
     public boolean isContributeAuthorized(HttpServletRequest req) {

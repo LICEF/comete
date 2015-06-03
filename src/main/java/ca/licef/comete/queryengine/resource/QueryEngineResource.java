@@ -79,7 +79,7 @@ public class QueryEngineResource implements Serializable {
         try {
             if (cache == null)
                 cache = new QueryCache();
-            boolean isShowHiddenRes = Security.getInstance().isAuthorized( req, new Role[] { Role.ADMIN } );
+            boolean isShowHiddenRes = Security.getInstance().isAuthorized( req );
             rs = QueryEngine.getInstance().search(
                     query, filters, lang, isShowHiddenRes, "json", Integer.valueOf(start), Integer.valueOf(limit), style, cache);
         }
