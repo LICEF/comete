@@ -25,8 +25,12 @@
                 this.waitDialog.wait( tr('Please wait') + '...' );
                 var uploadForm = this.uploadPanel.getForm();    
                 if (uploadForm.isValid()) {
+                    var isPendingByDefault = this.setPendingByDefaultCheckbox.getValue();
+                    var isCheckingBrokenLink = this.setCheckBrokenLinkCheckox.getValue();
+                    var isCheckingInvalid = this.setCheckInvalidCheckbox.getValue();
                     uploadForm.submit({ 
-                        url: 'rest/metadataRecords',
+                        url: 'rest/metadataRecords?isPendingByDefault=' + isPendingByDefault + 
+                            '&isCheckingBrokenLink=' + isCheckingBrokenLink + '&isCheckingInvalid=' + isCheckingInvalid,
                         success: function(form, action) {
                             var res = '';
                             for (i = 0; i < action.result.data.length; i++) {
@@ -50,11 +54,30 @@
             scope: this      
         });
 
+        this.setPendingByDefaultCheckbox = Ext.create( 'Ext.form.field.Checkbox', {
+            fieldLabel: tr( 'Actions' ),
+            name: 'isPendingByDefault',
+            boxLabel: tr( 'Mark resources as "Pending for approval"' )
+        } );
+
+        this.setCheckBrokenLinkCheckox = Ext.create( 'Ext.form.field.Checkbox', {
+            name: 'isCheckingBrokenLink',
+            boxLabel: tr( 'Mark resources that have broken links' )
+        } );
+
+        this.setCheckInvalidCheckbox = Ext.create( 'Ext.form.field.Checkbox', {
+            name: 'isCheckingInvalid',
+            boxLabel: tr( 'Mark resources that are not compliant to profiles as "Invalid"' )
+        } );
+
         this.uploadPanel = Ext.create('Ext.form.Panel', {
             padding: 10,
             border: false,    
             items:[ { border: false, html: tr('Select LOM or zip of LOMs.<br/>Metametadata identifier (field 3.1) <b>must be present</b>.') }, 
-                    { xtype: 'tbspacer', height: 10 }, this.uploadFile, this.uploadButton]               
+                    { xtype: 'tbspacer', height: 10 }, this.uploadFile, 
+                    { xtype: 'panel', layout: 'form', width: 500, border: 0, margin: '10 0 0 0', items: [ 
+                         this.setPendingByDefaultCheckbox, this.setCheckBrokenLinkCheckox, this.setCheckInvalidCheckbox ] }, 
+                    { xtype: 'tbspacer', height: 10 }, this.uploadButton ]
         });
 
         var cfg = {

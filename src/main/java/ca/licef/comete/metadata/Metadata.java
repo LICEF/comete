@@ -146,7 +146,7 @@ public class Metadata {
         return new Object[]{errorMessage, record, resource};
     }
 
-    public Object[] storeUploadedContent(File record, File resource) throws Exception {
+    public Object[] storeUploadedContent(File record, File resource, boolean isPendingByDefault, boolean isCheckingBrokenLink, boolean isCheckingInvalid) throws Exception {
         Object[] results;
         String extension = record.getName().substring(record.getName().lastIndexOf('.') + 1).toLowerCase();
         if ("zip".equals(extension)) {
@@ -157,7 +157,7 @@ public class Metadata {
             for (String _record : records) {
                 File rec = new File(uploadedRecords, _record);
 
-                String[] res = storeUploadedRecord(rec, null);
+                String[] res = storeUploadedRecord(rec, null, isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid);
                 if (res[1] != null)
                     uris.add(new String[]{res[1], res[2]});
                 rec.delete();
@@ -173,7 +173,7 @@ public class Metadata {
         }
         else {
             //possible physical associated resource
-            String[] res = storeUploadedRecord(record, resource);
+            String[] res = storeUploadedRecord(record, resource, isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid );
             if (res[1] == null)
                 results = new Object[]{res[0], null};
             else {
@@ -190,7 +190,7 @@ public class Metadata {
         return results;
     }
 
-    public String[] storeUploadedRecord(File file, File resource) throws Exception {
+    public String[] storeUploadedRecord(File file, File resource, boolean isPendingByDefault, boolean isCheckingBrokenLink, boolean isCheckingInvalid ) throws Exception {
         String[] values = Util.parseMetadataRecord(file);
 
         String errorMessage = values[0];
@@ -229,7 +229,7 @@ public class Metadata {
 
             try {
                 String now = DateUtil.toISOString(new Date(), null, null);
-                String[] res = manageRecord(pseudoOaiID, namespace, null, record, now, false, false, false);
+                String[] res = manageRecord(pseudoOaiID, namespace, null, record, now, isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid);
                 loURI = res[0];
                 state = res[3];
             } catch (Exception e) {
