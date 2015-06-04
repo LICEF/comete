@@ -300,7 +300,7 @@ public class Metadata {
 
     public Set<String> doGetLearningObjectFlags(String loUri) throws Exception {
         Set<String> flags = new HashSet<String>();
-        Triple[] triples = tripleStore.getTriplesWithSubjectPredicate(loUri, COMETE.describes);
+        Triple[] triples = tripleStore.getTriplesWithSubjectPredicate(loUri, COMETE.flag);
         for( Triple t : triples )
             flags.add( t.getObject() );
         if( !flags.contains( "inactive" ) )
@@ -311,6 +311,8 @@ public class Metadata {
             flags.add( "accepted" );
         if( !flags.contains( "invalid" ) )
             flags.add( "valid" );
+        if( !flags.contains( "forcedDiffusion" ) )
+            flags.add( "unforcedDiffusion" );
         return( flags );
     }
 
@@ -344,6 +346,7 @@ public class Metadata {
     }
 
     public void doSetLearningObjectFlag(String loUri, String flag, boolean value) throws Exception {
+System.out.println( "doSetLearningObjectFlag loUri="+loUri+" flag="+flag+" value="+value );        
         String recordUri = getMetadataRecordUriFromLO( loUri );
         Triple flaggedTriple = new Triple( loUri, COMETE.flag, flag );
         if( value )

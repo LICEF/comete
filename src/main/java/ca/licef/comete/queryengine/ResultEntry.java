@@ -5,12 +5,13 @@ public class ResultEntry {
     public ResultEntry() {
     }
 
-    public ResultEntry( String id, String title, String location, String metadataFormat, 
-            boolean isPending, boolean isInactive, boolean isInvalid, boolean isBrokenLink, String type ) {
+    public ResultEntry( String id, String title, String location, String metadataFormat,  
+            boolean isForcedDiffusion, boolean isPending, boolean isInactive, boolean isInvalid, boolean isBrokenLink, String type ) {
         this.id = id;
         this.title = title;
         this.location = location;
         this.metadataFormat = metadataFormat;
+        this.isForcedDiffusion = isForcedDiffusion;
         this.isPending = isPending;
         this.isInactive = isInactive;
         this.isInvalid = isInvalid;
@@ -90,6 +91,14 @@ public class ResultEntry {
         this.metadataFormat = metadataFormat;
     }
 
+    public boolean isForcedDiffusion() {
+        return( isForcedDiffusion );
+    }
+
+    public void setForcedDiffusion( boolean isForcedDiffusion ) {
+        this.isForcedDiffusion = isForcedDiffusion;
+    }
+
     public boolean isPending() {
         return( isPending );
     }
@@ -139,6 +148,7 @@ public class ResultEntry {
     private String creationDate;
     private String modificationDate;
     private String metadataFormat;
+    private boolean isForcedDiffusion;
     private boolean isPending;
     private boolean isInactive;
     private boolean isInvalid;

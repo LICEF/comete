@@ -38,6 +38,8 @@
 
     'Hidden': 'Caché',
     'Visible': 'Visible',
+    'Force resource diffusion': 'Forcer la diffusion',
+    'Forced Diffusion': 'Diffusion forcée',
     'Pending for approval': 'En attente d\'approbation',
     'Active': 'Active',
     'Inactive': 'Inactive',

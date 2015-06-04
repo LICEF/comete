@@ -13,7 +13,7 @@
 
         Ext.define('LearningObjectModel', {
             extend: 'Ext.data.Model',
-            fields: [ 'id', 'title', 'desc', 'location', 'image', 'loAsHtmlLocation', 'metadataFormat', 'type', 'pending', 'inactive', 'invalid', 'brokenLink'  ]
+            fields: [ 'id', 'title', 'desc', 'location', 'image', 'loAsHtmlLocation', 'metadataFormat', 'type', 'forcedDiffusion', 'pending', 'inactive', 'invalid', 'brokenLink'  ]
         });
 
         this.proxy = Ext.create('Ext.data.proxy.Ajax', {
@@ -124,10 +124,16 @@
             applyModifDialog.show();
         }
 
+        var forceDiffusionMenuCheckItem = Ext.create( 'Ext.menu.CheckItem', {
+            text: tr( 'Force resource diffusion' ), checked: false, handler: function( item, e ) { this.setFlag( 'forcedDiffusion', item.checked ); }, scope: this
+        } );
+
         var loContextMenu = Ext.create('Ext.menu.Menu', {
             items: [ 
                 { text: tr('Modify Flags'), menu: {
                      items: [
+                        forceDiffusionMenuCheckItem,
+                        '-',
                         { text: tr( 'Active' ), handler: function() { this.setFlag( 'inactive', false ); }, scope: this },
                         { text: tr( 'Inactive' ), handler: function() { this.setFlag( 'inactive', true ); }, scope: this },
                         '-',
@@ -168,6 +174,11 @@
             return( value ? Ext.String.format( '<img src="images/flag-pending.png" title="{0}" alt="{0}" height="20"/>', tr( 'Pending for approval' ) ) : '' );
         };
 
+        this.renderForcedDiffusion = function( value, metaData, lo ) {
+            console.log( 'forcedDiffValue='+value);
+            return( value ? Ext.String.format( '<img src="images/flag-forcedDiffusion.png" title="{0}" alt="{0}" height="20"/>', tr( 'Forced Diffusion' ) ) : '' );
+        };
+
         this.renderTitle = function( value, metaData, lo ) {
             var xf = Ext.util.Format;
             descr = xf.ellipsis( xf.stripTags( lo.data.desc ), 200 );
@@ -184,6 +195,7 @@
                 { text: tr( 'Id' ), width: 100,  dataIndex: 'id', hidden: true/*!this.editable*/ },
                 { text: tr( 'Title' ), flex: 1, dataIndex: 'title', sortable: true, renderer: this.renderTitle },
                 { text: tr( 'Type' ), width: 80,  dataIndex: 'type', sortable: true, renderer: this.renderType, hidden: true /*!this.editable*/ },
+                { text: tr( 'Forced Diffusion' ), width: 30,  dataIndex: 'forcedDiffusion', hidden: !this.editable, renderer: this.renderForcedDiffusion },
                 { text: tr( 'Inactive' ), width: 30,  dataIndex: 'inactive', hidden: !this.editable, renderer: this.renderInactive },
                 { text: tr( 'Invalid' ), width: 30,  dataIndex: 'invalid', hidden: !this.editable, renderer: this.renderInvalid },
                 { text: tr( 'Broken Link' ), width: 30,  dataIndex: 'brokenLink', hidden: !this.editable, renderer: this.renderBrokenLink },
@@ -196,6 +208,7 @@
                     itemcontextmenu: function( view, rec, node, index, event ) {
                         if( this.editable ) {
                             event.stopEvent(); // stops the default event. i.e. Windows Context Menu
+                            forceDiffusionMenuCheckItem.setChecked( rec.data.forcedDiffusion );
                             loContextMenu.showAt( event.getXY() ); // show context menu where user right clicked
                             return( false );
                         }

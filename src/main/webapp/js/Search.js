@@ -262,7 +262,7 @@ Ext.define( 'Comete.SearchManager', {
             params: {
                 query: encodeURIComponent( JSON.stringify( this.loManager.learningObjectTable.getQuery() ) ),
                 lang: lang,
-                flag: flag.toLowerCase(),
+                flag: flag,
                 value: value
             },
             success: function(response, opts) {

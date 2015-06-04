@@ -104,7 +104,7 @@ public class QueryEngine {
 
         //count
         Tuple[] res;
-        String flagCondition = ( isShowHiddenRes ? "" : "FILTER( NOT EXISTS { ?s comete:flag ?flag } )" );
+        String flagCondition = ( isShowHiddenRes ? "" : "FILTER( NOT EXISTS { ?s comete:flag ?flag } || EXISTS { ?s comete:flag \"forcedDiffusion\" } )" );
         if (showAllRecords) {
             _query = CoreUtil.getQuery("queryengine/getLearningObjectsCount.sparql", flagCondition );
             res = tripleStore.sparqlSelect(_query);
@@ -157,12 +157,13 @@ public class QueryEngine {
         String[] data = ca.licef.comete.queryengine.util.Util.buildQueryClauses(queryArray, lang, isWithScore, cache);
         String fromClause = data[0];
         String clauses = data[1];
-        String flagCondition = ( isShowHiddenRes ? "" : "FILTER( NOT EXISTS { ?s comete:flag ?flag } )" );
+        String flagCondition = ( isShowHiddenRes ? "" : "FILTER( NOT EXISTS { ?s comete:flag ?flag } || EXISTS { ?s comete:flag \"forcedDiffusion\" } )" );
         boolean includeEquivalence = Boolean.parseBoolean(data[2]);
 
         String queryType = includeEquivalence?"Thematic":"Advanced";
 
         String query = CoreUtil.getQuery("queryengine/getLearningObjects" + queryType + "QueryForCount.sparql", fromClause, clauses, flagCondition );
+
         Tuple[] res = tripleStore.sparqlSelect_textIndex(query);
         int count = Integer.parseInt(res[0].getValue("count").getContent());
 
@@ -240,6 +241,8 @@ public class QueryEngine {
                     entry.setInvalid( true );
                 else if( "brokenLink".equals( triple.getObject() ) )
                     entry.setBrokenLink( true );
+                else if( "forcedDiffusion".equals( triple.getObject() ) )
+                    entry.setForcedDiffusion( true );
             }
 
             //type

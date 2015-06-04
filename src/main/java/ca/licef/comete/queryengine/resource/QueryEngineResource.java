@@ -106,6 +106,7 @@ public class QueryEngineResource implements Serializable {
                     .put( "loAsHtmlLocation", entry.getLoAsHtmlLocation() )
                     .put( "metadataFormat", entry.getMetadataFormat() )
                     .put( "type", entry.getType() )
+                    .put( "forcedDiffusion", entry.isForcedDiffusion() )
                     .put( "pending", entry.isPending() )
                     .put( "inactive", entry.isInactive() )
                     .put( "invalid", entry.isInvalid() )

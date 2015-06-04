@@ -230,6 +230,7 @@ Ext.define( 'Comete.QueryCondition', {
         this.flagStore = Ext.create('Ext.data.Store', {
             fields: ['id', 'label'],
             data: [
+                {'id':'forcedDiffusion', label: tr('Forced Diffusion')},
                 {'id':'inactive', label: tr('Inactive')},
                 {'id':'invalid', label: tr('Invalid')},
                 {'id':'brokenLink', label: tr('Broken Link')},
@@ -757,4 +758,3 @@ Ext.define( 'Comete.QueryCondition', {
         }
     }
 });
-
