@@ -822,9 +822,12 @@ public class Identity {
     }
 
     public Object[] getAllPersonsEff(int start, int limit) throws Exception {
-        int length = tripleStore.getTriplesWithPredicateObject(RDF.type, COMETE.Person.getURI(), null).length;
-        String query = CoreUtil.getQuery("identity/getPersons.sparql", start, limit);
-        return new Object[]{length, tripleStore.sparqlSelect(query)};
+        String query = CoreUtil.getQuery( "identity/getPersonsCount.sparql" );
+        Tuple[] res = tripleStore.sparqlSelect( query );
+        int count = Integer.parseInt( res[0].getValue( "count" ).getContent() );
+
+        query = CoreUtil.getQuery("identity/getPersons.sparql", start, limit);
+        return new Object[]{count, tripleStore.sparqlSelect(query)};
     }
 
     public Object[] searchPersons(String str, int start, int limit) throws Exception {
@@ -850,9 +853,12 @@ public class Identity {
     }
 
     public Object[] getAllOrganizationsEff(int start, int limit) throws Exception {
-        int length = tripleStore.getTriplesWithPredicateObject(RDF.type, COMETE.Organization.getURI(), null).length;
-        String query = CoreUtil.getQuery("identity/getOrganizations.sparql", start, limit);
-        return new Object[]{length, tripleStore.sparqlSelect(query)};
+        String query = CoreUtil.getQuery( "identity/getOrganizationsCount.sparql" );
+        Tuple[] res = tripleStore.sparqlSelect( query );
+        int count = Integer.parseInt( res[0].getValue( "count" ).getContent() );
+
+        query = CoreUtil.getQuery("identity/getOrganizations.sparql", start, limit);
+        return new Object[]{count, tripleStore.sparqlSelect(query)};
     }
 
     public Object[] searchOrganizations(String str, int start, int limit) throws Exception {

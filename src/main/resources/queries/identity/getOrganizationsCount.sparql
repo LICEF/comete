@@ -3,21 +3,17 @@ PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT distinct ?s ?name
-WHERE '{'
-    ?s rdf:type comete:Person .
-    ?s foaf:name ?name
-    '{'
+SELECT (COUNT(DISTINCT ?s) AS ?count)
+WHERE {
+    ?s rdf:type comete:Organization .
+    {
         ?lo rdf:type comete:LearningObject .
-        ?lo dcterms:creator ?s
-    '}'
+        ?lo (dcterms:creator | dcterms:publisher) ?s
+    }
     UNION
-    '{'
+    {
         ?rec rdf:type comete:MetadataRecord .
         ?rec dcterms:creator ?s .
         ?rec comete:describes ?lo
-    '}'
-'}'
-ORDER BY ?name
-OFFSET {0,number,#}
-LIMIT {1,number,#}
+    }
+}
