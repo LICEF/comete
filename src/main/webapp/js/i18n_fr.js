@@ -283,7 +283,16 @@
 
     'Apply the modifications on': 'Appliquer les modifications sur',
     'the selected resources': 'les ressources sélectionées',
-    'all the found resources': 'toutes les ressources trouvées'
+    'all the found resources': 'toutes les ressources trouvées',
+
+    'QUICK SEARCH': 'RECHERCHE RAPIDE',
+    'ADVANCED SEARCH': 'RECHERCHE AVANCÉE',
+    'THEMATIC NAVIGATION': 'NAVIGATION THÉMATIQUE',
+    'SORT BY': 'TRIER PAR',
+    'Relevance': 'Pertinence',
+    'Date added': 'Date d\'ajout',
+    'LANGUAGE': 'LANGUE'
+
 
 };
 

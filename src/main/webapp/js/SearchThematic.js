@@ -288,6 +288,9 @@
             scope: this 
         } );
     },
+    redoRequest: function() {
+        this.setRequestVocConcept(this.currentVocConceptUri);
+    },
     setQueryNext: function(vocUri, query) {
         this.currentVocConceptUri = null;
         this.setVocConcept(vocUri, query[0].value, null, null, null, false);

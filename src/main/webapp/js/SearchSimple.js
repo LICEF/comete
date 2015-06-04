@@ -50,6 +50,9 @@
     },
     setQuery: function(query) {
         this.searchQueryField.setValue( query == null ? '' : query[0].value );
+    },
+    redoRequest: function() {
+        this.submitSearchQuery();
     } 
 } );
 

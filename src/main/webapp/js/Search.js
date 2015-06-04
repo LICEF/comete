@@ -157,7 +157,7 @@ Ext.define( 'Comete.SearchManager', {
             lang: lang
         } );
  
-        var cardPanel = Ext.create('Ext.panel.Panel', {
+        this.cardPanel = Ext.create('Ext.panel.Panel', {
             id: 'cardPanel',
             layout: 'card',
             region: 'center',
@@ -170,7 +170,7 @@ Ext.define( 'Comete.SearchManager', {
             region: 'north',
             height: 100,
             border: false, 
-            items: [ { region: 'north', border: false, items: [ choicePanel ] }, cardPanel ]
+            items: [ { region: 'north', border: false, items: [ choicePanel ] }, this.cardPanel ]
         });
 
         this.loManager = Ext.create('Comete.LearningObjectManager', {        
@@ -229,6 +229,9 @@ Ext.define( 'Comete.SearchManager', {
         var query = [ { key: "keyword", value: keyword, lang: lang } ];
         displayQuery(1, query);
         this.setRequest( query );
+    },
+    redoRequest: function( textQuery ) {
+        this.cardPanel.getLayout().getActiveItem().redoRequest();
     },
     initCollections: function() {
         this.collectionSearchPanel.init();

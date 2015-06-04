@@ -332,3 +332,19 @@ ul li {
 ul {
     padding-left: 8px;
 }
+
+/* ceres */
+
+.popupContent {
+    font-family: arial, sans-serif;
+    font-size: 14px;
+    background-color: #FFFFFF;
+    color: #2F4F4F;
+    margin:20px 20px 0px 20px;
+}
+
+.searchPanel .x-panel-body {
+    background: -webkit-linear-gradient(#D6128A, #95278D); /* For Safari */
+    background: linear-gradient(#D6128A, #95278D);
+    color: white;
+}

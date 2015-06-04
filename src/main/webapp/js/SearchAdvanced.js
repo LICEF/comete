@@ -157,6 +157,9 @@ Ext.define( 'Comete.AdvancedSearch', {
         this.clear();        
         this.addQueryCond(queryConds);
     },
+    redoRequest: function() {
+        this.submitAdvancedSearchQuery();
+    },
     saveAsCollection: function() {
         var query = this.buildAdvancedSearchQuery();
         if (query.length == 0) {

@@ -59,15 +59,11 @@
             border: false,
             items: [              
                 { xtype: 'tbspacer', width: 10 }, 
-                this.goBackwardQueryButton, 
-                { xtype: 'tbspacer', width: 4 }, 
-                this.goForwardQueryButton, 
-                { xtype: 'tbspacer', width: 6 },
-                this.resultLabel,
-                { xtype: 'tbspacer', width: 40 }, 
                 this.resultAtomButton, 
                 { xtype: 'tbspacer', width: 10 }, 
-                this.resultRssButton
+                this.resultRssButton,
+                { xtype: 'tbspacer', width: 10 }, 
+                this.resultLabel
             ]        
         } );       
 
@@ -77,10 +73,21 @@
             lang: this.lang,
             split: true,
             width: 500,
+            margin: '-1 0 -1 -1',
             editable: this.editable,
             _query: this._query,
             loManager: this
         } );
+
+        this.facetsPanel = Ext.create('Comete.Facets', {
+            region: 'west',
+            width: 150,
+            resizable: false,
+            border: false,
+            //margin: '-1 0 -1 -1',
+            lang: this.lang
+        } );
+
 
         this.viewer = Ext.create('Comete.Viewer', {
             region: 'center',
@@ -92,7 +99,14 @@
             region: 'center',
             border: false,
             margin: '0 -1 -1 -1',
-            items: [ this.learningObjectTable, { region: 'center', autoScroll: true, items: this.viewer } ]
+            items: [ this.facetsPanel, 
+                     { layout: 'border', 
+                       region: 'center', 
+                       border: true,
+                       bodyStyle: { borderColor: 'lightgrey' },
+                       items: [ this.learningObjectTable, this.viewer ] }
+                     ]  
+            //items: [ this.learningObjectTable, { region: 'center', autoScroll: true, items: this.viewer } ]
         } );  
 
         cfg = {
@@ -189,3 +203,153 @@
 } );
 
 
+Ext.define( 'Comete.Facets', {
+    extend: 'Ext.panel.Panel',
+    layout: 'vbox',
+    initComponent: function( config ) {
+        
+        this.cbRelevance = Ext.create('Ext.form.field.Checkbox', {
+            checked: true, 
+            style: { color: 'white' }, 
+            margin: '5 0 0 20', 
+            boxLabel: tr('Relevance'),
+            handler: this.checkRelevance,
+            scope: this,
+            key: 'relevance'
+        });        
+
+        this.cbDateAdded = Ext.create('Ext.form.field.Checkbox', {
+            style: { color: 'white' }, 
+            margin: '5 0 0 20', 
+            boxLabel: tr('Date added'),
+            handler: this.checkDateAdded,
+            scope: this,
+            key: 'added'
+        });
+
+        this.sortBySelection = this.cbRelevance;
+
+        this.cbAll = Ext.create('Ext.form.field.Checkbox', {
+            checked: true,
+            style: { color: 'white' }, 
+            margin: '5 0 0 20', 
+            boxLabel: tr('All '),
+            handler: this.checkAll,
+            scope: this,
+            key: null
+        });
+
+        this.cbFrench = Ext.create('Ext.form.field.Checkbox', {
+            style: { color: 'white' }, 
+            margin: '5 0 0 20', 
+            boxLabel: tr('French'),
+            handler: this.checkFrench,
+            scope: this,
+            key: 'fr'
+        });
+
+        this.cbEnglish = Ext.create('Ext.form.field.Checkbox', {
+            style: { color: 'white' }, 
+            margin: '5 0 0 20', 
+            boxLabel: tr('English'),
+            handler: this.checkEnglish,
+            scope: this,
+            key: 'en'
+        });
+
+        this.languageSelection = this.cbAll;
+
+        cfg = {
+            cls: 'searchPanel',
+            bodyStyle: { border: 'none' },
+            /*header: {
+                style: { background: '#D6128A' },
+            },  */          
+            items: [
+                { xtype: 'label', text: tr('SORT BY'), margin: '20 0 0 20',
+                   style: {color: 'white', fontWeight: 'bold', fontSize: '12px' } },
+                this.cbRelevance,
+                this.cbDateAdded,
+
+                { xtype: 'box', width: 120, height: 2, margin: '10 0 0 15', style: { background: 'white' } },
+
+                { xtype: 'label', text: tr('LANGUAGE'), margin: '10 0 0 20',
+                   style: {color: 'white', fontWeight: 'bold', fontSize: '12px' } },
+                this.cbAll,
+                this.cbFrench,
+                this.cbEnglish
+            ]
+        };
+        Ext.apply(this, cfg);
+        this.callParent(arguments); 
+    },
+    manageFacetElement: function(cb, checked, group) {
+         var selected;
+         if (group == 'sortBy')
+             selected = this.sortBySelection;
+         else if (group == 'language')
+             selected = this.languageSelection;
+
+         if (!checked && selected == cb)
+             cb.setValue(true);
+    },
+    checkRelevance: function(cb, checked) {         
+         this.manageFacetElement(cb, checked, 'sortBy');
+         if (checked && this.sortBySelection != cb) {
+             this.sortBySelection = cb;
+             this.cbDateAdded.setValue(false);
+
+             //action
+             window.searchManager.redoRequest();
+         }
+    },
+    checkDateAdded: function(cb, checked) {
+         this.manageFacetElement(cb, checked, 'sortBy');
+         if (checked && this.sortBySelection != cb) {
+             this.sortBySelection = cb;
+             this.cbRelevance.setValue(false);
+
+             //action
+             window.searchManager.redoRequest();
+         }
+    },
+    checkAll: function(cb, checked) {         
+         this.manageFacetElement(cb, checked, 'language');
+         if (checked && this.languageSelection != cb) {
+             this.languageSelection = cb;
+             this.cbFrench.setValue(false);
+             this.cbEnglish.setValue(false);
+
+             //action
+             window.searchManager.redoRequest();
+         }
+    },
+    checkFrench: function(cb, checked) {         
+         this.manageFacetElement(cb, checked, 'language');
+         if (checked && this.languageSelection != cb) {
+             this.languageSelection = cb;
+             this.cbAll.setValue(false);
+             this.cbEnglish.setValue(false);
+
+             //action
+             window.searchManager.redoRequest();
+         }
+    },
+    checkEnglish: function(cb, checked) {         
+         this.manageFacetElement(cb, checked, 'language');
+         if (checked && this.languageSelection != cb) {
+             this.languageSelection = cb;
+             this.cbAll.setValue(false);
+             this.cbFrench.setValue(false);
+
+             //action
+             window.searchManager.redoRequest();
+         }
+    },
+    getOrderBy: function() {
+        return this.sortBySelection.key;
+    },
+    getLanguage: function() {
+        return this.languageSelection.key;
+    }
+} );
