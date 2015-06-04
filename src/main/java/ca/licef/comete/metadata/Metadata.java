@@ -346,7 +346,6 @@ public class Metadata {
     }
 
     public void doSetLearningObjectFlag(String loUri, String flag, boolean value) throws Exception {
-System.out.println( "doSetLearningObjectFlag loUri="+loUri+" flag="+flag+" value="+value );        
         String recordUri = getMetadataRecordUriFromLO( loUri );
         Triple flaggedTriple = new Triple( loUri, COMETE.flag, flag );
         if( value )
