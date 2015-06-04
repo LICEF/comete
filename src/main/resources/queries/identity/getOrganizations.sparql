@@ -9,15 +9,10 @@ WHERE '{'
     ?s foaf:name ?name .
     '{'
         ?lo rdf:type comete:LearningObject .
-        ?lo (dcterms:creator | dcterms:publisher) ?s
-    '}'
-    UNION
-    '{'
-        ?rec rdf:type comete:MetadataRecord .
-        ?rec dcterms:creator ?s .
-        ?rec comete:describes ?lo
+        ?lo (dcterms:creator|dcterms:publisher) ?s
+        {0}
     '}'
 '}'
 ORDER BY ?name
-OFFSET {0,number,#}
-LIMIT {1,number,#}
+OFFSET {1,number,#}
+LIMIT {2,number,#}

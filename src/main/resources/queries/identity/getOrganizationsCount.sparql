@@ -4,16 +4,11 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 SELECT (COUNT(DISTINCT ?s) AS ?count)
-WHERE {
+WHERE '{'
     ?s rdf:type comete:Organization .
-    {
+    '{'
         ?lo rdf:type comete:LearningObject .
-        ?lo (dcterms:creator | dcterms:publisher) ?s
-    }
-    UNION
-    {
-        ?rec rdf:type comete:MetadataRecord .
-        ?rec dcterms:creator ?s .
-        ?rec comete:describes ?lo
-    }
-}
+        ?lo (dcterms:creator|dcterms:publisher) ?s
+        {0}
+    '}'
+'}'
