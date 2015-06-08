@@ -73,7 +73,6 @@
             lang: this.lang,
             split: true,
             width: 500,
-            margin: '-1 0 -1 -1',
             editable: this.editable,
             _query: this._query,
             loManager: this
@@ -84,7 +83,6 @@
             width: 150,
             resizable: false,
             border: false,
-            //margin: '-1 0 -1 -1',
             lang: this.lang
         } );
 
@@ -102,11 +100,11 @@
             items: [ this.facetsPanel, 
                      { layout: 'border', 
                        region: 'center', 
-                       border: true,
+                       border: false,
                        bodyStyle: { borderColor: 'lightgrey' },
-                       items: [ this.learningObjectTable, this.viewer ] }
-                     ]  
-            //items: [ this.learningObjectTable, { region: 'center', autoScroll: true, items: this.viewer } ]
+                       items: [ this.learningObjectTable, 
+                           { region: 'center', autoScroll: true, items: this.viewer } ] }
+                   ]  
         } );  
 
         cfg = {

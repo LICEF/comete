@@ -4,8 +4,8 @@ if (lang != 'en' && lang != 'fr')
     lang = 'en';
 
 var logo = Ext.create('Ext.Img', {
-    src:'images/cometeLogo2.gif',
-    width: 106,
+    src:'images/Logo_CERES.png',
+    width: 72,
     height: 28,
     listeners: {
         el: {             
@@ -16,61 +16,36 @@ var logo = Ext.create('Ext.Img', {
     }
 } );
 
-function gotoAdminPage() {
-    window.location = 'admin.jsp?lang=' + lang;
-}
-
-var adminPageLabel = Ext.create('Comete.ClickableLabel', {
-    text: tr('Admin'),
-    cls: 'choice',
-    selected: false,
-    hidden: true,
-    fn: gotoAdminPage,
-    selectable: false
-});
-
-var pageMenu = Ext.create('Ext.panel.Panel', {
-    layout: 'hbox',
-    border: false,
-    items: [ adminPageLabel ]
-});
-
-var adminLabel = Ext.create('Ext.form.Label', {
-    text: tr( 'Administration' ),
-    cls: 'sectionTitle'
+var adminButton = Ext.create('Ext.Component', {
+    margin: '5 0 0 0',
+    html: '<a href="javascript:gotoAdmin();">' + tr( 'Administration' ) + '</a>'
 } );
 
-var frenchButton = Ext.create('Ext.button.Button', {
-    text: '&nbsp;Français',
-    handler: function() { window.location = getPageLocation('fr'); },
-    hidden: 'fr' == lang
-} );
-
-var englishButton = Ext.create('Ext.button.Button', {
-    text: '&nbsp;English',
-    handler: function() { window.location = getPageLocation('en'); },
+var englishButton = Ext.create('Ext.Component', {
+    margin: '5 0 0 0',
+    html: '<a href="javascript:gotoEnglish();">English</a>',
     hidden: 'en' == lang
 } );
 
-var aboutButton = Ext.create('Ext.button.Button', {
-    text: tr( 'About' ),
-    icon: 'images/about.png',
-    textAlign: 'left',
-    handler: showAbout
+var frenchButton = Ext.create('Ext.Component', {
+    margin: '5 0 0 0',
+    html: '<a href="javascript:gotoFrench();">Français</a>',
+    hidden: 'fr' == lang
 } );
 
-var signinButton = Ext.create('Ext.button.Button', {
-    text: tr( 'Sign in' ),
-    hidden: true,
-    textAlign: 'left',
-    handler: login
+var aboutButton = Ext.create('Ext.Component', {
+    margin: '5 0 0 0',
+    html: '<a href="javascript:showAbout();">' + tr( 'About' ) + '</a>'
 } );
 
-var logoutButton = Ext.create('Ext.button.Button', {
-    text: tr( 'Sign out' ),
-    hidden: true,
-    textAlign: 'left',
-    handler: logout
+var signinButton = Ext.create('Ext.Component', {
+    margin: '5 0 0 0',
+    html: '<a href="javascript:login();">' + tr( 'Sign in' ) + '</a>'
+} );
+
+var logoutButton = Ext.create('Ext.Component', {
+    margin: '5 0 0 0',
+    html: '<a href="javascript:logout();">' + tr( 'Sign out' ) + '</a>'
 } );
 
 var pageMenuSeparator = Ext.create( 'Ext.toolbar.Separator', {
@@ -78,25 +53,37 @@ var pageMenuSeparator = Ext.create( 'Ext.toolbar.Separator', {
 } );
 
 var tbar = {
-    xtype: 'toolbar',
-    height: 40,   
-    items: [ logo, , {xtype: 'tbspacer', width: 5}, pageMenuSeparator, pageMenu, '->', 
-             englishButton, frenchButton, aboutButton, signinButton, logoutButton, {xtype: 'tbspacer', width: 2} ]
+    layout: 'hbox',
+    border: false,
+    region: 'north',
+    style: { background: 'grey' },
+    height: 25, 
+    items: [ {xtype: 'tbspacer', width: 10}, aboutButton, 
+             {xtype: 'tbspacer', width: 15}, adminButton, '->', 
+             signinButton, logoutButton, 
+             {xtype: 'tbspacer', width: 15}, englishButton, frenchButton, {xtype: 'tbspacer', width: 10} ]
 };
 
 var tbarAdmin = {
     xtype: 'toolbar',
+    style: { background: 'grey'},
     height: 40,   
     items: [ logo, {xtype: 'tbspacer', width: 5}, {xtype: 'tbseparator', height: 30}, 
-             adminLabel, '->',  englishButton, frenchButton, aboutButton, signinButton, logoutButton, {xtype: 'tbspacer', width: 2} ]
+             adminButton, '->', 
+             signinButton, logoutButton, 
+             {xtype: 'tbspacer', width: 10}, englishButton, frenchButton, {xtype: 'tbspacer', width: 10} ]
 };
 
 function updateToolbar() {
     signinButton.setVisible( accountRole == "none");
     logoutButton.setVisible( accountRole != "none" );
     pageMenuSeparator.setVisible( accountRole != "none" );
-    adminPageLabel.setVisible( accountRole != "none" );
+    adminButton.setVisible( accountRole != "none" );
     pageMenu.setVisible( accountRole != "none" );
+}
+
+function gotoAdmin() {
+    window.location = 'admin.jsp?lang=' + lang;
 }
 
 function showAbout() {
@@ -132,4 +119,12 @@ function logout() {
         },
         scope: this 
     } );
+}
+
+function gotoEnglish() {
+    window.location = getPageLocation('en');
+}
+
+function gotoFrench() {
+    window.location = getPageLocation('fr');
 }
