@@ -57,7 +57,8 @@ public class MetadataRecordResource {
                                       @FormDataParam("res") FormDataContentDisposition fileDetailRes,
                                       @QueryParam("isPendingByDefault") String isPendingByDefault,
                                       @QueryParam("isCheckingBrokenLink") String isCheckingBrokenLink,
-                                      @QueryParam("isCheckingInvalid") String isCheckingInvalid) throws Exception {
+                                      @QueryParam("isCheckingInvalid") String isCheckingInvalid,
+                                      @QueryParam("invalidApplProf") String invalidApplProf) throws Exception {
 
         if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to upload metadata records.").build();
@@ -112,7 +113,7 @@ public class MetadataRecordResource {
         }
         else
             resp = doUploadEff((File)files[1], (File)files[2], 
-                "true".equals( isPendingByDefault ), "true".equals( isCheckingBrokenLink ), "true".equals( isCheckingInvalid ));
+                "true".equals( isPendingByDefault ), "true".equals( isCheckingBrokenLink ), "true".equals( isCheckingInvalid ), invalidApplProf);
 
         return Response.ok(resp).build();
     }
@@ -122,7 +123,7 @@ public class MetadataRecordResource {
     @Produces( MediaType.TEXT_HTML )
     public Response completeUpload( @Context HttpServletRequest request) throws Exception {
         Object[] filesData = fileCache.get(request.getSession().getId());
-        String val = doUploadEff((File)filesData[0], (File)filesData[1], false, false, false);
+        String val = doUploadEff((File)filesData[0], (File)filesData[1], false, false, false, null);
         fileCache.remove(request.getSession().getId());
         return Response.ok(val).build();
     }
@@ -139,8 +140,8 @@ public class MetadataRecordResource {
         return Response.ok().build();
     }
 
-    String doUploadEff(File record, File resource, boolean isPendingByDefault, boolean isCheckingBrokenLink, boolean isCheckingInvalid) throws Exception {
-        Object[] results = Metadata.getInstance().storeUploadedContent(record, resource, isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid);
+    String doUploadEff(File record, File resource, boolean isPendingByDefault, boolean isCheckingBrokenLink, boolean isCheckingInvalid, String invalidApplProf) throws Exception {
+        Object[] results = Metadata.getInstance().storeUploadedContent(record, resource, isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid, invalidApplProf);
         String errorMessage = (String)results[0];
         String[][] data = (String[][])results[1];
 

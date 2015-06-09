@@ -72,7 +72,8 @@ public class Harvester {
     }
 
     public String storeDefinition(String defId, String name, String type, String url, String ns, String adminEmail, 
-            boolean isPendingByDefault, boolean isCheckingBrokenLink, boolean isCheckingInvalid, String xsl, boolean isUpdate) throws Exception {
+            boolean isPendingByDefault, boolean isCheckingBrokenLink, boolean isCheckingInvalid, String invalidApplProf, 
+            String xsl, boolean isUpdate) throws Exception {
         if ("".equals(defId))
             return "ID is mandatory";
 
@@ -98,6 +99,8 @@ public class Harvester {
         harvestDef.put("isPendingByDefault", isPendingByDefault);
         harvestDef.put("isCheckingBrokenLink", isCheckingBrokenLink);
         harvestDef.put("isCheckingInvalid", isCheckingInvalid);
+        if( !"".equals(invalidApplProf))
+            harvestDef.put("invalidApplProf", invalidApplProf);
 
         IOUtil.writeStringToFile(harvestDef.toString(), new File(defFolder, defId + ".json"));
 
@@ -196,12 +199,13 @@ public class Harvester {
         boolean isPendingByDefault = ((Boolean)json.get( "isPendingByDefault" )).booleanValue();
         boolean isCheckingBrokenLink = ((Boolean)json.get( "isCheckingBrokenLink" )).booleanValue();
         boolean isCheckingInvalid= ((Boolean)json.get( "isCheckingInvalid" )).booleanValue();
+        String invalidApplProf = (String)json.get( "invalidApplProf" );
         String metadataNamespace = (String)json.get( "metadataNamespace" );
         Worker worker = null;
         if( "OAI".equals( type ) )
-            worker = new OAIWorker( defId, url, metadataNamespace, isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid );
+            worker = new OAIWorker( defId, url, metadataNamespace, isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid, invalidApplProf );
         else if( "HTML".equals( type ) )
-            worker = new HTMLWorker( defId, url, metadataNamespace, isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid );
+            worker = new HTMLWorker( defId, url, metadataNamespace, isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid, invalidApplProf );
         worker.setXslt( getXsl(defId) );
         worker.setFrom( from );
         workers.put( defId, worker );

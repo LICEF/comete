@@ -63,8 +63,8 @@ public class Metadata {
     }
 
     public String storeHarvestedRecord(String oaiID, String namespace, String repoUri, String record, String datestamp, 
-            boolean isPendingByDefault, boolean isCheckingBrokenLink, boolean isCheckingInvalid) throws Exception {
-        String[] res = manageRecord(oaiID, namespace, repoUri, record, datestamp, isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid);
+            boolean isPendingByDefault, boolean isCheckingBrokenLink, boolean isCheckingInvalid, String invalidApplProf) throws Exception {
+        String[] res = manageRecord(oaiID, namespace, repoUri, record, datestamp, isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid, invalidApplProf);
         String state = res[3];
         if (!"ignored".equals(state)) {
             MetadataFormat metadataFormat = MetadataFormats.getMetadataFormat(namespace);
@@ -146,7 +146,7 @@ public class Metadata {
         return new Object[]{errorMessage, record, resource};
     }
 
-    public Object[] storeUploadedContent(File record, File resource, boolean isPendingByDefault, boolean isCheckingBrokenLink, boolean isCheckingInvalid) throws Exception {
+    public Object[] storeUploadedContent(File record, File resource, boolean isPendingByDefault, boolean isCheckingBrokenLink, boolean isCheckingInvalid, String invalidApplProf) throws Exception {
         Object[] results;
         String extension = record.getName().substring(record.getName().lastIndexOf('.') + 1).toLowerCase();
         if ("zip".equals(extension)) {
@@ -157,7 +157,7 @@ public class Metadata {
             for (String _record : records) {
                 File rec = new File(uploadedRecords, _record);
 
-                String[] res = storeUploadedRecord(rec, null, isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid);
+                String[] res = storeUploadedRecord(rec, null, isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid, invalidApplProf);
                 if (res[1] != null)
                     uris.add(new String[]{res[1], res[2]});
                 rec.delete();
@@ -173,7 +173,7 @@ public class Metadata {
         }
         else {
             //possible physical associated resource
-            String[] res = storeUploadedRecord(record, resource, isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid );
+            String[] res = storeUploadedRecord(record, resource, isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid, invalidApplProf );
             if (res[1] == null)
                 results = new Object[]{res[0], null};
             else {
@@ -190,7 +190,8 @@ public class Metadata {
         return results;
     }
 
-    public String[] storeUploadedRecord(File file, File resource, boolean isPendingByDefault, boolean isCheckingBrokenLink, boolean isCheckingInvalid ) throws Exception {
+    public String[] storeUploadedRecord(File file, File resource, 
+            boolean isPendingByDefault, boolean isCheckingBrokenLink, boolean isCheckingInvalid, String invalidApplProf ) throws Exception {
         String[] values = Util.parseMetadataRecord(file);
 
         String errorMessage = values[0];
@@ -229,7 +230,7 @@ public class Metadata {
 
             try {
                 String now = DateUtil.toISOString(new Date(), null, null);
-                String[] res = manageRecord(pseudoOaiID, namespace, null, record, now, isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid);
+                String[] res = manageRecord(pseudoOaiID, namespace, null, record, now, isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid, invalidApplProf);
                 loURI = res[0];
                 state = res[3];
             } catch (Exception e) {
@@ -466,9 +467,9 @@ public class Metadata {
      */
 
     private String[] manageRecord(String oaiId, String namespace, String repoUri, String record, String datestamp, 
-            boolean isPendingByDefault, boolean isCheckingBrokenLink, boolean isCheckingInvalid) throws Exception {
+            boolean isPendingByDefault, boolean isCheckingBrokenLink, boolean isCheckingInvalid, String invalidApplProf) throws Exception {
         Invoker inv = new Invoker(this, "ca.licef.comete.metadata.Metadata",
-                "digestRecord", new Object[]{record, namespace, repoUri, oaiId, datestamp, isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid});
+                "digestRecord", new Object[]{record, namespace, repoUri, oaiId, datestamp, isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid, invalidApplProf});
         String[] res = (String[])tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
 
         //Identity and vocabulary referencement management
@@ -481,7 +482,7 @@ public class Metadata {
     }
 
     public String[] digestRecord(String record, String namespace, String repoURI, String oaiId, String datestamp, 
-            boolean isPendingByDefault, boolean isCheckingBrokenLink, boolean isCheckingInvalid) throws Exception {
+            boolean isPendingByDefault, boolean isCheckingBrokenLink, boolean isCheckingInvalid, String invalidApplProf) throws Exception {
         System.out.println( "Digesting record oaiId=" + oaiId + " from repoURI=" + repoURI + " datestamp=" + datestamp );        
         ArrayList<Triple> triples = new ArrayList<Triple>();
         String storeId;
@@ -560,7 +561,7 @@ public class Metadata {
         store.setDatastream(storeId, Constants.DATASTREAM_ORIGINAL_DATA, record);
 
         //validation
-        validateRecord( storeId, loURI, recordURI, record, namespace, isCheckingInvalid );
+        validateRecord( storeId, loURI, recordURI, record, namespace, isCheckingInvalid, invalidApplProf );
 
         //process record
         String extractedTriplesAsXml = processMetadataRecord( record, loURI, recordURI, namespace );
@@ -810,7 +811,7 @@ public class Metadata {
             String namespace = tuple.getValue("metadataFormat").getContent();
             String storeId = tuple.getValue("storeId").getContent();
             String record = Store.getInstance().getDatastream(storeId, Constants.DATASTREAM_ORIGINAL_DATA);
-            manageRecord(oaiId, namespace, null, record, null, false, false, false);
+            manageRecord(oaiId, namespace, null, record, null, false, false, false, null);
         }
     }
 
@@ -853,7 +854,7 @@ public class Metadata {
      * Validation
      */
 
-    private void validateRecord( String storeId, String loURI, String recordURI, String record, String namespace, boolean setInvalidFlag ) throws Exception {
+    private void validateRecord( String storeId, String loURI, String recordURI, String record, String namespace, boolean setInvalidFlag, String invalidApplProf ) throws Exception {
         Store store = Store.getInstance();
 
         Map<String,Boolean> applProfToValidate = Settings.getValidatedApplicationProfiles();
@@ -864,7 +865,6 @@ public class Metadata {
         else if( Constants.OAI_DC_NAMESPACE.equals( namespace ) )
             applProfiles = Constants.dcApplProfiles;
 
-        boolean isInvalidProfFound = false;
         for( int i = 0; i < applProfiles.length; i++ ) {
             Boolean isValidationRequired = applProfToValidate.get( applProfiles[ i ] );
             if( isValidationRequired == null || !isValidationRequired.booleanValue() )
@@ -883,7 +883,6 @@ public class Metadata {
             }
             catch( ValidationException e ) {
                 isValid = false;
-                isInvalidProfFound = true;
                 String errorReport = JDomUtils.parseXml2string(ValidationUtils.collectErrorsAsXml(e.getMessage()),null);
                 if( !store.isDatastreamExists( storeId, reportDataStream ) ) {
                     store.setDatastream( storeId, reportDataStream, errorReport);
@@ -894,9 +893,9 @@ public class Metadata {
                 long timeTaken = System.currentTimeMillis() - startTime;
                 System.out.println( "Validation complete (elapsed time: "+ timeTaken + " ms): " + ( isValid ? "VALID" : "INVALID" ) );
             }
+            if( setInvalidFlag && profileUri.equals( invalidApplProf ) )
+                setLearningObjectFlag( loURI, "invalid", !isValid );
         }
-        if( setInvalidFlag )
-            setLearningObjectFlag( loURI, "invalid", isInvalidProfFound );
     }
 
     private Validator getValidator() throws IOException, FileNotFoundException, ClassNotFoundException, InstantiationException, IllegalAccessException, InitialisationException {

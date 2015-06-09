@@ -28,9 +28,10 @@
                     var isPendingByDefault = this.setPendingByDefaultCheckbox.getValue();
                     var isCheckingBrokenLink = this.setCheckBrokenLinkCheckox.getValue();
                     var isCheckingInvalid = this.setCheckInvalidCheckbox.getValue();
+                    var invalidApplProf = encodeURIComponent( this.invalidApplProfComboBox.getValue() );
                     uploadForm.submit({ 
                         url: 'rest/metadataRecords?isPendingByDefault=' + isPendingByDefault + 
-                            '&isCheckingBrokenLink=' + isCheckingBrokenLink + '&isCheckingInvalid=' + isCheckingInvalid,
+                            '&isCheckingBrokenLink=' + isCheckingBrokenLink + '&isCheckingInvalid=' + isCheckingInvalid + '&invalidApplProf=' + invalidApplProf,
                         success: function(form, action) {
                             var res = '';
                             for (i = 0; i < action.result.data.length; i++) {
@@ -67,7 +68,32 @@
 
         this.setCheckInvalidCheckbox = Ext.create( 'Ext.form.field.Checkbox', {
             name: 'isCheckingInvalid',
-            boxLabel: tr( 'Mark resources that are not compliant to profiles as "Invalid"' )
+            boxLabel: tr( 'Mark resources as "Invalid" when they are not compliant with this profile:' )
+        } );
+        this.setCheckInvalidCheckbox.on( 'change', 
+            function( element, newValue, oldValue, eOpts ) { 
+                if( newValue ) 
+                    this.invalidApplProfComboBox.enable();
+                else 
+                    this.invalidApplProfComboBox.disable();
+            }, this );
+
+        this.applProfStore = Ext.create( 'Ext.data.Store', {
+            fields: ['id', 'label'],
+            data : [
+                { 'id': 'http://ltsc.ieee.org/xsd/LOM/strict', 'label': tr( 'LOM Strict' ) },
+                { 'id': 'http://ltsc.ieee.org/xsd/LOM/loose', 'label': tr( 'LOM Loose' ) },
+                { 'id': 'http://lom-fr.fr/validation/LomFRv1.0/core', 'label': tr( 'LOM FR' ) },
+                { 'id': 'http://lom-fr.fr/validation/ScoLomFRv1.0/core', 'label': tr( 'LOM Scorm LOM FR 1.0' ) },
+                { 'id': 'http://lom-fr.fr/validation/ScoLomFRv1.1/core', 'label': tr( 'LOM Scorm LOM FR 1.1' ) },
+                { 'id': 'http://www.normetic.org/LomNormeticv1.2', 'label': tr( 'LOM Normetic 1.2' ) },
+                { 'id': 'http://www.openarchives.org/OAI/2.0/', 'label': tr( 'OAI DC' ) }
+            ]
+        } );
+
+        this.invalidApplProfComboBox = Ext.create( 'Ext.form.field.ComboBox', {
+            name: 'invalidApplProf', valueField: 'id', displayField: 'label', disabled: true, store: this.applProfStore, editable: false, 
+            tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div></tpl></div>'
         } );
 
         this.uploadPanel = Ext.create('Ext.form.Panel', {
@@ -76,7 +102,7 @@
             items:[ { border: false, html: tr('Select LOM or zip of LOMs.<br/>Metametadata identifier (field 3.1) <b>must be present</b>.') }, 
                     { xtype: 'tbspacer', height: 10 }, this.uploadFile, 
                     { xtype: 'panel', layout: 'form', width: 500, border: 0, margin: '10 0 0 0', items: [ 
-                         this.setPendingByDefaultCheckbox, this.setCheckBrokenLinkCheckox, this.setCheckInvalidCheckbox ] }, 
+                         this.setPendingByDefaultCheckbox, this.setCheckBrokenLinkCheckox, this.setCheckInvalidCheckbox, this.invalidApplProfComboBox ] }, 
                     { xtype: 'tbspacer', height: 10 }, this.uploadButton ]
         });
 
