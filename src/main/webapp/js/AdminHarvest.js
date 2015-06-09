@@ -87,9 +87,9 @@
                      { fieldLabel: tr('Admin email'), editable: false },
                      { fieldLabel: tr('Actions'), readOnly:true , xtype: 'checkboxfield', boxLabel: tr( 'Mark resources as "Pending for approval"' ) },
                      { readOnly:true , xtype: 'checkboxfield', boxLabel: tr( 'Mark resources that have broken links' ) },
-                     { readOnly:true , xtype: 'checkboxfield', boxLabel: tr( 'Mark resources that are not compliant to profiles as "Invalid"' ) },
-                     { fieldLabel: 'XSL', xtype: 'textarea', editable: false,
-                       inputAttrTpl: 'wrap="off" spellcheck="false"', height: 180 }
+                     { readOnly: true , xtype: 'checkboxfield', boxLabel: tr( 'Mark resources as "Invalid" when they are not compliant with this profile:' ), width: 200 },
+                     { editable: false }, // invalidApplProf
+                     { fieldLabel: 'XSL', xtype: 'textarea', editable: false, inputAttrTpl: 'wrap="off" spellcheck="false"', height: 180 }
                    ]
         }); 
 
@@ -157,7 +157,8 @@
                     this.detailsPanel.getComponent(6).setValue(jsonDetails.isPendingByDefault);
                     this.detailsPanel.getComponent(7).setValue(jsonDetails.isCheckingBrokenLink);
                     this.detailsPanel.getComponent(8).setValue(jsonDetails.isCheckingInvalid);
-                    this.detailsPanel.getComponent(9).setValue(jsonDetails.xsl);
+                    this.detailsPanel.getComponent(9).setValue(jsonDetails.invalidApplProf);
+                    this.detailsPanel.getComponent(10).setValue(jsonDetails.xsl);
                 },
                 scope: this 
             } );
@@ -357,6 +358,35 @@ Ext.define( 'Comete.AdminHarvestDefEditor', {
                      { 'ns': 'http://www.openarchives.org/OAI/2.0/oai_dc/HTML', 'name': tr('OAI DC') } ]
         });
 
+        this.isCheckingInvalidCheckbox = Ext.create( 'Ext.form.field.Checkbox', {
+            name: 'isCheckingInvalid', boxLabel: tr( 'Mark resources as "Invalid" when they are not compliant with this profile:' )
+        } );
+        this.isCheckingInvalidCheckbox.on( 'change', 
+            function( element, newValue, oldValue, eOpts ) { 
+                if( newValue ) 
+                    this.invalidApplProfComboBox.enable();
+                else 
+                    this.invalidApplProfComboBox.disable();
+            }, this );
+
+        this.applProfStore = Ext.create( 'Ext.data.Store', {
+            fields: ['id', 'label'],
+            data : [
+                { 'id': 'http://ltsc.ieee.org/xsd/LOM/strict', 'label': tr( 'LOM Strict' ) },
+                { 'id': 'http://ltsc.ieee.org/xsd/LOM/loose', 'label': tr( 'LOM Loose' ) },
+                { 'id': 'http://lom-fr.fr/validation/LomFRv1.0/core', 'label': tr( 'LOM FR' ) },
+                { 'id': 'http://lom-fr.fr/validation/ScoLomFRv1.0/core', 'label': tr( 'LOM Scorm LOM FR 1.0' ) },
+                { 'id': 'http://lom-fr.fr/validation/ScoLomFRv1.1/core', 'label': tr( 'LOM Scorm LOM FR 1.1' ) },
+                { 'id': 'http://www.normetic.org/LomNormeticv1.2', 'label': tr( 'LOM Normetic 1.2' ) },
+                { 'id': 'http://www.openarchives.org/OAI/2.0/', 'label': tr( 'OAI DC' ) }
+            ]
+        } );
+
+        this.invalidApplProfComboBox = Ext.create( 'Ext.form.field.ComboBox', {
+            name: 'invalidApplProf', valueField: 'id', displayField: 'label', disabled: true, store: this.applProfStore, editable: false, 
+            tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div></tpl></div>'
+        } );
+
         this.formPanel = Ext.create('Ext.form.Panel', { 
             border: false,
             margin: '10',
@@ -386,7 +416,8 @@ Ext.define( 'Comete.AdminHarvestDefEditor', {
                      { name: 'adminEmail', fieldLabel: tr('Admin email') },
                      { name: 'isPendingByDefault', fieldLabel: tr('Actions'), xtype: 'checkboxfield', boxLabel: tr( 'Mark resources as "Pending for approval"' ) },
                      { name: 'isCheckingBrokenLink', xtype: 'checkboxfield', boxLabel: tr( 'Mark resources that have broken links' ) },
-                     { name: 'isCheckingInvalid', xtype: 'checkboxfield', boxLabel: tr( 'Mark resources that are not compliant to profiles as "Invalid"' ) },
+                     this.isCheckingInvalidCheckbox,
+                     this.invalidApplProfComboBox,
                      { fieldLabel: 'XSL',
                        name: 'xsl',
                        xtype: 'textarea', 
@@ -440,7 +471,8 @@ Ext.define( 'Comete.AdminHarvestDefEditor', {
         this.formPanel.getComponent(6).setValue(this.values.isPendingByDefault);
         this.formPanel.getComponent(7).setValue(this.values.isCheckingBrokenLink);
         this.formPanel.getComponent(8).setValue(this.values.isCheckingInvalid);
-        this.formPanel.getComponent(9).setValue(this.values.xsl);
+        this.formPanel.getComponent(9).setValue(this.values.invalidApplProf);
+        this.formPanel.getComponent(10).setValue(this.values.xsl);
     }        
 });
 

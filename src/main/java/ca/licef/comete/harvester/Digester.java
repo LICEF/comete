@@ -25,10 +25,10 @@ public class Digester {
     }
 
     public int addOrUpdateHarvestedRecord( String oaiID, String namespace, String datestamp, String repoId, String record, 
-            boolean isPendingByDefault, boolean isCheckingBrokenLink, boolean isCheckingInvalid ) throws Exception {
+            boolean isPendingByDefault, boolean isCheckingBrokenLink, boolean isCheckingInvalid, String invalidApplProf ) throws Exception {
         String repoUri = Util.makeURI(repoId, COMETE.Repository );
         String res = Metadata.getInstance().storeHarvestedRecord(oaiID, namespace, repoUri, record, datestamp, 
-            isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid);
+            isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid, invalidApplProf);
         if ("added".equals(res))
             return ADDED;
         else if ("updated".equals(res))
