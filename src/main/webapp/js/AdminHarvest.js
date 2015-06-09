@@ -195,6 +195,10 @@
             this.detailsPanel.getComponent(4).setValue("");
             this.detailsPanel.getComponent(5).setValue("");
             this.detailsPanel.getComponent(6).setValue("");
+            this.detailsPanel.getComponent(7).setValue("");
+            this.detailsPanel.getComponent(8).setValue("");
+            this.detailsPanel.getComponent(9).setValue("");
+            this.detailsPanel.getComponent(10).setValue("");
             //buttons
             this.modifyButton.setDisabled(true);
             this.deleteButton.setDisabled(true);
@@ -211,9 +215,19 @@
         });
         editor.show();
     },
-    afterAdd: function() {
-        this.harvestDefStore.loadPage();
-        Ext.Msg.alert('Information', tr('Repository added.'));
+    afterAdd: function( harvestDefIdToSelect ) {
+        this.harvestDefList.getSelectionModel().deselectAll();
+        this.harvestDefStore.loadPage( 1, { 
+            callback: function() {
+                if( harvestDefIdToSelect ) {
+                    var selectedRecord = this.harvestDefStore.getById( harvestDefIdToSelect );
+                    if( selectedRecord )
+                        this.harvestDefList.getSelectionModel().select( [ selectedRecord ] );
+                }
+                Ext.Msg.alert('Information', tr('Repository added.'));
+            },
+            scope: this
+        } );
     },
     modifyHarvestDef: function() {
         Ext.Ajax.request( {
@@ -237,10 +251,19 @@
         });
         editor.show();
     },
-    afterModify: function() {
-        this.harvestDefStore.loadPage();
+    afterModify: function( harvestDefIdToSelect ) {
         this.harvestDefList.getSelectionModel().deselectAll();
-        Ext.Msg.alert('Information', tr('Repository modified.'));
+        this.harvestDefStore.loadPage( 1, {
+            callback: function() {
+                if( harvestDefIdToSelect ) {
+                    var selectedRecord = this.harvestDefStore.getById( harvestDefIdToSelect );
+                    if( selectedRecord )
+                        this.harvestDefList.getSelectionModel().select( [ selectedRecord ] );
+                }
+                Ext.Msg.alert('Information', tr('Repository modified.'));
+            },
+            scope: this
+        } );
     },
     deleteHarvestDef: function() {
         var records = this.harvestDefList.getSelectionModel().getSelection();
@@ -260,14 +283,14 @@
     deleteHarvestDefEff: function(button) {
         if (button != 'ok')
             return;
-        var waitDialog = Ext.create('Ext.window.MessageBox', {
-        });
+        var waitDialog = Ext.create('Ext.window.MessageBox', {});
         waitDialog.wait( tr('Please wait') + '...' );
         Ext.Ajax.request( {
             url: this.currentHarvestDefRestUrl,
             method: 'DELETE',
             success: function(response, opts) {
                 waitDialog.close();
+                this.harvestDefList.getSelectionModel().deselectAll();
                 this.harvestDefStore.loadPage(1);
                 Ext.Msg.alert('Information', tr('Repository deleted.'));
             },
@@ -456,19 +479,19 @@ Ext.define( 'Comete.AdminHarvestDefEditor', {
            this.setValues();
     },
     ok: function() {
-        var waitDialog = Ext.create('Ext.window.MessageBox', {
-        });
+        var waitDialog = Ext.create('Ext.window.MessageBox', {});
         waitDialog.wait( tr('Please wait') + '...' );
         this.formPanel.submit({
             url: ((this.mode == 'modify')?this.restUrl:'rest/harvestDefinitions'),
             method: ((this.mode == 'modify')?'PUT':'POST'),
             success: function(form, action) {
+                var harvestDefId = form.getFieldValues().id;
                 this.close();
                 waitDialog.close();
                 if (this.mode == 'modify') 
-                    this.listener.afterModify();
+                    this.listener.afterModify(harvestDefId);
                 else
-                    this.listener.afterAdd();
+                    this.listener.afterAdd(harvestDefId);
             },
             failure: function(form, action) { 
                 Ext.Msg.alert(tr('Failure'), action.result.error);
