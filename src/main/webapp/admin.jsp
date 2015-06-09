@@ -11,8 +11,13 @@
     <script type="text/javascript" src="ext-5.1.0/build/ext-all.js"></script>
 
     <script type="text/javascript" src="js/i18n.js"></script>
-    <% if( request.getParameter( "lang" ) != null && !"en".equals( request.getParameter( "lang" ) ) ) { %>
+    <% 
+        String lang = "en";
+        if( request.getParameter( "lang" ) != null && !"en".equals( request.getParameter( "lang" ) ) ) {
+            lang = request.getParameter( "lang" );
+    %>
         <script type="text/javascript" src="js/i18n_<%= request.getParameter( "lang" ) %>.js"></script>
+        <script type="text/javascript" src="ext-5.1.0/build/packages/ext-locale/build/ext-locale-<%= lang %>.js"></script>
     <% } %>
 
     <title>Comète Administration</title>
