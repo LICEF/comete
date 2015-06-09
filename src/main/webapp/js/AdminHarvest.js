@@ -157,7 +157,24 @@
                     this.detailsPanel.getComponent(6).setValue(jsonDetails.isPendingByDefault);
                     this.detailsPanel.getComponent(7).setValue(jsonDetails.isCheckingBrokenLink);
                     this.detailsPanel.getComponent(8).setValue(jsonDetails.isCheckingInvalid);
-                    this.detailsPanel.getComponent(9).setValue(jsonDetails.invalidApplProf);
+
+                    var invalidApplProfLabel = '';
+                    if( jsonDetails.invalidApplProf == 'http://ltsc.ieee.org/xsd/LOM/strict' ) 
+                        invalidApplProfLabel = tr( 'LOM Strict' );
+                    else if( jsonDetails.invalidApplProf == 'http://ltsc.ieee.org/xsd/LOM/loose' )
+                        invalidApplProfLabel = tr( 'LOM Loose' );
+                    else if( jsonDetails.invalidApplProf == 'http://lom-fr.fr/validation/LomFRv1.0/core' )
+                        invalidApplProfLabel = tr( 'LOM FR' );
+                    else if( jsonDetails.invalidApplProf == 'http://lom-fr.fr/validation/ScoLomFRv1.0/core' )
+                        invalidApplProfLabel = tr( 'LOM Scorm LOM FR 1.0' );
+                    else if( jsonDetails.invalidApplProf == 'http://lom-fr.fr/validation/ScoLomFRv1.1/core' )
+                        invalidApplProfLabel = tr( 'LOM Scorm LOM FR 1.1' );
+                    else if( jsonDetails.invalidApplProf == 'http://www.normetic.org/LomNormeticv1.2' )
+                        invalidApplProfLabel = tr( 'Normetic 1.2' );
+                    else if( jsonDetails.invalidApplProf == 'http://www.openarchives.org/OAI/2.0/' )
+                        invalidApplProfLabel = tr( 'OAI DC' );
+                    this.detailsPanel.getComponent(9).setValue(invalidApplProfLabel);
+
                     this.detailsPanel.getComponent(10).setValue(jsonDetails.xsl);
                 },
                 scope: this 
