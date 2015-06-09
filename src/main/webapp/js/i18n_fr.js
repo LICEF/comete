@@ -99,7 +99,7 @@
     'Modify repository': 'Modifier le répertoire',
     'Repository added.': 'Répertoire ajouté.',
     'Repository modified.': 'Répertoire modifié.',
-    'Repository deleted.': 'Répertoire suprimé.',
+    'Repository deleted.': 'Répertoire supprimé.',
     'HTML Spider': 'Araignée HTML',
     'Do you really want to delete repository ?': 'Voulez-vous vraiment supprimer le répertoire ?',
     'Start harvest': 'Démarrer la moisson',
@@ -109,7 +109,7 @@
     'Harvest started.': 'Moisson démarrée.',
     'Harvest stopped.': 'Moisson arrêtée.',
     'Do you really want to delete report ?': 'Voulez-vous vraiment supprimer le rapport ?',
-    'Report deleted.': 'Rapport suprimé.',
+    'Report deleted.': 'Rapport supprimé.',
 
     'Add vocabulary': 'Ajouter un vocabulaire',
     'Modify vocabulary': 'Modifier le vocabulaire',
