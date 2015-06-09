@@ -48,28 +48,23 @@ var logoutButton = Ext.create('Ext.Component', {
     html: '<a href="javascript:logout();">' + tr( 'Sign out' ) + '</a>'
 } );
 
-var pageMenuSeparator = Ext.create( 'Ext.toolbar.Separator', {
-    height: 30
-} );
-
 var tbar = {
-    layout: 'hbox',
-    border: false,
-    region: 'north',
-    style: { background: 'grey' },
-    height: 25, 
-    items: [ {xtype: 'tbspacer', width: 10}, aboutButton, 
-             {xtype: 'tbspacer', width: 15}, adminButton, '->', 
+    xtype: 'toolbar',
+    style: { background: '#c9c9c9'},
+    height: 40,   
+    items: [ {xtype: 'tbspacer', width: 5}, logo, {xtype: 'tbseparator', height: 30, margin: '0 10 0 8'},
+             aboutButton, {xtype: 'tbspacer', width: 10}, 
+             adminButton, '->', 
              signinButton, logoutButton, 
-             {xtype: 'tbspacer', width: 15}, englishButton, frenchButton, {xtype: 'tbspacer', width: 10} ]
+             {xtype: 'tbspacer', width: 10}, englishButton, frenchButton, {xtype: 'tbspacer', width: 10} ]
 };
 
 var tbarAdmin = {
     xtype: 'toolbar',
-    style: { background: 'grey'},
+    style: { background: '#c9c9c9'},
     height: 40,   
-    items: [ logo, {xtype: 'tbspacer', width: 5}, {xtype: 'tbseparator', height: 30}, 
-             adminButton, '->', 
+    items: [ {xtype: 'tbspacer', width: 5}, logo, {xtype: 'tbseparator', height: 30, margin: '0 10 0 8'},
+             aboutButton, '->', 
              signinButton, logoutButton, 
              {xtype: 'tbspacer', width: 10}, englishButton, frenchButton, {xtype: 'tbspacer', width: 10} ]
 };
@@ -77,9 +72,7 @@ var tbarAdmin = {
 function updateToolbar() {
     signinButton.setVisible( accountRole == "none");
     logoutButton.setVisible( accountRole != "none" );
-    pageMenuSeparator.setVisible( accountRole != "none" );
     adminButton.setVisible( accountRole != "none" );
-    pageMenu.setVisible( accountRole != "none" );
 }
 
 function gotoAdmin() {
