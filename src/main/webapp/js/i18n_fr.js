@@ -94,7 +94,7 @@
     'Admin email': 'Courriel admin',
     'Mark resources as "Pending for approval"': 'Mettre les ressources "En attente d\'approbation"',
     'Mark resources that have broken links': 'Marquer les ressources ayant des liens brisés',
-    'Mark resources that are not compliant to profiles as "Invalid"': 'Marquer "Invalide" les ressources non conformes aux profils',
+    'Mark resources as "Invalid" when they are not compliant with this profile:': 'Marquer les ressources comme "Invalide" lorsqu\'elles ne sont pas conformes à ce profil:',
     'Add repository': 'Ajouter un répertoire',
     'Modify repository': 'Modifier le répertoire',
     'Repository added.': 'Répertoire ajouté.',
