@@ -7,9 +7,9 @@
 
         this.harvestDefStore = Ext.create('Ext.data.JsonStore', {
             model: 'HarvestDefModel',
-            proxy: harvestDefProxy
+            proxy: harvestDefProxy,
+            sorters: [ 'name' ]
         });   
-        this.harvestDefStore.sort( 'label', 'ASC' );
  
         this.addButton = Ext.create('Ext.button.Button', {
             text: tr('Add'),
@@ -41,7 +41,7 @@
             margin: '0 20 10 10',
             columns: [ 
                 { dataIndex: 'id', hidden: true },
-                { dataIndex: 'name', text: tr('Repositories'), flex: 1, height: 28 },
+                { dataIndex: 'name', text: tr('Repositories'), flex: 1, height: 28, sortable: true },
                 { dataIndex: 'inProcess', width: 40, renderer: processIcon }
             ],     
             viewConfig: {
