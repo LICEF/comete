@@ -229,7 +229,7 @@
         <dependency>
             <groupId>org.rendersnake</groupId>
             <artifactId>rendersnake</artifactId>
-            <version>1.7.2</version>
+            <version>1.8</version>
         </dependency>
         <dependency>
             <groupId>licef</groupId>
@@ -329,11 +329,6 @@
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
-        </repository>
-        <repository>
-            <id>rendersnake-repo</id>
-            <name>Repository for rendersnake</name>
-            <url>http://rendersnake.googlecode.com/svn/repo</url>
         </repository>
     </repositories>
 </project>

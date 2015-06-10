@@ -10,7 +10,7 @@
 
     <script type="text/javascript" src="ext-5.1.0/build/ext-all.js"></script>
 
-    <script type="text/javascript" src="js/i18n.js"></script>    
+    <script type="text/javascript" src="js/i18n.js"></script>
     <% 
         String lang = "en";
         if( request.getParameter( "lang" ) != null && !"en".equals( request.getParameter( "lang" ) ) ) {

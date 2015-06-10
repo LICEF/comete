@@ -7,9 +7,9 @@
 
         this.harvestDefStore = Ext.create('Ext.data.JsonStore', {
             model: 'HarvestDefModel',
-            proxy: harvestDefProxy
+            proxy: harvestDefProxy,
+            sorters: [ 'name' ]
         });   
-        this.harvestDefStore.sort( 'label', 'ASC' );
  
         this.addButton = Ext.create('Ext.button.Button', {
             text: tr('Add'),
@@ -41,7 +41,7 @@
             margin: '0 20 10 10',
             columns: [ 
                 { dataIndex: 'id', hidden: true },
-                { dataIndex: 'name', text: tr('Repositories'), flex: 1, height: 28 },
+                { dataIndex: 'name', text: tr('Repositories'), flex: 1, height: 28, sortable: true },
                 { dataIndex: 'inProcess', width: 40, renderer: processIcon }
             ],     
             viewConfig: {
@@ -157,7 +157,24 @@
                     this.detailsPanel.getComponent(6).setValue(jsonDetails.isPendingByDefault);
                     this.detailsPanel.getComponent(7).setValue(jsonDetails.isCheckingBrokenLink);
                     this.detailsPanel.getComponent(8).setValue(jsonDetails.isCheckingInvalid);
-                    this.detailsPanel.getComponent(9).setValue(jsonDetails.invalidApplProf);
+
+                    var invalidApplProfLabel = '';
+                    if( jsonDetails.invalidApplProf == 'http://ltsc.ieee.org/xsd/LOM/strict' ) 
+                        invalidApplProfLabel = tr( 'LOM Strict' );
+                    else if( jsonDetails.invalidApplProf == 'http://ltsc.ieee.org/xsd/LOM/loose' )
+                        invalidApplProfLabel = tr( 'LOM Loose' );
+                    else if( jsonDetails.invalidApplProf == 'http://lom-fr.fr/validation/LomFRv1.0/core' )
+                        invalidApplProfLabel = tr( 'LOM FR' );
+                    else if( jsonDetails.invalidApplProf == 'http://lom-fr.fr/validation/ScoLomFRv1.0/core' )
+                        invalidApplProfLabel = tr( 'LOM Scorm LOM FR 1.0' );
+                    else if( jsonDetails.invalidApplProf == 'http://lom-fr.fr/validation/ScoLomFRv1.1/core' )
+                        invalidApplProfLabel = tr( 'LOM Scorm LOM FR 1.1' );
+                    else if( jsonDetails.invalidApplProf == 'http://www.normetic.org/LomNormeticv1.2' )
+                        invalidApplProfLabel = tr( 'Normetic 1.2' );
+                    else if( jsonDetails.invalidApplProf == 'http://www.openarchives.org/OAI/2.0/' )
+                        invalidApplProfLabel = tr( 'OAI DC' );
+                    this.detailsPanel.getComponent(9).setValue(invalidApplProfLabel);
+
                     this.detailsPanel.getComponent(10).setValue(jsonDetails.xsl);
                 },
                 scope: this 
@@ -178,6 +195,10 @@
             this.detailsPanel.getComponent(4).setValue("");
             this.detailsPanel.getComponent(5).setValue("");
             this.detailsPanel.getComponent(6).setValue("");
+            this.detailsPanel.getComponent(7).setValue("");
+            this.detailsPanel.getComponent(8).setValue("");
+            this.detailsPanel.getComponent(9).setValue("");
+            this.detailsPanel.getComponent(10).setValue("");
             //buttons
             this.modifyButton.setDisabled(true);
             this.deleteButton.setDisabled(true);
@@ -194,9 +215,19 @@
         });
         editor.show();
     },
-    afterAdd: function() {
-        this.harvestDefStore.loadPage();
-        Ext.Msg.alert('Information', tr('Repository added.'));
+    afterAdd: function( harvestDefIdToSelect ) {
+        this.harvestDefList.getSelectionModel().deselectAll();
+        this.harvestDefStore.loadPage( 1, { 
+            callback: function() {
+                if( harvestDefIdToSelect ) {
+                    var selectedRecord = this.harvestDefStore.getById( harvestDefIdToSelect );
+                    if( selectedRecord )
+                        this.harvestDefList.getSelectionModel().select( [ selectedRecord ] );
+                }
+                Ext.Msg.alert('Information', tr('Repository added.'));
+            },
+            scope: this
+        } );
     },
     modifyHarvestDef: function() {
         Ext.Ajax.request( {
@@ -220,10 +251,19 @@
         });
         editor.show();
     },
-    afterModify: function() {
-        this.harvestDefStore.loadPage();
+    afterModify: function( harvestDefIdToSelect ) {
         this.harvestDefList.getSelectionModel().deselectAll();
-        Ext.Msg.alert('Information', tr('Repository modified.'));
+        this.harvestDefStore.loadPage( 1, {
+            callback: function() {
+                if( harvestDefIdToSelect ) {
+                    var selectedRecord = this.harvestDefStore.getById( harvestDefIdToSelect );
+                    if( selectedRecord )
+                        this.harvestDefList.getSelectionModel().select( [ selectedRecord ] );
+                }
+                Ext.Msg.alert('Information', tr('Repository modified.'));
+            },
+            scope: this
+        } );
     },
     deleteHarvestDef: function() {
         var records = this.harvestDefList.getSelectionModel().getSelection();
@@ -243,14 +283,14 @@
     deleteHarvestDefEff: function(button) {
         if (button != 'ok')
             return;
-        var waitDialog = Ext.create('Ext.window.MessageBox', {
-        });
+        var waitDialog = Ext.create('Ext.window.MessageBox', {});
         waitDialog.wait( tr('Please wait') + '...' );
         Ext.Ajax.request( {
             url: this.currentHarvestDefRestUrl,
             method: 'DELETE',
             success: function(response, opts) {
                 waitDialog.close();
+                this.harvestDefList.getSelectionModel().deselectAll();
                 this.harvestDefStore.loadPage(1);
                 Ext.Msg.alert('Information', tr('Repository deleted.'));
             },
@@ -439,19 +479,19 @@ Ext.define( 'Comete.AdminHarvestDefEditor', {
            this.setValues();
     },
     ok: function() {
-        var waitDialog = Ext.create('Ext.window.MessageBox', {
-        });
+        var waitDialog = Ext.create('Ext.window.MessageBox', {});
         waitDialog.wait( tr('Please wait') + '...' );
         this.formPanel.submit({
             url: ((this.mode == 'modify')?this.restUrl:'rest/harvestDefinitions'),
             method: ((this.mode == 'modify')?'PUT':'POST'),
             success: function(form, action) {
+                var harvestDefId = form.getFieldValues().id;
                 this.close();
                 waitDialog.close();
                 if (this.mode == 'modify') 
-                    this.listener.afterModify();
+                    this.listener.afterModify(harvestDefId);
                 else
-                    this.listener.afterAdd();
+                    this.listener.afterAdd(harvestDefId);
             },
             failure: function(form, action) { 
                 Ext.Msg.alert(tr('Failure'), action.result.error);
