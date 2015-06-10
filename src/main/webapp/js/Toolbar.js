@@ -50,21 +50,27 @@ var logoutButton = Ext.create('Ext.Component', {
 
 var tbar = {
     xtype: 'toolbar',
-    style: { background: '#c9c9c9'},
-    height: 40,   
-    items: [ {xtype: 'tbspacer', width: 5}, logo, {xtype: 'tbseparator', height: 30, margin: '0 10 0 8'},
-             aboutButton, {xtype: 'tbspacer', width: 10}, 
-             adminButton, '->', 
+    id: 'tbar',
+    cls: 'whiteLink',
+    style: { background: '#999999'},
+    height: 34,   
+    margin: '0 0 -1 0',
+    items: [ {xtype: 'tbspacer', width: 5},
+             aboutButton, {xtype: 'tbspacer', width: 10}, adminButton, '->', 
              signinButton, logoutButton, 
              {xtype: 'tbspacer', width: 10}, englishButton, frenchButton, {xtype: 'tbspacer', width: 10} ]
 };
 
 var tbarAdmin = {
     xtype: 'toolbar',
-    style: { background: '#c9c9c9'},
+    cls: 'whiteLink',
+    style: { background: '#999999'},
     height: 40,   
-    items: [ {xtype: 'tbspacer', width: 5}, logo, {xtype: 'tbseparator', height: 30, margin: '0 10 0 8'},
-             aboutButton, '->', 
+    items: [ {xtype: 'tbspacer', width: 5}, logo, 
+             {xtype: 'tbseparator', height: 30, margin: '0 10 0 8'}, 
+             {xtype: 'label', text: 'Administration', cls: 'tblabel', margin: '0 0 0 0'},
+             '->', 
+             aboutButton, {xtype: 'tbspacer', width: 10}, 
              signinButton, logoutButton, 
              {xtype: 'tbspacer', width: 10}, englishButton, frenchButton, {xtype: 'tbspacer', width: 10} ]
 };
@@ -75,6 +81,7 @@ function updateToolbar() {
     adminButton.setVisible( accountRole != "none" );
 }
 
+
 function gotoAdmin() {
     window.location = 'admin.jsp?lang=' + lang;
 }
@@ -82,8 +89,8 @@ function gotoAdmin() {
 function showAbout() {
     var aboutWindow = new Ext.window.Window( {
         title: tr('About'),
-        width: 400,
-        height: 410,
+        width: 470,
+        height: 500,
         resizable: false,
         html: '<iframe width="100%" height="100%" frameborder="0" src="' + lang + '/about.html"></iframe>' 
     } );

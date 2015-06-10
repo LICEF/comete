@@ -7,22 +7,17 @@ window.currentSearchQueryItem = 0;
 SIMPLE_HEIGHT = 110;
 ADVANCED_HEIGHT = 180;
 THEMATIC_HEIGHT = 220;
-COLLECTION_HEIGHT = 90;
+
+QUERYPANEL_HEIGHT = 500;
+
+CARDPANEL_WIDTH = 500;
+
 var currentAdvancedHeight = ADVANCED_HEIGHT;
 
-var currentElem;
-
 function changeCardItem(item, elem, height) {
-
-    currentElem.removeCls('selectedChoice');
-    currentElem.addCls('choice');
-    elem.removeCls('choice');
-    elem.addCls('selectedChoice');
-    currentElem.selected = false;
-    currentElem = elem;
     window.currentSearchQueryItem = item;
     Ext.getCmp('cardPanel').getLayout().setActiveItem(item);
-    setQueryPanelHeight(height, false);    
+    //setQueryPanelHeight(height, false);    
 }
 
 function setQueryPanelHeight(height, isAdvanced) {
@@ -86,60 +81,10 @@ Ext.define( 'Comete.SearchManager', {
             }
         }
 
-        this.simpleLabel = Ext.create('Comete.ClickableLabel', {
-            text: tr('Simple Search'),
-            cls: 'selectedChoice',
-            selected: true,
-            fn: function() { changeCardItem(0, searchManager.simpleLabel, SIMPLE_HEIGHT); 
-                             searchManager.clear(); }
-        } );
-
-        currentElem = this.simpleLabel;
-
-        this.advancedLabel = Ext.create('Comete.ClickableLabel', {
-            text: tr('Advanced Search'),
-            cls: 'choice',
-            selected: false,
-            fn: function() { changeCardItem(1, searchManager.advancedLabel, currentAdvancedHeight); 
-                             searchManager.clear(); }
-        } );
-
-        this.thematicLabel = Ext.create('Comete.ClickableLabel', {
-            text: tr('Thematic Navigation'),
-            cls: 'choice',
-            selected: false,
-            fn: function() { changeCardItem(2, searchManager.thematicLabel, THEMATIC_HEIGHT); 
-                             searchManager.clear(); }
-        } );
-
-        this.collectionLabel = Ext.create('Comete.ClickableLabel', {
-            text: tr('Collections'),
-            cls: 'choice',
-            selected: false,
-            fn: function() { changeCardItem(3, searchManager.collectionLabel, COLLECTION_HEIGHT); 
-                             searchManager.clear(); }
-        } );
-
-        var mainMenu = Ext.create('Ext.panel.Panel', {
-            region: 'center',
-            layout: 'hbox',                     
-            border: false,
-            items: [ {xtype: 'tbspacer', width: 10}, this.simpleLabel, {xtype: 'tbspacer', width: 10}, 
-                      this.advancedLabel, {xtype: 'tbspacer', width: 10}, this.thematicLabel, {xtype: 'tbspacer', width: 10}, this.collectionLabel  ]
-        });    
-
-        var choicePanel = Ext.create('Ext.panel.Panel', {
-            layout: 'border',
-            border: false,
-            height: 40,
-            margin: '10 0 0 0',
-            items: [ mainMenu ]
-        });
-
         this.simpleSearchPanel = Ext.create('Comete.SimpleSearch', {
             border: false,
-            lang: lang,
-            _query: query
+            lang: lang
+            //_query: query
         } );
 
         this.advancedSearchPanel = Ext.create('Comete.AdvancedSearch', {
@@ -151,26 +96,54 @@ Ext.define( 'Comete.SearchManager', {
             border: false,
             lang: lang
         } );
-
-        this.collectionSearchPanel = Ext.create('Comete.CollectionSearch', {
-            border: false,
-            lang: lang
-        } );
  
         this.cardPanel = Ext.create('Ext.panel.Panel', {
             id: 'cardPanel',
             layout: 'card',
-            region: 'center',
             border: false,
-            items: [ this.simpleSearchPanel, this.advancedSearchPanel, this.thematicSearchPanel, this.collectionSearchPanel ]
+            items: [ this.simpleSearchPanel, this.advancedSearchPanel, this.thematicSearchPanel ]
+        });
+
+        this.logo = Ext.create('Ext.Img', {
+            src: 'images/Logo_CERES.png',
+            //width: 150,
+            height: 58
+        } );
+
+        this.firstQueryPanelSpacer = Ext.create('Ext.toolbar.Spacer', {            
+            height: 80
+        } );
+
+        this.descriptionPanel = Ext.create('Ext.panel.Panel', {
+            layout: 'hbox', 
+            width: '100%', 
+            border: false,
+            cls: 'transp1',                                          
+            items: [ {xtype: 'tbfill'}, 
+                     { border: false, width: 560, 
+                       html: '<iframe width="100%" height="500" frameborder="0" src="' + lang + '/description.html"></iframe>' },
+                     {xtype: 'tbfill'} ]
         });
 
         this.queryPanel = Ext.create('Ext.panel.Panel', {
-            layout: 'border',
+            layout: 'vbox',
             region: 'north',
-            height: 100,
-            border: false, 
-            items: [ { region: 'north', border: false, items: [ choicePanel ] }, this.cardPanel ]
+            height: QUERYPANEL_HEIGHT,
+            border: false,
+            cls: 'grad', 
+            items: [ this.firstQueryPanelSpacer,
+                     { layout: 'hbox', 
+                       width: '100%', 
+                       border: false,
+                       cls: 'transp1',                                          
+                       items: [ {xtype: 'tbfill'}, 
+                                { layout: 'vbox', border: false, 
+                                  items: [ this.logo, { xtype: 'tbspacer', height: 5}, this.cardPanel ] }, 
+                                {xtype: 'tbfill'} ] },
+                     {xtype: 'tbfill'},
+                     { xtype: 'tbspacer', height: 30 },
+                     this.descriptionPanel                     
+                   ]
         });
 
         this.loManager = Ext.create('Comete.LearningObjectManager', {        
@@ -178,8 +151,14 @@ Ext.define( 'Comete.SearchManager', {
             border: false,
             lang: lang,
             editable: isEditable(),
-            _query: query
+            //_query: query
         } );
+
+        if (query == null) {
+            this.loManager.on('render', function() {
+                this.loManager.getEl().setOpacity(0);
+            }, this);
+        }
 
         cfg = {
             items: [ this.queryPanel, this.loManager ]
@@ -198,19 +177,52 @@ Ext.define( 'Comete.SearchManager', {
         this.loManager.clear();
     },
     setRequest: function( query ) {
+        this.firstQueryPanelSpacer.setHeight(0);
+        this.queryPanel.setHeight(null);
+        this.logo.setHeight(40);
+        this.descriptionPanel.setVisible(false);
+        if (this.loManager.getEl() != undefined) {
+            this.loManager.getEl().fadeIn({
+                duration: 1500
+            });
+        }
         this.loManager.setRequest( query );
     },
     setRequestSimpleSearch: function( textQuery ) {
-        var query = [ { key: "ss", value: textQuery } ];
+        var query = new Array();
+        query[0] = { key: "fulltext", value: textQuery };
+        if (this.getLanguageCondition() != null) {            
+            if (textQuery != '') {
+                query[1] = { "op": "AND" };
+                query[2] = { key: "language", value: searchManager.getLanguageCondition() };
+            }
+            else {
+                query = [ { key: "language", value: searchManager.getLanguageCondition() } ];
+            }
+        }
         this.setRequest(query);
     },
     setRequestContributor: function( contribId, label ) { 
-        var query = [ { key: "contrib", value: contribId, label: label } ];
+        var query = new Array();
+        var i = 0;
+        if (this.getLanguageCondition() != null) {
+            query[0] = { key: "language", value: searchManager.getLanguageCondition() };
+            query[1] = { "op": "AND" };
+            i = 2;
+        }
+        query[i] = { key: "contrib", value: contribId, label: label };
         displayQuery(1, query);
         this.setRequest( query );
     },
     setRequestOrganization: function( orgId, label ) {
-        var query = [ { key: "org", value: orgId, label: label } ];
+        var query = new Array();
+        var i = 0;
+        if (this.getLanguageCondition() != null) {
+            query[0] = { key: "language", value: searchManager.getLanguageCondition() };
+            query[1] = { "op": "AND" };
+            i = 2;
+        }
+        query[i] = { key: "org", value: orgId, label: label };
         displayQuery(1, query);
         this.setRequest( query );
     },
@@ -232,6 +244,9 @@ Ext.define( 'Comete.SearchManager', {
     },
     redoRequest: function( textQuery ) {
         this.cardPanel.getLayout().getActiveItem().redoRequest();
+    },
+    getLanguageCondition: function() {
+        return this.loManager.getLanguageCondition();
     },
     initCollections: function() {
         this.collectionSearchPanel.init();
@@ -280,6 +295,10 @@ Ext.define( 'Comete.SearchManager', {
     }
 } );
 
+function setAdvancedSearchPanelHeight(height) {
+    if (window.searchManager != undefined)
+        window.searchManager.advancedSearchPanel.setHeight(height);
+}
 
 Ext.onReady( function() {    
     Ext.QuickTips.init();

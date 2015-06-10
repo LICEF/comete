@@ -150,7 +150,11 @@
             this.setViewerContent( null );
     },
     setRequest: function( query ) {
-        this.learningObjectTable.setRequest( query );
+        var filters = [ { key: "orderBy", value: this.facetsPanel.getOrderBy() } ];
+        this.learningObjectTable.setRequest( query, filters );
+    },
+    getLanguageCondition: function() {
+        return this.facetsPanel.getLanguage();
     },
     saveQueryHistory: function( url, query, pageBeforeNewRequest, selectedLoBeforeNewRequest ) {
         var lastQueryUrl = null;

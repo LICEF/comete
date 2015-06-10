@@ -175,7 +175,6 @@
         };
 
         this.renderForcedDiffusion = function( value, metaData, lo ) {
-            console.log( 'forcedDiffValue='+value);
             return( value ? Ext.String.format( '<img src="images/flag-forcedDiffusion.png" title="{0}" alt="{0}" height="20"/>', tr( 'Forced Diffusion' ) ) : '' );
         };
 
@@ -266,9 +265,9 @@
     getQuery: function() {
         return( this._query );
     },
-    setRequest: function( query ) {
+    setRequest: function( query, filters ) {
         this._query = query;
-        var url = this.queryUrl + '&q=' + encodeURIComponent( JSON.stringify(query) );
+        var url = this.queryUrl + '&q=' + encodeURIComponent( JSON.stringify(query) ) + '&f=' + JSON.stringify(filters);
         var currPage = this.getCurrentPage();
         var currSelectedLo = this.getSelectedId();
         this.getSelectionModel().clearSelections();

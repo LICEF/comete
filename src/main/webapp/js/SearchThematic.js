@@ -2,6 +2,44 @@
     extend: 'Ext.panel.Panel',
     layout: 'border',  
     initComponent: function( config ) {
+
+        this.simpleButton = Ext.create('Ext.Component', {            
+            html: '<div class="whiteLink"><a href="javascript:changeCardItem(0);">' + tr( 'Quick Search' ) + '</a></div>'
+        } );
+
+        this.advancedButton = Ext.create('Ext.Component', {
+            html: '<div class="whiteLink"><a href="javascript:changeCardItem(1);">' + tr( 'Advanced Search' ) + '</a></div>'
+        } );
+
+        this.goBackwardQueryButton = Ext.create('Comete.ImageButton', {
+            img: 'images/goBackwardQuery.png',
+            imgDisabled: 'images/goBackwardQueryDisabled.png',
+            width: 20,
+            height: 20,
+            disabled: true,
+            tooltip: tr( 'Go back one query' ),
+            handler: this.goBackwardQuery,
+            scope: this
+        } );
+
+        this.goForwardQueryButton = Ext.create('Comete.ImageButton', {
+            img: 'images/goForwardQuery.png',
+            imgDisabled: 'images/goForwardQueryDisabled.png',
+            width: 20,
+            height: 20,
+            disabled: true,
+            tooltip: tr( 'Go forward one query' ), 
+            handler: this.goForwardQuery,
+            scope: this
+        } );
+
+        this.goBackwardQueryButton.on('render', function() {
+            this.goBackwardQueryButton.getEl().setOpacity(0);
+        }, this);
+
+        this.goForwardQueryButton.on('render', function() {
+            this.goForwardQueryButton.getEl().setOpacity(0);
+        }, this);
         
         this.currentVocConceptUri = null;
         this.currentVocRestUrl = null;
@@ -193,26 +231,26 @@
 
         cfg = {
             layout: 'vbox',
-            region: 'center',
-            margin: '0 10 0 10',
-            items: [ vocPanel, 
+            height: THEMATIC_HEIGHT,
+            cls: 'searchPanel',
+            region: 'north',
+            items: [ 
+                     { layout: 'hbox', cls: 'transp2', border: false, margin: '10 20 0 20', width: CARDPANEL_WIDTH + 24,
+                       items: [ { xtype: 'label', text: tr('THEMATIC NAVIGATION'), 
+                                     style: { fontWeight: 'bold', fontSize: '14px' } }, 
+                                { xtype: 'tbspacer', width: 5 }, this.info,
+                                { xtype: 'tbfill' }, this.simpleButton, 
+                                { xtype: 'tbspacer', width: 15 }, this.advancedButton, { xtype: 'tbspacer', width: 1 } ] },
+                     this.conceptSearchCombo,
+                     //{ border: false, margin: '10 20 0 20', html: '<b>- ' + tr('OR') + ' -</b>' },
+                     this.vocabularyCombo,
                      this.breadcrumb,
-                     { border: true, margin: '0 0 2 0', height: 1, width: '100%'}, 
-                     { layout: 'hbox',
-                       width: '100%',
-                       border: false,
-                       items:[ { layout: 'vbox', 
-                                 border: false,
-                                 items:[ this.cbSubconcepts, 
-                                         { layout: 'hbox',
-                                           border: false,
-                                           items: [this.cbEquivalence, this.equivalence]
-                                         } ] },
-                                 { xtype: 'tbfill' },
-                                 this.cbId
-                             ] 
-                     }, 
-                     this.queryButton ]
+                     { xtype: 'tbfill' },
+                     { layout: 'hbox', cls: 'transp2', border: false, margin: '10 20 0 20', width: CARDPANEL_WIDTH + 24, 
+                       items: [ this.cbEquivalence, this.colonLabel, this.equivalence, { xtype: 'tbfill' }, 
+                                this.goBackwardQueryButton, { xtype: 'tbspacer', width: 4 }, this.goForwardQueryButton ] },                     
+                     { xtype: 'tbspacer', height: 10 }
+                   ]
         };
         Ext.apply(this, cfg);
         this.callParent(arguments);

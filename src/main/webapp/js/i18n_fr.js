@@ -5,11 +5,12 @@
     'Search': 'Recherche',
     'Adding': 'Ajout',
     'Administration': 'Administration',
-    'About': 'A propos',
+    'About': 'À propos',
     'Security': 'Sécurité',
     'Unauthorized access.':'Accès non autorisé.',
 
     'Simple Search': 'Recherche simple',
+    'Quick Search': 'Recherche rapide',
     'Advanced Search': 'Recherche avancée',
     'Thematic Navigation': 'Navigation thématique',
     'Collections': 'Collections',
@@ -291,7 +292,10 @@
     'SORT BY': 'TRIER PAR',
     'Relevance': 'Pertinence',
     'Date added': 'Date d\'ajout',
-    'LANGUAGE': 'LANGUE'
+    'LANGUAGE': 'LANGUE',
+
+    'Enter your request here':'Entrez votre requête ici'
+
 
 
 };
