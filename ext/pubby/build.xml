@@ -14,8 +14,8 @@
             <fileset dir="${res}"/>
         </copy>
         <replace file="${build}/WEB-INF/config.ttl" propertyFile="../../src/main/resources/conf/core.properties">
-            <replacefilter token="PROJECT_NAME" property="project.name"/>
-            <replacefilter token="PROJECT_HOMEPAGE" property="project.homepage"/>
+            <replacefilter token="PROJECT_NAME" property="comete.repositoryName"/>
+            <replacefilter token="PROJECT_HOMEPAGE" property="comete.url"/>
             <replacefilter token="URI_PREFIX" property="comete.uri.prefix"/>
             <replacefilter token="WEB_BASE" property="comete.hostUrl"/>
             <replacefilter token="SPARQL_ENDPOINT" property="sparql.endpoint"/>

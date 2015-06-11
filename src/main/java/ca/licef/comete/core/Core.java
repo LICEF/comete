@@ -29,8 +29,6 @@ public class Core {
 
     private ResourceView defaultView;
 
-    private String projectName;
-    private String projectHomepage;
     private String cometeHome;
     private String repositoryName;
     private String adminEmail;
@@ -58,8 +56,6 @@ public class Core {
             ((ch.qos.logback.classic.Logger)logger).setLevel(ch.qos.logback.classic.Level.INFO);
 
             ResourceBundle resBundle = ResourceBundle.getBundle("/conf/core");
-            projectName = resBundle.getString("project.name");
-            projectHomepage = resBundle.getString("project.homepage");
             cometeHome = resBundle.getString("comete.home");
             uriPrefix = resBundle.getString("comete.uri.prefix");
             cometeUrl = resBundle.getString("comete.url");
@@ -86,18 +82,6 @@ public class Core {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    /*
-     * Project info
-     */
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public String getProjectHomepage() {
-        return projectHomepage;
     }
 
     /*
