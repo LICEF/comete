@@ -332,3 +332,11 @@ ul li {
 ul {
     padding-left: 8px;
 }
+
+a {
+    text-decoration: none;
+}
+
+a:hover { 
+    text-decoration: underline;
+} 

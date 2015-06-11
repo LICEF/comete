@@ -193,7 +193,7 @@
                                                 <ul>
                                                 <xsl:for-each select="current-group()">
                                                     <xsl:sort select="@conceptLabel" lang="$lang"/>
-                                                    <li><xsl:value-of select="@vocabLabel"/><img style="margin-bottom:-1px; margin-left:8px" src="images/split-arrow-tiny.png" width="12" height="17"/><a class="RelatedLearningObjectsLink"><xsl:attribute name="href">javascript:setRequestVocConcept( '<xsl:value-of select="@rdf:resource"/>' );</xsl:attribute><xsl:value-of select="@conceptLabel"/></a></li>
+                                                    <li><xsl:value-of select="@vocabLabel"/><img style="margin-bottom:-1px; margin-left:8px" src="images/split-arrow-tiny.png" width="12" height="17"/><span class="LearningResourceDetailHyperlink"><a class="RelatedLearningObjectsLink"><xsl:attribute name="href">javascript:setRequestVocConcept( '<xsl:value-of select="@rdf:resource"/>' );</xsl:attribute><xsl:value-of select="@conceptLabel"/></a></span></li>
                                                 </xsl:for-each>
                                                 </ul>
                                         </xsl:for-each-group>
@@ -282,7 +282,7 @@
                 <xsl:with-param name="string" select="."/>
             </xsl:call-template>
         </xsl:variable>
-        <li><a><xsl:attribute name="href">javascript:setRequestKeyword( '<xsl:value-of select="$keyword"/>', '<xsl:value-of select="@xml:lang"/>' );</xsl:attribute><xsl:value-of select="."/></a></li>
+        <li><span class="LearningResourceDetailHyperlink"><a><xsl:attribute name="href">javascript:setRequestKeyword( '<xsl:value-of select="$keyword"/>', '<xsl:value-of select="@xml:lang"/>' );</xsl:attribute><xsl:value-of select="."/></a></span></li>
     </xsl:template>
 
     <xsl:template match="foaf:page" mode="icon">
@@ -437,11 +437,11 @@
         <xsl:param name="class" select="'RelatedLearningObjectsLink'"/>
         <xsl:variable name="functionName" select="if( contains( $uri, 'person' ) ) then 'setRequestContributor' else 'setRequestOrganization'"/>
         <xsl:variable name="title" select="if( contains( $uri, 'person' ) ) then $RelatedLearningObjectsToContribLinkLabel else $RelatedLearningObjectsToOrgLinkLabel"/>
-        <a>
+        <span class="LearningResourceDetailHyperlink"><a>
             <xsl:attribute name="class"><xsl:value-of select="$class"/></xsl:attribute>
             <xsl:attribute name="href">javascript:<xsl:value-of select="$functionName"/>( '<xsl:value-of select="$uri"/>', '<xsl:value-of select="replace( $label, '''', '\\''' )"/>' );</xsl:attribute>
             <xsl:value-of select="$label"/>
-        </a>
+        </a></span>
     </xsl:template>
 
     <xsl:template name="render-linked-data-link">
