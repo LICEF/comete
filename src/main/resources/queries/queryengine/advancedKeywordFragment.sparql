@@ -1,3 +1,3 @@
-'{' ?s text:query ( comete:keyword "{0}" ) '}'
-UNION
-'{' ?s text:query ( comete:keyword "{0}" "lang:{1}" ) '}'
+?s comete:keyword ?keyword .
+FILTER ( regex( ?keyword, "{0}", "i" ) )
+

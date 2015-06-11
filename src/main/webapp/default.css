@@ -333,13 +333,13 @@ ul {
     padding-left: 8px;
 }
 
+
 /* ceres */
 
 a {
     text-decoration: none;
     font-family: arial, sans-serif;
     font-size: 13px;
-}
 
 a:hover { 
     text-decoration: underline;

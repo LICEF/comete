@@ -1,3 +1,2 @@
-'{' ?s text:query ( dcterms:description "{0}" ) '}'
-UNION
-'{' ?s text:query ( dcterms:description "{0}" "lang:{1}" ) '}'
+?s dcterms:description ?descr .
+FILTER ( regex( ?descr, "{0}", "i" ) )
