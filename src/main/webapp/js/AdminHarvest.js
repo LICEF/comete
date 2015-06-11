@@ -73,7 +73,6 @@
         }); 
        
         this.detailsPanel = Ext.create('Ext.Panel', { 
-            region: 'center',
             width: 500,
             margin: '0 0 0 10',
             border: false,
@@ -117,6 +116,7 @@
 
         this.harvestPanel = Ext.create('Ext.panel.Panel', { 
             layout: 'hbox',
+            region: 'south',
             border: false,
             width: 500,
             margin: '30 0 0 10',
@@ -127,7 +127,10 @@
         var cfg = {
             layout: 'border',
             region: 'center',
-            items: [ this.leftPanel, { border: false, layout: 'vbox', items: [ this.detailsPanel, this.harvestPanel ] } ]
+            items: [ this.leftPanel, 
+                     { border: false, region: 'center', layout: 'fit',
+                       items: { layout: 'vbox', border: false, scrollable: true, items: [ this.detailsPanel, this.harvestPanel ] } }
+            ]
         };
         Ext.apply(this, cfg);
         this.callParent(arguments); 
