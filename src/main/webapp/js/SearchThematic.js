@@ -367,6 +367,28 @@
         var record = this.vocabularyCombo.getValue();
         var eqRecord = this.equivalence.findRecordByValue(record);
         this.equivalence.getStore().remove(eqRecord);
+    },
+    goBackwardQuery: function() {
+        if (!this.goBackwardQueryButton.isDisabled()) 
+            window.searchManager.goBackwardQuery();
+    },
+    goForwardQuery: function() {
+        if (!this.goForwardQueryButton.isDisabled()) 
+            window.searchManager.goForwardQuery();
+    },
+    fadeInHistoryButtons: function(isBackwardButtonDisabled, isForwardButtonDisabled) {
+        this.goBackwardQueryButton.getEl().fadeIn({
+            duration: 1500
+        });      
+        this.goForwardQueryButton.getEl().fadeIn({
+            duration: 1500
+        });      
+    },
+    updateQueryHistoryButtons: function(isBackwardButtonDisabled, isForwardButtonDisabled) {        
+        this.goBackwardQueryButton.getEl().setOpacity(1);
+        this.goForwardQueryButton.getEl().setOpacity(1)
+        this.goBackwardQueryButton.setDisabled(isBackwardButtonDisabled);
+        this.goForwardQueryButton.setDisabled(isForwardButtonDisabled);
     }
 } );
 

@@ -340,6 +340,7 @@ a {
     text-decoration: none;
     font-family: arial, sans-serif;
     font-size: 13px;
+}
 
 a:hover { 
     text-decoration: underline;
@@ -347,6 +348,14 @@ a:hover {
 
 .whiteLink a {
     color: white;
+}
+
+.LearningResourceDetailHyperlink a {
+    color: #99248f;
+}
+
+.ContribFullName a {
+    font-weight: bold;
 }
 
 .tblabel {
