@@ -1,3 +1,2 @@
-'{' ?s text:query ( dcterms:title "{0}" ) '}'
-UNION
-'{' ?s text:query ( dcterms:title "{0}" "lang:{1}" ) '}'
+?s dcterms:title ?title .
+FILTER ( regex( ?title, "{0}", "i" ) )
