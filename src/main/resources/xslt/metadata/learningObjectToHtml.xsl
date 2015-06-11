@@ -193,7 +193,7 @@
                                                 <ul>
                                                 <xsl:for-each select="current-group()">
                                                     <xsl:sort select="@conceptLabel" lang="$lang"/>
-                                                    <li><xsl:value-of select="@vocabLabel"/><img style="margin-bottom:-1px; margin-left:8px" src="images/greyArrow.png" width="12" height="17"/><a class="RelatedLearningObjectsLink"><xsl:attribute name="href">javascript:setRequestVocConcept( '<xsl:value-of select="@rdf:resource"/>' );</xsl:attribute><xsl:value-of select="@conceptLabel"/></a></li>
+                                                    <li><xsl:value-of select="@vocabLabel"/><img style="margin-bottom:-1px; margin-left:8px" src="images/split-arrow-tiny.png" width="12" height="17"/><a class="RelatedLearningObjectsLink"><xsl:attribute name="href">javascript:setRequestVocConcept( '<xsl:value-of select="@rdf:resource"/>' );</xsl:attribute><xsl:value-of select="@conceptLabel"/></a></li>
                                                 </xsl:for-each>
                                                 </ul>
                                         </xsl:for-each-group>

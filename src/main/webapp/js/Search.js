@@ -106,8 +106,7 @@ Ext.define( 'Comete.SearchManager', {
 
         this.logo = Ext.create('Ext.Img', {
             src: 'images/Logo_CERES.png',
-            //width: 150,
-            height: 58
+            height: (query != null)?40:58
         } );
 
         this.firstQueryPanelSpacer = Ext.create('Ext.toolbar.Spacer', {            

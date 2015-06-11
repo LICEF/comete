@@ -132,6 +132,19 @@ Ext.define( 'Comete.AdvancedSearch', {
         this.addQueryCond( this.createQueryCond( true ));
         this.needWidthUpdate = true;
     },
+    info: function() {
+        if (this.infoWindow != undefined)
+            this.infoWindow.close();
+
+        this.infoWindow = new Ext.window.Window( {
+            title: tr('Advanced Search'),
+            width: 450,
+            height: 300,
+            resizable: false,
+            html: '<iframe width="100%" height="100%" frameborder="0" src="' + this.lang + '/advancedSearchInfo.html"></iframe>' 
+        } );
+        this.infoWindow.show();
+    },
     clear: function() {
         this.condPanel.removeAll();
     },
@@ -154,26 +167,82 @@ Ext.define( 'Comete.AdvancedSearch', {
         return newCond;        
     },
     addQueryCond: function(cond) {
-        this.condPanel.add(cond);
+        this.condPanel.add(cond); 
+        
+        this.updateElementsWidth();
         var elems = this.condPanel.items.length;
-        setQueryPanelHeight(Math.max(24*elems + 5*(elems - 1) + 155, ADVANCED_HEIGHT), true);
+        setAdvancedSearchPanelHeight(Math.max(22*elems + 5*(elems - 1) + 125, ADVANCED_HEIGHT));
     },
     removeQueryCond: function(cond) {
+        //refresh improvment. Update width only when deleted condition has max width -AM
+        cond.setWidth(null);
+        var removeCondWidth = cond.getWidth();
+        var maxWidth = CARDPANEL_WIDTH;;
+        for (i = 0; i < this.condPanel.items.length; i++) {
+            var c = this.condPanel.getComponent(i); 
+            maxWidth = Math.max(maxWidth, c.getWidth());   
+        }
+        var needWidthUpdate = ( this.condPanel.items.length == 2 ||
+                                ( removeCondWidth == maxWidth && maxWidth > CARDPANEL_WIDTH + 24) );
+        //
+
         this.condPanel.remove(cond);
         var elems = this.condPanel.items.length;
 
         if (this.firstCond != this.condPanel.getComponent(0)) {
             this.firstCond = this.condPanel.getComponent(0)
             this.firstCond.isFirst = true;
-            this.firstCond.andOr.setVisible(false);
-            this.firstCond.andOrSpace.setVisible(false);
-            this.firstCond.firstSpacer.setVisible(elems == 1);
         }
+        this.firstCond.andOr.setVisible(false);
+        this.firstCond.andOr.setValue("AND");
+        this.firstCond.andOrSpace.setVisible(false);
         this.firstCond.removeButton.setVisible(elems > 1);
         this.firstCond.removeSpace.setVisible(elems > 1);
-        this.firstCond.firstSpacer.setVisible(elems > 1);
+        this.firstCond.firstAnd.setVisible(true);
+        if (elems == 1)
+            this.firstCond.firstAnd.setWidth(null);
+        else
+            this.firstCond.firstAnd.setWidth(40);
         
-        setQueryPanelHeight(Math.max(24*elems + 5*(elems - 1) + 155, ADVANCED_HEIGHT), true);
+        if (needWidthUpdate)
+            this.updateElementsWidth(true);
+
+        setAdvancedSearchPanelHeight(Math.max(22*elems + 5*(elems - 1) + 125, ADVANCED_HEIGHT));        
+    },
+    updateElementsWidth: function(resetAll) {
+         if (!this.needWidthUpdate)
+            return;
+
+        var maxWidth = CARDPANEL_WIDTH;
+        for (i = 0; i < this.condPanel.items.length; i++) {
+            var cond = this.condPanel.getComponent(i); 
+            if (resetAll || i == 0)
+                cond.setWidth(null);
+            maxWidth = Math.max(maxWidth, cond.getWidth());
+        } 
+
+        var width = maxWidth;
+        if (width <= CARDPANEL_WIDTH + 24)
+            width = CARDPANEL_WIDTH;
+        else
+            width -= 24;
+        this.fulltextField.setWidth(width);
+
+        width = maxWidth;
+        if (width <= CARDPANEL_WIDTH + 24)
+            width = CARDPANEL_WIDTH + 24;
+        
+        for (i = 0; i < this.condPanel.items.length; i++) {
+            var cond = this.condPanel.getComponent(i); 
+            if (cond.getWidth() != width)
+                cond.setWidth(width);
+        }  
+
+        //top and bottom menubar
+        if (this.getComponent(0).getWidth() != width)
+            this.getComponent(0).setWidth(width);
+        if (this.getComponent(4).getWidth() != width)
+            this.getComponent(4).setWidth(width);
     },
     setNextAnd: function(cond) {
         var i = 0;
@@ -201,6 +270,18 @@ Ext.define( 'Comete.AdvancedSearch', {
     buildAdvancedSearchQuery: function() {
         var query = new Array();
         var j = 0;
+        if (this.getFulltextQuery() != '') {
+            query[j] = { key: "fulltext", value: this.getFulltextQuery() };
+            j++;
+        }
+        if (searchManager.getLanguageCondition() != null) {
+            if (j != 0) {
+                query[j] = { "op": "AND" };
+                j++;
+            }
+            query[j] = { key: "language", value: searchManager.getLanguageCondition() };
+            j++;
+        }
         for (i = 0; i < this.condPanel.items.length; i++) {
             cond = this.condPanel.getComponent(i);
             condition = cond.getCondition();
@@ -219,24 +300,52 @@ Ext.define( 'Comete.AdvancedSearch', {
         return query;
     },
     setQuery: function(query) {
+        this.needWidthUpdate = false;
+
         var queryConds = new Array();
         var j = 0;
-        for (i = 0; i < query.length; i++) {
-            var cond = this.createQueryCond(i == 0);
-            op = "AND";
-            if (i > 0) {
+        var i = 0;
+        var isFulltext = query[0].key == 'fulltext';
+        var offset = 0;
+        if (isFulltext) {
+            this.fulltextField.setValue(query[0].value);
+            i += 2;
+        }
+        else 
+            this.fulltextField.setValue(null);
+
+        if (query[i].key == 'language')
+            i += 2;
+
+        var offset = i;
+        for (; i < query.length; i++) {
+            var cond = this.createQueryCond(j == 0);
+            var op = "AND";
+            if (i > offset) {
                 op = query[i].op;
                 i++;
-            }            
+            }           
             cond.setQueryCondition(op, query[i]);
             queryConds[j] = cond;
             j++;
         }
-        this.clear();        
-        this.addQueryCond(queryConds);
+        if (queryConds.length == 0)
+            queryConds[0] = this.createQueryCond(true);
+
+        this.needWidthUpdate = true;
+
+        this.clear();    
+        this.addQueryCond(queryConds, true);
     },
     redoRequest: function() {
         this.submitAdvancedSearchQuery();
+    },
+    getFulltextQuery: function() {
+        return this.fulltextField.getValue();
+    },
+    setFulltextQuery: function(text) {
+        if (this.fulltextField.getValue() == '' && !this.isQueryCriterias())
+            this.fulltextField.setValue(text);
     },
     saveAsCollection: function() {
         var query = this.buildAdvancedSearchQuery();

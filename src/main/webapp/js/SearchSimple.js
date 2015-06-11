@@ -110,6 +110,19 @@
         Ext.apply(this, cfg);
         this.callParent(arguments); 
     },
+    info: function() {
+        if (this.infoWindow != undefined)
+            this.infoWindow.close();
+
+        this.infoWindow = new Ext.window.Window( {
+            title: tr('Quick Search'),
+            width: 450,
+            height: 300,
+            resizable: false,
+            html: '<iframe width="100%" height="100%" frameborder="0" src="' + this.lang + '/simpleSearchInfo.html"></iframe>' 
+        } );
+        this.infoWindow.show();
+    },
     submitSearchQuery: function() {
         var textQuery = this.searchQueryField.getValue();
         searchManager.setRequestSimpleSearch( textQuery ); 

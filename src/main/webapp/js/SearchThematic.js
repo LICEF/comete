@@ -228,6 +228,15 @@
                 this.breadcrumb.displayElement(uri);
             }, this );
         
+        this.info = Ext.create('Comete.ImageButton', {
+            img: 'images/info.png',
+            width: 16,
+            height: 16,
+            margin: '2 0 0 0',
+            tooltip: 'Info', 
+            handler: this.info,
+            scope: this
+        } );
 
         cfg = {
             layout: 'vbox',
@@ -257,6 +266,19 @@
 
         //init of vocabulary store for general consistency -AM
         this.vocabStore.load();
+    },
+    info: function() {
+        if (this.infoWindow != undefined)
+            this.infoWindow.close();
+
+        this.infoWindow = new Ext.window.Window( {
+            title: tr('Thematic Navigation'),
+            width: 450,
+            height: 450,
+            resizable: false,
+            html: '<iframe width="100%" height="100%" frameborder="0" src="' + this.lang + '/thematicSearchInfo.html"></iframe>' 
+        } );
+        this.infoWindow.show();
     },
     vocabularySelected: function(combo, records) {        
         searchManager.clear();
