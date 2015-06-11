@@ -199,7 +199,7 @@ public class Harvester {
         boolean isPendingByDefault = ((Boolean)json.get( "isPendingByDefault" )).booleanValue();
         boolean isCheckingBrokenLink = ((Boolean)json.get( "isCheckingBrokenLink" )).booleanValue();
         boolean isCheckingInvalid= ((Boolean)json.get( "isCheckingInvalid" )).booleanValue();
-        String invalidApplProf = (String)json.get( "invalidApplProf" );
+        String invalidApplProf = ( json.has( "invalidApplProf" ) ? (String)json.get( "invalidApplProf" ) : "" );
         String metadataNamespace = (String)json.get( "metadataNamespace" );
         Worker worker = null;
         if( "OAI".equals( type ) )
