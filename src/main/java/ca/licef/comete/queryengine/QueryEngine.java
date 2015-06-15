@@ -268,14 +268,14 @@ public class QueryEngine {
         return( rs );
     }
 
-    public Tuple[] searchKeywords(String terms, String lang) throws Exception {
+    public Tuple[] searchKeywords(String terms) throws Exception {
         Invoker inv = new Invoker(this, "ca.licef.comete.queryengine.QueryEngine",
-                "searchKeywordsEff", new Object[]{terms, lang});
+                "searchKeywordsEff", new Object[]{terms});
         return (Tuple[])tripleStore.transactionalCall(inv);
     }
 
-    public Tuple[] searchKeywordsEff(String terms, String lang) throws Exception {
-        String query = CoreUtil.getQuery("queryengine/lookupKeywords.sparql",CoreUtil.formatKeywords(terms), lang);
+    public Tuple[] searchKeywordsEff(String terms) throws Exception {
+        String query = CoreUtil.getQuery("queryengine/lookupKeywords.sparql",CoreUtil.formatKeywords(terms));
         return tripleStore.sparqlSelect_textIndex(query);
     }
 

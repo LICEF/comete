@@ -282,7 +282,7 @@
                 <xsl:with-param name="string" select="."/>
             </xsl:call-template>
         </xsl:variable>
-        <li><span class="LearningResourceDetailHyperlink"><a><xsl:attribute name="href">javascript:setRequestKeyword( '<xsl:value-of select="$keyword"/>', '<xsl:value-of select="@xml:lang"/>' );</xsl:attribute><xsl:value-of select="."/></a></span></li>
+        <li><span class="LearningResourceDetailHyperlink"><a><xsl:attribute name="href">javascript:setRequestKeyword( '<xsl:value-of select="$keyword"/>' );</xsl:attribute><xsl:value-of select="."/></a></span></li>
     </xsl:template>
 
     <xsl:template match="foaf:page" mode="icon">

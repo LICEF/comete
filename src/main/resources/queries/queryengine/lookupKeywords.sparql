@@ -3,6 +3,6 @@ PREFIX comete: <http://comete.licef.ca/reference#>
 SELECT DISTINCT ?o
 WHERE '{'
     ?s comete:keyword ?o .
-    FILTER ( regex( ?o, "{0}", "i" ) && (regex( lang(?o), "^{1}", "i" ) || lang(?o) = "") )
+    FILTER ( regex( ?o, "{0}", "i" ) )
 '}'
 ORDER BY ?o

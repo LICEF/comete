@@ -225,8 +225,8 @@ Ext.define( 'Comete.SearchManager', {
     setRequestCollection: function( id, query ) {
         this.setRequest( query );
     },
-    setRequestKeyword: function( keyword, lang ) {
-        var query = [ { key: "keyword", value: keyword, lang: lang } ];
+    setRequestKeyword: function( keyword ) {
+        var query = [ { key: "keyword", value: keyword } ];
         displayQuery(1, query);
         this.setRequest( query );
     },

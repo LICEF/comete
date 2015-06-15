@@ -182,10 +182,10 @@ public class QueryEngineResource implements Serializable {
     @GET
     @Path( "keywords" )
     @Produces( MediaType.APPLICATION_JSON )
-    public Response getKeywords( @DefaultValue( "en" ) @QueryParam( "lang" ) String lang, @QueryParam( "value" ) String value ) throws Exception {
+    public Response getKeywords( @QueryParam( "value" ) String value ) throws Exception {
         StringWriter out = new StringWriter();
 
-        Tuple[] results = QueryEngine.getInstance().searchKeywords(value, lang);
+        Tuple[] results = QueryEngine.getInstance().searchKeywords(value);
         try {
             JSONWriter json = new JSONWriter( out ).object();
 

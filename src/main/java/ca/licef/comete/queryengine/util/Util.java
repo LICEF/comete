@@ -99,21 +99,18 @@ public class Util {
                 }
                 else if (TITLE_PREFIX.equals(condType)) {
                     String text = obj.getString("value");
-                    String lang = obj.getString("lang");
                     clause = CoreUtil.getQuery("queryengine/advancedTitleFragment.sparql",
-                                CoreUtil.formatKeywords(text), lang);
+                                CoreUtil.formatKeywords(text));
                 }
                 else if (DESCRIPTION_PREFIX.equals(condType)) {
                     String text = obj.getString("value");
-                    String lang = obj.getString("lang");
                     clause = CoreUtil.getQuery("queryengine/advancedDescriptionFragment.sparql",
-                                CoreUtil.formatKeywords(text), lang);
+                                CoreUtil.formatKeywords(text));
                 }
                 else if (KEYWORD_PREFIX.equals(condType)) {
                     String text = obj.getString("value");
-                    String lang = obj.getString("lang");
                     clause = CoreUtil.getQuery("queryengine/advancedKeywordFragment.sparql",
-                                CoreUtil.formatKeywords(text), lang);
+                                CoreUtil.formatKeywords(text));
                 }
                 else if (CONTRIBUTE_PREFIX.equals(condType) || condType.equals(NOT_CONTRIBUTE_PREFIX)) {
                     String uri = obj.getString("value");
@@ -282,18 +279,15 @@ public class Util {
                 }
                 else if (TITLE_PREFIX.equals(condType)) {
                     String text = obj.getString("value");
-                    String lang = obj.getString("lang");
-                    description.append( MessageFormat.format( bundle.getString( "rs.advancedSearch.description.title" ), text, lang ) );
+                    description.append( MessageFormat.format( bundle.getString( "rs.advancedSearch.description.title" ), text ) );
                 }
                 else if (DESCRIPTION_PREFIX.equals(condType)) {
                     String text = obj.getString("value");
-                    String lang = obj.getString("lang");
-                    description.append( MessageFormat.format( bundle.getString( "rs.advancedSearch.description.description" ), text, lang ) );
+                    description.append( MessageFormat.format( bundle.getString( "rs.advancedSearch.description.description" ), text ) );
                 }
                 else if (KEYWORD_PREFIX.equals(condType)) {
                     String text = obj.getString("value");
-                    String lang = obj.getString("lang");
-                    description.append( MessageFormat.format( bundle.getString( "rs.advancedSearch.description.keyword" ), text, lang ) );
+                    description.append( MessageFormat.format( bundle.getString( "rs.advancedSearch.description.keyword" ), text ) );
                 }
                 else if (CONTRIBUTE_PREFIX.equals(condType)) {
                     String uri = obj.getString("value");
