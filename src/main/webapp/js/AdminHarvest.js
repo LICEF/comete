@@ -246,6 +246,7 @@
     modifyHarvestDefStep2: function(values) {
         var editor = Ext.create('Comete.AdminHarvestDefEditor', {
             width: 500,
+            height: 500,
             modal: true,
             mode: 'modify',
             restUrl: this.currentHarvestDefRestUrl,
@@ -387,6 +388,7 @@
 Ext.define( 'Comete.AdminHarvestDefEditor', {
     extend: 'Ext.window.Window',
     layout: 'fit',
+    scrollable: true, 
     initComponent: function( config ) {
 
         var protocolStore = Ext.create('Ext.data.Store', {
@@ -472,7 +474,7 @@ Ext.define( 'Comete.AdminHarvestDefEditor', {
         var cfg = {
             title: (this.mode == 'modify')?tr('Modify repository'):tr('Add repository'),
             buttons: [ {text:'OK', handler: this.ok, scope: this}, {text:tr('Cancel'), handler: this.close, scope: this}],
-            items: [ { border: false, items: this.formPanel } ]
+            items: [ { border: false, scrollable: true, items: this.formPanel } ]
 
         };
         Ext.apply(this, cfg);
