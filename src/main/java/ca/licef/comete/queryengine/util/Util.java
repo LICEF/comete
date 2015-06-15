@@ -99,18 +99,15 @@ public class Util {
                 }
                 else if (TITLE_PREFIX.equals(condType)) {
                     String text = obj.getString("value");
-                    clause = CoreUtil.getQuery("queryengine/advancedTitleFragment.sparql",
-                                CoreUtil.formatKeywords(text));
+                    clause = CoreUtil.getQuery("queryengine/advancedTitleFragment.sparql", text);
                 }
                 else if (DESCRIPTION_PREFIX.equals(condType)) {
                     String text = obj.getString("value");
-                    clause = CoreUtil.getQuery("queryengine/advancedDescriptionFragment.sparql",
-                                CoreUtil.formatKeywords(text));
+                    clause = CoreUtil.getQuery("queryengine/advancedDescriptionFragment.sparql", text);
                 }
                 else if (KEYWORD_PREFIX.equals(condType)) {
                     String text = obj.getString("value");
-                    clause = CoreUtil.getQuery("queryengine/advancedKeywordFragment.sparql",
-                                CoreUtil.formatKeywords(text));
+                    clause = CoreUtil.getQuery("queryengine/advancedKeywordFragment.sparql", text);
                 }
                 else if (CONTRIBUTE_PREFIX.equals(condType) || condType.equals(NOT_CONTRIBUTE_PREFIX)) {
                     String uri = obj.getString("value");
