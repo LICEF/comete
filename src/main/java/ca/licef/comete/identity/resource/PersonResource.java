@@ -129,8 +129,9 @@ public class PersonResource {
 
     @GET
     @Produces( MediaType.APPLICATION_JSON )
-    public Response all( @DefaultValue( "0" ) @QueryParam( "start" ) String strStart,
-                       @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit ) throws Exception {
+    public Response all( @Context HttpServletRequest req, 
+                         @DefaultValue( "0" ) @QueryParam( "start" ) String strStart,
+                         @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit ) throws Exception {
         int start = -1;
         if( strStart != null ) {
             try {
@@ -151,7 +152,8 @@ public class PersonResource {
             }
         }
 
-        Object[] res = Identity.getInstance().getAllPersons(start, limit);
+        boolean isShowHiddenPersons = Security.getInstance().isAuthorized( req );
+        Object[] res = Identity.getInstance().getAllPersons(isShowHiddenPersons, start, limit);
 
         StringWriter out = new StringWriter();
         try {
@@ -177,9 +179,10 @@ public class PersonResource {
     @GET
     @Path( "search" )
     @Produces( MediaType.APPLICATION_JSON )
-    public Response searchJson( @QueryParam( "q" ) String str,
-                              @DefaultValue( "0" ) @QueryParam( "start" ) String strStart,
-                              @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit ) throws Exception {
+    public Response searchJson( @Context HttpServletRequest req, 
+                                @QueryParam( "q" ) String str,
+                                @DefaultValue( "0" ) @QueryParam( "start" ) String strStart,
+                                @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit ) throws Exception {
         if ("".equals(str))
             return null;
 
@@ -204,7 +207,8 @@ public class PersonResource {
         }
 
 
-        Object[] res = Identity.getInstance().searchPersons(str, start, limit);
+        boolean isShowHiddenPersons = Security.getInstance().isAuthorized( req );
+        Object[] res = Identity.getInstance().searchPersons(str, isShowHiddenPersons, start, limit);
 
         StringWriter out = new StringWriter();
         try {

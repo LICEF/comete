@@ -1,11 +1,18 @@
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX comete: <http://comete.licef.ca/reference#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT ?s ?name
+SELECT distinct ?s ?name
 WHERE '{'
     ?s rdf:type comete:Organization .
-    ?s foaf:name ?name
+    ?s foaf:name ?name .
+    '{'
+        ?lo (dcterms:creator|dcterms:publisher) ?s .
+        ?lo rdf:type comete:LearningObject .
+        {0}
+    '}'
 '}'
-OFFSET {0,number,#}
-LIMIT {1,number,#}
+ORDER BY ?name
+OFFSET {1,number,#}
+LIMIT {2,number,#}

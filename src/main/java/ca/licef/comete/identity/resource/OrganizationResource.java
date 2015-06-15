@@ -168,8 +168,9 @@ public class OrganizationResource {
 
     @GET
     @Produces( MediaType.APPLICATION_JSON )
-    public Response all( @DefaultValue( "0" ) @QueryParam( "start" ) String strStart,
-                       @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit ) throws Exception {
+    public Response all( @Context HttpServletRequest req, 
+                         @DefaultValue( "0" ) @QueryParam( "start" ) String strStart,
+                         @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit ) throws Exception {
 
         int start = -1;
         if( strStart != null ) {
@@ -191,7 +192,8 @@ public class OrganizationResource {
             }
         }
 
-        Object[] res = Identity.getInstance().getAllOrganizations(start, limit);
+        boolean isShowHiddenOrg = Security.getInstance().isAuthorized( req );
+        Object[] res = Identity.getInstance().getAllOrganizations(isShowHiddenOrg, start, limit);
 
         StringWriter out = new StringWriter();
         try {
@@ -217,9 +219,10 @@ public class OrganizationResource {
     @GET
     @Path( "search" )
     @Produces( MediaType.APPLICATION_JSON )
-    public Response searchJson( @QueryParam( "q" ) String str,
-                              @DefaultValue( "0" ) @QueryParam( "start" ) String strStart,
-                              @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit ) throws Exception {
+    public Response searchJson( @Context HttpServletRequest req, 
+                                @QueryParam( "q" ) String str,
+                                @DefaultValue( "0" ) @QueryParam( "start" ) String strStart,
+                                @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit ) throws Exception {
         if ("".equals(str))
             return null;
 
@@ -243,7 +246,8 @@ public class OrganizationResource {
             }
         }
 
-        Object[] res = Identity.getInstance().searchOrganizations(str, start, limit);
+        boolean isShowHiddenOrg = Security.getInstance().isAuthorized( req );
+        Object[] res = Identity.getInstance().searchOrganizations(str, isShowHiddenOrg, start, limit);
 
         StringWriter out = new StringWriter();
         try {

@@ -43,12 +43,12 @@ function setRequestVocConcept( conceptUri ) {
     }
 }
 
-function setRequestKeyword( keyword, lang ) {
+function setRequestKeyword( keyword ) {
     if( Ext.isIE )
         keyword = decodeUtf8( keyword );
     if( window.parent.searchManager ) {
         window.parent.searchManager.closeDialog();
-        window.parent.searchManager.setRequestKeyword( keyword, lang );
+        window.parent.searchManager.setRequestKeyword( keyword );
     }
 }
 

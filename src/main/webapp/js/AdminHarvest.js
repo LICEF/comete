@@ -73,7 +73,6 @@
         }); 
        
         this.detailsPanel = Ext.create('Ext.Panel', { 
-            region: 'center',
             width: 500,
             margin: '0 0 0 10',
             border: false,
@@ -117,9 +116,10 @@
 
         this.harvestPanel = Ext.create('Ext.panel.Panel', { 
             layout: 'hbox',
+            region: 'south',
             border: false,
             width: 500,
-            margin: '30 0 0 10',
+            margin: '30 0 10 10',
             items: [ this.startHarvestButton, {xtype: 'tbspacer', width: 10}, this.stopHarvestButton, 
                      {xtype: 'tbfill'}, this.harvestReportsButton ]
         });
@@ -127,7 +127,10 @@
         var cfg = {
             layout: 'border',
             region: 'center',
-            items: [ this.leftPanel, { border: false, layout: 'vbox', items: [ this.detailsPanel, this.harvestPanel ] } ]
+            items: [ this.leftPanel, 
+                     { border: false, region: 'center', layout: 'fit',
+                       items: { layout: 'vbox', border: false, scrollable: true, items: [ this.detailsPanel, this.harvestPanel ] } }
+            ]
         };
         Ext.apply(this, cfg);
         this.callParent(arguments); 
@@ -243,6 +246,7 @@
     modifyHarvestDefStep2: function(values) {
         var editor = Ext.create('Comete.AdminHarvestDefEditor', {
             width: 500,
+            height: 500,
             modal: true,
             mode: 'modify',
             restUrl: this.currentHarvestDefRestUrl,
@@ -384,6 +388,7 @@
 Ext.define( 'Comete.AdminHarvestDefEditor', {
     extend: 'Ext.window.Window',
     layout: 'fit',
+    scrollable: true, 
     initComponent: function( config ) {
 
         var protocolStore = Ext.create('Ext.data.Store', {
@@ -469,7 +474,7 @@ Ext.define( 'Comete.AdminHarvestDefEditor', {
         var cfg = {
             title: (this.mode == 'modify')?tr('Modify repository'):tr('Add repository'),
             buttons: [ {text:'OK', handler: this.ok, scope: this}, {text:tr('Cancel'), handler: this.close, scope: this}],
-            items: [ { border: false, items: this.formPanel } ]
+            items: [ { border: false, scrollable: true, items: this.formPanel } ]
 
         };
         Ext.apply(this, cfg);

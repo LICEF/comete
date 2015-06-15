@@ -1,2 +1,2 @@
 ?s dcterms:description ?descr .
-FILTER ( regex( ?descr, "{0}", "i" ) )
+FILTER ( contains( lcase(?descr), lcase("{0}") ) )

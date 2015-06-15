@@ -236,7 +236,7 @@ Ext.define( 'Comete.AdvancedSearch', {
             if (cond.getWidth() != width)
                 cond.setWidth(width);
         } 
-console.log(width);
+
         //top and bottom menubar
         if (this.getComponent(0).getWidth() != width)
             this.getComponent(0).setWidth(width);
@@ -429,14 +429,6 @@ Ext.define( 'Comete.QueryCondition', {
             ]
         });
 
-        this.langStore = Ext.create('Ext.data.Store', {
-            fields: ['id', 'label'],
-            data : [
-                {'id':'fr', 'label': tr('French')},
-                {'id':'en', 'label': tr('English')}
-            ]
-        });
-
         this.flagStore = Ext.create('Ext.data.Store', {
             fields: ['id', 'label'],
             data: [
@@ -613,11 +605,7 @@ Ext.define( 'Comete.QueryCondition', {
         var panel = Ext.create('Ext.panel.Panel', {
             layout: 'hbox',
             border: false,
-            items: [ { xtype: 'textfield', width: 200 },
-                     { xtype: 'tbspacer', width: 5 },
-                     { xtype: 'combo', valueField: 'id', displayField: 'label', store: this.langStore,
-                       editable: false, width: 100, value: this.topPane.lang,
-                       tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div></tpl></div>' } ] 
+            items: { xtype: 'textfield', width: 250 }
         });
         return panel;
     },    
@@ -635,8 +623,7 @@ Ext.define( 'Comete.QueryCondition', {
         } );
 
         keywordStore.on( 'beforeload', function( store ) {
-            var selectedLang = this.typeCondPanel.getComponent(0).getComponent(2).getValue();
-            store.proxy.url = 'rest/queryEngine/keywords?lang=' + selectedLang;
+            store.proxy.url = 'rest/queryEngine/keywords';
         }, this );
 
         var keywordCombo = Ext.create( 'Ext.form.field.ComboBox', {
@@ -656,11 +643,7 @@ Ext.define( 'Comete.QueryCondition', {
         var panel = Ext.create('Ext.panel.Panel', {
             layout: 'hbox',
             border: false,
-            items: [ keywordCombo,
-                     { xtype: 'tbspacer', width: 5 },
-                     { xtype: 'combo', valueField: 'id', displayField: 'label', store: this.langStore,
-                       editable: false, width: 100, value: this.topPane.lang,
-                       tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div></tpl></div>' } ] 
+            items: keywordCombo
         });
         return panel;
     },    
@@ -829,11 +812,9 @@ Ext.define( 'Comete.QueryCondition', {
 
         return panel;
     }, 
-    setText: function(text, lang) {
+    setText: function(text) {
         var titleField = this.typeCondPanel.getComponent(0).getComponent(0);
         titleField.setValue(text);
-        var combobox = this.typeCondPanel.getComponent(0).getComponent(2);
-        combobox.setValue(lang);
     },
     setDateCond: function( relOp, date ) {
         var relOpField = this.typeCondPanel.getComponent(0).getComponent(0);
@@ -880,13 +861,8 @@ Ext.define( 'Comete.QueryCondition', {
     getCondition: function() {
         var lang = null;
         var relOp = null;
-        if (this.typeCond.getValue() == 'title' || this.typeCond.getValue() == 'description') {
+        if (this.typeCond.getValue() == 'title' || this.typeCond.getValue() == 'description' || this.typeCond.getValue() == 'keyword') {
             this.data = this.typeCondPanel.getComponent(0).getComponent(0).getValue();
-            lang = this.typeCondPanel.getComponent(0).getComponent(2).getValue();
-        }
-        else if (this.typeCond.getValue() == 'keyword') {
-            this.data = "\"" + this.typeCondPanel.getComponent(0).getComponent(0).getValue() + "\"";
-            lang = this.typeCondPanel.getComponent(0).getComponent(2).getValue();
         }
         else if(this.typeCond.getValue() == 'addedDate') {
             relOp = this.typeCondPanel.getComponent(0).getComponent(0).getValue();
@@ -917,8 +893,6 @@ Ext.define( 'Comete.QueryCondition', {
         var queryCond = { key: this.typeCond.getValue(), value: this.data };
         if (label) 
             queryCond.label = label;
-        if (lang)
-           queryCond.lang = lang;
         if (this.typeCond.getValue() == 'vocConcept' || this.typeCond.getValue() == '!vocConcept') {
             var cbSubconcepts = this.typeCondPanel.getComponent(0).getComponent(6);
             if (!cbSubconcepts.isVisible())
@@ -944,11 +918,11 @@ Ext.define( 'Comete.QueryCondition', {
         this.typeCond.setValue(type);
         this.currentType = type;
         this.makeCond(type);
-        this.setData(cond.value, type, option, cond.label, cond.lang, cond.relOp);
+        this.setData(cond.value, type, option, cond.label, cond.relOp);
     },
-    setData: function(data, type, option, label, lang, relOp) {
+    setData: function(data, type, option, label, relOp) {
         if (type == 'title' || type == 'description' || type == 'keyword') {
-            this.setText(data, lang);
+            this.setText(data);
             return;
         }
         if (type =='addedDate') {

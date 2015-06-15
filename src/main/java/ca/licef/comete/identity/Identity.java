@@ -815,57 +815,67 @@ public class Identity {
         return identity.getFN();
     }
 
-    public Object[] getAllPersons(int start, int limit) throws Exception {
+    public Object[] getAllPersons(boolean isShowHiddenPersons, int start, int limit) throws Exception {
         Invoker inv = new Invoker(this, "ca.licef.comete.identity.Identity",
-                "getAllPersonsEff", new Object[]{start, limit});
+                "getAllPersonsEff", new Object[]{isShowHiddenPersons, start, limit});
         return (Object[]) tripleStore.transactionalCall(inv);
     }
 
-    public Object[] getAllPersonsEff(int start, int limit) throws Exception {
-        int length = tripleStore.getTriplesWithPredicateObject(RDF.type, COMETE.Person.getURI(), null).length;
-        String query = CoreUtil.getQuery("identity/getPersons.sparql", start, limit);
-        return new Object[]{length, tripleStore.sparqlSelect(query)};
+    public Object[] getAllPersonsEff(boolean isShowHiddenPersons, int start, int limit) throws Exception {
+        String flagCondition = ( isShowHiddenPersons ? "" : "FILTER ( NOT EXISTS { ?lo comete:flag ?flag } || EXISTS { ?lo comete:flag \"forcedDiffusion\" } )" );
+        String query = CoreUtil.getQuery( "identity/getPersonsCount.sparql", flagCondition );
+        Tuple[] res = tripleStore.sparqlSelect( query );
+        int count = Integer.parseInt( res[0].getValue( "count" ).getContent() );
+
+        query = CoreUtil.getQuery("identity/getPersons.sparql", flagCondition, start, limit);
+        return new Object[]{count, tripleStore.sparqlSelect(query)};
     }
 
-    public Object[] searchPersons(String str, int start, int limit) throws Exception {
+    public Object[] searchPersons(String str, boolean isShowHiddenPersons, int start, int limit) throws Exception {
         Invoker inv = new Invoker(this, "ca.licef.comete.identity.Identity",
-                "searchPersonsEff", new Object[]{str, start, limit});
+                "searchPersonsEff", new Object[]{str, isShowHiddenPersons, start, limit});
         return (Object[]) tripleStore.transactionalCall(inv);
     }
 
-    public Object[] searchPersonsEff(String str, int start, int limit) throws Exception {
-        String query = CoreUtil.getQuery("identity/findPersonsCount.sparql", CoreUtil.formatKeywords(str));
+    public Object[] searchPersonsEff(String str, boolean isShowHiddenPersons, int start, int limit) throws Exception {
+        String flagCondition = ( isShowHiddenPersons ? "" : "FILTER ( NOT EXISTS { ?lo comete:flag ?flag } || EXISTS { ?lo comete:flag \"forcedDiffusion\" } )" );
+        String query = CoreUtil.getQuery("identity/findPersonsCount.sparql", CoreUtil.formatKeywords(str), flagCondition);
         Tuple[] res = tripleStore.sparqlSelect(query);
         int total = Integer.parseInt(res[0].getValue("count").getContent());
-        query = CoreUtil.getQuery("identity/findPersons.sparql", CoreUtil.formatKeywords(str), start, limit);
+        query = CoreUtil.getQuery("identity/findPersons.sparql", CoreUtil.formatKeywords(str), flagCondition, start, limit);
         Tuple[] persons = tripleStore.sparqlSelect(query);
 
         return new Object[]{ total, persons };
     }
 
-    public Object[] getAllOrganizations(int start, int limit) throws Exception {
+    public Object[] getAllOrganizations(boolean isShowAllOrg, int start, int limit) throws Exception {
         Invoker inv = new Invoker(this, "ca.licef.comete.identity.Identity",
-                "getAllOrganizationsEff", new Object[]{start, limit});
+                "getAllOrganizationsEff", new Object[]{isShowAllOrg, start, limit});
         return (Object[]) tripleStore.transactionalCall(inv);
     }
 
-    public Object[] getAllOrganizationsEff(int start, int limit) throws Exception {
-        int length = tripleStore.getTriplesWithPredicateObject(RDF.type, COMETE.Organization.getURI(), null).length;
-        String query = CoreUtil.getQuery("identity/getOrganizations.sparql", start, limit);
-        return new Object[]{length, tripleStore.sparqlSelect(query)};
+    public Object[] getAllOrganizationsEff(boolean isShowHiddenOrg, int start, int limit) throws Exception {
+        String flagCondition = ( isShowHiddenOrg ? "" : "FILTER ( NOT EXISTS { ?lo comete:flag ?flag } || EXISTS { ?lo comete:flag \"forcedDiffusion\" } )" );
+        String query = CoreUtil.getQuery( "identity/getOrganizationsCount.sparql", flagCondition );
+        Tuple[] res = tripleStore.sparqlSelect( query );
+        int count = Integer.parseInt( res[0].getValue( "count" ).getContent() );
+
+        query = CoreUtil.getQuery("identity/getOrganizations.sparql", flagCondition, start, limit);
+        return new Object[]{count, tripleStore.sparqlSelect(query)};
     }
 
-    public Object[] searchOrganizations(String str, int start, int limit) throws Exception {
+    public Object[] searchOrganizations(String str, boolean isShowHiddenOrg, int start, int limit) throws Exception {
         Invoker inv = new Invoker(this, "ca.licef.comete.identity.Identity",
-                "searchOrganizationsEff", new Object[]{str, start, limit});
+                "searchOrganizationsEff", new Object[]{str, isShowHiddenOrg, start, limit});
         return (Object[]) tripleStore.transactionalCall(inv);
     }
 
-    public Object[] searchOrganizationsEff(String str, int start, int limit) throws Exception {
-        String query = CoreUtil.getQuery("identity/findOrganizationsCount.sparql", CoreUtil.formatKeywords(str));
+    public Object[] searchOrganizationsEff(String str, boolean isShowHiddenOrg, int start, int limit) throws Exception {
+        String flagCondition = ( isShowHiddenOrg ? "" : "FILTER ( NOT EXISTS { ?lo comete:flag ?flag } || EXISTS { ?lo comete:flag \"forcedDiffusion\" } )" );
+        String query = CoreUtil.getQuery("identity/findOrganizationsCount.sparql", CoreUtil.formatKeywords(str), flagCondition);
         Tuple[] res = tripleStore.sparqlSelect(query);
         int total = Integer.parseInt(res[0].getValue("count").getContent());
-        query = CoreUtil.getQuery("identity/findOrganizations.sparql", CoreUtil.formatKeywords(str), start, limit);
+        query = CoreUtil.getQuery("identity/findOrganizations.sparql", CoreUtil.formatKeywords(str), flagCondition, start, limit);
         Tuple[] orgs = tripleStore.sparqlSelect(query);
 
         return new Object[]{ total, orgs };

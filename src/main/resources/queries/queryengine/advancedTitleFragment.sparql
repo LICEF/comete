@@ -1,2 +1,2 @@
 ?s dcterms:title ?title .
-FILTER ( regex( ?title, "{0}", "i" ) )
+FILTER ( contains( lcase(?title), lcase("{0}") ) )

@@ -184,13 +184,15 @@
         this.centerPanel = Ext.create('Ext.Panel', { 
             region: 'center',
             border: false,
+            scrollable: true,
             items: [ this.detailsPanel, this.aliasPanel ]        
         }); 
 
         var cfg = {
             layout: 'border',
             region: 'center',      
-            items: [ this.leftPanel, this.centerPanel ]
+            items: [ this.leftPanel, 
+                     { border: false, region: 'center', layout: 'fit', items: this.centerPanel } ]
         };
         Ext.apply(this, cfg);
         this.callParent(arguments); 
