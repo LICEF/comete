@@ -119,7 +119,7 @@
             region: 'south',
             border: false,
             width: 500,
-            margin: '30 0 0 10',
+            margin: '30 0 10 10',
             items: [ this.startHarvestButton, {xtype: 'tbspacer', width: 10}, this.stopHarvestButton, 
                      {xtype: 'tbfill'}, this.harvestReportsButton ]
         });
