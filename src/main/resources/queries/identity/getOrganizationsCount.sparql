@@ -7,8 +7,8 @@ SELECT (COUNT(DISTINCT ?s) AS ?count)
 WHERE '{'
     ?s rdf:type comete:Organization .
     '{'
+        ?lo (dcterms:creator|dcterms:publisher) ?s .
         ?lo rdf:type comete:LearningObject .
-        ?lo (dcterms:creator|dcterms:publisher) ?s
         {0}
     '}'
 '}'

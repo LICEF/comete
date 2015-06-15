@@ -7,8 +7,8 @@ SELECT DISTINCT ?s ?name
 WHERE '{'
     ?s rdf:type comete:Organization .
     '{'
+        ?lo (dcterms:creator|dcterms:publisher) ?s .
         ?lo rdf:type comete:LearningObject .
-        ?lo (dcterms:creator|dcterms:publisher) ?s
         {1}
     '}'
     ?s foaf:name ?name .

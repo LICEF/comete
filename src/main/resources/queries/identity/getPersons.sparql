@@ -8,8 +8,8 @@ WHERE '{'
     ?s rdf:type comete:Person .
     ?s foaf:name ?name
     '{'
+        ?lo (dcterms:creator|dcterms:publisher) ?s .
         ?lo rdf:type comete:LearningObject .
-        ?lo (dcterms:creator|dcterms:publisher) ?s
         {0}
     '}'
 '}'
