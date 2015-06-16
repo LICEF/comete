@@ -30,26 +30,32 @@
             cls: 'results'
         } );
 
-        this.resultAtomButton = Ext.create('Ext.button.Button', {
-            icon: 'images/rss.png',
-            text: 'Atom',
+        this.resultAtomButton = Ext.create('Comete.ImageButton', {
+            img: 'images/atom.png',
+            width: 59,
+            height: 23,
+            margin: '0 10 0 0',
             handler: function() { 
                 url = 'rest/queryEngine/searchAtom?lang=' + this.lang + '&q=' + encodeURIComponent(JSON.stringify(this.getCurrentQuery().query));
                 window.open(url); 
             },
-            scope: this            
+            scope: this
         } );
+
         this.resultAtomButton.setVisible(false); 
 
-        this.resultRssButton = Ext.create('Ext.button.Button', {
-            icon: 'images/rss.png',
-            text: 'RSS',
+        this.resultRssButton = Ext.create('Comete.ImageButton', {
+            img: 'images/rss.png',
+            width: 59,
+            height: 23,
+            margin: '0 28 0 0',
             handler: function() { 
                 url = 'rest/queryEngine/searchRss?lang=' + this.lang + '&q=' + encodeURIComponent(JSON.stringify(this.getCurrentQuery().query));
                 window.open(url); 
             },
-            scope: this            
+            scope: this
         } );
+
         this.resultRssButton.setVisible(false); 
 
         var resultPanel = Ext.create('Ext.panel.Panel', {
@@ -60,9 +66,7 @@
             items: [              
                 { xtype: 'tbspacer', width: 10 }, 
                 this.resultAtomButton, 
-                { xtype: 'tbspacer', width: 10 }, 
                 this.resultRssButton,
-                { xtype: 'tbspacer', width: 10 }, 
                 this.resultLabel
             ]        
         } );       
@@ -178,15 +182,12 @@
     updateQueryHistoryButtons: function() {
         var isBackwardButtonDisabled = ( this.queryHistoryIndex <= 0 || this.queryHistory.length <= 1);
         var isForwardButtonDisabled = ( this.queryHistoryIndex >= this.queryHistory.length - 1 );
-        if( this.goBackwardQueryButton )
-            this.goBackwardQueryButton.setDisabled( isBackwardButtonDisabled );
-        if( this.goForwardQueryButton )
-            this.goForwardQueryButton.setDisabled( isForwardButtonDisabled );
+
+        window.searchManager.updateQueryHistoryButtons(isBackwardButtonDisabled, isForwardButtonDisabled);
     },
     goBackwardQuery: function() {
         this.queryHistoryIndex--;
         this.learningObjectTable.performGoQuery(this.queryHistory[this.queryHistoryIndex]);
-
     },
     goForwardQuery: function() {
         this.queryHistoryIndex++;
@@ -196,7 +197,7 @@
         return this.queryHistory[ this.queryHistoryIndex ];
     },
     setResultText: function(text) {
-        this.resultLabel.setText( text );
+        this.resultLabel.setHtml(text);
     },
     setFeedButtonsVisible: function(visible) {
         this.resultAtomButton.setVisible(visible);

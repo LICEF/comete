@@ -250,9 +250,9 @@
         var label = tr( 'No resource found' );
         var atLeastOneResult = true;
         if (nbResults == 1)
-            label = '1 ' + tr( 'resource found' );
+            label = '<b>1</b> ' + tr( 'resource found' );
         else if (nbResults > 1)
-            label = nbResults + ' ' + tr( 'resources found' );
+            label = '<b>' + nbResults + '</b> ' + tr( 'resources found' );
         else
             atLeastOneResult = false;
          

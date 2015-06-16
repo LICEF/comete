@@ -53,7 +53,6 @@ function displayQuery(queryItem, query) {
 
     if (queryItem == 1) //setQuery change it
         height = currentAdvancedHeight; 
-  
     if (window.currentSearchQueryItem != queryItem)
         changeCardItem(queryItem, elem, height);
 }
@@ -71,7 +70,7 @@ Ext.define( 'Comete.SearchManager', {
         if (query)
             query = eval(query);
         else {
-            var uri = Ext.getUrlParam( 'uri' );       
+            var uri = Ext.getUrlParam( 'uri' );
             if (uri != null) 
                 query = [ { key: "uri", value: uri } ];
             else {
@@ -117,7 +116,7 @@ Ext.define( 'Comete.SearchManager', {
             layout: 'hbox', 
             width: '100%', 
             border: false,
-            cls: 'transp1',                                          
+            cls: 'transp1',
             items: [ {xtype: 'tbfill'}, 
                      { border: false, width: 560, 
                        html: '<iframe width="100%" height="500" frameborder="0" src="' + lang + '/description.html"></iframe>' },
@@ -134,18 +133,18 @@ Ext.define( 'Comete.SearchManager', {
                      { layout: 'hbox', 
                        width: '100%', 
                        border: false,
-                       cls: 'transp1',                                          
+                       cls: 'transp1',
                        items: [ {xtype: 'tbfill'}, 
                                 { layout: 'vbox', border: false, 
                                   items: [ this.logo, { xtype: 'tbspacer', height: 5}, this.cardPanel ] }, 
                                 {xtype: 'tbfill'} ] },
                      {xtype: 'tbfill'},
                      { xtype: 'tbspacer', height: 30 },
-                     this.descriptionPanel                     
+                     this.descriptionPanel
                    ]
         });
 
-        this.loManager = Ext.create('Comete.LearningObjectManager', {        
+        this.loManager = Ext.create('Comete.LearningObjectManager', {
             region: 'center',
             border: false,
             lang: lang,
@@ -226,18 +225,37 @@ Ext.define( 'Comete.SearchManager', {
         this.setRequest( query );
     },
     setRequestVocConcept: function( conceptUri ) {
-        var query = [ { key: "vocConcept", value: conceptUri } ];
-        displayQuery(2, query);
+        var query = new Array();
+        query[0] = { key: "vocConcept", value: conceptUri, "subConcepts": true };
         this.setRequestVocConcept2( query );
     },
     setRequestVocConcept2: function( query ) {
+        if (this.getLanguageCondition() != null) {
+            query[1] = { "op": "AND" };
+            query[2] = { key: "language", value: searchManager.getLanguageCondition() };
+        }
+        displayQuery(2, query);
+        this.setRequestVocConcept3( query );
+    },
+    setRequestVocConcept3: function( query ) {
+        if (this.getLanguageCondition() != null) {
+            query[1] = { "op": "AND" };
+            query[2] = { key: "language", value: searchManager.getLanguageCondition() };
+        }
         this.setRequest( query );
     },
     setRequestCollection: function( id, query ) {
         this.setRequest( query );
     },
     setRequestKeyword: function( keyword ) {
-        var query = [ { key: "keyword", value: keyword } ];
+        var query = new Array();
+        var i = 0;
+        if (this.getLanguageCondition() != null) {
+            query[0] = { key: "language", value: searchManager.getLanguageCondition() };
+            query[1] = { "op": "AND" };
+            i = 2;
+        }
+        query[i] = { key: "keyword", value: keyword };
         displayQuery(1, query);
         this.setRequest( query );
     },
@@ -246,6 +264,17 @@ Ext.define( 'Comete.SearchManager', {
     },
     getLanguageCondition: function() {
         return this.loManager.getLanguageCondition();
+    },
+    goBackwardQuery: function() {
+        this.loManager.goBackwardQuery();
+    },
+    goForwardQuery: function() {
+        this.loManager.goForwardQuery();
+    },
+    updateQueryHistoryButtons: function(isBackwardButtonDisabled, isForwardButtonDisabled) {
+        this.simpleSearchPanel.updateQueryHistoryButtons(isBackwardButtonDisabled, isForwardButtonDisabled)
+        this.advancedSearchPanel.updateQueryHistoryButtons(isBackwardButtonDisabled, isForwardButtonDisabled)
+        this.thematicSearchPanel.updateQueryHistoryButtons(isBackwardButtonDisabled, isForwardButtonDisabled)
     },
     initCollections: function() {
         this.collectionSearchPanel.init();

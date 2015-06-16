@@ -158,19 +158,18 @@ Ext.define( 'Comete.AdvancedSearch', {
             advSearchQueryButton: this.advSearchQueryButton
         } );
         if (!newCond.isFirst) {
-            this.firstCond.removeButton.setVisible(true);            
+            this.firstCond.removeButton.setVisible(true);
             newCond.firstAnd.setVisible(false);
             this.firstCond.firstAnd.setWidth(40);
         }
         else
             this.firstCond = newCond;
         
-        return newCond;        
+        return newCond;
     },
     addQueryCond: function(cond) {
         this.condPanel.add(cond); 
-
-        this.updateElementsWidth();
+        //this.updateElementsWidth();
         var elems = this.condPanel.items.length;
         setAdvancedSearchPanelHeight(Math.max(22*elems + 5*(elems - 1) + 125, ADVANCED_HEIGHT));
     },
@@ -315,7 +314,6 @@ Ext.define( 'Comete.AdvancedSearch', {
             this.fulltextField.setValue(null);
         if (query[i].key == 'language')
             i += 2;
-
         var offset = i;
         for (; i < query.length; i++) {
             var cond = this.createQueryCond(j == 0);
@@ -330,10 +328,9 @@ Ext.define( 'Comete.AdvancedSearch', {
         }
         if (queryConds.length == 0)
             queryConds[0] = this.createQueryCond(true);
-
         this.needWidthUpdate = true;
         this.clear();    
-        this.addQueryCond(queryConds, true);
+        this.addQueryCond(queryConds);
     },
     redoRequest: function() {
         this.submitAdvancedSearchQuery();
@@ -409,7 +406,7 @@ Ext.define( 'Comete.AdvancedSearch', {
                 Ext.Msg.alert('Failure', response.responseText);  
             },
             scope: this 
-        } );        
+        } );
     }
 } );
 
@@ -537,7 +534,7 @@ Ext.define( 'Comete.QueryCondition', {
             items: [ this.removeButton, this.firstAnd,
                      this.andOr, this.andOrSpace, 
                      this.typeCond, { xtype: 'tbspacer', width: 5 },
-                     this.typeCondPanel                     
+                     this.typeCondPanel
                    ]
         };
         Ext.apply(this, cfg);
@@ -605,7 +602,7 @@ Ext.define( 'Comete.QueryCondition', {
         var panel = Ext.create('Ext.panel.Panel', {
             layout: 'hbox',
             border: false,
-            items: { xtype: 'textfield', width: 250 }
+            items: { xtype: 'textfield', width: 243 }
         });
         return panel;
     },    
@@ -630,7 +627,7 @@ Ext.define( 'Comete.QueryCondition', {
             displayField: 'keyword',
             valueField: 'keyword',
             store: keywordStore,
-            width: 250,
+            width: 243,
             hideTrigger: true,
             queryParam: 'value',
             listConfig: {
