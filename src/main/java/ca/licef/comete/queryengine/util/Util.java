@@ -274,6 +274,10 @@ public class Util {
                     String text = obj.getString("value");
                     description.append( MessageFormat.format( bundle.getString( "rs.advancedSearch.description.fulltext" ), text) );
                 }
+                else if (LANGUAGE.equals(condType)) {
+                    String lang = obj.getString("value");
+                    description.append( MessageFormat.format( bundle.getString( "rs.advancedSearch.description.language" ), lang ) );
+                }
                 else if (TITLE_PREFIX.equals(condType)) {
                     String text = obj.getString("value");
                     description.append( MessageFormat.format( bundle.getString( "rs.advancedSearch.description.title" ), text ) );
