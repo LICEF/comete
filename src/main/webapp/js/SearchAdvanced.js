@@ -267,6 +267,13 @@ Ext.define( 'Comete.AdvancedSearch', {
             searchManager.setRequest( query ); 
         }
     },
+    isQueryCriterias: function() {
+        //check only from condition panel
+        var query = this.buildAdvancedSearchQuery();
+        if (query.length == 1 && query[0].key == "language")
+            return false;
+        return query.length > 0;
+    },
     buildAdvancedSearchQuery: function() {
         var query = new Array();
         var j = 0;

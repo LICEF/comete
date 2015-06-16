@@ -91,7 +91,8 @@
             valueField: 'uri',
             store: this.vocabStore,
             editable: false,
-            width: 400,
+            width: CARDPANEL_WIDTH + 24,
+            margin: '10 20 0 20',
             emptyText: tr('Select classification') + '...',
             listConfig: {
                 loadingText: tr('Loading') + '...'
@@ -114,8 +115,8 @@
             displayField: 'label',
             valueField: 'uri',
             store: this.conceptStore,
-            width: 400,
-            hideTrigger: true,
+            width: CARDPANEL_WIDTH + 24,
+            margin: '15 20 0 20',
             queryParam: 'q',
             emptyText: tr('Enter the desired category') + '... ' + tr('(min. 4 characters)'),
             listConfig: {
@@ -127,6 +128,18 @@
             }
         });
 
+        this.conceptSearchCombo.on( 'beforeselect', function(combo, record){ 
+            combo.collapse();
+            this.setVocConcept(record.data.vocUri, record.data.uri, record.data.vocLabel, record.data.label, false, true);                        
+            return false;}, this );
+
+        this.conceptSearchCombo.on( 'beforequery', function(queryPlan){ 
+           if (queryPlan.query == "") {
+               queryPlan.combo.expand();
+               return false;
+           }
+        }, this );        
+
         this.expandConceptListButton = Ext.create('Comete.ImageButton', {
             img: 'images/downArrow.png',
             imgDisabled: 'images/downArrowDisabled.png',
@@ -135,11 +148,6 @@
             scope: this,
             disabled: true
         } );
-
-        this.conceptSearchCombo.on( 'beforeselect', function(combo, record){ 
-            combo.collapse();
-            this.setVocConcept(record.data.vocUri, record.data.uri, record.data.vocLabel, record.data.label, false, true);                        
-            return false;}, this );
 
         var vocPanel = Ext.create('Ext.panel.Panel', {
             layout: 'hbox',
@@ -154,9 +162,11 @@
             store: this.vocConceptStore,
             lang: this.lang,
             border: false,
-            width: '100%',
+            width: CARDPANEL_WIDTH + 24,
+            margin: '15 20 0 20',
             subElementQuery: '/children',
-            listener: this
+            listener: this,
+            hidden: true
         } );
 
         this.queryButton = Ext.create('Ext.button.Button', {
@@ -171,15 +181,33 @@
 
         this.cbSubconcepts = Ext.create('Ext.form.field.Checkbox', {
             boxLabel: tr('Include subcategories'),
-            style: 'color: #04408C',
+            style: 'color: white',
             margin: '3 0 0 0',
             checked: true
         } );
 
         this.cbEquivalence = Ext.create('Ext.form.field.Checkbox', {
-            boxLabel: tr('Include equivalent categories from :'),
-            style: 'color: #04408C',
-            margin: '3 0 0 0'
+            boxLabel: tr('Include equivalent categories from'),
+            hidden: true
+        } );
+
+        this.cbEquivalence.on( 'change', 
+            function() {              
+                this.equivalence.setVisible(this.cbEquivalence.getValue());   
+                this.colonLabel.setText(this.cbEquivalence.getValue()?':':'...');
+
+                if (this.currentVocConceptUri) {
+                    if (this.cbEquivalence.getValue() && this.equivalence.getValue().length == 0)
+                        return;
+                    this.redoRequest();           
+                }       
+            }, this );
+
+
+        this.colonLabel = Ext.create('Ext.form.Label', {
+            text: '...',
+            margin: '4 5 0 5',
+            hidden: true
         } );
 
         this.equivalence = Ext.create('Ext.form.field.ComboBox', {
@@ -188,13 +216,13 @@
             store: this.eqVocabStore,
             editable: false,
             multiSelect: true,
-            margin: '4 0 0 10',
             hidden: true,
-            width: 300,
+            width: 200,
             listConfig: {
                 loadingText: tr('Loading') + '...'
             },
-            tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div></tpl></div>'
+            tpl: '<div><tpl for="."><div class="x-boundlist-item"><img src="' + Ext.BLANK_IMAGE_URL + '" class="chkCombo"/>' +
+                 '<span style="vertical-align: top">{label}</span></div></tpl></div>'
         } );
 
         this.cbId = Ext.create('Ext.form.field.Checkbox', {
@@ -282,18 +310,22 @@
     },
     vocabularySelected: function(combo, records) {        
         searchManager.clear();
+
+        this.showHiddenComponentsAtInit();
+
         this.breadcrumb.clear();
         this.currentVocRestUrl = records.getData().restUrl;
         this.currentVocUri = records.getData().uri;
-        this.vocConceptProxy.url = this.currentVocRestUrl + '/topConcepts?showIds=' + this.cbId.getValue() + '&lang=' + this.lang;        
+        //this.vocConceptProxy.url = this.currentVocRestUrl + '/topConcepts?showIds=' + this.cbId.getValue() + '&lang=' + this.lang;        
+        this.vocConceptProxy.url = this.currentVocRestUrl + '/topConcepts?lang=' + this.lang; //for ceres
         this.vocConceptStore.load();
         this.currentVocConceptUri = null;
-        this.vocabularyButton.setDisabled(false);
-        this.queryButton.setDisabled(true);
+        //this.vocabularyButton.setDisabled(false);
+        //this.queryButton.setDisabled(true);
         this.cleanEquivalence();
     },
     bcElementClicked: function(conceptUri) {
-        this.queryButton.setDisabled(false);
+        //this.queryButton.setDisabled(false);
         this.currentVocConceptUri = conceptUri;
         this.setRequestVocConcept(conceptUri);
     },
@@ -308,7 +340,8 @@
                 query[0].eqVocs = eqVocs;
             }
         }
-        searchManager.setRequestVocConcept2( query );
+        //searchManager.setRequestVocConcept2( query );
+        searchManager.setRequestVocConcept3( query );
     },
     pickVocConcept: function() { 
         vocConceptPicker = Ext.create('Comete.VocConceptPicker', {
@@ -324,11 +357,12 @@
         var currentVoc = this.vocabularyCombo.getValue();
         this.vocabularyCombo.setValue(vocUri);
         var record = this.vocabularyCombo.findRecord("uri", vocUri);
-        this.currentVocRestUrl = record.data.restUrl;
+        this.currentVocRestUrl = record.getData().restUrl;
         this.currentVocUri = vocUri;
-        this.vocabularyButton.setDisabled(false);
+        //this.vocabularyButton.setDisabled(false);
         this.breadcrumb.displayElement(conceptUri);
-        this.queryButton.setDisabled(false);
+        //this.queryButton.setDisabled(false);
+        this.showHiddenComponentsAtInit();
         this.currentVocConceptUri = conceptUri;
         if (currentVoc == null || currentVoc != vocUri) {
             this.cbEquivalence.setValue(false);
@@ -354,7 +388,7 @@
     setQueryNext: function(vocUri, query) {
         this.currentVocConceptUri = null;
         this.setVocConcept(vocUri, query[0].value, null, null, null, false);
-        this.cbSubconcepts.setValue( query[0].subConcepts == true );
+        //this.cbSubconcepts.setValue( query[0].subConcepts == true );
         this.cbEquivalence.setValue( query[0].equivalent == true );
         if (this.equivalence.getValue())
             this.equivalence.setValue(query[0].eqVocs);
@@ -389,6 +423,33 @@
         this.goForwardQueryButton.getEl().setOpacity(1)
         this.goBackwardQueryButton.setDisabled(isBackwardButtonDisabled);
         this.goForwardQueryButton.setDisabled(isForwardButtonDisabled);
+    },
+    showHiddenComponentsAtInit: function() {
+        if (this.breadcrumb.isHidden()) {
+            this.breadcrumb.setVisible(true);    
+            this.updateQueryHistoryButtons(true, true);
+            this.setHeight(190);
+        }
+        if (this.cbEquivalence.isHidden()) {
+            this.cbEquivalence.setVisible(true);
+            this.colonLabel.setVisible(true);
+        }
+    },
+    adjustWidth: function(elementsWidth) {
+        var maxWidth = CARDPANEL_WIDTH + 24;
+        maxWidth = Math.max(CARDPANEL_WIDTH + 24, elementsWidth + 25);
+        
+        if (this.breadcrumb.getWidth() != maxWidth) {
+            this.breadcrumb.setWidth(maxWidth);
+
+            this.conceptSearchCombo.setWidth(maxWidth);
+            this.vocabularyCombo.setWidth(maxWidth);
+
+            //top and bottom menubar
+            this.getComponent(0).setWidth(maxWidth);
+            this.getComponent(5).setWidth(maxWidth);
+        }
+        
     }
 } );
 

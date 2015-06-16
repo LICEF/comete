@@ -6,7 +6,7 @@ window.currentSearchQueryItem = 0;
 
 SIMPLE_HEIGHT = 110;
 ADVANCED_HEIGHT = 150;
-THEMATIC_HEIGHT = 220;
+THEMATIC_HEIGHT = 150;
 
 QUERYPANEL_HEIGHT = 500;
 
@@ -15,9 +15,20 @@ CARDPANEL_WIDTH = 500;
 var currentAdvancedHeight = ADVANCED_HEIGHT;
 
 function changeCardItem(item, elem, height) {
+
+    var cardPanel = Ext.getCmp('cardPanel');
+    var currentFulltext = '';
+    var currentPanel = cardPanel.getLayout().getActiveItem();
+    if (currentPanel != searchManager.thematicSearchPanel)
+        currentFulltext = currentPanel.getFulltextQuery();
+
     window.currentSearchQueryItem = item;
-    Ext.getCmp('cardPanel').getLayout().setActiveItem(item);
-    //setQueryPanelHeight(height, false);    
+    cardPanel.getLayout().setActiveItem(item);
+    //setQueryPanelHeight(height, false);   
+
+    var nextPanel = cardPanel.getLayout().getActiveItem();
+    if (nextPanel != searchManager.thematicSearchPanel)
+        nextPanel.setFulltextQuery( currentFulltext ); 
 }
 
 function setQueryPanelHeight(height, isAdvanced) {

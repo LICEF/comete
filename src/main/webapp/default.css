@@ -111,10 +111,6 @@ div.x-border-layout-ct {
     background-color: #ffffff;
 }
 
-.rootButton.x-btn-default-toolbar-small-over .x-btn-split-right {
-    background-image: url("extjs-4.1.1/resources/themes/images/default/button/s-arrow-noline.gif");
-}
-
 /*
  * Default stylesheet.
  */
@@ -287,21 +283,19 @@ ul li {
     border: none;
 }
 
-.breadcrumb-button {
-    border-color: transparent;
-    background-color: transparent;
-}
-
-.breadcrumb-button > .x-btn-wrap-default-toolbar-small.x-btn-split-right:after {
+.breadcrumb-button > .x-btn-wrap-default-toolbar-small.x-btn-split-right::after {
     background-image: url("images/default-split-arrow.png");
+    width: 20px;
 }
 
-.breadcrumb-button.x-btn-over > .x-btn-wrap-default-toolbar-small.x-btn-split-right:after {
+.breadcrumb-button.x-btn-over > .x-btn-wrap-default-toolbar-small.x-btn-split-right::after {
     background-image: url("images/default-split-arrow-over.png");
+    width: 20px;
 }
 
-.breadcrumb-button.x-btn-menu-active > .x-btn-wrap-default-toolbar-small.x-btn-split-right:after {
+.breadcrumb-button.x-btn-menu-active > .x-btn-wrap-default-toolbar-small.x-btn-split-right::after {
     background-image: url("images/default-split-arrow-open.png");
+    width: 20px;
 }
 
 .HighlightedBox {
@@ -392,5 +386,26 @@ a:hover {
 .transp2 .x-panel-body {
     background: none; 
     color: white;
+}
+
+.x-btn-default-toolbar-small .x-btn-inner {
+    font-size: 14px;
+    display: inline;
+}
+
+.x-boundlist-item img.chkCombo {
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+    margin-right: 4px;
+    background: transparent url(ext-5.1.0/build/packages/ext-theme-gray/build/resources/images/menu/default-unchecked.gif);
+}
+
+.x-boundlist-selected img.chkCombo{
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+    margin-right: 4px;
+    background: transparent url(ext-5.1.0/build/packages/ext-theme-gray/build/resources/images/menu/default-checked.gif);
 }
 

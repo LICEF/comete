@@ -180,29 +180,31 @@ Ext.define( 'Comete.Breadcrumb', {
         this.automaticQuery = true;
 
         this.toolbar = Ext.create('Ext.toolbar.Toolbar', {
-            height: 36,
+            height: 33,
             overflowHandler: 'scroller',
-            autoDestroy: false,           
-            baseCls: Ext.baseCSSPrefix + 'breadcrumb'
+            autoDestroy: false
         });        
 
         this.hiddenButton = Ext.create('Ext.button.Button', {
             text: 'should not be seen'
         });
 
+        this.hiddenButton.on('render', function() {
+            this.hiddenButton.getEl().setOpacity(0);
+        }, this);
+
         var cfg = {
             height: 36,
             layout: 'hbox',
-            margin: '0 0 -1 0',
             items: this.hiddenButton,
             tbar: this.toolbar
         };
         Ext.apply(this, cfg);
         this.callParent(arguments); 
 
-        this.store.on( 'load', function() { this.displayData(this.store.getProxy().getReader().rawData); }, this);
+        this.store.on( 'load', function() { this.displayData(this.store.getProxy().getReader().rawData, true); }, this);
     },
-    displayData: function(json) {
+    displayData: function(json, needResize) {
         var button;
         var manageRoot = this.rootButton == null;
         var uri = json.uri;
@@ -214,11 +216,11 @@ Ext.define( 'Comete.Breadcrumb', {
                     
         if (json.leaf) {
             button = Ext.create('Ext.button.Button', {
-                    text: minLabel,
                     cls: 'breadcrumb-button',
+                    text: minLabel,
                     tooltip: label,
                     uri: uri,
-                    height: 24,
+                    height: 28,
                     handler: function() {this.goElement(button, true);},
                     scope: this
                 })
@@ -232,7 +234,7 @@ Ext.define( 'Comete.Breadcrumb', {
                 text: manageRoot?label:minLabel,
                 tooltip: manageRoot?null:label,
                 uri: uri,
-                height: 24,
+                height: 28,
                 handler: handler,
                 scope: this
             });   
@@ -251,6 +253,9 @@ Ext.define( 'Comete.Breadcrumb', {
             this.lastElement = button.uri;
         //to unfocus button
         this.hiddenButton.focus();
+
+        if (needResize)
+            this.listener.adjustWidth( this.computeWidth() );    
     },
     displayButton: function(button, label) {            
         pos = this.toolbar.items.length;
@@ -287,7 +292,7 @@ Ext.define( 'Comete.Breadcrumb', {
     },
     goDown: function(item) {
         this.goElement(item.parentMenu.button, false);
-        this.displayData(item.element);
+        this.displayData(item.element, true);
         this.listener.bcElementClicked(item.element.uri);        
     },
     goElement: function(button, stayHere) {
@@ -298,6 +303,7 @@ Ext.define( 'Comete.Breadcrumb', {
             this.toolbar.remove(elem);
         };        
         if (stayHere) {
+            this.listener.adjustWidth( this.computeWidth() );
             this.lastElement = button.uri;
             this.listener.bcElementClicked(this.lastElement);
             //to unfocus button
@@ -305,7 +311,6 @@ Ext.define( 'Comete.Breadcrumb', {
         }
     },
     clear: function() {
-
         for (i = this.toolbar.items.length - 1; i >= 0; i--) {
             var elem = this.toolbar.getComponent(i);
             this.toolbar.remove(elem);
@@ -349,7 +354,22 @@ Ext.define( 'Comete.Breadcrumb', {
             //build toolbar
             for (var i = 0; i < json.concepts.length; i++) 
                 this.displayData( json.concepts[i] ); 
+
+            this.listener.adjustWidth( this.computeWidth() );
         }
+    },
+    computeWidth: function() {
+        var width = 0;
+        for (i = this.toolbar.items.length - 1; i >= 0; i--) {
+            var elem = this.toolbar.getComponent(i);
+            var w = elem.getWidth();
+            if (w == 0) {
+                if (elem instanceof Ext.button.Button)
+                    w = textWidth(elem.getText(), 14) + 50;
+            }
+            width += w;
+        };
+        return width;
     }
 } );
 
