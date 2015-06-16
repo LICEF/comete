@@ -4,5 +4,5 @@ PREFIX dcterms: <http://purl.org/dc/terms/>
 SELECT ?o
 WHERE '{'
     <{0}> dcterms:subject ?o
-    FILTER regex( STR(?o), "^http://cegepadistance.ca/ns/typesrea#" )
+    FILTER STRSTARTS( STR( ?o ), "http://cegepadistance.ca/ns/typesrea#" )
 '}'

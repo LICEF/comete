@@ -10,7 +10,7 @@ WHERE '{'
     ?lo rdf:type comete:LearningObject .
     FILTER ( NOT EXISTS '{' ?lo comete:flag ?flag '}' || EXISTS '{' ?lo comete:flag "forcedDiffusion" '}' )
     ?s foaf:name ?name .
-    FILTER ( regex( ?name, "{0}", "i" ) )
+    FILTER ( CONTAINS( LCASE( ?name ), LCASE( "{0}" ) ) )
 '}'
 OFFSET {1,number,#}
 LIMIT {2,number,#}

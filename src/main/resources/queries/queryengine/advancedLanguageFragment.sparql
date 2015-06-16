@@ -1,2 +1,2 @@
 ?s dcterms:language ?lg .
-FILTER REGEX(?lg, "^{0}")
+FILTER STRSTARTS( ?lg, "{0}" )

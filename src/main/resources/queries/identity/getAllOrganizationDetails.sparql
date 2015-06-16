@@ -11,13 +11,13 @@ WHERE '{'
     UNION '{' ?s comete:formattedAddress ?address '}' UNION '{' ?s comete:altFormattedAddress ?altaddress '}'
     UNION '{' ?s foaf:logo ?logo '}' UNION '{' ?s comete:altLogo ?altlogo '}'
     UNION '{' ?s foaf:phone ?tel . 
-              FILTER ( regex(str(?tel), "^tel:") ) '}'
+              FILTER ( STRSTARTS( STR( ?tel ), "tel:" ) ) '}'
     UNION '{' ?s comete:altPhone ?alttel .
-              FILTER ( regex(str(?alttel), "^tel:") ) '}'
+              FILTER ( STRSTARTS( STR( ?alttel ), "tel:" ) ) '}'
     UNION '{' ?s foaf:phone ?fax .
-              FILTER ( regex(str(?fax), "^fax:") ) '}'
+              FILTER ( STRSTARTS( STR( ?fax ), "fax:" ) ) '}'
     UNION '{' ?s comete:altPhone ?altfax .
-              FILTER ( regex(str(?altfax), "^fax:") ) '}'
+              FILTER ( STRSTARTS( STR( ?altfax ), "fax:" ) ) '}'
     FILTER ( {0} )
 }
 
