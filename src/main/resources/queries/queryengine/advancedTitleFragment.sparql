@@ -1,2 +1,2 @@
 ?s dcterms:title ?title .
-FILTER ( contains( lcase(?title), lcase("{0}") ) )
+FILTER ( CONTAINS( LCASE(?title), LCASE("{0}") ) )

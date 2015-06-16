@@ -1,2 +1,2 @@
 ?s dcterms:description ?descr .
-FILTER ( contains( lcase(?descr), lcase("{0}") ) )
+FILTER ( CONTAINS( LCASE(?descr), LCASE("{0}") ) )
