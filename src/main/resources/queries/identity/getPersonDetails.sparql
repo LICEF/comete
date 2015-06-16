@@ -14,11 +14,11 @@ WHERE '{'
     UNION '{' ?s foaf:img ?photo '}'
     UNION  '{'
         ?s foaf:phone ?tel
-        FILTER (regex(str(?tel), "^tel:"))
+        FILTER ( STRSTARTS( STR( ?tel ), "tel:" ) )
     '}'
     UNION '{'
         ?s foaf:phone ?fax
-        FILTER (regex(str(?fax), "^fax:"))
+        FILTER ( STRSTARTS( STR( ?fax ), "fax:" ) )
     '}'    
     FILTER ( ?s = <{0}> )    
 '}'

@@ -5,6 +5,6 @@ SELECT (COUNT(?s) AS ?count)
 WHERE '{'
     ?s rdf:type comete:MetadataRecord .
     ?s comete:validationReportLink ?report .
-    FILTER ( regex( ?report, "{0}" ) )
+    FILTER ( CONTAINS( ?report, "{0}" ) )
 '}'
 
