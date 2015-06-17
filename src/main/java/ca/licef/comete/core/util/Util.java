@@ -588,8 +588,10 @@ public class Util {
     public static String formatKeywords(String keywords) {
         String quoteEsc = "SINGLEQUOTEREGEXESC";
         String dblQuoteEsc = "DBLQUOTEREGEXESC";
+        String dashEsc = "DASHREGEXESC";
         keywords = keywords.replace("\'", quoteEsc);
         keywords = keywords.replace("\"", dblQuoteEsc);
+        keywords = keywords.replace("-", dashEsc);
 
         int index = keywords.indexOf(dblQuoteEsc);
         int cp = 0;
@@ -605,6 +607,7 @@ public class Util {
         //I think it can be removed... -AM
         keywordsFormattedForRegex = keywordsFormattedForRegex.replace( dblQuoteEsc, "\\\"" );
         keywordsFormattedForRegex = keywordsFormattedForRegex.replace( quoteEsc, "\\\'" );
+        keywordsFormattedForRegex = keywordsFormattedForRegex.replace( dashEsc, "-" );
 
         return keywordsFormattedForRegex;
     }
