@@ -283,7 +283,9 @@
         } );
     },
     performGoQuery: function(queryHistoryData) {
-        displayQuery(queryHistoryData.queryPanelItem, queryHistoryData.query);
+        var panel = displayQuery(queryHistoryData.queryPanelItem);
+        panel.setQuery(queryHistoryData.query);
+
         this.proxy.url = queryHistoryData.url;
         var start = 0;
         var limit = this.loStore.pageSize;
