@@ -49,7 +49,9 @@
         searchManager.setRequestSimpleSearch( textQuery ); 
     },
     setQuery: function(query) {
-        this.searchQueryField.setValue( query == null ? '' : query[0].value );
-    } 
+        this.searchQueryField.setValue('');
+        if (query != null && query[0].key != "uri")
+            this.searchQueryField.setValue( query[0].value );
+    }
 } );
 
