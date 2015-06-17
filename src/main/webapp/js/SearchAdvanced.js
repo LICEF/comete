@@ -158,6 +158,7 @@ Ext.define( 'Comete.AdvancedSearch', {
             advSearchQueryButton: this.advSearchQueryButton
         } );
         if (!newCond.isFirst) {
+            this.firstCond.removeSpace.setVisible(true);
             this.firstCond.removeButton.setVisible(true);
             newCond.firstAnd.setVisible(false);
             this.firstCond.firstAnd.setWidth(40);
@@ -169,7 +170,7 @@ Ext.define( 'Comete.AdvancedSearch', {
     },
     addQueryCond: function(cond) {
         this.condPanel.add(cond); 
-        //this.updateElementsWidth();
+        this.updateElementsWidth();
         var elems = this.condPanel.items.length;
         setAdvancedSearchPanelHeight(Math.max(22*elems + 5*(elems - 1) + 125, ADVANCED_HEIGHT));
     },
@@ -195,6 +196,7 @@ Ext.define( 'Comete.AdvancedSearch', {
         }
         this.firstCond.andOr.setVisible(false);
         this.firstCond.andOr.setValue("AND");
+        this.firstCond.removeSpace.setVisible(elems > 1);
         this.firstCond.removeButton.setVisible(elems > 1);
         this.firstCond.firstAnd.setVisible(true); 
         if (elems == 1)
@@ -496,7 +498,7 @@ Ext.define( 'Comete.QueryCondition', {
             img: 'images/trash.png',
             width: 16,
             height: 16,
-            margin: '3 10 0 0',
+            margin: '3 0 0 0',
             handler: this.remove,
             scope: this,
             hidden: this.isFirst,
@@ -538,10 +540,10 @@ Ext.define( 'Comete.QueryCondition', {
  
         cfg = {
             margin: '0 0 5 0',
-            items: [ this.removeButton, this.firstAnd,
+            items: [ this.firstAnd,
                      this.andOr, this.andOrSpace, 
                      this.typeCond, { xtype: 'tbspacer', width: 5 },
-                     this.typeCondPanel
+                     this.typeCondPanel, { xtype: 'tbfill' }, this.removeSpace, this.removeButton
                    ]
         };
         Ext.apply(this, cfg);
@@ -570,6 +572,9 @@ Ext.define( 'Comete.QueryCondition', {
         }
 
         this.currentType = type;
+
+        this.setWidth(null);
+        this.topPane.updateElementsWidth();
     },
     makeCond: function(type) {
         if (type == 'title' || type == 'description')
@@ -845,6 +850,9 @@ Ext.define( 'Comete.QueryCondition', {
         var labelIdentity = this.typeCondPanel.getComponent(0).getComponent(2).getComponent(0);
         labelIdentity.addCls('queryCondData'),
         labelIdentity.setText(label);
+
+        this.setWidth(null);
+        this.topPane.updateElementsWidth(); 
     },
     pickVocConcept: function() { 
         var vocConceptPicker = Ext.create('Comete.VocConceptPicker', {
@@ -860,7 +868,10 @@ Ext.define( 'Comete.QueryCondition', {
         conceptPanel.getComponent(2).setText(vocLabel);
         conceptPanel.getComponent(3).setVisible(true);
         conceptPanel.getComponent(4).setText(conceptLabel);
-        conceptPanel.getComponent(6).setVisible(!isLeaf);
+        //conceptPanel.getComponent(6).setVisible(!isLeaf);  //for Ceres always checked and hidden -AM
+
+        this.setWidth(null);
+        this.topPane.updateElementsWidth(); 
     },
     getCondition: function() {
         var lang = null;

@@ -199,7 +199,7 @@
                 if (this.currentVocConceptUri) {
                     if (this.cbEquivalence.getValue() && this.equivalence.getValue().length == 0)
                         return;
-                    this.redoRequest();           
+                    this.redoRequest();
                 }       
             }, this );
 
@@ -225,6 +225,8 @@
                  '<span style="vertical-align: top">{label}</span></div></tpl></div>'
         } );
 
+        this.equivalence.store.on( 'load', this.manageVocsForEquivalence, this );
+
         this.cbId = Ext.create('Ext.form.field.Checkbox', {
             boxLabel: tr('Show category IDs'),
             style: 'color: #04408C',
@@ -234,20 +236,9 @@
         this.cbSubconcepts.on( 'change', 
             function() {
                 if (this.currentVocConceptUri)
-                    this.setRequestVocConcept(this.currentVocConceptUri);                   
-            }, this );
-
-        this.cbEquivalence.on( 'change', 
-            function() {
-                this.equivalence.setVisible(this.cbEquivalence.getValue());   
-                if (this.currentVocConceptUri) {
-                    if (this.cbEquivalence.getValue() && this.equivalence.getValue().length == 0)
-                        return;
                     this.setRequestVocConcept(this.currentVocConceptUri);
-                }       
             }, this );
 
-        this.equivalence.store.on( 'load', this.manageVocsForEquivalence, this );
 
         this.cbId.on( 'change', 
             function(cb, value) {
