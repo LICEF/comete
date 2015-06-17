@@ -436,18 +436,19 @@
         }
     },
     adjustWidth: function(elementsWidth) {
-        var maxWidth = CARDPANEL_WIDTH + 24;
-        maxWidth = Math.max(CARDPANEL_WIDTH + 24, elementsWidth + 25);
+        var width = CARDPANEL_WIDTH + 24;
+        width = Math.max(CARDPANEL_WIDTH + 24, elementsWidth + 25);
+        width = Math.min(width, 900);
         
-        if (this.breadcrumb.getWidth() != maxWidth) {
-            this.breadcrumb.setWidth(maxWidth);
+        if (this.breadcrumb.getWidth() != width) {
+            this.breadcrumb.setWidth(width);
 
-            this.conceptSearchCombo.setWidth(maxWidth);
-            this.vocabularyCombo.setWidth(maxWidth);
+            this.conceptSearchCombo.setWidth(width);
+            this.vocabularyCombo.setWidth(width);
 
             //top and bottom menubar
-            this.getComponent(0).setWidth(maxWidth);
-            this.getComponent(5).setWidth(maxWidth);
+            this.getComponent(0).setWidth(width);
+            this.getComponent(5).setWidth(width);
         }
         
     }
