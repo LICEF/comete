@@ -1,5 +1,6 @@
 ﻿function addCondition() {
     var asp = Ext.getCmp('advancedSearchPanel');
+    asp.needWidthUpdate = true;
     asp.addQueryCond(asp.createQueryCond( false ));
 }
 
@@ -158,7 +159,7 @@ Ext.define( 'Comete.AdvancedSearch', {
             advSearchQueryButton: this.advSearchQueryButton
         } );
         if (!newCond.isFirst) {
-            this.firstCond.removeSpace.setVisible(true);
+            this.firstCond.endSpace.setWidth(8);
             this.firstCond.removeButton.setVisible(true);
             newCond.firstAnd.setVisible(false);
             this.firstCond.firstAnd.setWidth(40);
@@ -196,7 +197,7 @@ Ext.define( 'Comete.AdvancedSearch', {
         }
         this.firstCond.andOr.setVisible(false);
         this.firstCond.andOr.setValue("AND");
-        this.firstCond.removeSpace.setVisible(elems > 1);
+        this.firstCond.endSpace.setWidth(elems > 1?8:24);
         this.firstCond.removeButton.setVisible(elems > 1);
         this.firstCond.firstAnd.setVisible(true); 
         if (elems == 1)
@@ -210,12 +211,12 @@ Ext.define( 'Comete.AdvancedSearch', {
         setAdvancedSearchPanelHeight(Math.max(22*elems + 5*(elems - 1) + 125, ADVANCED_HEIGHT));        
     },
     updateElementsWidth: function(resetAll) {
-        if (!this.needWidthUpdate)
+       if (!this.needWidthUpdate)
             return;
 
         var maxWidth = CARDPANEL_WIDTH;
         for (i = 0; i < this.condPanel.items.length; i++) {
-            var cond = this.condPanel.getComponent(i); 
+            var cond = this.condPanel.getComponent(i);
             if (resetAll || i == 0)
                 cond.setWidth(null);
             maxWidth = Math.max(maxWidth, cond.getWidth());
@@ -338,7 +339,7 @@ Ext.define( 'Comete.AdvancedSearch', {
         if (queryConds.length == 0)
             queryConds[0] = this.createQueryCond(true);
         this.needWidthUpdate = true;
-        this.clear();    
+        this.clear();
         this.addQueryCond(queryConds);
     },
     redoRequest: function() {
@@ -505,9 +506,8 @@ Ext.define( 'Comete.QueryCondition', {
             tooltip: tr('Remove condition')
         } );
 
-        this.removeSpace = Ext.create('Ext.toolbar.Spacer', {
-            width: 10,
-            hidden: this.isFirst
+        this.endSpace = Ext.create('Ext.toolbar.Spacer', {
+            width: this.isFirst?24:8
         });
 
         this.firstAnd = Ext.create('Ext.form.Label', { 
@@ -543,7 +543,7 @@ Ext.define( 'Comete.QueryCondition', {
             items: [ this.firstAnd,
                      this.andOr, this.andOrSpace, 
                      this.typeCond, { xtype: 'tbspacer', width: 5 },
-                     this.typeCondPanel, { xtype: 'tbfill' }, this.removeSpace, this.removeButton
+                     this.typeCondPanel, { xtype: 'tbfill' }, this.endSpace, this.removeButton
                    ]
         };
         Ext.apply(this, cfg);
@@ -573,8 +573,8 @@ Ext.define( 'Comete.QueryCondition', {
 
         this.currentType = type;
 
-        this.setWidth(null);
-        this.topPane.updateElementsWidth();
+        this.needWidthUpdate = true;
+        this.topPane.updateElementsWidth(true);
     },
     makeCond: function(type) {
         if (type == 'title' || type == 'description')

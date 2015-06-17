@@ -60,12 +60,16 @@ function displayQuery(queryItem, query) {
             panel = searchManager.collectionSearchPanel;
             height = COLLECTION_HEIGHT; break;
     };
-    panel.setQuery(query);
+
+    if (query != null) 
+        panel.setQuery(query);
 
     if (queryItem == 1) //setQuery change it
         height = currentAdvancedHeight; 
     if (window.currentSearchQueryItem != queryItem)
         changeCardItem(queryItem, elem, height);
+
+    return panel;
 }
 
 Ext.define( 'Comete.SearchManager', {
@@ -220,7 +224,9 @@ Ext.define( 'Comete.SearchManager', {
             i = 2;
         }
         query[i] = { key: "contrib", value: contribId, label: label };
-        displayQuery(1, query);
+        //splitted call to have adv panel painted once before width update
+        var advPanel = displayQuery(1); 
+        advPanel.setQuery(query);
         this.setRequest( query );
     },
     setRequestOrganization: function( orgId, label ) {
@@ -232,7 +238,9 @@ Ext.define( 'Comete.SearchManager', {
             i = 2;
         }
         query[i] = { key: "org", value: orgId, label: label };
-        displayQuery(1, query);
+        //splitted call to have adv panel painted once before width update
+        var advPanel = displayQuery(1);
+        advPanel.setQuery(query);
         this.setRequest( query );
     },
     setRequestVocConcept: function( conceptUri ) {
@@ -267,7 +275,9 @@ Ext.define( 'Comete.SearchManager', {
             i = 2;
         }
         query[i] = { key: "keyword", value: keyword };
-        displayQuery(1, query);
+        //splitted call to have adv panel painted once before width update
+        var advPanel = displayQuery(1); 
+        advPanel.setQuery(query);
         this.setRequest( query );
     },
     redoRequest: function( textQuery ) {

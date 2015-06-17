@@ -3,7 +3,7 @@
     layout: 'border',  
     initComponent: function( config ) {
 
-        this.simpleButton = Ext.create('Ext.Component', {            
+        this.simpleButton = Ext.create('Ext.Component', {
             html: '<div class="whiteLink"><a href="javascript:changeCardItem(0);">' + tr( 'Quick Search' ) + '</a></div>'
         } );
 
