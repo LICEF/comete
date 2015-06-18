@@ -17,6 +17,7 @@ import com.rometools.modules.opensearch.entity.OSQuery;
 import com.rometools.modules.opensearch.impl.OpenSearchModuleImpl;
 import com.rometools.rome.feed.synd.*;
 import com.rometools.rome.io.impl.DateParser;
+import licef.CommonNamespaceContext;
 import licef.StringUtil;
 import licef.tsapi.model.Triple;
 import licef.tsapi.vocabulary.DCTERMS;
@@ -129,6 +130,15 @@ public class FeedUtil {
 
                 Triple[] tripleArray = Core.getInstance().getDefaultView().getTriples( uri, "false", false, true ); 
 
+                Set linkingPredicates = new HashSet();
+                try {
+                    String[] linkingPredicatesArray = Vocabulary.getInstance().getAllConceptLinkingPredicates();
+                    linkingPredicates = new HashSet( Arrays.asList( linkingPredicatesArray ) );
+                }
+                catch( Exception e ) {
+                    e.printStackTrace();
+                }
+
                 ArrayList<Triple> triples = new ArrayList<Triple>(Arrays.asList( tripleArray ));
                 Map labels = extractLabels( triples );
                 Map emails = buildEmailTable( triples );
@@ -171,14 +181,30 @@ public class FeedUtil {
                         publisher += " " + email + "[" + identityUri + "]";
                         publishers.add( publisher );
                     }
-                    else if( DCTERMS.subject.getURI().equals( triple.getPredicate() ) ) {
+                    else if( linkingPredicates.contains( triple.getPredicate() ) ) {
+                        String lpNsUri = CommonNamespaceContext.getInstance().getNamespaceURIFromUri( triple.getPredicate() );
+                        String lpElementName = triple.getPredicate().substring( lpNsUri.length() );
+                        String lpNsPrefix = CommonNamespaceContext.getInstance().getPrefix( lpNsUri );
+
                         String subjectUri = triple.getObject();
                         int indexOfLastSlash = subjectUri.lastIndexOf( "/" );
                         String taxonomyUri = subjectUri.substring( 0, indexOfLastSlash );
                         String value = subjectUri.substring( indexOfLastSlash + 1 );
-                        String label = Vocabulary.getInstance().getLabel( subjectUri, lang ); 
+                        String label = null;
+                        try {
+                            label = Vocabulary.getInstance().getLabel( subjectUri, lang ); 
+                        }
+                        catch( Exception e ) {
+                            // Leave the label empty.
+                        }
 
                         DCSubject subject = new DCSubjectImpl();
+                        if( lpElementName != null )
+                            subject.setTopElementName( lpElementName );
+                        if( lpNsUri != null )
+                            subject.setTopElementNamespaceUri( lpNsUri );
+                        if( lpNsPrefix != null )
+                            subject.setTopElementNamespacePrefix( lpNsPrefix );
                         subject.setTaxonomyUri( taxonomyUri );
                         LangString langString = new LangStringImpl();
                         langString.setString( label );

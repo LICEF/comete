@@ -109,7 +109,8 @@ public class Vocabulary {
 
     public String[] getAllConceptLinkingPredicates() throws Exception {
         String query = CoreUtil.getQuery("vocabulary/getAllVocConceptLinkingPredicates.sparql");
-        Tuple[] tuples = getTripleStore().sparqlSelect(query);
+        Invoker inv = new Invoker( getTripleStore(), "licef.tsapi.TripleStore", "sparqlSelect", new Object[] { query } );
+        Tuple[] tuples = (Tuple[])getTripleStore().transactionalCall( inv );
         String[] res = new  String[ tuples.length ];
         for( int i = 0; i < tuples.length; i++ )
             res[ i ] = tuples[ i ].getValue( "p" ).getContent();
