@@ -9,7 +9,6 @@ PREFIX comete: <http://comete.licef.ca/reference#>
 SELECT DISTINCT ?s ?location ?format ?added ?updated
 {0}
 WHERE '{'
-{1}
     ?s rdf:type comete:LearningObject .
     OPTIONAL '{'
         ?s foaf:page ?location
@@ -23,6 +22,7 @@ WHERE '{'
     OPTIONAL '{'
         ?s comete:updated ?updated
     '}'
+{1}
 {2}
 '}'
 ORDER BY DESC({3})
