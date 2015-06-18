@@ -5,6 +5,7 @@ import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.ResultSet;
 import ca.licef.comete.queryengine.ResultEntry;
 import ca.licef.comete.vocabularies.COMETE;
+import ca.licef.comete.vocabulary.Vocabulary;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.rometools.rome.feed.module.comete.*;
@@ -175,17 +176,18 @@ public class FeedUtil {
                         int indexOfLastSlash = subjectUri.lastIndexOf( "/" );
                         String taxonomyUri = subjectUri.substring( 0, indexOfLastSlash );
                         String value = subjectUri.substring( indexOfLastSlash + 1 );
+                        String label = Vocabulary.getInstance().getLabel( subjectUri, lang ); 
 
                         DCSubject subject = new DCSubjectImpl();
                         subject.setTaxonomyUri( taxonomyUri );
                         LangString langString = new LangStringImpl();
-                        langString.setString( value );
+                        langString.setString( label );
                         subject.setValue( langString );
                         subjects.add( subject );
                         
                         SyndCategory category = new SyndCategoryImpl();
                         category.setTaxonomyUri( taxonomyUri );
-                        category.setName( value );
+                        category.setName( label );
                         categories.add( category );
                     }
                     else if( COMETE.extraInfo.getURI().equals( triple.getPredicate() ) ) {
