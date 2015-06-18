@@ -187,9 +187,7 @@ public class FeedUtil {
                         String lpNsPrefix = CommonNamespaceContext.getInstance().getPrefix( lpNsUri );
 
                         String subjectUri = triple.getObject();
-                        int indexOfLastSlash = subjectUri.lastIndexOf( "/" );
-                        String taxonomyUri = subjectUri.substring( 0, indexOfLastSlash );
-                        String value = subjectUri.substring( indexOfLastSlash + 1 );
+                        String taxonomyUri = Vocabulary.getInstance().getConceptScheme( subjectUri );
                         String label = null;
                         try {
                             label = Vocabulary.getInstance().getLabel( subjectUri, lang ); 
@@ -199,6 +197,7 @@ public class FeedUtil {
                         }
 
                         DCSubject subject = new DCSubjectImpl();
+                        subject.setIdentifier( subjectUri );
                         if( lpElementName != null )
                             subject.setTopElementName( lpElementName );
                         if( lpNsUri != null )
