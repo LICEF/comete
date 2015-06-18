@@ -118,6 +118,9 @@ public class COMETE {
     public static final DatatypeProperty vocAlias = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#vocAlias" );
 
     /** <p>to be completed</p> */
+    public static final DatatypeProperty vocConceptUriIdSeparator = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#vocConceptIdSeparator" );
+
+    /** <p>to be completed</p> */
     public static final DatatypeProperty vocConceptUriPrefix = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#vocConceptUriPrefix" );
 
     /** <p>to be completed</p> */

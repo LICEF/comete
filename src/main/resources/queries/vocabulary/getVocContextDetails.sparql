@@ -1,7 +1,7 @@
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX comete: <http://comete.licef.ca/reference#>
 
-SELECT ?vocId ?vocUri ?location ?navigable ?predicate ?prefix ?suffix
+SELECT ?vocId ?vocUri ?location ?navigable ?predicate ?separator ?prefix ?suffix
 WHERE '{'
     <{0}> rdf:type comete:VocContext .
     <{0}> comete:vocId ?vocId .
@@ -9,6 +9,7 @@ WHERE '{'
     <{0}> comete:vocSourceLocation ?location .
     <{0}> comete:vocNavigable ?navigable .
     <{0}> comete:vocConceptLinkingPredicate ?predicate .
+    <{0}> comete:vocConceptIdSeparator ?separator .
     OPTIONAL '{'
         <{0}> comete:vocConceptUriPrefix ?prefix
     '}'

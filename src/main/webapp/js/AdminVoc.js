@@ -95,6 +95,7 @@
             items: [ { fieldLabel: 'ID', editable: false }, 
                      { fieldLabel: 'URI', editable: false},
                      { fieldLabel: tr('Source Location'), editable: false },
+                     { fieldLabel: tr('Concept URI ID separator'), editable: false },
                      { fieldLabel: tr('Concept URI prefix'), editable: false },
                      { fieldLabel: tr('Concept URI suffix'), editable: false },
                      { fieldLabel: tr('Linking predicate'), editable: false },
@@ -214,8 +215,9 @@
                     this.detailsPanel.getComponent(2).setValue(jsonDetails.location);
                     this.detailsPanel.getComponent(3).setValue(jsonDetails.uriPrefix);
                     this.detailsPanel.getComponent(4).setValue(jsonDetails.uriSuffix);
-                    this.detailsPanel.getComponent(5).setValue(jsonDetails.linkingPredicate);
-                    this.detailsPanel.getComponent(6).setValue(jsonDetails.navigable);
+                    this.detailsPanel.getComponent(5).setValue(jsonDetails.uriIdSeparator);
+                    this.detailsPanel.getComponent(6).setValue(jsonDetails.linkingPredicate);
+                    this.detailsPanel.getComponent(7).setValue(jsonDetails.navigable);
                     this.initDisplay = false;
                 },
                 scope: this 
@@ -236,6 +238,7 @@
             this.detailsPanel.getComponent(4).setValue("");
             this.detailsPanel.getComponent(5).setValue("");
             this.detailsPanel.getComponent(6).setValue("");
+            this.detailsPanel.getComponent(7).setValue("");
             this.vocAliasStore.removeAll();
             //buttons
             this.modifyButton.setDisabled(true);     
@@ -246,7 +249,7 @@
     addVocabulary: function() {
         var editor = Ext.create('Comete.AdminVocEditor', {
             width: 500,
-            height: 270,
+            height: 300,
             modal: true,
             listener: this
         });
@@ -289,17 +292,17 @@
                 this.modifyVocabularyStep3(jsonDetails)
             },
             scope: this 
-        } );      
+        } );
     },
     modifyVocabularyStep3: function(values) {
         var editor = Ext.create('Comete.AdminVocEditor', {
             width: 500,
-            height: 270,
+            height: 300,
             modal: true,
             mode: 'modify',
             restUrl: this.currentVocContextRestUrl,
             values: values,
-            listener: this            
+            listener: this
         });
         editor.show();
     },
@@ -389,7 +392,7 @@
 
 Ext.define( 'Comete.AdminVocEditor', {
     extend: 'Ext.window.Window',
-    layout: 'fit',           
+    layout: 'fit',
     initComponent: function( config ) {
         this.urlLocation = Ext.create('Ext.form.TextField', {
             name: 'url',
@@ -420,6 +423,7 @@ Ext.define( 'Comete.AdminVocEditor', {
             items: [ { name: 'id', fieldLabel: 'ID', editable: this.mode != 'modify' },
                      this.urlLocation, 
                      this.fileLocation, 
+                     { name: 'uriIdSeparator', fieldLabel: tr('Concept URI ID separator'), emptyText: tr('Optional field') },
                      { name: 'uriPrefix', fieldLabel: tr('Concept URI prefix'), emptyText: tr('Optional field') },
                      { name: 'uriSuffix', fieldLabel: tr('Concept URI suffix'), emptyText: tr('Optional field') },
                      { name: 'linkingPredicate', fieldLabel: tr('Linking predicate'), emptyText: tr('Optional field') } ]
@@ -430,7 +434,7 @@ Ext.define( 'Comete.AdminVocEditor', {
             title: (this.mode == 'modify')?tr('Modify vocabulary'):tr('Add vocabulary'),
             buttons: [ {text:'OK', handler: this.ok, scope: this}, {text:tr('Cancel'), handler: this.close, scope: this}],
             items: [ { border: false, items: this.formPanel } ]
-                     
+
         };
         Ext.apply(this, cfg);
         this.callParent(arguments); 
@@ -439,22 +443,22 @@ Ext.define( 'Comete.AdminVocEditor', {
            this.setValues();
     },
     ok: function() {
-        var waitDialog = Ext.create('Ext.window.MessageBox', {       
+        var waitDialog = Ext.create('Ext.window.MessageBox', {
         });
         waitDialog.wait( tr('Please wait') + '...' );
         this.formPanel.submit({
             url: ((this.mode == 'modify')?this.restUrl:'rest/vocContexts'),
             method: 'POST',
             success: function(form, action) {
-                this.close();     
+                this.close();
                 waitDialog.close();
                 if (this.mode == 'modify') 
-                    this.listener.afterModify();          
+                    this.listener.afterModify();
                 else
                     this.listener.afterAdd();
             },
             failure: function(form, action) { 
-                Ext.Msg.alert('Failure', action.result.error);            
+                Ext.Msg.alert('Failure', action.result.error);
                 waitDialog.close();   
             },
             submitEmptyText: false,
@@ -468,10 +472,10 @@ Ext.define( 'Comete.AdminVocEditor', {
             this.urlLocation.setValue(initLocation);
         else
             this.fileLocation.emptyText = initLocation;
-        this.formPanel.getComponent(3).setValue(this.values.uriPrefix);
-        this.formPanel.getComponent(3).setValue(this.values.uriPrefix);
-        this.formPanel.getComponent(4).setValue(this.values.uriSuffix);
-        this.formPanel.getComponent(5).setValue(this.values.linkingPredicate);
+        this.formPanel.getComponent(3).setValue(this.values.uriIdSeparator);
+        this.formPanel.getComponent(4).setValue(this.values.uriPrefix);
+        this.formPanel.getComponent(5).setValue(this.values.uriSuffix);
+        this.formPanel.getComponent(6).setValue(this.values.linkingPredicate);
     }        
 });
 
