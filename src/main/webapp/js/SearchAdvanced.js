@@ -614,7 +614,7 @@ Ext.define( 'Comete.QueryCondition', {
         var panel = Ext.create('Ext.panel.Panel', {
             layout: 'hbox',
             border: false,
-            items: { xtype: 'textfield', width: 243 }
+            items: { xtype: 'textfield', width: 220 }
         });
         return panel;
     },    
@@ -639,7 +639,7 @@ Ext.define( 'Comete.QueryCondition', {
             displayField: 'keyword',
             valueField: 'keyword',
             store: keywordStore,
-            width: 243,
+            width: 220,
             hideTrigger: true,
             queryParam: 'value',
             listConfig: {
@@ -809,7 +809,7 @@ Ext.define( 'Comete.QueryCondition', {
             displayField: 'label',
             store: this.repositoryStore,
             editable: false,
-            width: 200,
+            width: 220,
             tpl: '<div><tpl for="."><div class="x-boundlist-item">{label}</div></tpl></div>'
         });
 
