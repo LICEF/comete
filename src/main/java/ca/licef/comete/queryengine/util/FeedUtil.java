@@ -5,6 +5,7 @@ import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.ResultSet;
 import ca.licef.comete.queryengine.ResultEntry;
 import ca.licef.comete.vocabularies.COMETE;
+import ca.licef.comete.vocabulary.Vocabulary;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.rometools.rome.feed.module.comete.*;
@@ -16,6 +17,7 @@ import com.rometools.modules.opensearch.entity.OSQuery;
 import com.rometools.modules.opensearch.impl.OpenSearchModuleImpl;
 import com.rometools.rome.feed.synd.*;
 import com.rometools.rome.io.impl.DateParser;
+import licef.CommonNamespaceContext;
 import licef.StringUtil;
 import licef.tsapi.model.Triple;
 import licef.tsapi.vocabulary.DCTERMS;
@@ -128,6 +130,15 @@ public class FeedUtil {
 
                 Triple[] tripleArray = Core.getInstance().getDefaultView().getTriples( uri, "false", false, true ); 
 
+                Set linkingPredicates = new HashSet();
+                try {
+                    String[] linkingPredicatesArray = Vocabulary.getInstance().getAllConceptLinkingPredicates();
+                    linkingPredicates = new HashSet( Arrays.asList( linkingPredicatesArray ) );
+                }
+                catch( Exception e ) {
+                    e.printStackTrace();
+                }
+
                 ArrayList<Triple> triples = new ArrayList<Triple>(Arrays.asList( tripleArray ));
                 Map labels = extractLabels( triples );
                 Map emails = buildEmailTable( triples );
@@ -170,22 +181,38 @@ public class FeedUtil {
                         publisher += " " + email + "[" + identityUri + "]";
                         publishers.add( publisher );
                     }
-                    else if( DCTERMS.subject.getURI().equals( triple.getPredicate() ) ) {
+                    else if( linkingPredicates.contains( triple.getPredicate() ) ) {
+                        String lpNsUri = CommonNamespaceContext.getInstance().getNamespaceURIFromUri( triple.getPredicate() );
+                        String lpElementName = triple.getPredicate().substring( lpNsUri.length() );
+                        String lpNsPrefix = CommonNamespaceContext.getInstance().getPrefix( lpNsUri );
+
                         String subjectUri = triple.getObject();
-                        int indexOfLastSlash = subjectUri.lastIndexOf( "/" );
-                        String taxonomyUri = subjectUri.substring( 0, indexOfLastSlash );
-                        String value = subjectUri.substring( indexOfLastSlash + 1 );
+                        String taxonomyUri = Vocabulary.getInstance().getConceptScheme( subjectUri );
+                        String label = null;
+                        try {
+                            label = Vocabulary.getInstance().getLabel( subjectUri, lang ); 
+                        }
+                        catch( Exception e ) {
+                            // Leave the label empty.
+                        }
 
                         DCSubject subject = new DCSubjectImpl();
+                        subject.setIdentifier( subjectUri );
+                        if( lpElementName != null )
+                            subject.setTopElementName( lpElementName );
+                        if( lpNsUri != null )
+                            subject.setTopElementNamespaceUri( lpNsUri );
+                        if( lpNsPrefix != null )
+                            subject.setTopElementNamespacePrefix( lpNsPrefix );
                         subject.setTaxonomyUri( taxonomyUri );
                         LangString langString = new LangStringImpl();
-                        langString.setString( value );
+                        langString.setString( label );
                         subject.setValue( langString );
                         subjects.add( subject );
                         
                         SyndCategory category = new SyndCategoryImpl();
                         category.setTaxonomyUri( taxonomyUri );
-                        category.setName( value );
+                        category.setName( label );
                         categories.add( category );
                     }
                     else if( COMETE.extraInfo.getURI().equals( triple.getPredicate() ) ) {

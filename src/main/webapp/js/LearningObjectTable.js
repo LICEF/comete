@@ -172,7 +172,6 @@
         };
 
         this.renderForcedDiffusion = function( value, metaData, lo ) {
-            console.log( 'forcedDiffValue='+value);
             return( value ? Ext.String.format( '<img src="images/flag-forcedDiffusion.png" title="{0}" alt="{0}" height="20"/>', tr( 'Forced Diffusion' ) ) : '' );
         };
 
