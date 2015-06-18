@@ -165,6 +165,6 @@
         this.goForwardQueryButton.getEl().setOpacity(1)
         this.goBackwardQueryButton.setDisabled(isBackwardButtonDisabled);
         this.goForwardQueryButton.setDisabled(isForwardButtonDisabled);
-    } 
+    }
 } );
 

@@ -56,7 +56,7 @@ public class Vocabulary {
         return CoreUtil.getRestUrl(SKOS.ConceptScheme) + "/" + URLEncoder.encode(uri);
     }
 
-    public String getConcept(String id, String concept) throws Exception {
+    public String getConceptOld(String id, String concept) throws Exception {
         concept = concept.replaceAll(" ", "%20");
         concept = concept.replaceAll( "/", "%2F" );
         String uri = null;
@@ -88,6 +88,31 @@ public class Vocabulary {
         return uri;
     }
 
+    public String getConcept(String id, String concept) throws Exception {
+        concept = concept.replaceAll(" ", "%20");
+        concept = concept.replaceAll( "/", "%2F" );
+        String uri = null;
+        String vocUri = getVocabularyUri(id);
+
+        if (vocUri != null && Util.isGraphExists(vocUri)) {
+            String vocCtxt = getTripleStore().getTriplesWithPredicateObject(
+                    COMETE.vocUri, vocUri, null)[0].getSubject();
+
+            Triple[] sep = getTripleStore().getTriplesWithSubjectPredicate(vocCtxt, COMETE.vocConceptUriIdSeparator);
+            Triple[] pref = getTripleStore().getTriplesWithSubjectPredicate(vocCtxt, COMETE.vocConceptUriPrefix);
+            Triple[] suf = getTripleStore().getTriplesWithSubjectPredicate(vocCtxt, COMETE.vocConceptUriSuffix);
+
+            if (pref.length != 0)
+                uri = pref[0].getObject() + concept;
+            else
+                uri = vocUri + sep[0].getObject() + concept;
+
+            if (suf.length != 0)
+                uri += suf[0].getObject();
+        }
+        return uri;
+    }
+
     public String getVocabularyUri(String id) throws Exception {
         String uri = null;
         String query = CoreUtil.getQuery("vocabulary/getVocUri.sparql", ( id.startsWith( "http://" ) ? id : "http://dummy" ), id);
@@ -109,7 +134,8 @@ public class Vocabulary {
 
     public String[] getAllConceptLinkingPredicates() throws Exception {
         String query = CoreUtil.getQuery("vocabulary/getAllVocConceptLinkingPredicates.sparql");
-        Tuple[] tuples = getTripleStore().sparqlSelect(query);
+        Invoker inv = new Invoker( getTripleStore(), "licef.tsapi.TripleStore", "sparqlSelect", new Object[] { query } );
+        Tuple[] tuples = (Tuple[])getTripleStore().transactionalCall( inv );
         String[] res = new  String[ tuples.length ];
         for( int i = 0; i < tuples.length; i++ )
             res[ i ] = tuples[ i ].getValue( "p" ).getContent();
@@ -232,18 +258,18 @@ public class Vocabulary {
         return (boolean)getTripleStore().transactionalCall(inv);
     }
 
-    public String addNewVocContext(String id, String uriPrefix, String uriSuffix, String linkingPredicate,
+    public String addNewVocContext(String id, String uriIdSeparator, String uriPrefix, String uriSuffix, String linkingPredicate,
                                    String url, String fileName, InputStream uploadedInputStream) throws Exception {
         Invoker inv = new Invoker(getVocabularyManager(), "ca.licef.comete.vocabulary.VocabularyManager",
-                "addNewVocContext", new Object[]{id, uriPrefix, uriSuffix, linkingPredicate,
+                "addNewVocContext", new Object[]{id, uriIdSeparator, uriPrefix, uriSuffix, linkingPredicate,
                                               url, fileName, uploadedInputStream});
         return (String)getTripleStore().transactionalCall(inv, TripleStore.WRITE_MODE);
     }
 
-    public String modifyVocabularyContent(String id, String uriPrefix, String uriSuffix, String linkingPredicate,
+    public String modifyVocabularyContent(String id, String uriIdSeparator, String uriPrefix, String uriSuffix, String linkingPredicate,
                                           String url, String fileName, InputStream uploadedInputStream) throws Exception {
         Invoker inv = new Invoker(getVocabularyManager(), "ca.licef.comete.vocabulary.VocabularyManager",
-                "modifyVocContext", new Object[]{id, uriPrefix, uriSuffix, linkingPredicate,
+                "modifyVocContext", new Object[]{id, uriIdSeparator, uriPrefix, uriSuffix, linkingPredicate,
                                                      url, fileName, uploadedInputStream});
         return (String)getTripleStore().transactionalCall(inv, TripleStore.WRITE_MODE);
     }

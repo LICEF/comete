@@ -390,7 +390,7 @@ a:hover {
 
 .x-btn-default-toolbar-small .x-btn-inner {
     font-size: 14px;
-    display: inline;
+    display: table-inline;
 }
 
 .x-boundlist-item img.chkCombo {

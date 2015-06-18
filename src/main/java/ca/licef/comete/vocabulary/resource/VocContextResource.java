@@ -75,6 +75,7 @@ public class VocContextResource {
     @Produces( MediaType.TEXT_HTML ) //!important for ExtJS see Ext.form.Basic.hasUpload() description -AM
     public Response addNewVocContext(@Context HttpServletRequest request,
                                   @FormDataParam("id") String id,
+                                  @FormDataParam("uriIdSeparator") String uriIdSeparator,
                                   @FormDataParam("uriPrefix") String uriPrefix,
                                   @FormDataParam("uriSuffix") String uriSuffix,
                                   @FormDataParam("linkingPredicate") String linkingPredicate,
@@ -91,7 +92,7 @@ public class VocContextResource {
         id = id.replaceAll( "[^a-zA-Z0-9]", "_" );
 
         String errorMessage = Vocabulary.getInstance().addNewVocContext(
-                id, uriPrefix, uriSuffix, linkingPredicate, url, fileDetail.getFileName(), uploadedInputStream);
+                id, uriIdSeparator, uriPrefix, uriSuffix, linkingPredicate, url, fileDetail.getFileName(), uploadedInputStream);
         StringWriter out = new StringWriter();
         try {
             JSONWriter json = new JSONWriter( out ).object();
@@ -120,6 +121,7 @@ public class VocContextResource {
     @Produces( MediaType.TEXT_HTML ) //!important for ExtJS see Ext.form.Basic.hasUpload() description -AM
     public Response modifyVocContextAndContent(@Context HttpServletRequest request,
                                      @PathParam( "id" ) String id,
+                                     @FormDataParam("uriIdSeparator") String uriIdSeparator,
                                      @FormDataParam("uriPrefix") String uriPrefix,
                                      @FormDataParam("uriSuffix") String uriSuffix,
                                      @FormDataParam("linkingPredicate") String linkingPredicate,
@@ -130,7 +132,7 @@ public class VocContextResource {
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to modify vocabulary.").build();
 
         String errorMessage = Vocabulary.getInstance().modifyVocabularyContent(
-                id, uriPrefix, uriSuffix, linkingPredicate, url, fileDetail.getFileName(), uploadedInputStream);
+                id, uriIdSeparator, uriPrefix, uriSuffix, linkingPredicate, url, fileDetail.getFileName(), uploadedInputStream);
         StringWriter out = new StringWriter();
         try {
             JSONWriter json = new JSONWriter( out ).object();
@@ -184,6 +186,10 @@ public class VocContextResource {
             json.key( "location" ).value( location);
             json.key( "navigable" ).value( details[0].getValue("navigable").getContent() );
             json.key( "linkingPredicate" ).value( details[0].getValue("predicate").getContent() );
+            String separator = details[0].getValue("separator").getContent();
+            if ("".equals(separator))
+                separator = "/";
+            json.key( "uriIdSeparator" ).value( separator );
             String pref = details[0].getValue("prefix").getContent();
             if (!"".equals(pref))
                 json.key( "uriPrefix" ).value( pref);
