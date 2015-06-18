@@ -100,6 +100,15 @@ Array.prototype.indexOf = function(obj, start) {
      return -1;
 }
 
+function encodeUtf8( str ) {
+    return( unescape( encodeURIComponent( str ) ) );
+}
+
+function decodeUtf8( str ) {
+    return( decodeURIComponent( escape( str ) ) );
+}
+
+
 function showIdentity( windowId, url, left, top, width, height ) {
     IdentityDetailsWindow.init( windowId, url, left, top, width, height );
 }

@@ -52,6 +52,7 @@
         this.searchQueryField.setValue('');
         if (query != null && query[0].key != "uri")
             this.searchQueryField.setValue( query[0].value );
-    }
+
+    } 
 } );
 
