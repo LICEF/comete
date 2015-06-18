@@ -104,9 +104,9 @@ public class Vocabulary {
 
             if (pref.length != 0)
                 uri = pref[0].getObject() + concept;
-            else {
+            else
                 uri = vocUri + sep[0].getObject() + concept;
-            }
+
             if (suf.length != 0)
                 uri += suf[0].getObject();
         }

@@ -199,7 +199,6 @@ public class XSLTUtil {
 
         String id = (element == null || source.startsWith("http"))?source:source + "-" + element;
         String conceptUri = Vocabulary.getInstance().getConcept(id, value);
-        System.out.println("conceptUri = " + conceptUri);
 
         if( conceptUri != null ) {
             String vocUri = Vocabulary.getInstance().getVocabularyUri(id);

@@ -186,7 +186,10 @@ public class VocContextResource {
             json.key( "location" ).value( location);
             json.key( "navigable" ).value( details[0].getValue("navigable").getContent() );
             json.key( "linkingPredicate" ).value( details[0].getValue("predicate").getContent() );
-            json.key( "uriIdSeparator" ).value( details[0].getValue("separator").getContent() );
+            String separator = details[0].getValue("separator").getContent();
+            if ("".equals(separator))
+                separator = "/";
+            json.key( "uriIdSeparator" ).value( separator );
             String pref = details[0].getValue("prefix").getContent();
             if (!"".equals(pref))
                 json.key( "uriPrefix" ).value( pref);

@@ -294,7 +294,7 @@ public class VocabularyManager {
         String id = null;
         String location = null;
         boolean navigableFlag = false;
-        String conceptUriIdSeparator = "#";
+        String conceptUriIdSeparator = "/";
         String conceptUriPrefix = null;
         String conceptUriSuffix = null;
         String conceptLinkingPredicate = DCTERMS.subject.getURI();

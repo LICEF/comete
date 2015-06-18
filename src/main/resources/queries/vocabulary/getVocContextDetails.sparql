@@ -9,11 +9,13 @@ WHERE '{'
     <{0}> comete:vocSourceLocation ?location .
     <{0}> comete:vocNavigable ?navigable .
     <{0}> comete:vocConceptLinkingPredicate ?predicate .
-    <{0}> comete:vocConceptIdSeparator ?separator .
+    OPTIONAL '{'
+        <{0}> comete:vocConceptIdSeparator ?separator
+    '}'
     OPTIONAL '{'
         <{0}> comete:vocConceptUriPrefix ?prefix
     '}'
     OPTIONAL '{'
-        <{0}> comete:vocConceptUriSuffix ?suffix .
+        <{0}> comete:vocConceptUriSuffix ?suffix
     '}'
 '}'

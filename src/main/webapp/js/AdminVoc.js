@@ -213,9 +213,9 @@
                     this.detailsPanel.getComponent(0).setValue(jsonDetails.id);
                     this.detailsPanel.getComponent(1).setValue(jsonDetails.uri);
                     this.detailsPanel.getComponent(2).setValue(jsonDetails.location);
-                    this.detailsPanel.getComponent(3).setValue(jsonDetails.uriPrefix);
-                    this.detailsPanel.getComponent(4).setValue(jsonDetails.uriSuffix);
-                    this.detailsPanel.getComponent(5).setValue(jsonDetails.uriIdSeparator);
+                    this.detailsPanel.getComponent(3).setValue(jsonDetails.uriIdSeparator);
+                    this.detailsPanel.getComponent(4).setValue(jsonDetails.uriPrefix);
+                    this.detailsPanel.getComponent(5).setValue(jsonDetails.uriSuffix);
                     this.detailsPanel.getComponent(6).setValue(jsonDetails.linkingPredicate);
                     this.detailsPanel.getComponent(7).setValue(jsonDetails.navigable);
                     this.initDisplay = false;
