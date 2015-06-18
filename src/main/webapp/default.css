@@ -409,3 +409,6 @@ a:hover {
     background: transparent url(ext-5.1.0/build/packages/ext-theme-gray/build/resources/images/menu/default-checked.gif);
 }
 
+.x-form-text-wrap {
+    display: block;
+}

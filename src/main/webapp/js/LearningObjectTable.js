@@ -264,7 +264,7 @@
     },
     setRequest: function( query, filters ) {
         this._query = query;
-        var url = this.queryUrl + '&q=' + encodeURIComponent( JSON.stringify(query) ) + '&f=' + JSON.stringify(filters);
+        var url = this.queryUrl + '&q=' + encodeURIComponent( JSON.stringify(query) ) + '&f=' + encodeURIComponent( JSON.stringify(filters) );
         var currPage = this.getCurrentPage();
         var currSelectedLo = this.getSelectedId();
         this.getSelectionModel().clearSelections();
