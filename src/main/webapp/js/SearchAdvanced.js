@@ -391,12 +391,10 @@ Ext.define( 'Comete.QueryCondition', {
         this.typeCondPanel.add(element);
     },
     createTextCond: function() { 
-        var panel = Ext.create('Ext.panel.Panel', {
-            layout: 'hbox',
-            border: false,
-            items: { xtype: 'textfield', width: 250 }
+        var textfield = Ext.create('Ext.form.field.Text', {
+            width: 250
         });
-        return panel;
+        return textfield;
     },    
     createKeywordCond: function() { 
         var keywordProxy = Ext.create( 'Ext.data.proxy.Ajax', {
@@ -429,12 +427,7 @@ Ext.define( 'Comete.QueryCondition', {
             tpl: '<div><tpl for="."><div class="x-boundlist-item">{keyword}</div></tpl></div>'
         } );
 
-        var panel = Ext.create('Ext.panel.Panel', {
-            layout: 'hbox',
-            border: false,
-            items: keywordCombo
-        });
-        return panel;
+        return keywordCombo;
     },    
     createAddedDateCond: function() { 
         var relOpStore = Ext.create('Ext.data.Store', {
@@ -602,8 +595,8 @@ Ext.define( 'Comete.QueryCondition', {
         return panel;
     }, 
     setText: function(text) {
-        var titleField = this.typeCondPanel.getComponent(0).getComponent(0);
-        titleField.setValue(text);
+        var field = this.typeCondPanel.getComponent(0);
+        field.setValue(text);
     },
     setDateCond: function( relOp, date ) {
         var relOpField = this.typeCondPanel.getComponent(0).getComponent(0);
@@ -651,7 +644,7 @@ Ext.define( 'Comete.QueryCondition', {
         var lang = null;
         var relOp = null;
         if (this.typeCond.getValue() == 'title' || this.typeCond.getValue() == 'description' || this.typeCond.getValue() == 'keyword') {
-            this.data = this.typeCondPanel.getComponent(0).getComponent(0).getValue();
+            this.data = this.typeCondPanel.getComponent(0).getValue();
         }
         else if(this.typeCond.getValue() == 'addedDate') {
             relOp = this.typeCondPanel.getComponent(0).getComponent(0).getValue();
