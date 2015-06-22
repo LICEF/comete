@@ -45,7 +45,7 @@ public class VocabularyManager {
     TripleStore tripleStore;
     static ca.licef.comete.core.util.Util CoreUtil;
 
-    public String addNewVocContext(String id, String uriIdSeparator, String uriPrefix, String uriSuffix, String linkingPredicate,
+    public String addNewVocContext(String id, String uriPrefix, String uriSuffix, String linkingPredicate,
                                    String urlLocation, String fileName, InputStream uploadedInputStream) throws Exception{
         if (id == null || "".equals(id))
             return "Missing ID";
@@ -81,14 +81,14 @@ public class VocabularyManager {
         }
 
         //descriptor creation
-        createDecriptor(id, location, uriIdSeparator, uriPrefix, uriSuffix, linkingPredicate);
+        createDecriptor(id, location, uriPrefix, uriSuffix, linkingPredicate);
 
         initVocabulary(id, false);
 
         return null;
     }
 
-    public String modifyVocContext(String id, String uriIdSeparator, String uriPrefix, String uriSuffix, String linkingPredicate,
+    public String modifyVocContext(String id, String uriPrefix, String uriSuffix, String linkingPredicate,
                                           String urlLocation, String fileName, InputStream uploadedInputStream) throws Exception {
         String error = null;
         File vocDirConfig = new File(vocabulariesDirConfig, id);
@@ -100,8 +100,6 @@ public class VocabularyManager {
         tripleStore.removeTriplesWithSubjectPredicate(uri, COMETE.vocConceptUriPrefix);
         tripleStore.removeTriplesWithSubjectPredicate(uri, COMETE.vocConceptUriSuffix);
         tripleStore.removeTriplesWithSubjectPredicate(uri, COMETE.vocConceptLinkingPredicate);
-        if (!"".equals(uriIdSeparator))
-            tripleStore.insertTriple(new Triple(uri, COMETE.vocConceptUriIdSeparator, uriIdSeparator));
         if (!"".equals(uriPrefix))
             tripleStore.insertTriple(new Triple(uri, COMETE.vocConceptUriPrefix, uriPrefix));
         if (!"".equals(uriSuffix))
@@ -161,7 +159,7 @@ public class VocabularyManager {
 
         //replacing descriptor
         (new File(vocDirConfig, "description.xml")).delete();
-        createDecriptor(id, location, uriIdSeparator, uriPrefix, uriSuffix, linkingPredicate);
+        createDecriptor(id, location, uriPrefix, uriSuffix, linkingPredicate);
 
         //update of content
         initVocabulary(id, true);
@@ -169,7 +167,7 @@ public class VocabularyManager {
         return error;
     }
 
-    private void createDecriptor(String id, String location, String uriIdSeparator, String uriPrefix, String uriSuffix, String linkingPredicate) throws Exception {
+    private void createDecriptor(String id, String location, String uriPrefix, String uriSuffix, String linkingPredicate) throws Exception {
         File vocDirConfig = new File(vocabulariesDirConfig, id);
 
         //descriptor creation
@@ -186,12 +184,6 @@ public class VocabularyManager {
         value = doc.createTextNode(location);
         element.appendChild(value);
         root.appendChild(element);
-        if (!"".equals(uriIdSeparator)) {
-            element = doc.createElement("conceptUriIdSeparator");
-            value = doc.createTextNode(uriIdSeparator);
-            element.appendChild(value);
-            root.appendChild(element);
-        }
         if (!"".equals(uriPrefix)) {
             element = doc.createElement("conceptUriPrefix");
             value = doc.createTextNode(uriPrefix);
@@ -294,7 +286,6 @@ public class VocabularyManager {
         String id = null;
         String location = null;
         boolean navigableFlag = false;
-        String conceptUriIdSeparator = "/";
         String conceptUriPrefix = null;
         String conceptUriSuffix = null;
         String conceptLinkingPredicate = DCTERMS.subject.getURI();
@@ -317,8 +308,6 @@ public class VocabularyManager {
                     location = value;
                 if ("navigable".equals(e.getTagName()))
                     navigableFlag = "true".equals(value);
-                if ("conceptUriIdSeparator".equals(e.getTagName()))
-                    conceptUriIdSeparator = value;
                 if ("conceptUriPrefix".equals(e.getTagName()))
                     conceptUriPrefix = value;
                 if ("conceptUriSuffix".equals(e.getTagName()))
@@ -347,7 +336,6 @@ public class VocabularyManager {
             tripleStore.insertTriple(new Triple(uri, COMETE.vocSourceLocation, location));
             tripleStore.insertTriple(new Triple(uri, COMETE.vocNavigable, Boolean.toString(navigableFlag)));
             tripleStore.insertTriple(new Triple(uri, COMETE.vocConceptLinkingPredicate, conceptLinkingPredicate));
-            tripleStore.insertTriple(new Triple(uri, COMETE.vocConceptUriIdSeparator, conceptUriIdSeparator));
             if (conceptUriPrefix != null)
                 tripleStore.insertTriple(new Triple(uri, COMETE.vocConceptUriPrefix, conceptUriPrefix));
             if (conceptUriSuffix != null)
