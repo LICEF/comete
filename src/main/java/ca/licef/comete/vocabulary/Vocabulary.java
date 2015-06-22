@@ -1,22 +1,18 @@
 package ca.licef.comete.vocabulary;
 
 import ca.licef.comete.core.Core;
-import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.vocabularies.COMETE;
 import ca.licef.comete.vocabulary.util.Util;
 import licef.reflection.Invoker;
 import licef.tsapi.TripleStore;
 import licef.tsapi.model.Triple;
 import licef.tsapi.model.Tuple;
-import licef.tsapi.vocabulary.RDFS;
 import licef.tsapi.vocabulary.SKOS;
-import org.json.JSONArray;
 
-import javax.xml.transform.stream.StreamSource;
 import java.io.InputStream;
-import java.net.URL;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Vocabulary {
 
@@ -98,14 +94,17 @@ public class Vocabulary {
             String vocCtxt = getTripleStore().getTriplesWithPredicateObject(
                     COMETE.vocUri, vocUri, null)[0].getSubject();
 
-            Triple[] sep = getTripleStore().getTriplesWithSubjectPredicate(vocCtxt, COMETE.vocConceptUriIdSeparator);
             Triple[] pref = getTripleStore().getTriplesWithSubjectPredicate(vocCtxt, COMETE.vocConceptUriPrefix);
             Triple[] suf = getTripleStore().getTriplesWithSubjectPredicate(vocCtxt, COMETE.vocConceptUriSuffix);
 
             if (pref.length != 0)
                 uri = pref[0].getObject() + concept;
-            else
-                uri = vocUri + sep[0].getObject() + concept;
+            else {
+                String separator = "";
+                if ( !vocUri.endsWith("/") && !vocUri.endsWith("#") )
+                    separator = getVocConceptUriIdSeparator(vocCtxt);
+                uri = vocUri + separator + concept;
+            }
 
             if (suf.length != 0)
                 uri += suf[0].getObject();
@@ -242,6 +241,22 @@ public class Vocabulary {
         return getTripleStore().sparqlSelect_textIndex(query);
     }
 
+    public String getVocConceptUriIdSeparator(String vocCtxt) throws Exception {
+        Triple[] sep = getTripleStore().getTriplesWithSubjectPredicate(vocCtxt, COMETE.vocConceptUriIdSeparator);
+        if (sep.length > 0)
+            return sep[0].getObject();
+
+        String vocUri = getTripleStore().getTriplesWithSubjectPredicate(vocCtxt, COMETE.vocUri)[0].getObject();
+        Triple[] concepts = getTripleStore().getTriplesWithPredicateObject(SKOS.inScheme, vocUri, null, vocUri);
+        String aConceptUri = concepts[0].getSubject();
+        String separator = "/";
+        if (aConceptUri.contains("#"))
+            separator = "#";
+        getTripleStore().insertTriple(new Triple(vocCtxt, COMETE.vocConceptUriIdSeparator, separator));
+
+        return separator;
+    }
+
     /************/
     /* Contexts */
     /************/
@@ -258,18 +273,18 @@ public class Vocabulary {
         return (boolean)getTripleStore().transactionalCall(inv);
     }
 
-    public String addNewVocContext(String id, String uriIdSeparator, String uriPrefix, String uriSuffix, String linkingPredicate,
+    public String addNewVocContext(String id, String uriPrefix, String uriSuffix, String linkingPredicate,
                                    String url, String fileName, InputStream uploadedInputStream) throws Exception {
         Invoker inv = new Invoker(getVocabularyManager(), "ca.licef.comete.vocabulary.VocabularyManager",
-                "addNewVocContext", new Object[]{id, uriIdSeparator, uriPrefix, uriSuffix, linkingPredicate,
+                "addNewVocContext", new Object[]{id, uriPrefix, uriSuffix, linkingPredicate,
                                               url, fileName, uploadedInputStream});
         return (String)getTripleStore().transactionalCall(inv, TripleStore.WRITE_MODE);
     }
 
-    public String modifyVocabularyContent(String id, String uriIdSeparator, String uriPrefix, String uriSuffix, String linkingPredicate,
+    public String modifyVocabularyContent(String id, String uriPrefix, String uriSuffix, String linkingPredicate,
                                           String url, String fileName, InputStream uploadedInputStream) throws Exception {
         Invoker inv = new Invoker(getVocabularyManager(), "ca.licef.comete.vocabulary.VocabularyManager",
-                "modifyVocContext", new Object[]{id, uriIdSeparator, uriPrefix, uriSuffix, linkingPredicate,
+                "modifyVocContext", new Object[]{id, uriPrefix, uriSuffix, linkingPredicate,
                                                      url, fileName, uploadedInputStream});
         return (String)getTripleStore().transactionalCall(inv, TripleStore.WRITE_MODE);
     }
@@ -322,4 +337,5 @@ public class Vocabulary {
         Invoker inv = new Invoker(getTripleStore(), "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
         return Boolean.parseBoolean(((Tuple[]) getTripleStore().transactionalCall(inv))[0].getValue("navigable").getContent());
     }
+
 }

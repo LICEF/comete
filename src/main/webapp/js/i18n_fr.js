@@ -119,7 +119,6 @@
     'Source Location': 'Localisation',
     'Concept URI prefix': 'Préfixe d\'URI concept',
     'Concept URI suffix': 'Suffixe d\'URI concept',
-    'Concept URI ID separator': 'Séparateur d\'ID d\'URI concept',
     'Linking predicate': 'Prédicat de liaison',
     'Aliases': 'Alias',
     'New Alias': 'Nouvel alias',

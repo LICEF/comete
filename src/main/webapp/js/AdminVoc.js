@@ -95,7 +95,6 @@
             items: [ { fieldLabel: 'ID', editable: false }, 
                      { fieldLabel: 'URI', editable: false},
                      { fieldLabel: tr('Source Location'), editable: false },
-                     { fieldLabel: tr('Concept URI ID separator'), editable: false },
                      { fieldLabel: tr('Concept URI prefix'), editable: false },
                      { fieldLabel: tr('Concept URI suffix'), editable: false },
                      { fieldLabel: tr('Linking predicate'), editable: false },
@@ -213,11 +212,10 @@
                     this.detailsPanel.getComponent(0).setValue(jsonDetails.id);
                     this.detailsPanel.getComponent(1).setValue(jsonDetails.uri);
                     this.detailsPanel.getComponent(2).setValue(jsonDetails.location);
-                    this.detailsPanel.getComponent(3).setValue(jsonDetails.uriIdSeparator);
-                    this.detailsPanel.getComponent(4).setValue(jsonDetails.uriPrefix);
-                    this.detailsPanel.getComponent(5).setValue(jsonDetails.uriSuffix);
-                    this.detailsPanel.getComponent(6).setValue(jsonDetails.linkingPredicate);
-                    this.detailsPanel.getComponent(7).setValue(jsonDetails.navigable);
+                    this.detailsPanel.getComponent(3).setValue(jsonDetails.uriPrefix);
+                    this.detailsPanel.getComponent(4).setValue(jsonDetails.uriSuffix);
+                    this.detailsPanel.getComponent(5).setValue(jsonDetails.linkingPredicate);
+                    this.detailsPanel.getComponent(6).setValue(jsonDetails.navigable);
                     this.initDisplay = false;
                 },
                 scope: this 
@@ -238,7 +236,6 @@
             this.detailsPanel.getComponent(4).setValue("");
             this.detailsPanel.getComponent(5).setValue("");
             this.detailsPanel.getComponent(6).setValue("");
-            this.detailsPanel.getComponent(7).setValue("");
             this.vocAliasStore.removeAll();
             //buttons
             this.modifyButton.setDisabled(true);     
@@ -423,7 +420,6 @@ Ext.define( 'Comete.AdminVocEditor', {
             items: [ { name: 'id', fieldLabel: 'ID', editable: this.mode != 'modify' },
                      this.urlLocation, 
                      this.fileLocation, 
-                     { name: 'uriIdSeparator', fieldLabel: tr('Concept URI ID separator'), emptyText: tr('Optional field') },
                      { name: 'uriPrefix', fieldLabel: tr('Concept URI prefix'), emptyText: tr('Optional field') },
                      { name: 'uriSuffix', fieldLabel: tr('Concept URI suffix'), emptyText: tr('Optional field') },
                      { name: 'linkingPredicate', fieldLabel: tr('Linking predicate'), emptyText: tr('Optional field') } ]
@@ -472,10 +468,9 @@ Ext.define( 'Comete.AdminVocEditor', {
             this.urlLocation.setValue(initLocation);
         else
             this.fileLocation.emptyText = initLocation;
-        this.formPanel.getComponent(3).setValue(this.values.uriIdSeparator);
-        this.formPanel.getComponent(4).setValue(this.values.uriPrefix);
-        this.formPanel.getComponent(5).setValue(this.values.uriSuffix);
-        this.formPanel.getComponent(6).setValue(this.values.linkingPredicate);
+        this.formPanel.getComponent(3).setValue(this.values.uriPrefix);
+        this.formPanel.getComponent(4).setValue(this.values.uriSuffix);
+        this.formPanel.getComponent(5).setValue(this.values.linkingPredicate);
     }        
 });
 
