@@ -231,6 +231,35 @@ public class VocabularyResource {
         return Response.ok(out.toString()).build();
     }
 
+    @GET
+    @Path( "orphanConcepts" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public Response getOrphanConcepts() throws Exception {
+        Tuple[] concepts = Vocabulary.getInstance().getOrphanConcepts();
+        StringWriter out = new StringWriter();
+        try {
+            JSONWriter json = new JSONWriter( out ).object();
+            JSONArray array = new JSONArray();
+            for (Tuple res : concepts) {
+                array.put( res.getValue("concept").getContent() );
+            }
+            json.key( "concepts" ).value( array );
+            json.endObject();
+        }
+        catch( JSONException e ) {
+            e.printStackTrace();
+        }
+
+        try {
+            out.close();
+        }
+        catch( IOException e ) {
+            e.printStackTrace();
+        }
+
+        return Response.ok(out.toString()).build();
+    }
+
     private JSONObject buildJSONConcept(String uri, String showIds, Boolean isLeaf, String lang, boolean includeLabel) throws Exception{
         JSONObject _concept = new JSONObject();
         String label = Vocabulary.getInstance().getLabel(uri, lang);

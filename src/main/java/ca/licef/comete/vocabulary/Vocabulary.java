@@ -257,6 +257,21 @@ public class Vocabulary {
         return separator;
     }
 
+    public Tuple[] getOrphanConcepts() throws Exception {
+        Invoker inv = new Invoker(this, "ca.licef.comete.vocabulary.Vocabulary",
+                "getOrphanConceptsEff", new Object[]{});
+        return (Tuple[])getTripleStore().transactionalCall(inv);
+    }
+
+    public Tuple[] getOrphanConceptsEff() throws Exception {
+        String fromClause = "FROM <urn:x-arq:DefaultGraph>\n ";
+        String[] nav = getNavigableVocabularies();
+        for (String vocUri : nav)
+            fromClause += "FROM <" + vocUri + "> \n";
+        String query = CoreUtil.getQuery("vocabulary/getOrphanConcepts.sparql", fromClause);
+        return getTripleStore().sparqlSelect_textIndex(query);
+    }
+
     /************/
     /* Contexts */
     /************/

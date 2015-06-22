@@ -1,0 +1,13 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX comete: <http://comete.licef.ca/reference#>
+
+SELECT DISTINCT ?concept
+{0}
+WHERE '{'
+    ?ctxt rdf:type comete:VocContext .
+    ?ctxt comete:vocNavigable "true" .
+    ?ctxt comete:vocConceptLinkingPredicate ?conceptLink .
+    ?s ?conceptLink ?concept .
+    FILTER ( NOT EXISTS '{' ?concept skos:inScheme ?scheme '}' )
+'}'
