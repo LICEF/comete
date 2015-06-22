@@ -55,6 +55,7 @@ public class Util {
      */
     public static String[] buildQueryClauses(JSONArray queryArray, String lg, boolean isWithScore, QueryCache cache) throws Exception {
         String fromClause = "";
+        String fulltextClause = "";
         String clauses = "";
 
         boolean waitForOperator = false;
@@ -90,7 +91,7 @@ public class Util {
                 if (FULLTEXT.equals(condType)) {
                     String text = obj.getString("value");
                     if( !text.trim().equals( "" ) )
-                        clause = CoreUtil.getQuery("queryengine/advancedFulltextFragment.sparql",
+                        fulltextClause = CoreUtil.getQuery("queryengine/advancedFulltextFragment.sparql",
                                     CoreUtil.formatKeywords(text), lg);
                 }
                 else if (LANGUAGE.equals(condType)) {
@@ -209,7 +210,7 @@ public class Util {
         //last cond
         clauses += orClauses;
 
-        return new String[]{fromClause, clauses, Boolean.toString(includeEquivalence)};
+        return new String[]{fromClause, fulltextClause, clauses, Boolean.toString(includeEquivalence)};
     }
 
     public static String makeAddedDateClause( String relOpStr, String date ) throws Exception{

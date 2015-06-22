@@ -156,11 +156,12 @@ public class QueryEngine {
         ResultSet rs;
         String[] data = ca.licef.comete.queryengine.util.Util.buildQueryClauses(queryArray, lang, isWithScore, cache);
         String fromClause = data[0];
-        String clauses = data[1];
+        String fulltextClause = data[1];
+        String clauses = data[2];
         String flagCondition = ( isShowHiddenRes ? "" : "FILTER( NOT EXISTS { ?s comete:flag ?flag } || EXISTS { ?s comete:flag \"forcedDiffusion\" } )" );
-        boolean includeEquivalence = Boolean.parseBoolean(data[2]);
+        boolean includeEquivalence = Boolean.parseBoolean(data[3]);
 
-        String query = CoreUtil.getQuery("queryengine/getLearningObjectsAdvancedQueryForCount.sparql", fromClause, clauses, flagCondition );
+        String query = CoreUtil.getQuery("queryengine/getLearningObjectsAdvancedQueryForCount.sparql", fromClause, fulltextClause, clauses, flagCondition );
 
         Tuple[] res = tripleStore.sparqlSelect_textIndex(query);
         int count = Integer.parseInt(res[0].getValue("count").getContent());
@@ -169,7 +170,7 @@ public class QueryEngine {
             String varScore = orderByVariable;
             if (!"?score".equals(orderByVariable))
                 varScore = "";
-            query = CoreUtil.getQuery("queryengine/getLearningObjectsAdvancedQuery.sparql", fromClause, clauses, flagCondition, orderByVariable, start, limit, varScore);
+            query = CoreUtil.getQuery("queryengine/getLearningObjectsAdvancedQuery.sparql", fromClause, fulltextClause, clauses, flagCondition, orderByVariable, start, limit, varScore);
             Tuple[] results = tripleStore.sparqlSelect_textIndex(query);
             rs = buildResultSet(results, count, lang);
         }
