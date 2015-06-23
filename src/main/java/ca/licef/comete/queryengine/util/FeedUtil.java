@@ -34,7 +34,7 @@ import java.util.*;
 
 public class FeedUtil {
 
-    public static SyndFeed getFeedFromResultSet( ResultSet rs, String feedType, String absPath, String query, int start, int limit, String lang ) {
+    public static SyndFeed getFeedFromResultSet( ResultSet rs, String feedType, String absPath, String query, int start, int limit, String lang, boolean isShowFlags ) {
         Locale locale = new Locale( lang );
         ResourceBundle bundle = ResourceBundle.getBundle( "translations/Strings", locale );
 
@@ -116,6 +116,19 @@ public class FeedUtil {
                 modifDate = publicationDate;
             if( modifDate != null )
                 entry.setUpdatedDate( modifDate );
+
+            if( isShowFlags ) {
+                if( resEntry.isForcedDiffusion() )
+                    cm.addFlag( "forcedDiffusion" );
+                if( resEntry.isPending() )
+                    cm.addFlag( "pending" );
+                if( resEntry.isInactive() )
+                    cm.addFlag( "inactive" );
+                if( resEntry.isInvalid() )
+                    cm.addFlag( "invalid" );
+                if( resEntry.isBrokenLink() )
+                    cm.addFlag( "brokenLink" );
+            }
 
             try {
                 List titles = new ArrayList();
