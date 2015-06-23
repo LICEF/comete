@@ -32,7 +32,10 @@ function startBackup() {
             Ext.Msg.alert( tr( 'Information' ), tr( 'Backup started.' ) );
         },
         failure: function(response, opts) {
-            Ext.Msg.alert( tr( 'Failure' ), response.responseText );
+            if( response.status == 409 )
+                Ext.Msg.alert( tr( 'Warning' ), tr( 'A backup is already in progress.' ) );
+            else
+                Ext.Msg.alert( tr( 'Failure' ), response.responseText );
         }
     } );
 }
