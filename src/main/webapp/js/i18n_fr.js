@@ -296,9 +296,10 @@
     'Date added': 'Date d\'ajout',
     'LANGUAGE': 'LANGUE',
 
-    'Enter your request here':'Entrez votre requête ici'
+    'Enter your request here':'Entrez votre requête ici',
 
 
+    'Server temporarily unavailable': 'Serveur temporairement indisponible'
 
 };
 

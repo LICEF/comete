@@ -8,10 +8,8 @@ import licef.reflection.Invoker;
 import licef.reflection.ThreadInvoker;
 import licef.tsapi.Constants;
 import licef.tsapi.TripleStore;
-import licef.tsapi.model.Tuple;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.text.MessageFormat;
 import java.util.Date;
 
@@ -22,6 +20,8 @@ public class Backup {
 
     private static Backup instance;
     private boolean backupProcess;
+
+    private String restoreMarker = "restore_process";
 
     public static Backup getInstance() {
         if (instance == null)
@@ -103,6 +103,20 @@ public class Backup {
         if (archive == null)
             return false;
 
+        ThreadInvoker inv = new ThreadInvoker(new Invoker(this,
+                "ca.licef.comete.backup.Backup", "doRestore", new Object[]{core, archive}));
+        inv.start();
+
+        return true;
+    }
+
+    public void doRestore(Core core, File archive) throws Exception {
+        String cometeHome = core.getCometeHome();
+
+        //put a marker before restore process
+        File marker = new File(cometeHome, restoreMarker);
+        IOUtil.writeStringToFile("", marker);
+
         //unzip archive
         ZipUtil.unzipFile(archive.getAbsolutePath(), cometeHome);
 
@@ -116,6 +130,13 @@ public class Backup {
         //delete of the dump file
         (new File(dump)).delete();
 
-        return true;
+        marker.delete();
+
+        System.out.println("Comete restore done.");
+    }
+
+    public boolean isRestoreProcess() {
+        File marker = new File(Core.getInstance().getCometeHome(), restoreMarker);
+        return marker.exists();
     }
 }
