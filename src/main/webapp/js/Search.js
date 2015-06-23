@@ -201,7 +201,7 @@ Ext.define( 'Comete.SearchManager', {
         this.loManager.setRequest( query );
     },
     setRequestSimpleSearch: function( textQuery ) {
-        var query = [ { key: "ss", value: textQuery } ];
+        var query = [ { key: "fulltext", value: textQuery } ];
         this.setRequest(query);
     },
     setRequestContributor: function( contribId, label ) { 

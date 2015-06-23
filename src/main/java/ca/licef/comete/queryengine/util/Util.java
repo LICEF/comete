@@ -1,7 +1,6 @@
 package ca.licef.comete.queryengine.util;
 
 import ca.licef.comete.queryengine.QueryCache;
-import ca.licef.comete.queryengine.QueryEngine;
 import ca.licef.comete.vocabulary.Vocabulary;
 import licef.DateUtil;
 import licef.tsapi.model.Tuple;
@@ -53,7 +52,7 @@ public class Util {
     /**
      * @return clause element and pre compute size
      */
-    public static String[] buildQueryClauses(JSONArray queryArray, String lg, boolean isWithScore, QueryCache cache) throws Exception {
+    public static String[] buildQueryClauses(JSONArray queryArray, String lg) throws Exception {
         String fromClause = "";
         String clauses = "";
 
@@ -63,15 +62,6 @@ public class Util {
         String firstClause = null;
 
         boolean includeEquivalence = false;
-
-        //if collection, retrieve of right query first
-        JSONObject firstCond = (JSONObject)queryArray.get(0);
-        if (COLLECTION.equals(firstCond.get("key"))) {
-            String id = (String)firstCond.get("value");
-            int index = Integer.valueOf(id.substring(id.indexOf("_") + 1));
-            String query = QueryEngine.getInstance().getCollection().getQuery(index, lg);
-            queryArray = new JSONArray(query);
-        }
 
         for (int i = 0; i < queryArray.length(); i++) {
             JSONObject obj = queryArray.getJSONObject(i);
