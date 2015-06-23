@@ -227,7 +227,7 @@
                     if( selectedRecord )
                         this.harvestDefList.getSelectionModel().select( [ selectedRecord ] );
                 }
-                Ext.Msg.alert('Information', tr('Repository added.'));
+                Ext.Msg.alert(tr('Information'), tr('Repository added.'));
             },
             scope: this
         } );
@@ -264,7 +264,7 @@
                     if( selectedRecord )
                         this.harvestDefList.getSelectionModel().select( [ selectedRecord ] );
                 }
-                Ext.Msg.alert('Information', tr('Repository modified.'));
+                Ext.Msg.alert(tr('Information'), tr('Repository modified.'));
             },
             scope: this
         } );
@@ -296,7 +296,7 @@
                 waitDialog.close();
                 this.harvestDefList.getSelectionModel().deselectAll();
                 this.harvestDefStore.loadPage(1);
-                Ext.Msg.alert('Information', tr('Repository deleted.'));
+                Ext.Msg.alert(tr('Information'), tr('Repository deleted.'));
             },
             failure: function(response, opts) {
                 waitDialog.close();
@@ -321,11 +321,11 @@
             url: 'rest/harvests/' + this.currentHarvestDefId,
             method: 'POST',
             success: function(response, opts) {
-                Ext.Msg.alert('Information', tr('Harvest started.'));
+                Ext.Msg.alert(tr('Information'), tr('Harvest started.'));
                 this.harvestDefStore.loadPage();
             },
             failure: function(response, opts) {
-                Ext.Msg.alert('Message', response.responseText);  
+                Ext.Msg.alert(tr('Message'), response.responseText);  
             },
             scope: this 
         } );
@@ -335,11 +335,11 @@
             url: 'rest/harvests/' + this.currentHarvestDefId,
             method: 'DELETE',
             success: function(response, opts) {
-                Ext.Msg.alert('Information', tr('Harvest stopped.'));
+                Ext.Msg.alert(tr('Information'), tr('Harvest stopped.'));
                 this.harvestDefStore.loadPage();
             },
             failure: function(response, opts) {
-                Ext.Msg.alert('Message', response.responseText);  
+                Ext.Msg.alert(tr('Message'), response.responseText);  
             },
             scope: this 
         } );
@@ -633,7 +633,7 @@ Ext.define( 'Comete.AdminHarvestReportViewer', {
             success: function(response, opts) {
                 waitDialog.close();
                 this.harvestReportStore.loadPage(1);
-                Ext.Msg.alert('Information', tr('Report deleted.'));
+                Ext.Msg.alert(tr('Information'), tr('Report deleted.'));
             },
             failure: function(response, opts) {
                 waitDialog.close();

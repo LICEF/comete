@@ -263,7 +263,7 @@ public class QueryEngineResource implements Serializable {
         catch( Exception e ) {
             throw( new WebApplicationException( e, HttpServletResponse.SC_INTERNAL_SERVER_ERROR ) );
         }
-        SyndFeed f = FeedUtil.getFeedFromResultSet( rs, feedType, uriInfo.getAbsolutePath().toString(), query, start, limit, lang );
+        SyndFeed f = FeedUtil.getFeedFromResultSet( rs, feedType, uriInfo.getAbsolutePath().toString(), query, start, limit, lang, isShowHiddenRes );
         return f;
     }
 

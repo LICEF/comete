@@ -29,8 +29,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 
-//import ca.licef.comete.core.Fedora;
-
 /**
  * Created with IntelliJ IDEA.
  * User: amiara

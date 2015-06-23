@@ -610,25 +610,6 @@ public class Metadata {
         return( triplesAsXml );
     }
 
-    //private String processMetadataRecord( String recordId ) throws Exception {
-    //    String metadataRecordUri = Util.makeURI( recordId, Constants.TYPE_METADATA_RECORD );
-    //    String storeId = tripleStore.getFedoraIdFromURI( metadataRecordUri );
-    //    String applicationProfile = null;
-    //    String learningObjectUri = null;
-    //    Triple[] metadataRecordTriples = tripleStore.getTriplesWithSubject( metadataRecordUri );
-    //    for( int i = 0; i < metadataRecordTriples.length; i++ ) {
-    //        Triple triple = metadataRecordTriples[ i ];
-    //        if( Constants.METAMODEL_APPLICATION_PROFILE.equals( triple.getPredicate() ) )
-    //            applicationProfile = triple.getObject();
-    //        else if( Constants.METAMODEL_DESCRIBES.equals( triple.getPredicate() ) )
-    //            learningObjectUri = triple.getObject();
-    //    }
-
-    //    String recordXml = Core.getInstance().getFedora().getDatastream( storeId, Constants.DATASTREAM_ORIGINAL_DATA );
-
-    //    return( processMetadataRecord( recordXml, learningObjectUri, metadataRecordUri, applicationProfile ) );
-    //}
-
     private void manageFormat( String loURI, ArrayList<Triple> triples ) throws Exception{
         String format = null, location = null;
         for (Triple triple : triples) {
@@ -1081,25 +1062,6 @@ public class Metadata {
     /*
      * URI Store conversion
      */
-
-    private String getURIFromStoreId(String storeId) {
-        String uri = null;
-        if (storeId.startsWith("http://"))
-            return storeId;
-        else {
-            if (!storeId.startsWith("info:fedora/"))
-                storeId = "info:fedora/" + storeId;
-            try {
-                Triple[] triples = tripleStore.getTriplesWithPredicateObject(
-                        COMETE.storeDigitalObject, storeId, null);
-                if (triples.length > 0)
-                    uri = triples[0].getSubject();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return uri;
-    }
 
     private String getStoreIdFromURI(String uri) {
         String id = null;
