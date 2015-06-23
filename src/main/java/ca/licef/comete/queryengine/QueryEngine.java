@@ -2,6 +2,7 @@ package ca.licef.comete.queryengine;
 
 import ca.licef.comete.core.Core;
 import ca.licef.comete.core.util.ResultSet;
+import ca.licef.comete.queryengine.util.Util;
 import ca.licef.comete.vocabularies.COMETE;
 import licef.IOUtil;
 import licef.reflection.Invoker;
@@ -49,16 +50,22 @@ public class QueryEngine {
 
         JSONObject firstCond = (JSONObject)queryArray.get(0);
 
+        //if collection, retrieve of right query
+        if (Util.COLLECTION.equals(firstCond.get("key"))) {
+            String id = (String)firstCond.get("value");
+            int index = Integer.valueOf(id.substring(id.indexOf("_") + 1));
+            query = QueryEngine.getInstance().getCollection().getQuery(index, lang);
+            queryArray = new JSONArray(query);
+            firstCond = (JSONObject)queryArray.get(0);
+        }
+
         boolean isExplicitLORequested = ( queryArray.length() == 1 &&
                         "uri".equals(firstCond.getString("key"))) ;
 
-        boolean isWithScore = ("fulltext".equals(firstCond.getString("key")) &&
-                !firstCond.getString("value").trim().equals(""));
+        boolean isFulltextSearch = "fulltext".equals(firstCond.getString("key"));
 
-        boolean isSimpleSearch = ( queryArray.length() == 1 &&
-                (isWithScore ||  //previous comete's simple search compatibility
-                        "ss".equals(firstCond.getString("key"))) );
-
+        boolean isSimpleSearch = isFulltextSearch && (queryArray.length() == 1);
+        boolean isWithScore = isFulltextSearch && !"".equals(firstCond.getString("value").trim());
         boolean isAdvancedSearch = !isSimpleSearch && !isExplicitLORequested;
 
         String orderByVariable = "?added";
@@ -86,7 +93,7 @@ public class QueryEngine {
         if (isAdvancedSearch) {
             Invoker inv = new Invoker(this, "ca.licef.comete.queryengine.QueryEngine",
                     "advancedSearch", new Object[]{queryArray, lang, isShowHiddenRes, orderByVariable,
-                        start, limit, Boolean.valueOf(isWithScore), cache, outputFormat});
+                        start, limit, outputFormat});
             rs = (ResultSet)tripleStore.transactionalCall(inv);
         }
 
@@ -151,10 +158,9 @@ public class QueryEngine {
     }
 
     public ResultSet advancedSearch( JSONArray queryArray, String lang, boolean isShowHiddenRes, String orderByVariable,
-                                      Integer start, Integer limit, Boolean isWithScore,
-                                      QueryCache cache, String outputFormat) throws Exception {
+                                      Integer start, Integer limit, String outputFormat) throws Exception {
         ResultSet rs;
-        String[] data = ca.licef.comete.queryengine.util.Util.buildQueryClauses(queryArray, lang, isWithScore, cache);
+        String[] data = ca.licef.comete.queryengine.util.Util.buildQueryClauses(queryArray, lang);
         String fromClause = data[0];
         String fulltextClause = data[1];
         String clauses = data[2];

@@ -10,7 +10,7 @@ Ext.onReady( function() {
     var submitSearchQuery = function() {
         var query = searchQueryField.getValue();
         if (Ext.String.trim(query) != '') {
-            _query = [ { key: "ss", value: query } ];
+            _query = [ { key: "fulltext", value: query } ];
             var url = 'Search.jsp?lang=' + lang + '&' + searchQueryField.getId() + '=' + encodeURIComponent( JSON.stringify( _query ) );
             window.location = url;
         }

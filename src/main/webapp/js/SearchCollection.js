@@ -62,8 +62,8 @@
         Ext.apply(this, cfg);
         this.callParent(arguments);         
     },
-    collectionSelected: function(combo, records) {
-        this.currentCollection = records[0].getData();
+    collectionSelected: function(combo, record) {
+        this.currentCollection = record.getData();
         this.collectionQueryButton.setDisabled(false);
     },
     submitCollectionQuery: function() {
