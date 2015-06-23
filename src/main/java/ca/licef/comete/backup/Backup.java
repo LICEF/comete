@@ -12,6 +12,7 @@ import licef.tsapi.model.Tuple;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.MessageFormat;
 import java.util.Date;
 
 /**
@@ -36,16 +37,18 @@ public class Backup {
         inv.start();
     }
 
-    public void doBackup() throws Exception {
+    public void doBackup() {
+        long startTime = System.currentTimeMillis();
+        System.out.println( MessageFormat.format( "Starting backup: {0}.", DateUtil.toISOString( new Date( startTime ), null, null ) ) );
         backupProcess = true;
 
-        //destination folder init
-        String backupFolder = Core.getInstance().getCometeBackupHome();
-        File backupDir = new File(backupFolder);
-        if (!backupDir.exists())
-            IOUtil.createDirectory(backupDir.getAbsolutePath());
-
         try {
+            //destination folder init
+            String backupFolder = Core.getInstance().getCometeBackupHome();
+            File backupDir = new File(backupFolder);
+            if (!backupDir.exists())
+                IOUtil.createDirectory(backupDir.getAbsolutePath());
+
             //dump of the triple store
             String dump = Core.getInstance().getCometeHome() + "/dump.trig";
             TripleStore tripleStore = Core.getInstance().getTripleStore();
@@ -64,8 +67,20 @@ public class Backup {
 
             //delete of the dump file
             (new File(dump)).delete();
+            long stopTime = System.currentTimeMillis();
 
-        } finally {
+            double duration = ( stopTime - startTime ) / 1000.0;
+            System.out.println( MessageFormat.format( "Backup completed successfully: {0} ({1}s).", 
+                DateUtil.toISOString( new Date( stopTime ), null, null ), duration ) );
+        }
+        catch( Throwable t ) {
+            long stopTime = System.currentTimeMillis();
+            double duration = ( stopTime - startTime ) / 1000.0;
+            System.out.println( MessageFormat.format( "Backup could not complete successfully: {0} ({1}s).", 
+                DateUtil.toISOString( new Date( stopTime ), null, null ), duration ) );
+            t.printStackTrace();
+        }
+        finally {
             backupProcess = false;
         }
     }
