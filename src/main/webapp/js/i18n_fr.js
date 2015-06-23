@@ -281,6 +281,8 @@
 
     'Start Backup': 'Lancer un backup',
     'Are you sure that you want to start a backup process ?': 'Voulez-vous vraiment lancer un backup?',
+    'Backup started.': 'Backup démarré',
+    'A backup is already in progress.': 'Un backup est déjà en cours.',
 
     'Apply the modifications on': 'Appliquer les modifications sur',
     'the selected resources': 'les ressources sélectionées',

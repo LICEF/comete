@@ -5,12 +5,14 @@ import licef.DateUtil;
 import licef.IOUtil;
 import licef.ZipUtil;
 import licef.reflection.Invoker;
+import licef.reflection.ThreadInvoker;
 import licef.tsapi.Constants;
 import licef.tsapi.TripleStore;
 import licef.tsapi.model.Tuple;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.MessageFormat;
 import java.util.Date;
 
 /**
@@ -31,14 +33,21 @@ public class Backup {
         if (backupProcess)
             throw new Exception( "A backup is already in progress." );
 
-        //destination folder init
-        String backupFolder = Core.getInstance().getCometeBackupHome();
-        File backupDir = new File(backupFolder);
-        if (!backupDir.exists())
-            IOUtil.createDirectory(backupDir.getAbsolutePath());
+        ThreadInvoker inv = new ThreadInvoker( new Invoker( this, "ca.licef.comete.backup.Backup", "doBackup", new Object[] {} ) );
+        inv.start();
+    }
+
+    public void doBackup() {
+        long startTime = System.currentTimeMillis();
+        System.out.println( MessageFormat.format( "Starting backup: {0}.", DateUtil.toISOString( new Date( startTime ), null, null ) ) );
+        backupProcess = true;
 
         try {
-            backupProcess = true;
+            //destination folder init
+            String backupFolder = Core.getInstance().getCometeBackupHome();
+            File backupDir = new File(backupFolder);
+            if (!backupDir.exists())
+                IOUtil.createDirectory(backupDir.getAbsolutePath());
 
             //dump of the triple store
             String dump = Core.getInstance().getCometeHome() + "/dump.trig";
@@ -58,8 +67,20 @@ public class Backup {
 
             //delete of the dump file
             (new File(dump)).delete();
+            long stopTime = System.currentTimeMillis();
 
-        } finally {
+            double duration = ( stopTime - startTime ) / 1000.0;
+            System.out.println( MessageFormat.format( "Backup completed successfully: {0} ({1}s).", 
+                DateUtil.toISOString( new Date( stopTime ), null, null ), duration ) );
+        }
+        catch( Throwable t ) {
+            long stopTime = System.currentTimeMillis();
+            double duration = ( stopTime - startTime ) / 1000.0;
+            System.out.println( MessageFormat.format( "Backup could not complete successfully: {0} ({1}s).", 
+                DateUtil.toISOString( new Date( stopTime ), null, null ), duration ) );
+            t.printStackTrace();
+        }
+        finally {
             backupProcess = false;
         }
     }

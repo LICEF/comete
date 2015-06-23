@@ -70,7 +70,7 @@ public class Constants {
     public static final String OBJ_TYPE_VOCABULARY = "vocabulary";
     
     //********
-    // Fedora
+    // Streams
     //********
 
     //Datastreams
