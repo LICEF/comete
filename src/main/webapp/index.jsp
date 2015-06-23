@@ -22,7 +22,7 @@
         <script type="text/javascript" src="ext-5.1.0/build/packages/ext-locale/build/ext-locale-<%= lang %>.js"></script>
     <% } %>
 
-    <title>Comète</title>
+    <title>Ceres</title>
     <script type="text/javascript" src="js/utils.js"></script>
     <script type="text/javascript" src="js/Toolbar.js"></script>
     <script type="text/javascript" src="js/learningObjectToHtml.js"></script>
