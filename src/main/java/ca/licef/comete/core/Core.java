@@ -72,13 +72,14 @@ public class Core {
             boolean isRestore = Backup.getInstance().restore(this);
 
             if (isRestore)
-                System.out.println("Comete backup restored. No vocabulary module initialization required.");
-            else
+                System.out.println("Comete backup restore process. No vocabulary module initialization required.");
+            else {
                 (new ThreadInvoker(new Invoker(Vocabulary.getInstance(),
-                    "ca.licef.comete.vocabulary.Vocabulary",
+                        "ca.licef.comete.vocabulary.Vocabulary",
                         "initVocabularyModule", new Object[]{}))).start();
 
-            System.out.println("Comete initialization done.");
+                System.out.println("Comete initialization done.");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -129,6 +130,18 @@ public class Core {
     }
 
     /*
+     * Global services
+     */
+    public String serverStatus() {
+        String status = "ok";
+
+        if (Backup.getInstance().isRestoreProcess())
+            status = "Restoring Backup...";
+
+        return status;
+    }
+
+    /*
      * Triple Store services
      */
     private void initTripleStore() {
@@ -175,5 +188,4 @@ public class Core {
             defaultView = new DefaultView();
         return defaultView;
     }
-
 }

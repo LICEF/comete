@@ -30,6 +30,4 @@ public class BackupResource {
         return Response.ok("Backup started.").build();
     }
 
-
-
 }

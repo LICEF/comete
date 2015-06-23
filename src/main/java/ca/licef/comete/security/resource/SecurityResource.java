@@ -1,5 +1,6 @@
 package ca.licef.comete.security.resource;
 
+import ca.licef.comete.backup.Backup;
 import ca.licef.comete.security.Role;
 import ca.licef.comete.security.Security;
 import com.sun.jersey.spi.resource.Singleton;
@@ -33,6 +34,9 @@ public class SecurityResource {
     public Response authenticate( @Context HttpServletRequest req, @FormParam( "login" ) String login, @FormParam( "password" ) String password ) {
         Role role;
         try {
+            if (Backup.getInstance().isRestoreProcess())
+                return( Response.status( Response.Status.SERVICE_UNAVAILABLE ).entity( "Try later.").build() );
+
             role = Security.getInstance().authenticate(login, password);
             if (role == null)
                 return( Response.status( Response.Status.UNAUTHORIZED ).entity( "Authentication failed.").build() );

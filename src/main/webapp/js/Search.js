@@ -284,6 +284,20 @@ Ext.onReady( function() {
 } );
 
 function init() {
+    Ext.Ajax.request( {
+        url: 'rest/system/status',
+        method: 'GET',
+        success: function(response, opts) {
+            var status = response.responseText;
+            if (status == "ok")
+                initUI();
+            else
+                unavailable(status);
+        }
+    } );
+}
+
+function initUI() {
     var searchManager = Ext.create('Comete.SearchManager', {
         region: 'center',
         border: false
@@ -304,4 +318,16 @@ function init() {
     } );
 
     updateToolbar();
+}
+
+function unavailable(status) {
+    new Ext.Viewport( {
+        layout: 'fit',
+        items: {
+            border: false,
+            margin: '10 0 0 10',
+            html: '<img src="images/cometeLogo.gif"/><br/><br/><font style="font-size:16px">' +
+                  tr('Server temporarily unavailable') + ' : ' + status + '</font>'
+        }    
+    } );
 }

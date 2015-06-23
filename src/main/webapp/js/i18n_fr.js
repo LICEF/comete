@@ -285,7 +285,10 @@
 
     'Apply the modifications on': 'Appliquer les modifications sur',
     'the selected resources': 'les ressources sélectionées',
-    'all the found resources': 'toutes les ressources trouvées'
+    'all the found resources': 'toutes les ressources trouvées',
+
+
+    'Server temporarily unavailable': 'Serveur temporairement indisponible'
 
 };
 
