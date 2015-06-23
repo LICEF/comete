@@ -3,7 +3,7 @@
         url: 'rest/metadataRecords/redigestAll',
         method: 'PUT',
         failure: function(response, opts) {
-            Ext.Msg.alert('Failure', response.responseText );
+            Ext.Msg.alert(tr('Failure'), response.responseText );
         }
     } );
 }
@@ -19,23 +19,20 @@ function doResetLO(recordUri) {
         },
         failure: function(response, opts) {
             resultLabel.update('');
-            Ext.Msg.alert('Failure', response.responseText );
+            Ext.Msg.alert(tr('Failure'), response.responseText );
         }
     } );
 }
 
 function startBackup() {
-    resultLabel.setVisible(true); 
-    resultLabel.update( tr('Please wait') ); 
     Ext.Ajax.request( {
         url: 'rest/backups',
         method: 'POST',
         success: function(response, opts) {
-            resultLabel.update( response.responseText );
+            Ext.Msg.alert( tr( 'Information' ), tr( 'Backup started.' ) );
         },
         failure: function(response, opts) {
-            resultLabel.update('');
-            Ext.Msg.alert('Failure', response.responseText );
+            Ext.Msg.alert( tr( 'Failure' ), response.responseText );
         }
     } );
 }

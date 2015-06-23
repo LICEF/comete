@@ -5,6 +5,7 @@ import licef.DateUtil;
 import licef.IOUtil;
 import licef.ZipUtil;
 import licef.reflection.Invoker;
+import licef.reflection.ThreadInvoker;
 import licef.tsapi.Constants;
 import licef.tsapi.TripleStore;
 import licef.tsapi.model.Tuple;
@@ -31,6 +32,13 @@ public class Backup {
         if (backupProcess)
             throw new Exception( "A backup is already in progress." );
 
+        ThreadInvoker inv = new ThreadInvoker( new Invoker( this, "ca.licef.comete.backup.Backup", "doBackup", new Object[] {} ) );
+        inv.start();
+    }
+
+    public void doBackup() throws Exception {
+        backupProcess = true;
+
         //destination folder init
         String backupFolder = Core.getInstance().getCometeBackupHome();
         File backupDir = new File(backupFolder);
@@ -38,8 +46,6 @@ public class Backup {
             IOUtil.createDirectory(backupDir.getAbsolutePath());
 
         try {
-            backupProcess = true;
-
             //dump of the triple store
             String dump = Core.getInstance().getCometeHome() + "/dump.trig";
             TripleStore tripleStore = Core.getInstance().getTripleStore();
