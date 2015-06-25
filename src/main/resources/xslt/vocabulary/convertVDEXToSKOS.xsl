@@ -77,16 +77,44 @@
                 <skos:Concept rdf:about="{$src}">
                     <xsl:choose>
                         <xsl:when test="vdex:relationshipType='RT'">
-                            <skos:closeMatch rdf:resource="{$dest}"/>
+                            <xsl:choose>
+                                <xsl:when test="$sourceIdentifier = $targetIdentifier">
+                                    <skos:related rdf:resource="{$dest}"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <skos:closeMatch rdf:resource="{$dest}"/>
+                                </xsl:otherwise>
+                            </xsl:choose>
                         </xsl:when>
                         <xsl:when test="vdex:relationshipType='NT'">
-                            <skos:narrowMatch rdf:resource="{$dest}"/>
+                            <xsl:choose>
+                                <xsl:when test="$sourceIdentifier = $targetIdentifier">
+                                    <skos:narrower rdf:resource="{$dest}"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <skos:narrowMatch rdf:resource="{$dest}"/>
+                                </xsl:otherwise>
+                            </xsl:choose>
                         </xsl:when>
                         <xsl:when test="vdex:relationshipType='BT'">
-                            <skos:broadMatch rdf:resource="{$dest}"/>
+                            <xsl:choose>
+                                <xsl:when test="$sourceIdentifier = $targetIdentifier">
+                                    <skos:broader rdf:resource="{$dest}"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <skos:broadMatch rdf:resource="{$dest}"/>
+                                </xsl:otherwise>
+                            </xsl:choose>
                         </xsl:when>
                         <xsl:otherwise>
-                            <skos:relatedMatch rdf:resource="{$dest}"/>
+                            <xsl:choose>
+                                <xsl:when test="$sourceIdentifier = $targetIdentifier">
+                                    <skos:related rdf:resource="{$dest}"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <skos:relatedMatch rdf:resource="{$dest}"/>
+                                </xsl:otherwise>
+                            </xsl:choose>
                         </xsl:otherwise>
                     </xsl:choose>
                 </skos:Concept>
