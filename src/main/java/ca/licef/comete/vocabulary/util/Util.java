@@ -47,6 +47,8 @@ public class Util {
     }
 
     public static boolean isGraphExists(String uri) throws Exception {
+        if (uri == null)
+            return false;
         TripleStore tripleStore = Core.getInstance().getTripleStore();
         Invoker inv = new Invoker( tripleStore, "licef.tsapi.TripleStore", "getNamedGraphs", new Object[] {} );
         String[] names = (String[])tripleStore.transactionalCall( inv );
