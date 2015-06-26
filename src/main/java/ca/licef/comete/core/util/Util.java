@@ -166,6 +166,9 @@ public class Util {
     }
 
     public static String getURIType(String uri) {
+        if (uri == null)
+            return null;
+
         String prefix = Core.getInstance().getUriPrefix();
         int indexOfPrefix = uri.indexOf( prefix );
         if( indexOfPrefix == -1 )
