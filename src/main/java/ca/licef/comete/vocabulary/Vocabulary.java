@@ -271,9 +271,9 @@ public class Vocabulary {
 
     public Tuple[] getOrphanConceptsEff() throws Exception {
         String fromClause = "FROM <urn:x-arq:DefaultGraph>\n ";
-        String[] nav = getNavigableVocabularies();
-        for (String vocUri : nav)
-            fromClause += "FROM <" + vocUri + "> \n";
+        Tuple[] ctxts = Vocabulary.getInstance().getVocContexts();
+        for (Tuple ctxt : ctxts)
+            fromClause += "FROM <" + ctxt.getValue("vocUri").getContent() + ">\n";
         String query = CoreUtil.getQuery("vocabulary/getOrphanConcepts.sparql", fromClause);
         return getTripleStore().sparqlSelect_textIndex(query);
     }

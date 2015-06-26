@@ -6,7 +6,6 @@ SELECT DISTINCT ?concept
 {0}
 WHERE '{'
     ?ctxt rdf:type comete:VocContext .
-    ?ctxt comete:vocNavigable "true" .
     ?ctxt comete:vocConceptLinkingPredicate ?conceptLink .
     ?s ?conceptLink ?concept .
     FILTER ( NOT EXISTS '{' ?concept skos:inScheme ?scheme '}' )
