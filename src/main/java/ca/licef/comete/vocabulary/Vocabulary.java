@@ -89,9 +89,6 @@ public class Vocabulary {
         String vocUri = getVocabularyUri(id);
 
         if (vocUri != null && Util.isGraphExists(vocUri)) {
-            concept = concept.replaceAll(" ", "%20");
-            concept = concept.replaceAll( "/", "%2F" );
-
             //check if concept is already an URI
             if (concept.contains(":")) {
                 String scheme = concept.substring(0, concept.indexOf(":"));
@@ -100,6 +97,9 @@ public class Vocabulary {
             }
 
             if (uri == null) {
+                concept = concept.replaceAll(" ", "%20");
+                concept = concept.replaceAll( "/", "%2F" );
+
                 String vocCtxt = getTripleStore().getTriplesWithPredicateObject(
                         COMETE.vocUri, vocUri, null)[0].getSubject();
 
@@ -177,6 +177,9 @@ public class Vocabulary {
     }
 
     public String getConceptSchemeEff(String uri) throws Exception{
+        if (uri == null)
+            return null;
+
         if (Util.isGraphExists(uri)) //uri is a skos conceptScheme)
             return uri;
 
@@ -190,6 +193,14 @@ public class Vocabulary {
         Tuple[] tuples = getTripleStore().sparqlSelect(query);
         if (tuples.length > 0)
             return tuples[0].getValue("vocUri").getContent();
+
+        String vocUri;
+        if (uri.contains("#")) //hash uri case, skos concept
+            vocUri = uri.substring(0, uri.lastIndexOf('#'));
+        else
+            vocUri = uri.substring(0, uri.lastIndexOf('/'));
+        if (Util.isGraphExists(vocUri))
+            return vocUri;
         else
             return null;
     }
@@ -271,9 +282,9 @@ public class Vocabulary {
 
     public Tuple[] getOrphanConceptsEff() throws Exception {
         String fromClause = "FROM <urn:x-arq:DefaultGraph>\n ";
-        String[] nav = getNavigableVocabularies();
-        for (String vocUri : nav)
-            fromClause += "FROM <" + vocUri + "> \n";
+        Tuple[] ctxts = Vocabulary.getInstance().getVocContexts();
+        for (Tuple ctxt : ctxts)
+            fromClause += "FROM <" + ctxt.getValue("vocUri").getContent() + ">\n";
         String query = CoreUtil.getQuery("vocabulary/getOrphanConcepts.sparql", fromClause);
         return getTripleStore().sparqlSelect_textIndex(query);
     }
@@ -356,7 +367,11 @@ public class Vocabulary {
     public Boolean isVocNavigable(String uri) throws Exception {
         String query = CoreUtil.getQuery("vocabulary/isVocNavigable.sparql", uri);
         Invoker inv = new Invoker(getTripleStore(), "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
-        return Boolean.parseBoolean(((Tuple[]) getTripleStore().transactionalCall(inv))[0].getValue("navigable").getContent());
+        Tuple[] tuples = (Tuple[])getTripleStore().transactionalCall(inv);
+        if (tuples.length > 0)
+            return Boolean.parseBoolean(tuples[0].getValue("navigable").getContent());
+        else
+            return Boolean.FALSE;
     }
 
 }
