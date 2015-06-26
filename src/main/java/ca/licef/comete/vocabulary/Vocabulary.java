@@ -85,29 +85,39 @@ public class Vocabulary {
     }
 
     public String getConcept(String id, String concept) throws Exception {
-        concept = concept.replaceAll(" ", "%20");
-        concept = concept.replaceAll( "/", "%2F" );
         String uri = null;
         String vocUri = getVocabularyUri(id);
 
         if (vocUri != null && Util.isGraphExists(vocUri)) {
-            String vocCtxt = getTripleStore().getTriplesWithPredicateObject(
-                    COMETE.vocUri, vocUri, null)[0].getSubject();
+            concept = concept.replaceAll(" ", "%20");
+            concept = concept.replaceAll( "/", "%2F" );
 
-            Triple[] pref = getTripleStore().getTriplesWithSubjectPredicate(vocCtxt, COMETE.vocConceptUriPrefix);
-            Triple[] suf = getTripleStore().getTriplesWithSubjectPredicate(vocCtxt, COMETE.vocConceptUriSuffix);
-
-            if (pref.length != 0)
-                uri = pref[0].getObject() + concept;
-            else {
-                String separator = "";
-                if ( !vocUri.endsWith("/") && !vocUri.endsWith("#") )
-                    separator = getVocConceptUriIdSeparator(vocCtxt);
-                uri = vocUri + separator + concept;
+            //check if concept is already an URI
+            if (concept.contains(":")) {
+                String scheme = concept.substring(0, concept.indexOf(":"));
+                if (scheme.matches("[a-zA-Z][a-zA-Z0-9\\+\\-\\.]*"))
+                    uri = concept;
             }
 
-            if (suf.length != 0)
-                uri += suf[0].getObject();
+            if (uri == null) {
+                String vocCtxt = getTripleStore().getTriplesWithPredicateObject(
+                        COMETE.vocUri, vocUri, null)[0].getSubject();
+
+                Triple[] pref = getTripleStore().getTriplesWithSubjectPredicate(vocCtxt, COMETE.vocConceptUriPrefix);
+                Triple[] suf = getTripleStore().getTriplesWithSubjectPredicate(vocCtxt, COMETE.vocConceptUriSuffix);
+
+                if (pref.length != 0)
+                    uri = pref[0].getObject() + concept;
+                else {
+                    String separator = "";
+                    if ( !vocUri.endsWith("/") && !vocUri.endsWith("#") )
+                        separator = getVocConceptUriIdSeparator(vocCtxt);
+                    uri = vocUri + separator + concept;
+                }
+
+                if (suf.length != 0)
+                    uri += suf[0].getObject();
+            }
         }
         return uri;
     }
@@ -170,22 +180,18 @@ public class Vocabulary {
         if (Util.isGraphExists(uri)) //uri is a skos conceptScheme)
             return uri;
 
-        //Existent prefix case
-        String query = CoreUtil.getQuery("vocabulary/getVocContextsDetails.sparql");
+        String fromClause = "";
+        Tuple[] ctxts = Vocabulary.getInstance().getVocContexts();
+        for (Tuple ctxt : ctxts)
+            fromClause += "FROM <" + ctxt.getValue("vocUri").getContent() + ">\n";
+
+        String query = CoreUtil.getQuery("vocabulary/getVocUriOfConcept.sparql",
+                fromClause, uri);
         Tuple[] tuples = getTripleStore().sparqlSelect(query);
-        for (Tuple tuple : tuples) {
-            String prefix = tuple.getValue("prefix").getContent();
-            if (uri.startsWith(prefix))
-                return tuple.getValue("vocUri").getContent();
-        }
-
-        String vocUri;
-        if (uri.contains("#")) //hash uri case, skos concept
-            vocUri = uri.substring(0, uri.lastIndexOf('#'));
+        if (tuples.length > 0)
+            return tuples[0].getValue("vocUri").getContent();
         else
-            vocUri = uri.substring(0, uri.lastIndexOf('/'));
-
-        return vocUri;
+            return null;
     }
 
     public Object[] getTopConcepts(String uri) throws Exception {
