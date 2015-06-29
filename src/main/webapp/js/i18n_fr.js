@@ -87,7 +87,7 @@
     'Vocabulary Management': 'Gestion des vocabulaires',
     'Record Validation': 'Validation des fiches',
     'Broken Links Management': 'Gestion des liens brisés',
-    'Other': 'Autre',
+    'Maintenance': 'Entretien',
 
     'Repositories': 'Répertoires',
     'Protocol': 'Protocole',

@@ -83,7 +83,7 @@ function init() {
     } );
 
     var miscLabel = Ext.create('Comete.ClickableLabel', {
-        text: tr('Other'),
+        text: tr('Maintenance'),
         cls: 'choice',
         selected: false,
         hidden: !isAdmin(),
