@@ -8,5 +8,5 @@ WHERE '{'
     ?ctxt rdf:type comete:VocContext .
     ?ctxt comete:vocConceptLinkingPredicate ?conceptLink .
     ?s ?conceptLink ?concept .
-    FILTER ( NOT EXISTS '{' ?concept skos:inScheme ?scheme '}' )
+    MINUS '{' ?concept skos:inScheme ?scheme '}'
 '}'

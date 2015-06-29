@@ -193,14 +193,6 @@ public class Vocabulary {
         Tuple[] tuples = getTripleStore().sparqlSelect(query);
         if (tuples.length > 0)
             return tuples[0].getValue("vocUri").getContent();
-
-        String vocUri = null;
-        if (uri.contains("#")) //hash uri case, skos concept
-            vocUri = uri.substring(0, uri.lastIndexOf('#'));
-        else if (uri.contains("/"))
-            vocUri = uri.substring(0, uri.lastIndexOf('/'));
-        if (Util.isGraphExists(vocUri))
-            return vocUri;
         else
             return null;
     }
