@@ -13,12 +13,6 @@ import org.rendersnake.DocType;
 import org.rendersnake.HtmlCanvas;
 import org.rendersnake.StringResource;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import javax.net.ssl.*;
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -352,32 +346,6 @@ public class BrokenLinkChecker implements Runnable {
         if( !isNotifNeeded || StringUtil.isEmpty( notifEmail ) )
             return;
 
-        String to = notifEmail;
-
-        String fromHost = null;
-        try {
-            fromHost = new URL( Core.getInstance().getUriPrefix() ).getHost();
-        }
-        catch( MalformedURLException e ) {
-            System.out.println( "Cannot determine exact host so notification is cancelled. " + e );
-            return;
-        }
-        // Useful in development while the domain in the uri prefix is not fully qualified. - FB
-        if( fromHost.indexOf( "." ) == -1 )
-            fromHost = "comete.licef.ca";
-
-        String from = "comete@" + fromHost;
-        String host = Core.getInstance().getSmtpHost();
-
-        Properties properties = System.getProperties();
-        properties.setProperty( "mail.smtp.host", host );
-        Session session = Session.getDefaultInstance( properties );
-
-        MimeMessage message = new MimeMessage( session );
-        message.setFrom( new InternetAddress( from ) );
-        message.addRecipient( Message.RecipientType.TO, new InternetAddress( to ) );
-        message.setSubject( "Report of broken links ready." );
-
         StringBuilder msg = new StringBuilder();
         msg.append( "You have asked to be notified when the report of broken links has been completed.\n " );
         msg.append( "The report has been generated successfully and is available here:\n\n" );
@@ -385,9 +353,8 @@ public class BrokenLinkChecker implements Runnable {
             String lang = Constants.UI_LANGUAGES[ l ];
             msg.append( Core.getInstance().getCometeUrl() + "/rest/brokenLinkManager/report?lang=" + lang ).append( "\n" );
         }
-        message.setText( msg.toString() );
 
-        Transport.send( message );
+        Util.sendMail( Util.getSystemEmailFromValue(), notifEmail, "Report of broken links ready.", msg.toString() );
     }
 
     private synchronized void incrementBrokenLinkCount() {

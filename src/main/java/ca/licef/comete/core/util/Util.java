@@ -25,6 +25,12 @@ import org.w3c.dom.Element;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Source;
@@ -34,6 +40,7 @@ import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
 import java.awt.*;
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -708,6 +715,34 @@ public class Util {
 
     public static void setWebappPath(String path) {
         webappPath = path;
+    }
+
+    public static String getSystemEmailFromValue() throws MalformedURLException {
+        String fromHost = null;
+        fromHost = new URL( Core.getInstance().getUriPrefix() ).getHost();
+
+        // Useful in development while the domain in the uri prefix is not fully qualified. - FB
+        if( fromHost.indexOf( "." ) == -1 )
+            fromHost = "comete.licef.ca";
+
+        String from = "comete@" + fromHost;
+        return( from );
+    }
+
+    public static void sendMail( String from, String to, String subject, String msg ) throws Exception {
+        String host = Core.getInstance().getSmtpHost();
+
+        Properties properties = System.getProperties();
+        properties.setProperty( "mail.smtp.host", host );
+        Session session = Session.getDefaultInstance( properties );
+
+        MimeMessage message = new MimeMessage( session );
+        message.setFrom( new InternetAddress( from ) );
+        message.addRecipient( Message.RecipientType.TO, new InternetAddress( to ) );
+        message.setSubject( subject );
+        message.setText( msg );
+
+        Transport.send( message );
     }
 
     public static String webappPath;
