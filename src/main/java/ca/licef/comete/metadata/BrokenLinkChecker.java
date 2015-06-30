@@ -1,9 +1,11 @@
 package ca.licef.comete.metadata;
 
 import ca.licef.comete.core.Core;
+import ca.licef.comete.core.Settings;
 import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.Util;
 import licef.IOUtil;
+import licef.StringUtil;
 import licef.reflection.Invoker;
 import licef.tsapi.model.Tuple;
 import licef.tsapi.TripleStore;
@@ -44,10 +46,9 @@ public class BrokenLinkChecker implements Runnable {
         return (instance);
     }
 
-    public void start( boolean setBrokenLinkFlag, String notifMail ) throws Exception {
+    public void start( boolean setBrokenLinkFlag ) throws Exception {
         if( master == null ) {
             this.setBrokenLinkFlag = setBrokenLinkFlag;
-            this.notifMail = notifMail;
 
             // Remove previous report.
             for( int l = 0; l < Constants.UI_LANGUAGES.length; l++ ) {
@@ -104,8 +105,12 @@ public class BrokenLinkChecker implements Runnable {
             if( setBrokenLinkFlag )
                 markResourcesWithBrokenLinks();
             writeReport();
-            if( notifMail != null && !"".equals( notifMail.trim() ) )
+            try {
                 notifyListener();
+            }
+            catch( Exception e ) {
+                e.printStackTrace();
+            }
         }
         finally {
             stop();
@@ -339,8 +344,15 @@ public class BrokenLinkChecker implements Runnable {
         }
     }
 
-    private void notifyListener() {
-        String to = notifMail.trim();
+    private void notifyListener() throws Exception {
+        Object[] notifSettings = Settings.getNotificationSettings();
+        String notifEmail = (String)notifSettings[ 0 ];
+        boolean isNotifNeeded = (boolean)notifSettings[ 1 ]; 
+
+        if( !isNotifNeeded || StringUtil.isEmpty( notifEmail ) )
+            return;
+
+        String to = notifEmail;
 
         String fromHost = null;
         try {
@@ -361,26 +373,21 @@ public class BrokenLinkChecker implements Runnable {
         properties.setProperty( "mail.smtp.host", host );
         Session session = Session.getDefaultInstance( properties );
 
-        try {
-            MimeMessage message = new MimeMessage( session );
-            message.setFrom( new InternetAddress( from ) );
-            message.addRecipient( Message.RecipientType.TO, new InternetAddress( to ) );
-            message.setSubject( "Report of broken links ready." );
+        MimeMessage message = new MimeMessage( session );
+        message.setFrom( new InternetAddress( from ) );
+        message.addRecipient( Message.RecipientType.TO, new InternetAddress( to ) );
+        message.setSubject( "Report of broken links ready." );
 
-            StringBuilder msg = new StringBuilder();
-            msg.append( "You have asked to be notified when the report of broken links has been completed.\n " );
-            msg.append( "The report has been generated successfully and is available here:\n\n" );
-            for( int l = 0; l < Constants.UI_LANGUAGES.length; l++ ) {
-                String lang = Constants.UI_LANGUAGES[ l ];
-                msg.append( Core.getInstance().getCometeUrl() + "/rest/brokenLinkManager/report?lang=" + lang ).append( "\n" );
-            }
-            message.setText( msg.toString() );
+        StringBuilder msg = new StringBuilder();
+        msg.append( "You have asked to be notified when the report of broken links has been completed.\n " );
+        msg.append( "The report has been generated successfully and is available here:\n\n" );
+        for( int l = 0; l < Constants.UI_LANGUAGES.length; l++ ) {
+            String lang = Constants.UI_LANGUAGES[ l ];
+            msg.append( Core.getInstance().getCometeUrl() + "/rest/brokenLinkManager/report?lang=" + lang ).append( "\n" );
+        }
+        message.setText( msg.toString() );
 
-            Transport.send( message );
-        }
-        catch( MessagingException mex ) {
-            mex.printStackTrace();
-        }
+        Transport.send( message );
     }
 
     private synchronized void incrementBrokenLinkCount() {

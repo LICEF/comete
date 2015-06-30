@@ -55,8 +55,7 @@ Ext.define( 'Comete.BrokenLinkManager', {
             Ext.Ajax.request( {
                 url: 'rest/brokenLinkManager/verification',
                 params: {
-                    setBrokenLinkFlag: this.setFlagCheckbox.getValue(),
-                    notifEmail: this.emailField.getValue()
+                    setBrokenLinkFlag: this.setFlagCheckbox.getValue()
                 },
                 method: 'POST',
                 success: function( response ) {
@@ -119,12 +118,6 @@ Ext.define( 'Comete.BrokenLinkManager', {
             name: 'setBrokenLinkFlag'
         } );
 
-        this.emailField = Ext.create( 'Ext.form.field.Text', {
-            fieldLabel: tr( 'Email for notification (optional)' ),
-            labelWidth: 200,
-            name: 'notifEmail'
-        } );
-
         this.launcherPanel = Ext.create( 'Ext.panel.Panel', {
             width: '100%',
             border: 0,
@@ -134,7 +127,7 @@ Ext.define( 'Comete.BrokenLinkManager', {
             },
             items: [
                 { xtype: 'label', text: tr( 'Launching broken links validation task' ), margin: '10 0 0 10', cls: 'sectionTitle', width: '100%' },
-                { xtype: 'panel', layout: 'form', width: 500, border: 0, margin: '10 0 0 10', items: [ this.setFlagCheckbox, this.emailField ] },
+                { xtype: 'panel', layout: 'form', width: 500, border: 0, margin: '10 0 0 10', items: [ this.setFlagCheckbox ] },
                 { xtype: 'button', text: tr( 'Start Verification' ), margin: '10 0 0 10', handler: this.startVerification, scope: this }
             ]
         } );

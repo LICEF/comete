@@ -35,7 +35,7 @@ public class BrokenLinkManagerResource {
     @POST
     @Path( "/verification" )
     @Produces( MediaType.TEXT_HTML )
-    public Response startVerification( @Context HttpServletRequest request, @FormParam( "setBrokenLinkFlag" ) String setBrokenLinkFlag, @FormParam( "notifEmail" ) String notifEmail ) throws Exception {
+    public Response startVerification( @Context HttpServletRequest request, @FormParam( "setBrokenLinkFlag" ) String setBrokenLinkFlag ) throws Exception {
         if( !Security.getInstance().isAuthorized( request ) )
             return( Response.status( Response.Status.UNAUTHORIZED ).entity( "Not authorized to launch broken links verification." ).build() );
 
@@ -43,7 +43,7 @@ public class BrokenLinkManagerResource {
             return( Response.status( 503 /* Service unavailable */ ).entity( "The Broken Link Manager is already in the process of validating broken links." ).build() );
 
         try {
-            BrokenLinkChecker.getInstance().start( "true".equals( setBrokenLinkFlag ), notifEmail );
+            BrokenLinkChecker.getInstance().start( "true".equals( setBrokenLinkFlag ) );
 
             return Response.ok( "Verification started on " + (new Date()) ).build();
         }

@@ -90,7 +90,7 @@ public class Settings {
 
         List<Triple> triplesToAdd = new ArrayList<Triple>();
         if( !StringUtil.isEmpty( notifEmail ) )
-            triplesToAdd.add( new Triple( "http://notifier", FOAF.mbox, notifEmail ) );
+            triplesToAdd.add( new Triple( "http://notifier", FOAF.mbox, notifEmail.trim() ) );
 
         triplesToAdd.add( new Triple( "http://brokenLinkValidationCompletionNotif", COMETE.notificationEnabled, brokenLinkValidationCompletionNotif + "" ) );
         triplesToAdd.add( new Triple( "http://harvestCompletionNotif", COMETE.notificationEnabled, harvestCompletionNotif + "" ) );

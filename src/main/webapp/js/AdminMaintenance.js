@@ -49,7 +49,7 @@
                 url: 'rest/settings/notifications',
                 method: 'POST',
                 success: function() {
-                    Ext.Msg.alert( tr( 'Warning' ), tr( 'Notification settings saved.' ) );
+                    Ext.Msg.alert( tr( 'Information' ), tr( 'Notification settings saved.' ) );
                 },
                 failure: function( response ) {
                     Ext.Msg.alert( tr( 'Failure' ), response.responseText );
@@ -196,6 +196,7 @@
             },
             border: false,
             margin: '0 0 0 20',
+            width: 700,
             items:[
                 { xtype: 'label', text: tr( 'Reinitialization' ), margin: '0 0 10 0', cls: 'sectionTitle' },
                 buttonResetMetamodel, 
@@ -205,7 +206,7 @@
                 {layout:'hbox', border: false, items: [ buttonStartBackup ]},
                 {layout:'hbox', border: false, items: [ {xtype:'tbspacer', width: 200}, resultLabel ]},
                 { xtype: 'label', text: tr( 'Notifications' ), margin: '30 0 0 0', cls: 'sectionTitle' },
-                { xtype: 'panel', layout: 'form', border: 0, bodyPadding: 0, items: [ 
+                { xtype: 'panel', layout: 'form', width: 550, border: 0, bodyPadding: 0, items: [ 
                     this.notifEmailField, this.brokenLinkNotifCheckbox, this.harvestNotifCheckbox ] }, 
                 buttonSaveNotifParams
             ]
