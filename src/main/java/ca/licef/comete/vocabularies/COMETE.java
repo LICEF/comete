@@ -93,6 +93,9 @@ public class COMETE {
     /** <p>significative word describing the object</p> */
     public static final ObjectProperty metadataFormat  = m_model.createObjectProperty( "http://comete.licef.ca/reference#metadataFormat" );
 
+    /** <p>Whether a specific kind of notification is enabled or not</p> */
+    public static final DatatypeProperty notificationEnabled = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#notificationEnabled" );
+
     /** <p>Link to original data.</p> */
     public static final DatatypeProperty originalDataLink = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#originalDataLink" );
 
@@ -108,7 +111,7 @@ public class COMETE {
     /** <p>modification date of object into the system</p> */
     public static final DatatypeProperty updated = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#updated" );
     
-    /** <p>Alias corresponding to the vocabulary</p> */
+    /** <p>Whether a specific validation is enabled or not</p> */
     public static final DatatypeProperty validationEnabled = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#validationEnabled" );
 
     /** <p>Link to a validation report for a specific application profile</p> */

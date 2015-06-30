@@ -70,4 +70,45 @@ public class SettingsResource {
         return Response.ok().build();
     }
 
+    @GET
+    @Path( "/notifications" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public Response getNofificationSettings( @Context HttpServletRequest request ) throws Exception {
+        if( !Security.getInstance().isAuthorized( request ) )
+            return( Response.status( Response.Status.UNAUTHORIZED ).entity( "Not authorized to read notification settings." ).build() );
+
+        Object[] settings = Settings.getNotificationSettings();
+        String notifEmail = (String)settings[ 0 ];
+        boolean brokenLinkValidationCompletionNotif = (boolean)settings[ 1 ];
+        boolean harvestCompletionNotif = (boolean)settings[ 2 ];
+
+        StringWriter out = new StringWriter();
+        JSONWriter json = new JSONWriter( out );
+       
+        json.object()
+            .key( "notifEmail" ).value( notifEmail == null ? "" : notifEmail )
+            .key( "brokenLinkValidationCompletionNotif" ).value( brokenLinkValidationCompletionNotif )
+            .key( "harvestCompletionNotif" ).value( harvestCompletionNotif );
+        json.endObject();
+
+        out.close();
+
+        return Response.ok(out.toString()).build();
+    }
+
+    @POST
+    @Path( "/notifications" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response setNotificationSettings( @Context HttpServletRequest request, 
+        @FormParam( "notifEmail" ) String notifEmail, @FormParam( "brokenLinkValidationCompletionNotif" ) String brokenLinkValidationCompletionNotif,
+            @FormParam( "harvestCompletionNotif" ) String harvestCompletionNotif ) throws Exception {
+
+        if (!Security.getInstance().isAuthorized(request))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to write notification settings.").build();
+
+        Settings.setNotificationSettings( notifEmail, "true".equals( brokenLinkValidationCompletionNotif ), "true".equals( harvestCompletionNotif ) );
+
+        return( Response.ok( "Notification settings saved." ).build() );
+    }
+
 }

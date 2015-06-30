@@ -287,6 +287,9 @@
     'the selected resources': 'les ressources sélectionées',
     'all the found resources': 'toutes les ressources trouvées',
 
+    'Completion of Broken Links Validation': 'Complétion de la vérification des liens brisés',
+    'Completion of Harvest': 'Complétion d\'une moisson',
+    'Notification settings saved.': 'Données de notifications sauvegardées. ',
 
     'Server temporarily unavailable': 'Serveur temporairement indisponible'
 
