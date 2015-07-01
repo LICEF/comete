@@ -88,7 +88,7 @@
     'Vocabulary Management': 'Gestion des vocabulaires',
     'Record Validation': 'Validation des fiches',
     'Broken Links Management': 'Gestion des liens brisés',
-    'Other': 'Autre',
+    'Maintenance': 'Entretien',
 
     'Repositories': 'Répertoires',
     'Protocol': 'Protocole',
@@ -298,6 +298,9 @@
 
     'Enter your request here':'Entrez votre requête ici',
 
+    'Completion of Broken Links Validation': 'Complétion de la vérification des liens brisés',
+    'Completion of Harvest': 'Complétion d\'une moisson',
+    'Notification settings saved.': 'Données de notifications sauvegardées. ',
 
     'Server temporarily unavailable': 'Serveur temporairement indisponible'
 

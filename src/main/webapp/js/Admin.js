@@ -83,7 +83,7 @@ function init() {
     } );
 
     var miscLabel = Ext.create('Comete.ClickableLabel', {
-        text: tr('Other'),
+        text: tr('Maintenance'),
         cls: 'choice',
         selected: false,
         hidden: !isAdmin(),
@@ -134,12 +134,17 @@ function init() {
         lang: lang
     } );
 
+    var maintenancePanel = Ext.create('Comete.AdminMaintenance', {
+        border: false,
+        lang: lang
+    } );
+
     var cardPanel = Ext.create('Ext.panel.Panel', {
         id: 'cardPanel',
         layout: 'card',
         region: 'center',
         border: false,
-        items: [ importerPanel, harvestPanel, adminIdentityPanel, adminVocPanel, adminRecordValidationPanel, brokenLinksPanel, otherPanel ]
+        items: [ importerPanel, harvestPanel, adminIdentityPanel, adminVocPanel, adminRecordValidationPanel, brokenLinksPanel, maintenancePanel ]
     });
 
     var contentPanel = Ext.create('Ext.panel.Panel', {

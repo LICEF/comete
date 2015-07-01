@@ -146,6 +146,11 @@ public class Report {
             }
         }
 
-        IOUtil.writeStringToFile(sb.toString(), new File(defFolder, getReportName()));
+        IOUtil.writeStringToFile(sb.toString(), getLocation());
     }
+
+    public File getLocation() {
+        return( new File( defFolder, getReportName() ) );
+    }
+
 }

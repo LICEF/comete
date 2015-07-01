@@ -1,8 +1,11 @@
 package ca.licef.comete.harvester;
 
+import ca.licef.comete.core.Settings;
+import ca.licef.comete.core.util.Util;
 import licef.DateUtil;
 import licef.IOUtil;
 import licef.Sha1Util;
+import licef.StringUtil;
 import licef.XMLUtil;
 import org.json.JSONObject;
 import org.w3c.dom.Node;
@@ -131,6 +134,18 @@ public class Worker implements Runnable {
 
     public Report getReport() {
         return report;
+    }
+
+    public void notifyListener() throws Exception {
+        Object[] notifSettings = Settings.getNotificationSettings();
+        String notifEmail = (String)notifSettings[ 0 ];
+        boolean isNotifNeeded = (boolean)notifSettings[ 2 ]; 
+
+        if( !isNotifNeeded || StringUtil.isEmpty( notifEmail ) )
+            return;
+
+        String msg = IOUtil.readStringFromFile( getReport().getLocation() );
+        Util.sendMail( Util.getSystemEmailFromValue(), notifEmail, "Report of last harvest ready.", msg );
     }
 
     public Node postProcessMetadata( Node metadata ) throws ClassNotFoundException, IllegalAccessException, InstantiationException, TransformerConfigurationException, IOException, NoSuchMethodException, TransformerException {

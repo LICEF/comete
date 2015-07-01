@@ -31,7 +31,7 @@
     <script type="text/javascript" src="js/AdminVoc.js"></script>
     <script type="text/javascript" src="js/AdminRecordValidation.js"></script>
     <script type="text/javascript" src="js/AdminBrokenLinkManager.js"></script>
-    <script type="text/javascript" src="js/AdminOther.js"></script>
+    <script type="text/javascript" src="js/AdminMaintenance.js"></script>
     <script type="text/javascript" src="js/Admin.js"></script>
 
 </head>

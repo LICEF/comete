@@ -73,6 +73,12 @@ public class HTMLWorker extends Worker {
                     updateFromDate();
                 getReport().generateReport(endDate, throwable, thread == null);
                 Harvester.getInstance().removeHarvest(getId());
+                try {
+                    notifyListener();
+                }
+                catch( Exception e2 ) {
+                    e2.printStackTrace();
+                }
                 thread = null;
             } catch (Exception e) {
                 e.printStackTrace();
