@@ -63,9 +63,14 @@ public class OAIWorker extends Worker {
                 updateFromDate();
             getReport().generateReport(endDate, throwable, thread == null);
             Harvester.getInstance().removeHarvest(getId());
+            try {
+                notifyListener();
+            }
+            catch( Exception e2 ) {
+                e2.printStackTrace();
+            }
             thread = null;
         } catch (Exception e) {
-            System.out.println("e = " + e);
             e.printStackTrace();
         }
     }
