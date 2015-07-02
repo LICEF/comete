@@ -24,6 +24,7 @@
 
     <title>Comète</title>
     <script type="text/javascript" src="js/utils.js"></script>
+    <script type="text/javascript" src="js/sha1.js"></script>
     <script type="text/javascript" src="js/Toolbar.js"></script>
     <script type="text/javascript" src="js/learningObjectToHtml.js"></script>
     <script type="text/javascript" src="js/Viewer.js"></script>

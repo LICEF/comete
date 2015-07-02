@@ -935,15 +935,31 @@ Ext.define( 'Comete.LoginDialog', {
         this.callParent(arguments); 
     },
     submit: function() {
-        this.formPanel.submit({
+        Ext.Ajax.request( {
+            url: 'rest/security/initiate',
+            success: function(response, opts) {
+                this.doSubmit(response.responseText);
+            },
+            failure: function(response, opts) {
+                Ext.Msg.alert('Failure', response.responseText);
+            },
+            scope: this
+        } ); 
+    },
+    doSubmit: function(id) {
+        Ext.Ajax.request( {
             url: 'rest/security/authentication',
             method: 'POST',
+            params: { 
+                login: this.login.getValue(),
+                password: sha1(id + sha1(this.password.getValue()))
+            },
             success: function(form, action) {
                 this.close();
                 window.location.reload(); 
             },
             failure: function(form, action) { 
-                Ext.Msg.alert( tr('Failure'), tr('Authentication failed.') );            
+                Ext.Msg.alert( tr('Failure'), tr('Authentication failed.') );
             },
             scope: this
         });
