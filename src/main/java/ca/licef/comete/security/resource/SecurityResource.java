@@ -28,17 +28,29 @@ public class SecurityResource {
         return( Response.ok( role.getValue() ).build() );
     }
 
+    @GET
+    @Path( "initiate" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response initiate(@Context HttpServletRequest req) throws Exception {
+        if (Backup.getInstance().isRestoreProcess())
+            return( Response.status( Response.Status.SERVICE_UNAVAILABLE ).entity( "Try later.").build() );
+
+        HttpSession session = req.getSession();
+        return Response.ok(session.getId()).build();
+    }
+
     @POST
     @Path( "authentication" )
     @Produces( MediaType.APPLICATION_JSON )
-    public Response authenticate( @Context HttpServletRequest req, @FormParam( "login" ) String login, @FormParam( "password" ) String password ) {
+    public Response authenticate( @Context HttpServletRequest req, @FormParam( "login" ) String login, @FormParam( "password" ) String encryptedPassword ) {
         Role role;
         try {
             if (Backup.getInstance().isRestoreProcess())
                 return( Response.status( Response.Status.SERVICE_UNAVAILABLE ).entity( "Try later.").build() );
 
-            role = Security.getInstance().authenticate(login, password);
-            if (role == null)
+            HttpSession session = req.getSession();
+            role = Security.getInstance().authenticate(session.getId(), login, encryptedPassword);
+            if (role == null || role == Role.NONE)
                 return( Response.status( Response.Status.UNAUTHORIZED ).entity( "Authentication failed.").build() );
         }
         catch( Exception e ) {

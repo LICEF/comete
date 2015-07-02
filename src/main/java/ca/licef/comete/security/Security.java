@@ -50,12 +50,12 @@ public class Security {
         }
     }
 
-    public Role authenticate(String login, String password) throws Exception {
+    public Role authenticate(String sessionId, String login, String encryptedPassword) throws Exception {
         File account = new File(settingsDir, login + ".txt");
         Vector lines = IOUtil.readLines(account);
         String accountPasswordSha1 = (String)lines.get(0);
-        String hashedPassword = Sha1Util.hash(password);
-        if (hashedPassword.equals(accountPasswordSha1))
+        String encryptedAccountPassword = Sha1Util.hash(sessionId + accountPasswordSha1);
+        if (encryptedPassword.equals(encryptedAccountPassword))
             return Role.get( (String)lines.get(1) );
         else
             return Role.NONE;
