@@ -3,7 +3,7 @@
     layout: 'vbox',  
     initComponent: function( config ) {
 
-        this.waitDialog = Ext.create('Ext.window.MessageBox', {       
+        this.waitDialog = Ext.create('Ext.window.MessageBox', {
         });
 
         this.uploadFile = Ext.create('Ext.form.field.File', {
@@ -21,9 +21,9 @@
         this.uploadButton = Ext.create('Ext.button.Button', {
             text: tr('Upload'),
             handler: function() {
-                resultLabel.setVisible(false);            
+                this.resultLabel.setVisible(false);
                 this.waitDialog.wait( tr('Please wait') + '...' );
-                var uploadForm = this.uploadPanel.getForm();    
+                var uploadForm = this.uploadPanel.getForm();
                 if (uploadForm.isValid()) {
                     var isPendingByDefault = this.setPendingByDefaultCheckbox.getValue();
                     var isCheckingBrokenLink = this.setCheckBrokenLinkCheckox.getValue();
@@ -52,7 +52,7 @@
                     });
                 }
             },
-            scope: this      
+            scope: this
         });
 
         this.setPendingByDefaultCheckbox = Ext.create( 'Ext.form.field.Checkbox', {
