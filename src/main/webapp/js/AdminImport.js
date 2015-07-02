@@ -30,19 +30,34 @@
                     var isCheckingInvalid = this.setCheckInvalidCheckbox.getValue();
                     var invalidApplProf = encodeURIComponent( this.invalidApplProfComboBox.getValue() );
                     uploadForm.submit({ 
-                        url: 'rest/metadataRecords?isPendingByDefault=' + isPendingByDefault + 
+                        url: 'rest/metadataRecords?validation=true&isPendingByDefault=' + isPendingByDefault + 
                             '&isCheckingBrokenLink=' + isCheckingBrokenLink + '&isCheckingInvalid=' + isCheckingInvalid + '&invalidApplProf=' + invalidApplProf,
                         success: function(form, action) {
-                            var res = '';
-                            for (i = 0; i < action.result.data.length; i++) {
-                                var state = action.result.data[i].state;
-                                if (state == 'ignored')
-                                    state = 'same metadata record => no change';
-                                res += '<br/><a href="' + action.result.data[i].uri + '" target="_blank">' + action.result.data[i].uri + '</a> ' + state;
+                            if (action.result.data == "ALREADY_EXISTS") {
+                                this.waitDialog.close();
+                                Ext.Msg.show({
+                                    title: tr('Warning'), 
+                                    msg: tr( 'A record with the same identifier already exists.<br/>It will be replaced with this new one.<br/>Do you want to continue ?' ), 
+                                    buttons: Ext.Msg.OKCANCEL,
+                                    icon: Ext.Msg.WARNING,
+                                    fn: function(btn) { 
+                                        if( btn == 'ok' )
+                                            this.completeSubmit();   
+                                        else {
+                                            Ext.Ajax.request( {
+                                                method: 'PUT',
+                                                url: 'rest/metadataRecords/clearUpload',
+                                                failure: function( response ) {
+                                                    Ext.Msg.alert( tr( 'Failure' ), response.responseText );
+                                                }
+                                            } );   
+                                        }
+                                    },
+                                    scope: this
+                                });
                             }
-                            Ext.get('result').update( res ); 
-                            this.resultLabel.setVisible(true); 
-                            this.waitDialog.close();
+                            else 
+                                this.update(action.result);
                         },
                         failure: function(form, action) {
                             Ext.Msg.alert('Failure', action.result.error);
@@ -111,7 +126,36 @@
         };
         Ext.apply(this, cfg);
         this.callParent(arguments); 
+    },
+    update: function(json) {
+        var res = '';
+        for (i = 0; i < json.data.length; i++) {
+            var state = json.data[i].state;
+            if (state == 'ignored')
+                state = 'same metadata record => no change';
+            res += '<br/><a href="' + json.data[i].uri + '" target="_blank">' + json.data[i].uri + '</a> ' + state;
+        }
+        Ext.get('result').update( res ); 
+        this.resultLabel.setVisible(true); 
+        this.waitDialog.close();
+    },
+    completeSubmit: function() {
+        this.waitDialog.wait( tr('Please wait') + '...' );
+        Ext.Ajax.request( {
+            method: 'PUT',
+            url: 'rest/metadataRecords/completeUpload',
+            success: function( response ) {
+                var json = Ext.decode(response.responseText);
+                this.update(json);   
+            },
+            failure: function( response ) {
+                this.waitDialog.close();
+                Ext.Msg.alert( tr( 'Failure' ), response.responseText );
+            },
+            scope: this
+        });   
     }
+
 } );
 
 
