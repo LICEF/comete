@@ -88,7 +88,7 @@
                      { readOnly:true , xtype: 'checkboxfield', boxLabel: tr( 'Mark resources that have broken links' ) },
                      { readOnly: true , xtype: 'checkboxfield', boxLabel: tr( 'Mark resources as "Invalid" when they are not compliant with this profile:' ), width: 200 },
                      { editable: false }, // invalidApplProf
-                     { fieldLabel: 'XSL', xtype: 'textarea', editable: false, inputAttrTpl: 'wrap="off" spellcheck="false"', height: 180 }
+                     { fieldLabel: 'XSLT', xtype: 'textarea', editable: false, inputAttrTpl: 'wrap="off" spellcheck="false"', height: 400 }
                    ]
         }); 
 
@@ -463,16 +463,17 @@ Ext.define( 'Comete.AdminHarvestDefEditor', {
                      { name: 'isCheckingBrokenLink', xtype: 'checkboxfield', boxLabel: tr( 'Mark resources that have broken links' ) },
                      this.isCheckingInvalidCheckbox,
                      this.invalidApplProfComboBox,
-                     { fieldLabel: 'XSL',
+                     { fieldLabel: 'XSLT',
                        name: 'xsl',
                        xtype: 'textarea', 
                        valueField: 'xsl',
-                       inputAttrTpl: 'wrap="off" spellcheck="false"', height: 180,
+                       inputAttrTpl: 'wrap="off" spellcheck="false"', height: 400, 
                        emptyText: tr('Optional field') } ]
         }); 
 
         var cfg = {
             title: (this.mode == 'modify')?tr('Modify repository'):tr('Add repository'),
+            maximizable: true,
             buttons: [ {text:'OK', handler: this.ok, scope: this}, {text:tr('Cancel'), handler: this.close, scope: this}],
             items: [ { border: false, scrollable: true, items: this.formPanel } ]
 
