@@ -48,20 +48,22 @@ public class LinkFromHtmlPage {
             HttpClient httpclient = new DefaultHttpClient();
             HttpGet get = new HttpGet( url );
             HttpResponse response = httpclient.execute( get );
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                factory.setNamespaceAware( true );
-                try {
-                    DocumentBuilder builder = factory.newDocumentBuilder();
-                    doc = builder.parse( entity.getContent() );
-                }
-                catch( SAXParseException e ) {
-                    doc = getRecordWithMalformedXml();
-                }
+            if( response.getStatusLine().getStatusCode() == 200 ) {
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                    factory.setNamespaceAware( true );
+                    try {
+                        DocumentBuilder builder = factory.newDocumentBuilder();
+                        doc = builder.parse( entity.getContent() );
+                    }
+                    catch( SAXParseException e ) {
+                        doc = getRecordWithMalformedXml();
+                    }
 
-                // Try to initialize the datestamp.
-                initDatestamp( response );
+                    // Try to initialize the datestamp.
+                    initDatestamp( response );
+                }
             }
         }
 
