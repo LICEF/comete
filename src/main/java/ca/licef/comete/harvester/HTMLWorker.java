@@ -43,6 +43,8 @@ public class HTMLWorker extends Worker {
                 try {
                     String status = null;
                     Node metadataNode = link.getRecord();
+                    if( metadataNode == null )
+                        throw new Exception( "Empty metadata record or metadata record not found." );
                     String[] data = Util.parseMetadataRecord(metadataNode);
                     String errorMessage = data[0];
                     if (errorMessage != null)

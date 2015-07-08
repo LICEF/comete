@@ -9,6 +9,7 @@ import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.core.util.Util;
 import ca.licef.comete.vocabularies.COMETE;
 import licef.reflection.Invoker;
+import licef.StringUtil;
 import licef.tsapi.model.Triple;
 import licef.tsapi.model.Tuple;
 import licef.tsapi.TripleStore;
@@ -44,7 +45,9 @@ public class RepositoryManager {
     }
 
     public String addOrUpdateRepository( String id, String name, String type, String url, String adminEmail, String defId ) throws Exception {
-        if( !adminEmail.startsWith( "mailto:" ) )
+        if( StringUtil.isEmpty( adminEmail ) )
+            adminEmail = null;
+        else if( !adminEmail.startsWith( "mailto:" ) )
             adminEmail = "mailto:" + adminEmail;
         Invoker inv = new Invoker( this, "ca.licef.comete.metadata.RepositoryManager", 
             "addOrUpdateRepositoryEff", new Object[] { id, name, type, url, adminEmail, defId } );
