@@ -272,6 +272,7 @@
     'To update the Validation Report, the metamodel must be resetted.': 'Pour mettre à jour le rapport de validation, le métamodèle doit être réinitialisé.',
 
     'Select LOM or zip of LOMs.<br/>Metametadata identifier (field 3.1) <b>must be present</b>.': 'Sélectionner un LOM ou un zip de LOMs.<br/>Le champ metametadata identifier (3.1) <b>doit être présent</b>.',
+    'A record with the same identifier already exists.<br/>It will be replaced with this new one.<br/>Do you want to continue ?': 'Un enregistrement avec le même identifiant existe déjà.<br>Il va être remplacé par celui-ci.<br>Voulez-vous quand même continuer ?',
 
     'Check this out!': 'À voir!',
     'I think that this could interest you: ': 'Je crois que ça pourrait vous intéresser: ',
