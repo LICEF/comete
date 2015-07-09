@@ -1,8 +1,0 @@
-PREFIX comete: <http://comete.licef.ca/reference#>
-PREFIX dcterms: <http://purl.org/dc/terms/>
-
-SELECT ?o
-WHERE '{'
-    <{0}> dcterms:subject ?o
-    FILTER STRSTARTS( STR( ?o ), "http://cegepadistance.ca/ns/typesrea#" )
-'}'
