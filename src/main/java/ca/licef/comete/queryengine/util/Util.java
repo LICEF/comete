@@ -1,6 +1,5 @@
 package ca.licef.comete.queryengine.util;
 
-import ca.licef.comete.queryengine.QueryCache;
 import ca.licef.comete.vocabulary.Vocabulary;
 import licef.DateUtil;
 import licef.tsapi.model.Tuple;
@@ -8,10 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -121,10 +117,11 @@ public class Util {
                     boolean isSubConcept = obj.has("subConcepts") && obj.getBoolean("subConcepts");
                     includeEquivalence = obj.has("equivalent") && obj.getBoolean("equivalent");
 
+                    String uid = (new Date()).getTime() + "";
                     if (isSubConcept)
-                        clause = CoreUtil.getQuery("queryengine/advancedVocConceptHierarchyFragment.sparql", uri, vocUri);
+                        clause = CoreUtil.getQuery("queryengine/advancedVocConceptHierarchyFragment.sparql", uri, vocUri, uid);
                     else
-                        clause = CoreUtil.getQuery("queryengine/advancedVocConceptFragment.sparql", uri, vocUri);
+                        clause = CoreUtil.getQuery("queryengine/advancedVocConceptFragment.sparql", uri, vocUri, uid);
 
                     //negation
                     if (condType.equals(NOT_CONCEPT_PREFIX))
