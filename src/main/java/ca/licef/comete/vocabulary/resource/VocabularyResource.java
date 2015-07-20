@@ -172,7 +172,7 @@ public class VocabularyResource {
                                                  @DefaultValue( "false" ) @QueryParam( "showIds" ) String showIds,
                                                  @DefaultValue( "false" ) @QueryParam( "includeScheme" ) boolean includeScheme,
                                                  @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) throws Exception {
-        Tuple[] concepts = Vocabulary.getInstance().getHierarchy(uri);
+        String[] concepts = Vocabulary.getInstance().getHierarchy(uri);
         StringWriter out = new StringWriter();
         try {
             JSONWriter json = new JSONWriter( out ).object();
@@ -185,10 +185,8 @@ public class VocabularyResource {
             _concepts.put(top);
 
             //reversing the list
-            for (int i = concepts.length-1; i >= 0; i--) {
-                Tuple concept = concepts[i];
-                _concepts.put( buildJSONConcept(concept.getValue("parent").getContent(), showIds, i == 0?null:false, lang, false));
-            }
+            for (int i = concepts.length-1; i >= 0; i--)
+                _concepts.put( buildJSONConcept(concepts[i], showIds, i == 0?null:false, lang, false));
 
             json.key( "concepts" ).value( _concepts );
             json.endObject();
