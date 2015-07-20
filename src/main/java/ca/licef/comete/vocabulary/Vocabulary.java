@@ -227,11 +227,31 @@ public class Vocabulary {
         return new Object[]{controlledPosition, childrenUris.toArray(new String[childrenUris.size()])};
     }
 
-    public Tuple[] getHierarchy(String uri) throws Exception {
+    public String[] getHierarchy(String uri) throws Exception {
+        Invoker inv = new Invoker(this, "ca.licef.comete.vocabulary.Vocabulary",
+                "doGetHierarchy", new Object[]{uri});
+        return (String[])getTripleStore().transactionalCall(inv);
+    }
+
+    /**
+     * reimplemented with a loop to avoid multiple heritage. -AM
+     */
+    public String[] doGetHierarchy(String uri) throws Exception {
+        ArrayList<String> hierarchy = new ArrayList<>();
+        hierarchy.add(uri);
         String graph = getConceptScheme(uri);
-        String query = CoreUtil.getQuery("vocabulary/getConceptHierarchy.sparql", uri, graph);
-        Invoker inv = new Invoker(getTripleStore(), "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
-        return (Tuple[])getTripleStore().transactionalCall(inv);
+        boolean done = false;
+        while (!done) {
+            String query = CoreUtil.getQuery("vocabulary/getConceptParent.sparql", uri, graph);
+            Tuple[] res = getTripleStore().sparqlSelect(query);
+            if (res.length > 0) {
+                uri = res[0].getValue("parent").getContent();
+                hierarchy.add(uri);
+            }
+            else
+                done = true;
+        }
+        return hierarchy.toArray( new String[ hierarchy.size() ] );
     }
 
     public Tuple[] searchConcepts(String terms, String lang) throws Exception {
