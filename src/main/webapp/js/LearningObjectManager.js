@@ -52,6 +52,66 @@
         } );
         this.resultRssButton.setVisible(false); 
 
+        this.saveAsCollection = function() {
+            var searchPanel = getCurrentSearchPanel();
+            if( searchPanel ) {
+                var query = searchPanel.getQuery();
+                if (query.length == 0) {
+                    Ext.Msg.alert(tr('Warning'), tr('Cannot save empty query.'));
+                    return;
+                }
+
+                var message = tr('Enter the collection label');
+                var promptBox = Ext.Msg;
+                promptBox.buttonText = { cancel: tr("Cancel") };
+                promptBox.show({
+                    msg: tr(message), 
+                    buttons: Ext.Msg.OKCANCEL,
+                    icon: Ext.Msg.QUESTION,
+                    prompt: true,
+                    fn: function( button, text ) { this.saveAsCollectionEff( button, text, query ); }, 
+                    scope: this 
+                });
+            }
+        }
+
+        this.saveAsCollectionEff = function(button, text, query) {
+            if (button != 'ok')
+                return;
+
+            if( text.trim() == '' ) {
+                Ext.Msg.alert(tr('Warning'), tr('Cannot save a collection with an empty label.'));
+                return;
+            }
+
+            Ext.Ajax.request( {
+                url: 'rest/queryEngine/collections',
+                params: {
+                    label: text,
+                    q: JSON.stringify(query)
+                },
+                method: 'POST',
+                success: function(response, opts) {
+                    searchManager.initCollections();
+                    Ext.Msg.alert('Information', tr('Collection saved.'));
+                },
+                failure: function(response, opts) {
+                    Ext.Msg.alert('Failure', response.responseText);  
+                },
+                scope: this 
+            } );        
+        }
+
+        this.saveAsCollectionButton = Ext.create('Ext.button.Button', {
+            text: tr('Save as a collection') + '...',
+            icon: '',
+            hidden: true,
+            disabled: true,
+            handler: this.saveAsCollection,
+            scope: this
+        });
+        this.saveAsCollectionButton.setVisible(this.editable); 
+
         var resultPanel = Ext.create('Ext.panel.Panel', {
             region: 'north',
             height: 30,        
@@ -67,7 +127,10 @@
                 { xtype: 'tbspacer', width: 40 }, 
                 this.resultAtomButton, 
                 { xtype: 'tbspacer', width: 10 }, 
-                this.resultRssButton
+                this.resultRssButton,
+                { xtype: 'tbfill' }, 
+                this.saveAsCollectionButton,
+                { xtype: 'tbspacer', width: 10 } 
             ]        
         } );       
 
@@ -162,10 +225,19 @@
     updateQueryHistoryButtons: function() {
         var isBackwardButtonDisabled = ( this.queryHistoryIndex <= 0 || this.queryHistory.length <= 1);
         var isForwardButtonDisabled = ( this.queryHistoryIndex >= this.queryHistory.length - 1 );
+        var isSaveAsCollectionButtonDisabled = ( this.queryHistory.length == 0 );
+        var isSaveAsCollectionButtonHidden = ( !this.editable || window.currentSearchQueryItem > 1 );
         if( this.goBackwardQueryButton )
             this.goBackwardQueryButton.setDisabled( isBackwardButtonDisabled );
         if( this.goForwardQueryButton )
             this.goForwardQueryButton.setDisabled( isForwardButtonDisabled );
+        if( this.saveAsCollectionButton ) {
+            this.saveAsCollectionButton.setDisabled( isSaveAsCollectionButtonDisabled );
+            if( isSaveAsCollectionButtonHidden )
+                this.saveAsCollectionButton.hide();
+            else
+                this.saveAsCollectionButton.show();
+        }
     },
     goBackwardQuery: function() {
         this.queryHistoryIndex--;

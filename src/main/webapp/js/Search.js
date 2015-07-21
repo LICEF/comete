@@ -23,6 +23,7 @@ function changeCardItem(item, elem, height) {
     window.currentSearchQueryItem = item;
     Ext.getCmp('cardPanel').getLayout().setActiveItem(item);
     setQueryPanelHeight(height, false);    
+    window.searchManager.loManager.updateQueryHistoryButtons();  
 }
 
 function setQueryPanelHeight(height, isAdvanced) {
@@ -30,6 +31,19 @@ function setQueryPanelHeight(height, isAdvanced) {
         currentAdvancedHeight = height;
     if (window.searchManager != undefined)
         window.searchManager.queryPanel.setHeight(height);
+}
+
+function getCurrentSearchPanel() {
+    if( !window.searchManager )
+        return( null );
+
+    switch(window.currentSearchQueryItem) {
+        case 0: return( searchManager.simpleSearchPanel );
+        case 1: return( searchManager.advancedSearchPanel );
+        case 2: return( searchManager.thematicSearchPanel );
+        case 3: return( searchManager.collectionSearchPanel );
+        default: return( null ); 
+    };
 }
 
 function displayQuery(queryItem, query) {

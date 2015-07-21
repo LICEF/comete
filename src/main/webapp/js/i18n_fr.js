@@ -75,6 +75,7 @@
     '(min. 4 characters)':'(min. 4 caractères)',
     'Save as collection': 'Sauvegarder comme collection',
     'Cannot save empty query.': 'Une requête vide ne peut être sauvée.',
+    'Cannot save a collection with an empty label.': 'Une collection doit avoir un nom non-vide.',
     'Enter the collection label': 'Saisir le nom de la collection',
     'Collection saved.': 'Collection sauvegardée.',
 
