@@ -59,7 +59,7 @@
     </xsl:template>
 
     <xsl:template match="vdex:term">
-        <xsl:variable name="termIdentifier" select="replace(iri-to-uri(vdex:termIdentifier), '/', '%2F' )"/>
+        <xsl:variable name="termIdentifier" select="iri-to-uri(vdex:termIdentifier)"/>
         <skos:Concept>
             <xsl:attribute name="rdf:about">
                 <xsl:call-template name="resourceUri">
