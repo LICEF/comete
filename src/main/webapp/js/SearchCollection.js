@@ -70,8 +70,11 @@
         searchManager.setRequestCollection( this.currentCollection.id, eval(this.currentCollection.query) ); 
     },
     setQuery: function(query) {
-        record = this.collectionCombo.findRecord("query", JSON.stringify(query));
-        this.collectionCombo.setValue(record.data.label);
+        if( query.key == 'collection' ) {
+            var collIndex = query.value.substring( 'coll_'.length );
+            var record = this.collectionStore.getAt( collIndex );
+            this.collectionCombo.setValue(record.data.label);
+        }
     },
     init: function() {
         this.collectionStore.load();

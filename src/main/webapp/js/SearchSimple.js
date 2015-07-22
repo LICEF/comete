@@ -129,6 +129,9 @@
         var textQuery = this.searchQueryField.getValue();
         searchManager.setRequestSimpleSearch( textQuery ); 
     },
+    getQuery: function() {
+        return( [ { key: 'fulltext', value: this.searchQueryField.getValue() } ] );
+    },
     setQuery: function(query) {
         this.searchQueryField.setValue('');
         if (query != null && query[0].key != "uri")

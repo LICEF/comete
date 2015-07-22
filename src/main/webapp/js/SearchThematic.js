@@ -362,6 +362,18 @@
         if (isQuery) 
             this.setRequestVocConcept(conceptUri);        
     },
+    getQuery: function() {
+        var conceptUri = this.breadcrumb.getLastElement();
+        var query = [ {  key: 'vocConcept', value: conceptUri, subConcepts: this.cbSubconcepts.getValue() } ];
+        if( this.cbEquivalence.getValue() ) {
+            var eqVocs = this.equivalence.getValue();
+            if (eqVocs.length > 0) {
+                query[0].equivalent = true;
+                query[0].eqVocs = eqVocs;
+            }
+        }
+        return( query );
+    },
     setQuery: function(query) {
         var conceptUri = query[0].value;
         Ext.Ajax.request( {
