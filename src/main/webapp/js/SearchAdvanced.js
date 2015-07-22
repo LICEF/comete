@@ -20,13 +20,6 @@ Ext.define( 'Comete.AdvancedSearch', {
             scope: this
         } );
 
-        this.saveAsCollectionButton = Ext.create('Ext.button.Button', {
-            text: tr('Save as collection') + '...',
-            hidden: true,
-            handler: this.saveAsCollection,
-            scope: this
-        } );
-
         this.condPanel = Ext.create('Ext.panel.Panel', {
             layout: 'vbox',
             border: false, 
@@ -140,6 +133,9 @@ Ext.define( 'Comete.AdvancedSearch', {
 
         return query;
     },
+    getQuery: function() {
+        return( this.buildAdvancedSearchQuery() );
+    },
     setQuery: function(query) {
         var queryConds = new Array();
         var j = 0;
@@ -156,50 +152,6 @@ Ext.define( 'Comete.AdvancedSearch', {
         }
         this.clear();        
         this.addQueryCond(queryConds);
-    },
-    saveAsCollection: function() {
-        var query = this.buildAdvancedSearchQuery();
-        if (query.length == 0) {
-            Ext.Msg.alert(tr('Warning'), tr('Cannot save empty query.'));
-            return;
-        }
-
-        var message = 'Enter the collection label';
-        var promptBox = Ext.Msg;
-        promptBox.buttonText = { cancel: tr("Cancel") };
-        promptBox.show({
-            msg: tr(message), 
-            buttons: Ext.Msg.OKCANCEL,
-            icon: Ext.Msg.QUESTION,
-            prompt: true,
-            fn: this.saveAsCollectionEff, 
-            scope: this 
-        });
-    },
-    saveAsCollectionEff: function(button, text) {
-        if (button != 'ok')
-            return;
-        if (text == "") {
-            this.saveAsCollection();
-            return;
-        }
-        var query = this.buildAdvancedSearchQuery();
-        Ext.Ajax.request( {
-            url: '/rest/queryEngine/collections',
-            params: {
-                label: text,
-                q: JSON.stringify(query)
-            },
-            method: 'POST',
-            success: function(response, opts) {
-                searchManager.initCollections();
-                Ext.Msg.alert('Information', tr('Collection saved.'));
-            },
-            failure: function(response, opts) {
-                Ext.Msg.alert('Failure', response.responseText);  
-            },
-            scope: this 
-        } );        
     }
 } );
 
