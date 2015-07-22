@@ -226,7 +226,7 @@
         var isBackwardButtonDisabled = ( this.queryHistoryIndex <= 0 || this.queryHistory.length <= 1);
         var isForwardButtonDisabled = ( this.queryHistoryIndex >= this.queryHistory.length - 1 );
         var isSaveAsCollectionButtonDisabled = ( this.queryHistory.length == 0 );
-        var isSaveAsCollectionButtonHidden = ( !this.editable || window.currentSearchQueryItem > 1 );
+        var isSaveAsCollectionButtonHidden = ( !this.editable || window.currentSearchQueryItem > 2 );
         if( this.goBackwardQueryButton )
             this.goBackwardQueryButton.setDisabled( isBackwardButtonDisabled );
         if( this.goForwardQueryButton )
