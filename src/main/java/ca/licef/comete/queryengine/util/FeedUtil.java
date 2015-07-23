@@ -53,7 +53,7 @@ public class FeedUtil {
         image.setTitle( bundle.getString( "feed.image.title" ) );
         image.setDescription( bundle.getString( "feed.image.description" ) );
         image.setLink( Core.getInstance().getCometeUrl() );
-        image.setUrl( Core.getInstance().getCometeUrl() + "/images/cometeLogo.gif" );
+        image.setUrl( Core.getInstance().getCometeUrl() + "/images/Logo_CERES2.png" );
         f.setImage( image );
 
         String feedId = absPath + "?start=" + start + "&limit=" + limit;
