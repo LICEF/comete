@@ -10,6 +10,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONWriter;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -20,10 +22,12 @@ import java.io.StringWriter;
 
 @Singleton
 @Path( "/repositories" )
+@Api( value = "Repository" )
 public class RepositoryResource {
 
     @GET
     @Produces( MediaType.APPLICATION_JSON )
+    @ApiOperation( value = "Get all known repositories." )
     public Response getRepositories() throws Exception {
         String[][] repositories = RepositoryManager.getInstance().getRepositories();
         StringWriter out = new StringWriter();

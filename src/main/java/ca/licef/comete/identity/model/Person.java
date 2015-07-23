@@ -6,11 +6,13 @@ import ca.licef.comete.identity.util.Util;
 import ca.licef.comete.vocabularies.COMETE;
 import ezvcard.Ezvcard;
 import ezvcard.VCardVersion;
-import ezvcard.parameters.AddressTypeParameter;
-import ezvcard.parameters.EmailTypeParameter;
-import ezvcard.parameters.ImageTypeParameter;
-import ezvcard.parameters.TelephoneTypeParameter;
-import ezvcard.types.*;
+import ezvcard.parameter.AddressType;
+import ezvcard.parameter.EmailType;
+import ezvcard.parameter.ImageType;
+import ezvcard.parameter.TelephoneType;
+import ezvcard.property.Address;
+import ezvcard.property.Kind;
+import ezvcard.property.StructuredName;
 import licef.IOUtil;
 import licef.tsapi.model.Triple;
 import licef.tsapi.vocabulary.DCTERMS;
@@ -143,8 +145,8 @@ public class Person extends Entity {
         String address = getAddress();
 
         vcard.setFormattedName(getFN()); //FN
-        StructuredNameType n = new StructuredNameType();
-        vcard.setKind(KindType.individual()); //only used in vcard 4.0 :-(
+        StructuredName n = new StructuredName();
+        vcard.setKind(Kind.individual()); //only used in vcard 4.0 :-(
         String firstname = getFirstname();
         String lastname = getLastname();
         String photo = getPhoto();
@@ -152,13 +154,13 @@ public class Person extends Entity {
         if (lastname != null) n.setFamily(lastname);
         vcard.setStructuredName(n);  //N
 
-        if (email != null) vcard.addEmail(email.substring("mailto:".length()), EmailTypeParameter.INTERNET); //EMAIL
+        if (email != null) vcard.addEmail(email.substring("mailto:".length()), EmailType.INTERNET); //EMAIL
         if (url != null) vcard.addUrl(url); //URL
-        if (tel != null) vcard.addTelephoneNumber(tel.substring("tel:".length()), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE); //TEL
-        if (fax != null) vcard.addTelephoneNumber(fax.substring("fax:".length()), TelephoneTypeParameter.WORK, TelephoneTypeParameter.FAX); //TEL (fax)
-        AddressType a = null;
+        if (tel != null) vcard.addTelephoneNumber(tel.substring("tel:".length()), TelephoneType.WORK, TelephoneType.VOICE); //TEL
+        if (fax != null) vcard.addTelephoneNumber(fax.substring("fax:".length()), TelephoneType.WORK, TelephoneType.FAX); //TEL (fax)
+        Address a = null;
         if (address != null) {
-            a = new AddressType();
+            a = new Address();
             String[] addrValues = address.split(";");
             if (addrValues.length >= 1 && !"".equals(addrValues[0])) a.setPoBox(addrValues[0].trim());
             if (addrValues.length >= 2 && !"".equals(addrValues[1])) a.setExtendedAddress(addrValues[1].trim());
@@ -167,13 +169,14 @@ public class Person extends Entity {
             if (addrValues.length >= 5 && !"".equals(addrValues[4])) a.setRegion(addrValues[4].trim());
             if (addrValues.length >= 6 && !"".equals(addrValues[5])) a.setPostalCode(addrValues[5].trim());
             if (addrValues.length >= 7 && !"".equals(addrValues[6])) a.setCountry(addrValues[6].trim());
-            a.addType(AddressTypeParameter.POSTAL);
+            a.addType(AddressType.POSTAL);
             vcard.addAddress(a);
         }
 
         if (photo != null) {
             String mt = IOUtil.getMimeType(photo);
-            ImageTypeParameter imageType = ImageTypeParameter.valueOf(mt.substring(mt.indexOf("/") + 1));
+            //ImageType imageType = ImageType.valueOf(mt.substring(mt.indexOf("/") + 1));
+            ImageType imageType = ImageType.get(null, mt, null);
             /*if (photo.startsWith(Core.getInstance().getIdentityUrl())) { //binary
                 byte[] _photo = Identity.getInstance().getPhoto(photo);
                 if (_photo != null) {
@@ -206,7 +209,7 @@ public class Person extends Entity {
                 vcard.setOrganization(organization.getFN());  //ORG
                 if (orgUrl != null) vcard.addUrl(orgUrl); //URL
                 if (orgAddress != null) {
-                    AddressType oa = new AddressType();
+                    Address oa = new Address();
                     String[] addrValues = orgAddress.split(";");
                     if (addrValues.length >= 1 && !"".equals(addrValues[0])) oa.setPoBox(addrValues[0].trim());
                     if (addrValues.length >= 2 && !"".equals(addrValues[1])) oa.setExtendedAddress(addrValues[1].trim());
@@ -215,15 +218,16 @@ public class Person extends Entity {
                     if (addrValues.length >= 5 && !"".equals(addrValues[4])) oa.setRegion(addrValues[4].trim());
                     if (addrValues.length >= 6 && !"".equals(addrValues[5])) oa.setPostalCode(addrValues[5].trim());
                     if (addrValues.length >= 7 && !"".equals(addrValues[6])) oa.setCountry(addrValues[6].trim());
-                    oa.addType(AddressTypeParameter.POSTAL);
-                    oa.addType(AddressTypeParameter.WORK);
+                    oa.addType(AddressType.POSTAL);
+                    oa.addType(AddressType.WORK);
                     vcard.addAddress(oa);
                 }
 
                 String logo = organization.getLogo();
                 if (logo != null) {
                     String mt = IOUtil.getMimeType(logo);
-                    ImageTypeParameter imageType = ImageTypeParameter.valueOf(mt.substring(mt.indexOf("/") + 1));
+                    //ImageType imageType = ImageType.valueOf(mt.substring(mt.indexOf("/") + 1));
+                    ImageType imageType = ImageType.get(null, mt, null);
                     /*if (logo.startsWith(Core.getInstance().getIdentityUrl())) { //binary
                         byte[] _logo = Identity.getInstance().getPhoto(logo);
                         if (_logo != null) {
