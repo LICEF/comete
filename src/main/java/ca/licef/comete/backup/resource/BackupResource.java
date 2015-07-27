@@ -3,6 +3,8 @@ package ca.licef.comete.backup.resource;
 import ca.licef.comete.backup.Backup;
 import ca.licef.comete.security.Security;
 import com.sun.jersey.spi.resource.Singleton;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -12,6 +14,7 @@ import javax.ws.rs.core.Response;
 
 @Singleton
 @Path( "/backups" )
+@Api( value = "Backup" )
 public class BackupResource {
 
     @POST

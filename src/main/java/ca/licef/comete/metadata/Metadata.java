@@ -453,7 +453,8 @@ public class Metadata {
 
     public String[][] getRepositoryRecords(String repoUri) throws Exception {
         String query = CoreUtil.getQuery( "metadata/getRepositoryRecords.sparql", repoUri );
-        Tuple[] tuples = tripleStore.sparqlSelect( query );
+        Invoker inv = new Invoker( tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[] { query }  );
+        Tuple[] tuples = (Tuple[])tripleStore.transactionalCall( inv );
         String[][] res = new String[ tuples.length ][ 2 ];
         for( int i = 0; i < tuples.length; i++ ) {
             res[ i ][ 0 ] = tuples[i].getValue("s").getContent();

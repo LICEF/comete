@@ -5,6 +5,8 @@ import ca.licef.comete.identity.Identity;
 import ca.licef.comete.security.Security;
 import ca.licef.comete.vocabularies.COMETE;
 import com.sun.jersey.spi.resource.Singleton;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import licef.tsapi.model.Tuple;
 import licef.tsapi.vocabulary.FOAF;
 import org.json.JSONArray;
@@ -32,6 +34,7 @@ import java.util.Locale;
 
 @Singleton
 @Path( "/persons" )
+@Api( value = "Person" )
 public class PersonResource {
 
     static ca.licef.comete.core.util.Util CoreUtil;

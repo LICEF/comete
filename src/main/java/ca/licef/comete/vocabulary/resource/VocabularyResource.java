@@ -3,6 +3,8 @@ package ca.licef.comete.vocabulary.resource;
 import ca.licef.comete.store.Store;
 import ca.licef.comete.vocabulary.Vocabulary;
 import com.sun.jersey.spi.resource.Singleton;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import licef.StringUtil;
 import licef.tsapi.model.Tuple;
 import org.json.JSONArray;
@@ -25,6 +27,7 @@ import java.util.Hashtable;
 
 @Singleton
 @Path( "/voc" )
+@Api( value = "Vocabulary" )
 public class VocabularyResource {
 
     @GET

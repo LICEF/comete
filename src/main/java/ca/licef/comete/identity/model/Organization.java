@@ -4,12 +4,12 @@ import ca.licef.comete.identity.util.Util;
 import ca.licef.comete.vocabularies.COMETE;
 import ezvcard.Ezvcard;
 import ezvcard.VCardVersion;
-import ezvcard.parameters.AddressTypeParameter;
-import ezvcard.parameters.EmailTypeParameter;
-import ezvcard.parameters.TelephoneTypeParameter;
-import ezvcard.types.AddressType;
-import ezvcard.types.KindType;
-import ezvcard.types.StructuredNameType;
+import ezvcard.parameter.AddressType;
+import ezvcard.parameter.EmailType;
+import ezvcard.parameter.TelephoneType;
+import ezvcard.property.Address;
+import ezvcard.property.Kind;
+import ezvcard.property.StructuredName;
 import licef.tsapi.vocabulary.FOAF;
 
 import java.util.ArrayList;
@@ -110,16 +110,16 @@ public class Organization extends Entity {
         String address = getAddress();
 
         vcard.setFormattedName("");  //FN set empty to explicitly let interpretation with ORG field
-        vcard.setStructuredName(new StructuredNameType());  //N empty
-        vcard.setKind(KindType.org()); //only used in vcard 4.0 :-(
+        vcard.setStructuredName(new StructuredName());  //N empty
+        vcard.setKind(Kind.org()); //only used in vcard 4.0 :-(
         vcard.setOrganization(getFN());  //ORG
 
-        if (email != null) vcard.addEmail(email.substring("mailto:".length()), EmailTypeParameter.INTERNET); //EMAIL
+        if (email != null) vcard.addEmail(email.substring("mailto:".length()), EmailType.INTERNET); //EMAIL
         if (url != null) vcard.addUrl(url); //URL
-        if (tel != null) vcard.addTelephoneNumber(tel.substring("tel:".length()), TelephoneTypeParameter.WORK, TelephoneTypeParameter.VOICE); //TEL
-        if (fax != null) vcard.addTelephoneNumber(fax.substring("fax:".length()), TelephoneTypeParameter.WORK, TelephoneTypeParameter.FAX); //TEL (fax)
+        if (tel != null) vcard.addTelephoneNumber(tel.substring("tel:".length()), TelephoneType.WORK, TelephoneType.VOICE); //TEL
+        if (fax != null) vcard.addTelephoneNumber(fax.substring("fax:".length()), TelephoneType.WORK, TelephoneType.FAX); //TEL (fax)
         if (address != null) {
-            AddressType a = new AddressType();
+            Address a = new Address();
             String[] addrValues = address.split(";");
             if (addrValues.length >= 1 && !"".equals(addrValues[0])) a.setPoBox(addrValues[0].trim());
             if (addrValues.length >= 2 && !"".equals(addrValues[1])) a.setExtendedAddress(addrValues[1].trim());
@@ -128,8 +128,8 @@ public class Organization extends Entity {
             if (addrValues.length >= 5 && !"".equals(addrValues[4])) a.setRegion(addrValues[4].trim());
             if (addrValues.length >= 6 && !"".equals(addrValues[5])) a.setPostalCode(addrValues[5].trim());
             if (addrValues.length >= 7 && !"".equals(addrValues[6])) a.setCountry(addrValues[6].trim());
-            a.addType(AddressTypeParameter.POSTAL);
-            a.addType(AddressTypeParameter.WORK);
+            a.addType(AddressType.POSTAL);
+            a.addType(AddressType.WORK);
             vcard.addAddress(a);
         }
 
