@@ -24,7 +24,7 @@ import java.io.StringWriter;
 
 @Singleton
 @Path( "/harvestDefinitions" )
-@Api( value = "Harvest Definition" )
+@Api( value = "HarvestDefinition" )
 public class HarvestDefinitionResource {
 
     @GET

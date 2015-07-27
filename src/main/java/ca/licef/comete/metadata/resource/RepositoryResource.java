@@ -12,6 +12,9 @@ import org.json.JSONWriter;
 
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -22,12 +25,15 @@ import java.io.StringWriter;
 
 @Singleton
 @Path( "/repositories" )
-@Api( value = "Repository" )
+@Api( value = "Repository", description = "Web service from which metadata records can be harvested." )
 public class RepositoryResource {
 
     @GET
     @Produces( MediaType.APPLICATION_JSON )
     @ApiOperation( value = "Get all known repositories." )
+    @ApiResponses( value = {
+        @ApiResponse( code = 200, message = "List of repositories with their label and uri." )
+    } )
     public Response getRepositories() throws Exception {
         String[][] repositories = RepositoryManager.getInstance().getRepositories();
         StringWriter out = new StringWriter();
@@ -62,8 +68,15 @@ public class RepositoryResource {
     @Path( "{id}" )
     @Produces( MediaType.TEXT_PLAIN )
     @ApiOperation( value = "Add or update a repository.", notes = "This can only be used by an Administrator." )
+    @ApiResponses( value = {
+        @ApiResponse( code = 200, message = "The uri of the added or updated repository." ),
+        @ApiResponse( code = 401, message = "Not authorized to manage repository objects." )
+    } )
     public Response addOrUpdateRepository( @Context HttpServletRequest request,
-                                           @PathParam( "id" ) String id, @QueryParam( "label" ) String label, @QueryParam( "type" ) String type, @QueryParam( "url" ) String url, @QueryParam( "adminEmail" ) String adminEmail ) throws Exception {
+                                           @ApiParam( value = "Unique identifier of the repository." ) @PathParam( "id" ) String id, 
+                                           @ApiParam( value = "String that will be used in the GUI to refer to the repository.", required = true ) @QueryParam( "label" ) String label, 
+                                           @ApiParam( value = "Type of supported harvesting method.", allowableValues = "HTML, OAI", required = true ) @QueryParam( "type" ) String type, 
+                                           @ApiParam( value = "Technical contact info of the repository." ) @QueryParam( "url" ) String url, @QueryParam( "adminEmail" ) String adminEmail ) throws Exception {
         if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to manage repository objects.").build();
 
@@ -75,7 +88,10 @@ public class RepositoryResource {
     @Path( "{uri}/records" )
     @Produces( MediaType.TEXT_PLAIN )
     @ApiOperation( value = "Get the records contained in the repository." )
-    public Response getRecords( @PathParam( "uri" ) String uri ) throws Exception {
+    @ApiResponses( value = {
+        @ApiResponse( code = 200, message = "List of record uris." ),
+    } )
+    public Response getRecords( @ApiParam( value = "Uri of the repository." ) @PathParam( "uri" ) String uri ) throws Exception {
         String[][] records = RepositoryManager.getInstance().getRepositoryRecords(uri);
         StringWriter out = new StringWriter();
         try {
@@ -102,8 +118,11 @@ public class RepositoryResource {
     @Path( "{uri}/records" )
     @Produces( MediaType.TEXT_PLAIN )
     @ApiOperation( value = "Delete all the records of the repository.", notes = "This can only be used by an Administrator." )
+    @ApiResponses( value = {
+        @ApiResponse( code = 200, message = "Ok" ),
+    } )
     public Response deleteRecords( @Context HttpServletRequest request,
-                                   @PathParam( "uri" ) String uri ) throws Exception {
+                                   @ApiParam( value = "Uri of the repository." ) @PathParam( "uri" ) String uri ) throws Exception {
 
         if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to delete records.").build();

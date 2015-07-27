@@ -10,6 +10,8 @@ import ca.licef.comete.security.Role;
 import ca.licef.comete.security.Security;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.sun.jersey.spi.container.servlet.PerSession;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import licef.StringUtil;
 import licef.tsapi.TripleStore;
 import licef.tsapi.model.Tuple;
@@ -36,6 +38,7 @@ import java.util.ListIterator;
 
 @PerSession
 @Path( "/queryEngine" )
+@Api( value = "QueryEngine" )
 public class QueryEngineResource implements Serializable {
 
     private static final long serialVersionUID = 1L;

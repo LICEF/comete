@@ -5,6 +5,8 @@ import ca.licef.comete.security.Security;
 import ca.licef.comete.metadata.Metadata;
 import ca.licef.comete.vocabularies.COMETE;
 import com.sun.jersey.spi.resource.Singleton;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +23,7 @@ import java.util.Set;
 
 @Singleton
 @Path( "/learningObjects" )
+@Api( value = "LearningObject" )
 public class LearningObjectResource {
     
     @GET
