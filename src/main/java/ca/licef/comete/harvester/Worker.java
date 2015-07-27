@@ -39,7 +39,7 @@ public class Worker implements Runnable {
             this.repoId = Sha1Util.hash(url);
             JSONObject def = Harvester.getInstance().getDefinition(this.id);
             digester.addOrUpdateRepository(
-                    def.getString("name"), def.getString("type"), getUrl(), getRepoId(), ( def.has( "adminEmail" ) ? def.getString("adminEmail") : null ), this.getId());
+                    def.getString("name"), def.getString("type"), getUrl(), getRepoId(), ( def.has( "adminEmail" ) ? def.getString("adminEmail") : null ));
         } catch (Exception e) {
             e.printStackTrace();
         }

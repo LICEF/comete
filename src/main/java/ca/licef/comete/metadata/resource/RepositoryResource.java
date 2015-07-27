@@ -59,15 +59,15 @@ public class RepositoryResource {
     }
 
     @PUT
-    @Path( "{uid}" )
+    @Path( "{id}" )
     @Produces( MediaType.TEXT_PLAIN )
     @ApiOperation( value = "Add or update a repository.", notes = "This can only be used by an Administrator." )
     public Response addOrUpdateRepository( @Context HttpServletRequest request,
-                                           @PathParam( "uid" ) String uid, @QueryParam( "label" ) String label, @QueryParam( "type" ) String type, @QueryParam( "url" ) String url, @QueryParam( "adminEmail" ) String adminEmail, @QueryParam( "id" ) String id ) throws Exception {
+                                           @PathParam( "id" ) String id, @QueryParam( "label" ) String label, @QueryParam( "type" ) String type, @QueryParam( "url" ) String url, @QueryParam( "adminEmail" ) String adminEmail ) throws Exception {
         if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to manage repository objects.").build();
 
-        String repoUri = RepositoryManager.getInstance().addOrUpdateRepository( uid, label, type, url, adminEmail, id );
+        String repoUri = RepositoryManager.getInstance().addOrUpdateRepository( id, label, type, url, adminEmail );
         return Response.ok( repoUri ).build();
     }
 
