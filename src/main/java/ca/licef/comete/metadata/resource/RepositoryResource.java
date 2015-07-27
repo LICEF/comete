@@ -59,22 +59,24 @@ public class RepositoryResource {
     }
 
     @PUT
-    @Path( "{id}" )
+    @Path( "{uid}" )
     @Produces( MediaType.TEXT_PLAIN )
+    @ApiOperation( value = "Add or update a repository.", notes = "This can only be used by an Administrator." )
     public Response addOrUpdateRepository( @Context HttpServletRequest request,
-                                           @PathParam( "id" ) String id, @QueryParam( "name" ) String name, @QueryParam( "type" ) String type, @QueryParam( "url" ) String url, @QueryParam( "adminEmail" ) String adminEmail, @QueryParam( "physicalId" ) String defId ) throws Exception {
+                                           @PathParam( "uid" ) String uid, @QueryParam( "label" ) String label, @QueryParam( "type" ) String type, @QueryParam( "url" ) String url, @QueryParam( "adminEmail" ) String adminEmail, @QueryParam( "id" ) String id ) throws Exception {
         if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to manage repository objects.").build();
 
-        String repoUri = RepositoryManager.getInstance().addOrUpdateRepository( id, name, type, url, adminEmail, defId );
+        String repoUri = RepositoryManager.getInstance().addOrUpdateRepository( uid, label, type, url, adminEmail, id );
         return Response.ok( repoUri ).build();
     }
 
     @GET
-    @Path( "{id}/records" )
+    @Path( "{uri}/records" )
     @Produces( MediaType.TEXT_PLAIN )
-    public Response getRecords( @PathParam( "id" ) String id ) throws Exception {
-        String[][] records =RepositoryManager.getInstance().getRepositoryRecords(id);
+    @ApiOperation( value = "Get the records contained in the repository." )
+    public Response getRecords( @PathParam( "uri" ) String uri ) throws Exception {
+        String[][] records = RepositoryManager.getInstance().getRepositoryRecords(uri);
         StringWriter out = new StringWriter();
         try {
             JSONWriter json = new JSONWriter( out ).array();
@@ -97,15 +99,16 @@ public class RepositoryResource {
 
     //BE CAREFUL WITH THIS SERVICE !!! -AM
     @DELETE
-    @Path( "{id}/records" )
+    @Path( "{uri}/records" )
     @Produces( MediaType.TEXT_PLAIN )
+    @ApiOperation( value = "Delete all the records of the repository.", notes = "This can only be used by an Administrator." )
     public Response deleteRecords( @Context HttpServletRequest request,
-                                   @PathParam( "id" ) String id ) throws Exception {
+                                   @PathParam( "uri" ) String uri ) throws Exception {
 
         if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to delete records.").build();
 
-        String repoUri = Util.makeURI(id, COMETE.Repository);
+        String repoUri = Util.makeURI(uri, COMETE.Repository);
         RepositoryManager.getInstance().deleteRepositoryRecords(repoUri);
         return (Response.ok().build());
     }
