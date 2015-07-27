@@ -3,6 +3,8 @@ package ca.licef.comete.harvester.resource;
 import ca.licef.comete.harvester.Harvester;
 import ca.licef.comete.security.Security;
 import com.sun.jersey.spi.resource.Singleton;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONWriter;
@@ -17,6 +19,7 @@ import java.io.StringWriter;
 
 @Singleton
 @Path( "/harvests" )
+@Api( value = "Harvest" )
 public class HarvestResource {
 
     @GET

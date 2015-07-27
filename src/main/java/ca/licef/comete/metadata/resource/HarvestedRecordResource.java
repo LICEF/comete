@@ -5,6 +5,8 @@ import ca.licef.comete.security.Security;
 import ca.licef.comete.core.util.Util;
 import ca.licef.comete.metadata.Metadata;
 import com.sun.jersey.spi.resource.Singleton;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -15,6 +17,7 @@ import javax.ws.rs.core.Response;
 
 @Singleton
 @Path( "/harvestedRecords" )
+@Api( value = "HarvestedRecord" )
 public class HarvestedRecordResource {
     
     @PUT

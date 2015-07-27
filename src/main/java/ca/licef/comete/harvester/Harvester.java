@@ -29,6 +29,9 @@ public class Harvester {
 
     private Map<String,Worker> workers = new HashMap<String,Worker>();
 
+    private Harvester() {
+    }
+
     static {
         try {
             if (!HARVESTER_FOLDER.exists())
@@ -39,6 +42,7 @@ public class Harvester {
     }
 
     public static Harvester getInstance() {
+//System.out.println( "getInstance="+instance );        
         if (instance == null)
             instance = new Harvester();
         return (instance);

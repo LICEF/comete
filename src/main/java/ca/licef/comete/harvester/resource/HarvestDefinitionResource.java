@@ -10,6 +10,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONWriter;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -22,10 +24,12 @@ import java.io.StringWriter;
 
 @Singleton
 @Path( "/harvestDefinitions" )
+@Api( value = "HarvestDefinition" )
 public class HarvestDefinitionResource {
 
     @GET
     @Produces( MediaType.APPLICATION_JSON )
+    @ApiOperation( value = "Get all harvest definitions." )
     public Response getHarvestDefinitions() throws Exception {
         String[] definitions = Harvester.getInstance().getDefinitions();
         StringWriter out = new StringWriter();
@@ -64,6 +68,7 @@ public class HarvestDefinitionResource {
     @GET
     @Path( "{id}" )
     @Produces( MediaType.APPLICATION_JSON )
+    @ApiOperation( value = "Get a specific harvest definition." )
     public Response getHarvestDefinition( @PathParam( "id" ) String id ) throws Exception {
         JSONObject def = Harvester.getInstance().getDefinition(id);
         return (Response.ok(def.toString()).build());
@@ -193,6 +198,7 @@ public class HarvestDefinitionResource {
     @DELETE
     @Path( "{id}" )
     @Produces( MediaType.TEXT_PLAIN )
+    @ApiOperation( value = "Delete a specific harvest definition.", notes = "This can only be used by an Administrator." )
     public Response deleteHarvestDefinition(@Context HttpServletRequest request,
                                             @PathParam( "id" ) String id) throws Exception {
         if (!Security.getInstance().isAuthorized(request))

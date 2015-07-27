@@ -10,6 +10,8 @@ import ca.licef.comete.vocabularies.COMETE;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 import com.sun.jersey.spi.resource.Singleton;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +46,7 @@ import java.util.Map;
 
 @Singleton
 @Path( "/metadataRecords" )
+@Api( value = "MetadataRecord" )
 public class MetadataRecordResource {
 
     @POST

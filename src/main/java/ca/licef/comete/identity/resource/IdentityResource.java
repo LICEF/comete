@@ -6,6 +6,8 @@ import ca.licef.comete.store.Store;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 import com.sun.jersey.spi.resource.Singleton;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONWriter;
@@ -22,6 +24,7 @@ import java.util.Map;
 
 @Singleton
 @Path( "/identities" )
+@Api( value = "Identity" )
 public class IdentityResource {
 
     @GET

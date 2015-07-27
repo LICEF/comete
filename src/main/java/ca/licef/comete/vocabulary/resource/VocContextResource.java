@@ -6,6 +6,8 @@ import ca.licef.comete.vocabularies.COMETE;
 import ca.licef.comete.vocabulary.Vocabulary;
 import com.sun.jersey.multipart.FormDataParam;
 import com.sun.jersey.spi.resource.Singleton;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import licef.tsapi.model.Triple;
 import licef.tsapi.model.Tuple;
 import org.json.JSONArray;
@@ -24,6 +26,7 @@ import java.io.StringWriter;
 
 @Singleton
 @Path( "/vocContexts" )
+@Api( value = "VocContext" )
 public class VocContextResource {
 
     @GET

@@ -1,6 +1,8 @@
 package ca.licef.comete.security;
 
 import ca.licef.comete.core.Core;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import licef.IOUtil;
 import licef.Sha1Util;
 
@@ -21,6 +23,7 @@ import java.util.Vector;
  * User: amiara
  * Date: 13-04-10
  */
+@Api( value = "Security" )
 public class Security {
 
     static File settingsDir = new File(Core.getInstance().getCometeHome(), "/conf/security");

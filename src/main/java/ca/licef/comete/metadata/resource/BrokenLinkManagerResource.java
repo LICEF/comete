@@ -4,6 +4,8 @@ import ca.licef.comete.core.Core;
 import ca.licef.comete.security.Security;
 import ca.licef.comete.metadata.BrokenLinkChecker;
 import com.sun.jersey.spi.resource.Singleton;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -18,6 +20,7 @@ import java.util.Date;
 
 @Singleton
 @Path( "/brokenLinkManager" )
+@Api( value = "BrokenLinkManager" )
 public class BrokenLinkManagerResource {
 
     @GET

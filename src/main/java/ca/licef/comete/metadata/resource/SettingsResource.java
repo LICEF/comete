@@ -4,6 +4,8 @@ import ca.licef.comete.core.Settings;
 import ca.licef.comete.core.util.Constants;
 import ca.licef.comete.security.Security;
 import com.sun.jersey.spi.resource.Singleton;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import org.json.JSONWriter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +19,7 @@ import java.util.Map;
 
 @Singleton
 @Path( "/settings" )
+@Api( value = "Settings" )
 public class SettingsResource {
 
     @GET
