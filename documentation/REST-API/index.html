@@ -1,0 +1,519 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>API Reference</title>
+  </head>
+  <body>
+  <h1>Comete</h1>
+    <div class="app-desc">A RDF-based metadata record repository and search engine. for </div>
+    <div class="app-desc">More information: <a href="https://github.com/LICEF/comete">https://github.com/LICEF/comete</a></div>
+    <div class="app-desc">Contact Info: <a href="info@licef.ca">info@licef.ca</a></div>
+    <div class="app-desc">Version: 2.0.0-SNAPSHOT</div>
+    <div class="license-info">GPL</div>
+    <div class="license-url"></div>
+  <h2>Access</h2>
+  <div class="method-summary">Customize this message as you see fit!</div>
+  <h2>Methods</h2>
+  
+  
+  
+  <div class="method">
+    <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /harvestDefinitions</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">HarvestDefinition</span></div>
+    <div class="method-summary"><span class="nickname">getHarvestDefinitions</span> Get all harvest definitions.</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>&quot;aeiou&quot;</code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="post"><code class="huge"><span>post</span>: /harvestDefinitions</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">HarvestDefinition</span></div>
+    <div class="method-summary"><span class="nickname">addNewHarvestDefinition</span> Add a new harvest definition.</div>
+    <div class="method-notes">This can only be used by an Administrator.</div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Identifier of the harvest definition. </div>
+      <div class="param">name (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Name of the harvest definition.  This string is used in the GUI. </div>
+      <div class="param">type (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Type of harvesting method. </div>
+      <div class="param">url (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Url of the endpoint of the repository. </div>
+      <div class="param">ns (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Metadata namespace of the metadata records. </div>
+      <div class="param">adminEmail (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Technical contact info of the repository. </div>
+      <div class="param">isPendingByDefault (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Whether the harvested records should be marked as Pending for approval by default. default: off</div>
+      <div class="param">isCheckingBrokenLink (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Whether the harvested records should be checked for broken links by default. default: off</div>
+      <div class="param">isCheckingInvalid (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Whether the harvested records should be marked when they do not comply to the specified application profile. default: off</div>
+      <div class="param">invalidApplProf (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; URI of the application profile to check if isCheckingInvalid is true. </div>
+      <div class="param">xsl (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; XSLT code that will be applied to harvested records before import. </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /harvestDefinitions/{id}</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">HarvestDefinition</span></div>
+    <div class="method-summary"><span class="nickname">getHarvestDefinition</span> Get all the details of a specific harvest definition.</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>&quot;aeiou&quot;</code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="put"><code class="huge"><span>put</span>: /harvestDefinitions/{id}</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">HarvestDefinition</span></div>
+    <div class="method-summary"><span class="nickname">updateHarvestDefinition</span> Update an existing harvest definition.</div>
+    <div class="method-notes">This can only be used by an Administrator.</div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  </div>
+      <div class="param">name (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Name of the harvest definition.  This string is used in the GUI. </div>
+      <div class="param">type (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Type of harvesting method. </div>
+      <div class="param">url (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Url of the endpoint of the repository. </div>
+      <div class="param">ns (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Metadata namespace of the metadata records. </div>
+      <div class="param">adminEmail (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Technical contact info of the repository. </div>
+      <div class="param">isPendingByDefault (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Whether the harvested records should be marked as Pending for approval by default. default: off</div>
+      <div class="param">isCheckingBrokenLink (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Whether the harvested records should be checked for broken links by default. default: off</div>
+      <div class="param">isCheckingInvalid (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Whether the harvested records should be marked when they do not comply to the specified application profile. default: off</div>
+      <div class="param">invalidApplProf (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; URI of the application profile to check if isCheckingInvalid is true. </div>
+      <div class="param">xsl (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; XSLT code that will be applied to harvested records before import. </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="delete"><code class="huge"><span>delete</span>: /harvestDefinitions/{id}</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">HarvestDefinition</span></div>
+    <div class="method-summary"><span class="nickname">deleteHarvestDefinition</span> Delete the details of a specific harvest definition.</div>
+    <div class="method-notes">This can only be used by an Administrator.</div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="put"><code class="huge"><span>put</span>: /harvestDefinitions/{id}/xsl</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">HarvestDefinition</span></div>
+    <div class="method-summary"><span class="nickname">addXsl</span> Update the XSLT code that will be applied to harvested records before import.</div>
+    <div class="method-notes">This can only be used by an Administrator.</div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  </div>
+      <div class="param">file (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash;  </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /repositories</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">Repository</span></div>
+    <div class="method-summary"><span class="nickname">getRepositories</span> Get all known repositories.</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>&quot;aeiou&quot;</code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="put"><code class="huge"><span>put</span>: /repositories/{id}</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">Repository</span></div>
+    <div class="method-summary"><span class="nickname">addOrUpdateRepository</span> Add or update a repository.</div>
+    <div class="method-notes">This can only be used by an Administrator.</div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Unique identifier of the repository. </div>
+      <div class="param">label (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; String that will be used in the GUI to refer to the repository. </div>
+      <div class="param">type (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Type of supported harvesting method. </div>
+      <div class="param">url (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Url of the endpoint of the repository. </div>
+      <div class="param">adminEmail (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Technical contact info of the repository. </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /repositories/{uri}/records</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">Repository</span></div>
+    <div class="method-summary"><span class="nickname">getRecords</span> Get the records contained in the repository.</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">uri (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Uri of the repository. </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="delete"><code class="huge"><span>delete</span>: /repositories/{uri}/records</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">Repository</span></div>
+    <div class="method-summary"><span class="nickname">deleteRecords</span> Delete all the records of the repository.</div>
+    <div class="method-notes">This can only be used by an Administrator.</div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">uri (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Uri of the repository. </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /system/status</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">System</span></div>
+    <div class="method-summary"><span class="nickname">isReady</span> Indicates whether the system is ready to be used or if it&#39;s in maintenance mode.</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  
+
+  <h2>Models</h2>
+  
+  <style>
+body { 
+	font-family: Trebuchet MS, sans-serif;
+	font-size: 15px;
+	color: #444;
+	margin-right: 24px;
+}
+
+h1	{
+	font-size: 25px;
+}
+h2	{
+	font-size: 20px;
+}
+h3	{
+	font-size: 16px;
+	font-weight: bold;
+}
+hr	{
+	height: 1px;
+	border: 0;
+	color: #ddd;
+	background-color: #ddd;
+	display: none;
+}
+
+.app-desc {
+  clear: both;
+  margin-left: 20px;
+}
+.param-name {
+  width: 100%;
+}
+.license-info {
+  margin-left: 20px;
+}
+
+.license-url {
+  margin-left: 20px;
+}
+
+.model {
+  margin: 0 0 0px 20px;
+}
+
+.method {
+  margin-left: 20px;
+}
+
+.method-notes	{
+	margin: 10px 0 20px 0;
+	font-size: 90%;
+	color: #555;
+}
+
+pre {
+  padding: 10px;
+  margin-bottom: 2px;
+}
+
+pre.get {
+  background-color: #0f6ab4;
+}
+
+pre.post {
+  background-color: #10a54a;
+}
+
+pre.put {
+  background-color: #c5862b;
+}
+
+pre.delete {
+  background-color: #a41e22;
+}
+
+.huge	{
+	color: #fff;
+}
+
+pre.example {
+  background-color: #f3f3f3;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+code {
+  white-space: pre;
+}
+
+.nickname {
+  font-weight: bold;
+}
+
+.method-path {
+  font-size: 1.5em;
+  background-color: #0f6ab4;
+}
+
+.parameter {
+  width: 500px;
+}
+
+.param {
+  width: 500px;
+  padding: 10px 0 0 20px;
+  font-weight: bold;
+}
+
+.param-desc {
+  width: 700px;
+  padding: 0 0 0 20px;
+  color: #777;
+}
+
+.param-type {
+  font-style: italic;
+}
+
+.field-label {
+  padding: 0;
+  margin: 0;
+  clear: both;
+}
+
+.field-items	{
+	padding: 0 0 15px 0;
+	margin-bottom: 15px;
+}
+
+.return-type {
+  clear: both;
+  padding-bottom: 10px;
+}
+
+.param-header {
+  font-weight: bold;
+}
+
+.method-tags {
+  text-align: right;
+}
+
+.method-tag {
+  background: none repeat scroll 0% 0% #24A600;
+  border-radius: 3px;
+  padding: 2px 10px;
+  margin: 2px;
+  color: #FFF;
+  display: inline-block;
+  text-decoration: none;
+}
+  </style>
+  </body>
+</html>
