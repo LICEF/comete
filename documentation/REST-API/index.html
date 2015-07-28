@@ -337,6 +337,124 @@
   <hr>
   
   <div class="method">
+    <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /settings/notifications</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">Settings</span></div>
+    <div class="method-summary"><span class="nickname">getNofificationSettings</span> Get the notification settings.</div>
+    <div class="method-notes">This can only be used by an Administrator.</div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>&quot;aeiou&quot;</code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="post"><code class="huge"><span>post</span>: /settings/notifications</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">Settings</span></div>
+    <div class="method-summary"><span class="nickname">setNotificationSettings</span> Set the notification settings.</div>
+    <div class="method-notes">This can only be used by an Administrator.</div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">notifEmail (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Email address where the notification are delivered. </div>
+      <div class="param">brokenLinkValidationCompletionNotif (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Whether a notification is sent after the broken link check is done. </div>
+      <div class="param">harvestCompletionNotif (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Whether a notification is sent after the completion of a repository harvesting task. </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /settings/validatedApplicationProfiles</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">Settings</span></div>
+    <div class="method-summary"><span class="nickname">getValidatedApplicationProfiles</span> Get the validated application profiles when importing records.</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>&quot;aeiou&quot;</code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="put"><code class="huge"><span>put</span>: /settings/validatedApplicationProfiles</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">Settings</span></div>
+    <div class="method-summary"><span class="nickname">setValidatedApplicationProfiles</span> Set the validated application profiles when importing records.</div>
+    <div class="method-notes">This can only be used by an Administrator.</div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">http//ltsc.ieee.org/xsd/LOM/strict (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; LOM Strict appl. profile </div>
+      <div class="param">http//ltsc.ieee.org/xsd/LOM/loose (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; LOM Looset appl. profile </div>
+      <div class="param">http//lomFr.fr/validation/LomFRv1.0/core (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; LOM FR 1.0 appl. profile </div>
+      <div class="param">http//lomFr.fr/validation/ScoLomFRv1.0/core (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; SCO LOM FR 1.0 appl. profile </div>
+      <div class="param">http//lomFr.fr/validation/ScoLomFRv1.1/core (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; SCO LOM FR 1.1 appl. profile </div>
+      <div class="param">http//www.normetic.org/LomNormeticv1.2 (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; LOM Normetic 1.2 appl. profile </div>
+      <div class="param">http//www.openarchives.org/OAI/2.0/ (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; OAI DC appl. profile </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
     <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /system/status</code></pre></div>
     <div class="method-tags"> <span class="method-tag">System</span></div>
     <div class="method-summary"><span class="nickname">isReady</span> Indicates whether the system is ready to be used or if it&#39;s in maintenance mode.</div>

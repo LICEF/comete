@@ -76,7 +76,7 @@ public class RepositoryResource {
             @Context HttpServletRequest request,
             @ApiParam( value = "Unique identifier of the repository." ) @PathParam( "id" ) String id, 
             @ApiParam( value = "String that will be used in the GUI to refer to the repository.", required = true ) @QueryParam( "label" ) String label, 
-            @ApiParam( value = "Type of supported harvesting method.", allowableValues = "HTML, OAI", required = true ) @QueryParam( "type" ) String type, 
+            @ApiParam( value = "Type of supported harvesting method.", allowableValues = "HTML,OAI", required = true ) @QueryParam( "type" ) String type, 
             @ApiParam( value = "Url of the endpoint of the repository.", required = true ) @QueryParam( "url" ) String url, 
             @ApiParam( value = "Technical contact info of the repository." ) @QueryParam( "adminEmail" ) String adminEmail ) throws Exception {
         if (!Security.getInstance().isAuthorized(request))
