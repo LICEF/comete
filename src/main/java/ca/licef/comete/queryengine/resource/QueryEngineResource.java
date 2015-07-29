@@ -12,6 +12,9 @@ import com.rometools.rome.feed.synd.SyndFeed;
 import com.sun.jersey.spi.container.servlet.PerSession;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 import licef.StringUtil;
 import licef.tsapi.TripleStore;
 import licef.tsapi.model.Tuple;
@@ -38,7 +41,7 @@ import java.util.ListIterator;
 
 @PerSession
 @Path( "/queryEngine" )
-@Api( value = "QueryEngine" )
+@Api( value = "QueryEngine", description = "Search services" )
 public class QueryEngineResource implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -51,12 +54,17 @@ public class QueryEngineResource implements Serializable {
     @GET
     @Path( "searchJson" )
     @Produces( MediaType.APPLICATION_JSON )
+    @ApiOperation( value = "Performs a query and returned the result formatted in JSON." )
+    @ApiResponses( value = {
+        @ApiResponse( code = 200, message = "List of resources matching the search criterias with their attributes: title, desc, location, image, etc." )
+    } )
     public Response searchJson( @Context HttpServletRequest req, 
-        @DefaultValue( "" ) @QueryParam( "q" ) String query,
-        @DefaultValue( "" ) @QueryParam( "f" ) String filters,
-        @DefaultValue( "0" ) @QueryParam( "start" ) String strStart, @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit,
-        @DefaultValue( "default" ) @QueryParam( "style" ) String style,
-        @DefaultValue( "en" ) @QueryParam( "lang" ) String lang) {
+            @ApiParam( value = "JSON-formatted query. Default: all resources." ) @DefaultValue( "[{\"key\":\"fulltext\",\"value\":\"\"}]" ) @QueryParam( "q" ) String query,
+            @ApiParam( value = "Filter to modify the query." ) @DefaultValue( "" ) @QueryParam( "f" ) String filters,
+            @ApiParam( value = "Index of the first resource." ) @DefaultValue( "0" ) @QueryParam( "start" ) String strStart, 
+            @ApiParam( value = "Number of resources per page." ) @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit,
+            @ApiParam( value = "Style of the response." ) @DefaultValue( "default" ) @QueryParam( "style" ) String style,
+            @ApiParam( value = "Language of the response.", allowableValues = "en,fr", required = true ) @DefaultValue( "en" ) @QueryParam( "lang" ) String lang) {
 
         int start = -1;
         if( strStart != null ) {
@@ -143,49 +151,55 @@ public class QueryEngineResource implements Serializable {
         return Response.ok(out.toString()).build();
     }
 
-    @GET
-    @Path( "labels" )
-    @Produces( MediaType.APPLICATION_JSON )
-    public Response getLabels( @DefaultValue( "en" ) @QueryParam( "lang" ) String lang, @QueryParam( "uris" ) String uris ) throws Exception {
-        StringWriter out = new StringWriter();
-        try {
-            JSONWriter json = new JSONWriter( out ).array();
-
-            TripleStore tripleStore = Core.getInstance().getTripleStore();
-            JSONArray array = new JSONArray(uris);
-            for (int i = 0; i < array.length(); i++) {
-                String uri = array.getString(i);
-                String label = "";
-                if (uri.startsWith(Core.getInstance().getUriPrefix() + "/voc/")) { //prefix by vocabulary title
-                    String vocUri = uri.substring(0, uri.lastIndexOf('/'));
-                    String s = vocUri.substring((Core.getInstance().getUriPrefix() + "/voc/").length());
-                    String[] elems = StringUtil.split(s, '/');
-                    String graph = "voc_" + (elems[0] + "_" + elems[1]).toLowerCase();
-                    String[] title = tripleStore.getBestLocalizedLiteralObject(vocUri, RDFS.label, lang, graph);
-                    if (!(title == null || title[ 0 ] == null || "".equals(title[ 0 ])))
-                        label += title[0] + ":";
-                }
-//                label += tripleStore.getResourceLabel(uri, lang)[0];
-//                json.value(label);
-            }
-            json.endArray();
-        }
-        catch( JSONException e ) {
-            e.printStackTrace();
-        }
-        try {
-            out.close();
-        }
-        catch( IOException e ) {
-            e.printStackTrace();
-        }
-        return Response.ok(out.toString()).build();
-    }
+    //@GET
+    //@Path( "labels" )
+    //@Produces( MediaType.APPLICATION_JSON )
+    //public Response getLabels( 
+    //        @DefaultValue( "en" ) @QueryParam( "lang" ) String lang, 
+    //        @QueryParam( "uris" ) String uris ) throws Exception {
+    //    StringWriter out = new StringWriter();
+    //    try {
+    //        JSONWriter json = new JSONWriter( out ).array();
+    //        TripleStore tripleStore = Core.getInstance().getTripleStore();
+    //        JSONArray array = new JSONArray(uris);
+    //        for (int i = 0; i < array.length(); i++) {
+    //            String uri = array.getString(i);
+    //            String label = "";
+    //            if (uri.startsWith(Core.getInstance().getUriPrefix() + "/voc/")) { //prefix by vocabulary title
+    //                String vocUri = uri.substring(0, uri.lastIndexOf('/'));
+    //                String s = vocUri.substring((Core.getInstance().getUriPrefix() + "/voc/").length());
+    //                String[] elems = StringUtil.split(s, '/');
+    //                String graph = "voc_" + (elems[0] + "_" + elems[1]).toLowerCase();
+    //                String[] title = tripleStore.getBestLocalizedLiteralObject(vocUri, RDFS.label, lang, graph);
+    //                if (!(title == null || title[ 0 ] == null || "".equals(title[ 0 ])))
+    //                    label += title[0] + ":";
+    //            }
+    //              label += tripleStore.getResourceLabel(uri, lang)[0];
+    //              json.value(label);
+    //        }
+    //        json.endArray();
+    //    }
+    //    catch( JSONException e ) {
+    //        e.printStackTrace();
+    //    }
+    //    try {
+    //        out.close();
+    //    }
+    //    catch( IOException e ) {
+    //        e.printStackTrace();
+    //    }
+    //    return Response.ok(out.toString()).build();
+    //}
 
     @GET
     @Path( "keywords" )
     @Produces( MediaType.APPLICATION_JSON )
-    public Response getKeywords( @QueryParam( "value" ) String value ) throws Exception {
+    @ApiOperation( value = "List all the known keywords containing the specified value." )
+    @ApiResponses( value = {
+        @ApiResponse( code = 200, message = "List of known keywords." )
+    } )
+    public Response getKeywords( 
+            @ApiParam( value = "String contained in a keyword.  Default to empty string so that all keywords are returned." ) @DefaultValue( "" ) @QueryParam( "value" ) String value ) throws Exception {
         StringWriter out = new StringWriter();
 
         Tuple[] results = QueryEngine.getInstance().searchKeywords(value);
@@ -219,9 +233,15 @@ public class QueryEngineResource implements Serializable {
     @GET
     @Path( "searchAtom" )
     @Produces( MediaType.APPLICATION_ATOM_XML )
-    public SyndFeed searchAtom( @Context HttpServletRequest req, @DefaultValue( "" ) @QueryParam( "q" ) String query,
-        @DefaultValue( "0" ) @QueryParam( "start" ) String strStart, @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit,
-        @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) {
+    @ApiOperation( value = "Performs a query and returned the result formatted in Atom." )
+    @ApiResponses( value = {
+        @ApiResponse( code = 200, message = "List of resources matching the search criterias with their attributes: title, desc, location, image, etc." )
+    } )
+    public SyndFeed searchAtom( @Context HttpServletRequest req, 
+            @ApiParam( value = "JSON-formatted query. Default: all resources." ) @DefaultValue( "[{\"key\":\"fulltext\",\"value\":\"\"}]" ) @QueryParam( "q" ) String query,
+            @ApiParam( value = "Index of the first resource." ) @DefaultValue( "0" ) @QueryParam( "start" ) String strStart, 
+            @ApiParam( value = "Number of resources per page." ) @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit,
+            @ApiParam( value = "Language of the response.", allowableValues = "en,fr", required = true ) @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) {
         boolean isShowHiddenRes = Security.getInstance().isAuthorized( req );
         return( searchFeed( FEED_ATOM, query, strStart, strLimit, lang, isShowHiddenRes ) );
     }
@@ -229,9 +249,15 @@ public class QueryEngineResource implements Serializable {
     @GET
     @Path( "searchRss" )
     @Produces( "application/rss+xml" )
-    public SyndFeed searchRss( @Context HttpServletRequest req, @DefaultValue( "" ) @QueryParam( "q" ) String query,
-        @DefaultValue( "0" ) @QueryParam( "start" ) String strStart, @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit,
-        @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) {
+    @ApiOperation( value = "Performs a query and returned the result formatted in RSS." )
+    @ApiResponses( value = {
+        @ApiResponse( code = 200, message = "List of resources matching the search criterias with their attributes: title, desc, location, image, etc." )
+    } )
+    public SyndFeed searchRss( @Context HttpServletRequest req, 
+            @ApiParam( value = "JSON-formatted query. Default: all resources." ) @DefaultValue( "[{\"key\":\"fulltext\",\"value\":\"\"}]" ) @QueryParam( "q" ) String query,
+            @ApiParam( value = "Index of the first resource." ) @DefaultValue( "0" ) @QueryParam( "start" ) String strStart, 
+            @ApiParam( value = "Number of resources per page." ) @DefaultValue( "20" ) @QueryParam( "limit" ) String strLimit,
+            @ApiParam( value = "Language of the response.", allowableValues = "en,fr", required = true ) @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) {
         boolean isShowHiddenRes = Security.getInstance().isAuthorized( req );
         return( searchFeed( FEED_RSS, query, strStart, strLimit, lang, isShowHiddenRes ) );
     }
@@ -276,7 +302,12 @@ public class QueryEngineResource implements Serializable {
     @GET
     @Path( "collections" )
     @Produces( MediaType.APPLICATION_JSON )
-    public Response getCollections( @DefaultValue( "en" ) @QueryParam( "lang" ) String lang ) throws Exception {
+    @ApiOperation( value = "Get the list of collections for the specified language." )
+    @ApiResponses( value = {
+        @ApiResponse( code = 200, message = "List of collections with their id, query, and label." )
+    } )
+    public Response getCollections( 
+            @ApiParam( value = "Language of the collections that we want to retrieve. If no collections in the specified language exist, the collections for all languages will be listed.", allowableValues = "en,fr" ) @DefaultValue( "" ) @QueryParam( "lang" ) String lang ) throws Exception {
         List<String[]> collections = QueryEngine.getInstance().getCollection().getAll(lang);
         StringWriter out = new StringWriter();
         try {
@@ -316,11 +347,21 @@ public class QueryEngineResource implements Serializable {
 
     @POST
     @Path( "collections" )
+    @Produces( MediaType.TEXT_PLAIN )
+    @ApiOperation( value = "Add a new collection with no specified language.", notes = "This can only be used by an Administrator." )
+    @ApiResponses( value = {
+        @ApiResponse( code = 200, message = "Empty body." ),
+        @ApiResponse( code = 400, message = "Invalid values for parameters.  They should not be empty." ),
+        @ApiResponse( code = 401, message = "Not authorized to add a collection." )
+    } )
     public Response addCollection(@Context HttpServletRequest request,
-                                  @FormParam( "label" ) String label,
-                                  @FormParam( "q" ) String query) throws Exception {
+            @ApiParam( value = "Label of the collection.", required = true ) @FormParam( "label" ) String label,
+            @ApiParam( value = "Query of the collection.", required = true ) @FormParam( "q" ) String query) throws Exception {
         if (!Security.getInstance().isAuthorized(request))
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return Response.status(Response.Status.UNAUTHORIZED).entity( "Not authorized to add a collection." ).build();
+
+        if( StringUtil.isEmpty( label ) || StringUtil.isEmpty( query ) )
+            return Response.status(Response.Status.BAD_REQUEST).entity( "Invalid values for parameters.  They should not be empty." ).build();
 
         QueryEngine.getInstance().getCollection().addCollection(label, query);
         return Response.ok().build();

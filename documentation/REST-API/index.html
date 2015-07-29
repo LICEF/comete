@@ -228,6 +228,192 @@
   <hr>
   
   <div class="method">
+    <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /queryEngine/collections</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">QueryEngine</span></div>
+    <div class="method-summary"><span class="nickname">getCollections</span> Get the list of collections for the specified language.</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">lang (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Language of the collections that we want to retrieve. If no collections in the specified language exist, the collections for all languages will be listed. </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>&quot;aeiou&quot;</code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="post"><code class="huge"><span>post</span>: /queryEngine/collections</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">QueryEngine</span></div>
+    <div class="method-summary"><span class="nickname">addCollection</span> Add a new collection with no specified language.</div>
+    <div class="method-notes">This can only be used by an Administrator.</div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">label (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Label of the collection. </div>
+      <div class="param">q (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Query of the collection. </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /queryEngine/keywords</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">QueryEngine</span></div>
+    <div class="method-summary"><span class="nickname">getKeywords</span> List all the known keywords containing the specified value.</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">value (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; String contained in a keyword.  Default to empty string so that all keywords are returned. </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>&quot;aeiou&quot;</code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /queryEngine/searchAtom</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">QueryEngine</span></div>
+    <div class="method-summary"><span class="nickname">searchAtom</span> Performs a query and returned the result formatted in Atom.</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">q (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; JSON-formatted query. Default: all resources. default: [{"key":"fulltext","value":""}]</div>
+      <div class="param">start (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Index of the first resource. default: 0</div>
+      <div class="param">limit (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Number of resources per page. default: 20</div>
+      <div class="param">lang (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Language of the response. default: en</div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">SyndFeed</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /queryEngine/searchJson</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">QueryEngine</span></div>
+    <div class="method-summary"><span class="nickname">searchJson</span> Performs a query and returned the result formatted in JSON.</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">q (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; JSON-formatted query. Default: all resources. default: [{"key":"fulltext","value":""}]</div>
+      <div class="param">f (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Filter to modify the query. </div>
+      <div class="param">start (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Index of the first resource. default: 0</div>
+      <div class="param">limit (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Number of resources per page. default: 20</div>
+      <div class="param">style (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Style of the response. default: default</div>
+      <div class="param">lang (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Language of the response. default: en</div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>&quot;aeiou&quot;</code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /queryEngine/searchRss</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">QueryEngine</span></div>
+    <div class="method-summary"><span class="nickname">searchRss</span> Performs a query and returned the result formatted in RSS.</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">q (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; JSON-formatted query. Default: all resources. default: [{"key":"fulltext","value":""}]</div>
+      <div class="param">start (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Index of the first resource. default: 0</div>
+      <div class="param">limit (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Number of resources per page. default: 20</div>
+      <div class="param">lang (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Language of the response. default: en</div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">SyndFeed</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
     <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /repositories</code></pre></div>
     <div class="method-tags"> <span class="method-tag">Repository</span></div>
     <div class="method-summary"><span class="nickname">getRepositories</span> Get all known repositories.</div>
@@ -479,6 +665,324 @@
   
 
   <h2>Models</h2>
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="Parent">Parent</a></h3>
+    <div class="field-items">
+      <div class="param">contentSize </div><div class="param-desc"><span class="param-type">Integer</span> </div>
+      <div class="param">descendants </div><div class="param-desc"><span class="param-type">org.jdom2.util.IteratorIterable&lt;org.jdom2.Content&gt;</span> </div>
+      <div class="param">document </div><div class="param-desc"><span class="param-type">Document</span> </div>
+      <div class="param">parent </div><div class="param-desc"><span class="param-type">Parent</span> </div>
+      <div class="param">content </div><div class="param-desc"><span class="param-type">array[Content]</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="Document">Document</a></h3>
+    <div class="field-items">
+      <div class="param">contentSize </div><div class="param-desc"><span class="param-type">Integer</span> </div>
+      <div class="param">descendants </div><div class="param-desc"><span class="param-type">org.jdom2.util.IteratorIterable&lt;org.jdom2.Content&gt;</span> </div>
+      <div class="param">namespacesInScope </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">namespacesInherited </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">namespacesIntroduced </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">rootElement </div><div class="param-desc"><span class="param-type">Element</span> </div>
+      <div class="param">docType </div><div class="param-desc"><span class="param-type">DocType</span> </div>
+      <div class="param">document </div><div class="param-desc"><span class="param-type">Document</span> </div>
+      <div class="param">baseURI </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">parent </div><div class="param-desc"><span class="param-type">Parent</span> </div>
+      <div class="param">content </div><div class="param-desc"><span class="param-type">array[Content]</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="SyndCategory">SyndCategory</a></h3>
+    <div class="field-items">
+      <div class="param">taxonomyUri </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">name </div><div class="param-desc"><span class="param-type">String</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="SyndFeed">SyndFeed</a></h3>
+    <div class="field-items">
+      <div class="param">title </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">image </div><div class="param-desc"><span class="param-type">SyndImage</span> </div>
+      <div class="param">uri </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">supportedFeedTypes </div><div class="param-desc"><span class="param-type">array[String]</span> </div>
+      <div class="param">preservingWireFeed </div><div class="param-desc"><span class="param-type">Boolean</span> </div>
+      <div class="param">feedType </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">titleEx </div><div class="param-desc"><span class="param-type">SyndContent</span> </div>
+      <div class="param">links </div><div class="param-desc"><span class="param-type">array[SyndLink]</span> </div>
+      <div class="param">descriptionEx </div><div class="param-desc"><span class="param-type">SyndContent</span> </div>
+      <div class="param">publishedDate </div><div class="param-desc"><span class="param-type">Date</span> </div>
+      <div class="param">authors </div><div class="param-desc"><span class="param-type">array[SyndPerson]</span> </div>
+      <div class="param">author </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">contributors </div><div class="param-desc"><span class="param-type">array[SyndPerson]</span> </div>
+      <div class="param">copyright </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">categories </div><div class="param-desc"><span class="param-type">array[SyndCategory]</span> </div>
+      <div class="param">foreignMarkup </div><div class="param-desc"><span class="param-type">array[Element]</span> </div>
+      <div class="param">docs </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">generator </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">managingEditor </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">webMaster </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">styleSheet </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">language </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">encoding </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">entries </div><div class="param-desc"><span class="param-type">array[SyndEntry]</span> </div>
+      <div class="param">description </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">link </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">modules </div><div class="param-desc"><span class="param-type">array[Module]</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="Module">Module</a></h3>
+    <div class="field-items">
+      <div class="param">uri </div><div class="param-desc"><span class="param-type">String</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="DocType">DocType</a></h3>
+    <div class="field-items">
+      <div class="param">internalSubset </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">elementName </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">publicID </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">systemID </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">value </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">parent </div><div class="param-desc"><span class="param-type">Document</span> </div>
+      <div class="param">namespacesInScope </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">namespacesInherited </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">namespacesIntroduced </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">cType </div><div class="param-desc"><span class="param-type">CType</span> </div>
+      <div class="param">parentElement </div><div class="param-desc"><span class="param-type">Element</span> </div>
+      <div class="param">document </div><div class="param-desc"><span class="param-type">Document</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="SyndEnclosure">SyndEnclosure</a></h3>
+    <div class="field-items">
+      <div class="param">url </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">length </div><div class="param-desc"><span class="param-type">Long</span> </div>
+      <div class="param">type </div><div class="param-desc"><span class="param-type">String</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="SyndPerson">SyndPerson</a></h3>
+    <div class="field-items">
+      <div class="param">uri </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">email </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">name </div><div class="param-desc"><span class="param-type">String</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="SyndContent">SyndContent</a></h3>
+    <div class="field-items">
+      <div class="param">mode </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">value </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">type </div><div class="param-desc"><span class="param-type">String</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="Attribute">Attribute</a></h3>
+    <div class="field-items">
+      <div class="param">intValue </div><div class="param-desc"><span class="param-type">Integer</span> </div>
+      <div class="param">longValue </div><div class="param-desc"><span class="param-type">Long</span> </div>
+      <div class="param">floatValue </div><div class="param-desc"><span class="param-type">Float</span> </div>
+      <div class="param">doubleValue </div><div class="param-desc"><span class="param-type">Double</span> </div>
+      <div class="param">booleanValue </div><div class="param-desc"><span class="param-type">Boolean</span> </div>
+      <div class="param">namespacesInScope </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">namespacesInherited </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">namespacesIntroduced </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">specified </div><div class="param-desc"><span class="param-type">Boolean</span> </div>
+      <div class="param">qualifiedName </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">namespacePrefix </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">document </div><div class="param-desc"><span class="param-type">Document</span> </div>
+      <div class="param">namespace </div><div class="param-desc"><span class="param-type">Namespace</span> </div>
+      <div class="param">attributeType </div><div class="param-desc"><span class="param-type">AttributeType</span> </div>
+      <div class="param">name </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">value </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">parent </div><div class="param-desc"><span class="param-type">Element</span> </div>
+      <div class="param">namespaceURI </div><div class="param-desc"><span class="param-type">String</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="Namespace">Namespace</a></h3>
+    <div class="field-items">
+      <div class="param">prefix </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">uRI </div><div class="param-desc"><span class="param-type">String</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="SyndLink">SyndLink</a></h3>
+    <div class="field-items">
+      <div class="param">title </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">rel </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">href </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">hreflang </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">length </div><div class="param-desc"><span class="param-type">Long</span> </div>
+      <div class="param">type </div><div class="param-desc"><span class="param-type">String</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="SyndImage">SyndImage</a></h3>
+    <div class="field-items">
+      <div class="param">title </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">url </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">description </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">link </div><div class="param-desc"><span class="param-type">String</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="Content">Content</a></h3>
+    <div class="field-items">
+      <div class="param">namespacesInScope </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">namespacesInherited </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">namespacesIntroduced </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">cType </div><div class="param-desc"><span class="param-type">CType</span> </div>
+      <div class="param">parentElement </div><div class="param-desc"><span class="param-type">Element</span> </div>
+      <div class="param">document </div><div class="param-desc"><span class="param-type">Document</span> </div>
+      <div class="param">value </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">parent </div><div class="param-desc"><span class="param-type">Parent</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="Element">Element</a></h3>
+    <div class="field-items">
+      <div class="param">text </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">rootElement </div><div class="param-desc"><span class="param-type">Boolean</span> </div>
+      <div class="param">additionalNamespaces </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">contentSize </div><div class="param-desc"><span class="param-type">Integer</span> </div>
+      <div class="param">textTrim </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">textNormalize </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">descendants </div><div class="param-desc"><span class="param-type">org.jdom2.util.IteratorIterable&lt;org.jdom2.Content&gt;</span> </div>
+      <div class="param">namespacesInScope </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">namespacesInherited </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">namespacesIntroduced </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">xMLBaseURI </div><div class="param-desc"><span class="param-type">URI</span> </div>
+      <div class="param">qualifiedName </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">namespacePrefix </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">namespace </div><div class="param-desc"><span class="param-type">Namespace</span> </div>
+      <div class="param">name </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">value </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">attributes </div><div class="param-desc"><span class="param-type">array[Attribute]</span> </div>
+      <div class="param">content </div><div class="param-desc"><span class="param-type">array[Content]</span> </div>
+      <div class="param">namespaceURI </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">children </div><div class="param-desc"><span class="param-type">array[Element]</span> </div>
+      <div class="param">cType </div><div class="param-desc"><span class="param-type">CType</span> </div>
+      <div class="param">parentElement </div><div class="param-desc"><span class="param-type">Element</span> </div>
+      <div class="param">document </div><div class="param-desc"><span class="param-type">Document</span> </div>
+      <div class="param">parent </div><div class="param-desc"><span class="param-type">Parent</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="SyndEntry">SyndEntry</a></h3>
+    <div class="field-items">
+      <div class="param">title </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">uri </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">titleEx </div><div class="param-desc"><span class="param-type">SyndContent</span> </div>
+      <div class="param">links </div><div class="param-desc"><span class="param-type">array[SyndLink]</span> </div>
+      <div class="param">publishedDate </div><div class="param-desc"><span class="param-type">Date</span> </div>
+      <div class="param">authors </div><div class="param-desc"><span class="param-type">array[SyndPerson]</span> </div>
+      <div class="param">author </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">contributors </div><div class="param-desc"><span class="param-type">array[SyndPerson]</span> </div>
+      <div class="param">categories </div><div class="param-desc"><span class="param-type">array[SyndCategory]</span> </div>
+      <div class="param">foreignMarkup </div><div class="param-desc"><span class="param-type">array[Element]</span> </div>
+      <div class="param">comments </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">enclosures </div><div class="param-desc"><span class="param-type">array[SyndEnclosure]</span> </div>
+      <div class="param">updatedDate </div><div class="param-desc"><span class="param-type">Date</span> </div>
+      <div class="param">wireEntry </div><div class="param-desc"><span class="param-type">Object</span> </div>
+      <div class="param">contents </div><div class="param-desc"><span class="param-type">array[SyndContent]</span> </div>
+      <div class="param">description </div><div class="param-desc"><span class="param-type">SyndContent</span> </div>
+      <div class="param">link </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">source </div><div class="param-desc"><span class="param-type">SyndFeed</span> </div>
+      <div class="param">modules </div><div class="param-desc"><span class="param-type">array[Module]</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="URI">URI</a></h3>
+    <div class="field-items">
+      <div class="param">scheme </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">fragment </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">authority </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">userInfo </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">host </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">port </div><div class="param-desc"><span class="param-type">Integer</span> </div>
+      <div class="param">path </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">query </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">schemeSpecificPart </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">absolute </div><div class="param-desc"><span class="param-type">Boolean</span> </div>
+      <div class="param">opaque </div><div class="param-desc"><span class="param-type">Boolean</span> </div>
+      <div class="param">rawSchemeSpecificPart </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">rawAuthority </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">rawUserInfo </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">rawPath </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">rawQuery </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">rawFragment </div><div class="param-desc"><span class="param-type">String</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
   
   <style>
 body { 
