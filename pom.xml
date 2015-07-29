@@ -307,8 +307,8 @@
 
     <!-- More Project Information -->
     <name>COMETE</name>
-    <description>Comete Project Jena Migration</description>
-    <url>https://github.com/LICEF/comete.git</url>
+    <description>Comete Project</description>
+    <url>https://github.com/LICEF/comete</url>
     <inceptionYear>2014</inceptionYear>
     <licenses>
         <license>

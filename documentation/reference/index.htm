@@ -1,0 +1,1412 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">        
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+
+
+
+  <title>COMETE Vocabulary Reference</title>
+  <link href="css/extras.css" rel="stylesheet" type="text/css" / >
+  <link href="css/base.css" rel="stylesheet"/ >
+
+</head><body>
+
+<div class="head">
+<img src="images/cometeLogo.gif" width="108" height="120"/> 
+
+<h1 id="title">COMETE Vocabulary Reference</h1>
+
+  <h2>July, 29th, 2015</h2>
+<dl>
+  <dt>Authors:</dt>
+    <dd>Alexis Miara, <a href="http://www.licef.ca" target="_blank">Licef</a><br/>
+      Frederic Bergeron, <a href="http://www.licef.ca" target="_blank">Licef</a>
+    </dd>
+  <dt>Formats:</dt>
+    <dd><a href="comete.rdf">rdf/xml</a></dd>
+</dl>
+<hr/>
+</div>
+<h2 id="secintro">Introduction</h2>
+
+<p>The COMETE Vocabulary reference describes the schema used inside the COMETE project. It combines its own definitions with external ones.</p>
+
+
+<hr/>
+  
+<h2 id="sectable">COMETE Schema Overview</h2>
+
+<p>The following table gives an overview of the COMETE vocabulary.</p>
+
+
+
+
+<div id="div-appendix-overview-classes">
+<h3>Classes</h3>
+
+<table class="quick-reference">
+  <caption></caption>
+  <colgroup><col class="quick-ref-key" /><col class="quick-ref-value"
+  /></colgroup>
+  <tbody>
+    <tr>
+      <th colspan="2"><a href="#Identity" id="Identity">comete:Identity</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#Identity</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>class of identities</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>Identity</em></td>
+    </tr>
+    <tr>
+      <td>Super-classes: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Object">comete:Object</a></code></td>
+    </tr>
+
+
+
+    <tr>
+      <th colspan="2"><a href="#LearningObject" id="LearningObject">comete:LearningObject</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#LearningObject</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>class of learning objects</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>Learning Object</em></td>
+    </tr>
+    <tr>
+      <td>Super-classes: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Object">comete:Object</a></code></td>
+    </tr>
+
+
+
+
+    <tr>
+      <th colspan="2"><a href="#MetadataRecord" id="MetadataRecord">comete:MetadataRecord</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#MetadataRecord</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>class of metadata records</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>Metadata record</em></td>
+    </tr>
+    <tr>
+      <td>Super-classes: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Object">comete:Object</a></code></td>
+    </tr>
+
+
+    <tr>
+      <th colspan="2"><a href="#Object" id="Object">comete:Object</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#Object</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>Class of all Comete objects</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>class of all comete objects</em></td>
+    </tr>
+
+
+    <tr>
+      <th colspan="2"><a href="#Organization" id="Organization">comete:Organization</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#Organization</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>class of organizations</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>Organization</em></td>
+    </tr>
+    <tr>
+      <td>Super-classes: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Identity">comete:Identity</a> <a href="http://xmlns.com/foaf/0.1/Organization">foaf:Organization</a></code></td>
+    </tr>
+
+
+
+    <tr>
+      <th colspan="2"><a href="#Person" id="Person">comete:Person</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#Person</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>class of persons</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>Person</em></td>
+    </tr>
+    <tr>
+      <td>Super-classes: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Identity">comete:Identity</a> <a href="http://xmlns.com/foaf/0.1/Person">foaf:Person</a></code></td>
+    </tr>
+
+
+
+
+    <tr>
+      <th colspan="2"><a href="#Repository" id="Repository">comete:Repository</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#Repository</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>class of repositories</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>Repository</em></td>
+    </tr>
+    <tr>
+      <td>Super-classes: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Object">comete:Object</a></code></td>
+    </tr>
+
+
+
+    <tr>
+      <th colspan="2"><a href="#VocContext" id="VocContext">comete:VocContext</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#VocContext</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>bla bla bla voc context</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>Vocabulary Context</em></td>
+    </tr>
+    <tr>
+      <td>Super-classes: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Object">comete:Object</a></code></td>
+    </tr>
+
+  </tbody>
+</table>
+
+</div><div id="div-appendix-overview-properties">
+<h3>Properties</h3>
+
+<table class="quick-reference">
+  <caption></caption>
+  <colgroup><col class="quick-ref-key" /><col class="quick-ref-value"
+  /></colgroup>
+  <tbody>
+
+
+
+    <tr>
+      <th colspan="2"><a href="#added" id="added">comete:added</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#added</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>insertion date into the system</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>added</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Object">comete:Object</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2001/XMLSchema#date">xsd:date</a></code></td>
+    </tr>
+
+
+
+    <tr>
+      <th colspan="2"><a href="#altFamilyName" id="altFamilyName">comete:altFamilyName</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#altFamilyName</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>alternative family name</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has alternate family name</em></td>
+    </tr>
+    <tr>
+      <td>Super-property: </td>
+      <td><code><a href="http://xmlns.com/foaf/0.1/familyName">foaf:familyName</a></code></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Person">comete:Person</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+    <tr>
+      <th colspan="2"><a href="#altFormattedAddress" id="altFormattedAddress">comete:altFormattedAddress</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#altFormattedAddress</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>alternative formatted postal address</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has alternate postal address</em></td>
+    </tr>
+    <tr>
+      <td>Super-property: </td>
+      <td><code><a href="#formattedAddress">comete:formattedAddress</a></code></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Identity">comete:Identity</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+
+    <tr>
+      <th colspan="2"><a href="#altGivenName" id="altGivenName">comete:altGivenName</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#altGivenName</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>alternative given name</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has alternate given name</em></td>
+    </tr>
+    <tr>
+      <td>Super-property: </td>
+      <td><code><a href="http://xmlns.com/foaf/0.1/givenName">foaf:givenName</a></code></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Person">comete:Person</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+
+    <tr>
+      <th colspan="2"><a href="#altHomepage" id="altHomepage">comete:altHomepage</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#altHomepage</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>alternative url</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has alternate homepage</em></td>
+    </tr>
+    <tr>
+      <td>Super-property: </td>
+      <td><code><a href="http://xmlns.com/foaf/0.1/homepage">foaf:homepage</a></code></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Identity">comete:Identity</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://xmlns.com/foaf/0.1/Document">foaf:Document</a></code></td>
+    </tr>
+
+
+
+
+    <tr>
+      <th colspan="2"><a href="#altImg" id="altImg">comete:altImg</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#altImg</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>alternative image</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has alternate image</em></td>
+    </tr>
+    <tr>
+      <td>Super-property: </td>
+      <td><code><a href="http://xmlns.com/foaf/0.1/homepage">foaf:homepage</a></code></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Identity">comete:Person</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://xmlns.com/foaf/0.1/Document">foaf:Document</a></code></td>
+    </tr>
+
+
+    <tr>
+      <th colspan="2"><a href="#altLogo" id="altLogo">comete:altLogo</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#altLogo</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>alternative logo</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has alternate logo</em></td>
+    </tr>
+    <tr>
+      <td>Super-property: </td>
+      <td><code><a href="http://xmlns.com/foaf/0.1/homepage">foaf:homepage</a></code></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Identity">comete:Organization</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://xmlns.com/foaf/0.1/Document">foaf:Document</a></code></td>
+    </tr>
+
+
+
+    <tr>
+      <th colspan="2"><a href="#altMbox" id="altMbox">comete:altMbox</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#altMbox</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>alternative mail box</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has alternate mail box</em></td>
+    </tr>
+    <tr>
+      <td>Super-property: </td>
+      <td><code><a href="http://xmlns.com/foaf/0.1/mbox">foaf:mbox</a></code></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Identity">comete:Identity</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+
+   <tr>
+      <th colspan="2"><a href="#altName" id="altName">comete:altName</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#altName</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>alternative formatted name</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has alternate formatted name</em></td>
+    </tr>
+    <tr>
+      <td>Super-property: </td>
+      <td><code><a href="http://xmlns.com/foaf/0.1/name">foaf:name</a></code></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Identity">comete:Identity</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+
+    <tr>
+      <th colspan="2"><a href="#altPhone" id="altPhone">comete:altPhone</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#altPhone</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>alternative phone (tel or fax)</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has alternate phone</em></td>
+    </tr>
+    <tr>
+      <td>Super-property: </td>
+      <td><code><a href="http://xmlns.com/foaf/0.1/phone">foaf:phone</a></code></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Identity">comete:Identity</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+
+
+
+    <tr>
+      <th colspan="2"><a href="#applicationProfile" id="applicationProfile">comete:applicationProfile</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#applicationProfile</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>metadata application profile</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has application profile</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#MetadataRecord">comete:MetadataRecord</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+
+    <tr>
+      <th colspan="2"><a href="#describes" id="describes">comete:describes</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#describes</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>describes learning object</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>describes</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#MetadataRecord">comete:MetadataRecord</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://comete.licef.ca/reference#LearningObject">comete:LearningObject</a></code></td>
+    </tr>
+    <tr>
+      <td>Inverse of: </td>
+      <td><code><a href="http://comete.licef.ca/reference#hasMetadataRecord">comete:hasMetadataRecord</a></code></td>
+    </tr>
+
+
+
+    <tr>
+      <th colspan="2"><a href="#educationalLevel" id="extraInfo">comete:educationalLevel</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#educationalLevel</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>level of education info</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has educational level</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#LearningObject">comete:LearningObject</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2004/02/skos/core#Concept">skos:Concept</a></code></td>
+    </tr>
+
+
+
+    <tr>
+      <th colspan="2"><a href="#extraInfo" id="extraInfo">comete:extraInfo</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#extraInfo</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>extra unqualified information</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has extra info</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Object">comete:Object</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+
+
+    <tr>
+      <th colspan="2"><a href="#flag" id="flag">comete:flag</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#flag</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>Flag of the resource specifying whether a resource is inactive, invalid, pending, has broken link, etc.</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has flag</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#LearningObject">comete:LearningObject</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+
+
+    <tr>
+      <th colspan="2"><a href="#formattedAddress" id="formattedAddress">comete:formattedAddress</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#formattedAddress</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>formatted postal address of an identity</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has postal address</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Identity">comete:Identity</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+
+    <tr>
+      <th colspan="2"><a href="#hasMetadataRecord" id="hasMetadataRecord">comete:hasMetadataRecord</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#hasMetadataRecord</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>an associated metadata record</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has metadata record</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#LearningObject">comete:LearningObject</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://comete.licef.ca/reference#MetadataRecord">comete:MetadataRecord</a></code></td>
+    </tr>
+    <tr>
+      <td>Inverse of: </td>
+      <td><code><a href="http://comete.licef.ca/reference#describes">comete:describes</a></code></td>
+    </tr>
+
+
+
+    <tr>
+      <th colspan="2"><a href="#intellectualProperty" id="intellectualProperty">comete:intellectualProperty</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#intellectualProperty</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>intellectual property information</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has intellectual property</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#LearningObject">comete:LearningObject</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+
+
+
+    <tr>
+      <th colspan="2"><a href="#keyword" id="keyword">comete:keyword</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#keyword</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>Significative word describing the object</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>keyword</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#LearningObject">comete:LearningObject</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+
+    <tr>
+      <th colspan="2"><a href="#learningResourceType" id="learningResourceType">comete:learningResourceType</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#learningResourceType</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>type of learning resource</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has learning resource type</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#LearningObject">comete:LearningObject</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2004/02/skos/core#Concept">skos:Concept</a></code></td>
+    </tr>
+
+
+
+    <tr>
+      <th colspan="2"><a href="#metadataFormat" id="metadataFormat">comete:metadataFormat</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#metadataFormat</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>Format of metadata record (e.g.: <tt>http://ltsc.ieee.org/xsd/LOM</tt>, <tt>http://www.openarchives.org/OAI/2.0/oai_dc/</tt>).</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>metadataFormat</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#MetadataRecord">comete:MetadataRecord</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+    <tr>
+      <th colspan="2"><a href="#notificationEnabled" id="notificationEnabled">comete:notificationEnabled</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#notificationEnabled</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>Whether a specific kind of notification is enabled or not</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has notification enabled</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Object">comete:Object</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+
+    <tr>
+      <th colspan="2"><a href="#originalDataLink" id="originalDataLink">comete:originalDataLink</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#originalDataLink</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>Link to original data</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has notification enabled</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#MetadataRecord">comete:MetadataRecord</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+
+
+    <tr>
+      <th colspan="2"><a href="#repository" id="repository">comete:repository</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#repository</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>harvested from repository</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>from repository</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#MetadataRecord">comete:MetadataRecord</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Repository">comete:Repository</a></code></td>
+    </tr>
+
+
+
+
+
+
+    <tr>
+      <th colspan="2"><a href="#repoType" id="repoType">comete:repoType</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#repoType</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>Type of a repository (e.g.: <tt>OAI</tt>, <tt>HTML</tt></).</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>type of repository</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Repository">comete:Repository</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+
+
+    <tr>
+      <th colspan="2"><a href="#storeDigitalObject" id="storeDigitalObject">comete:storeDigitalObject</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#storeDigitalObject</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>Link to local Store persistent digital object identifier</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>store object id</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Object">comete:Object</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+
+
+    <tr>
+      <th colspan="2"><a href="#updated" id="added">comete:updated</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#updated</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>modification date of object into the system</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>updated</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Object">comete:Object</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2001/XMLSchema#date">xsd:date</a></code></td>
+    </tr>
+
+
+
+    <tr>
+      <th colspan="2"><a href="#validationEnabled" id="validationEnabled">comete:validationEnabled</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#validationEnabled</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>Whether a specific validation is enabled or not</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has validation enabled</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Object">comete:Object</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+
+    <tr>
+      <th colspan="2"><a href="#validationReportLink" id="validationReportLink">comete:validationReportLink</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#validationReportLink</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>Link to a validation report for a specific application profile</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has validation report link</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#Object">comete:Object</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+
+
+    <tr>
+      <th colspan="2"><a href="#vocAlias" id="vocAlias">comete:vocAlias</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#vocAlias</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>Alias corresponding to the vocabulary</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>alias</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#VocContext">comete:VocContext</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+
+    <tr>
+      <th colspan="2"><a href="#vocConceptLinkingPredicate" id="vocConceptLinkingPredicate">comete:vocConceptLinkingPredicate</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#vocConceptLinkingPredicate</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>Predicate to link learning objects with this vocabulary</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has linking predicate</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#VocContext">comete:VocContext</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property">rdf:Property</a></code></td>
+    </tr>
+
+
+
+    <tr>
+      <th colspan="2"><a href="#vocConceptUriIdSeparator" id="vocConceptUriIdSeparator">comete:vocConceptUriIdSeparator</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#vocConceptUriIdSeparator</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>Fragment separator of concept</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has concept uri id separator</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#VocContext">comete:VocContext</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+    <tr>
+      <th colspan="2"><a href="#vocConceptUriPrefix" id="vocConceptUriPrefix">comete:vocConceptUriPrefix</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#vocConceptUriPrefix</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>Prefix of vocabulary concept URIs (if different from scheme)</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has concept uri prefix</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#VocContext">comete:VocContext</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+    <tr>
+      <th colspan="2"><a href="#vocConceptUriSuffix" id="vocConceptUriSuffix">comete:vocConceptUriSuffix</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#vocConceptUriSuffix</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>Suffix of concept URIs (if exists)</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has concept uri prefix</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#VocContext">comete:VocContext</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+
+
+
+    <tr>
+      <th colspan="2"><a href="#vocId" id="vocId">comete:vocId</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#vocId</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>ID for internal management</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has id</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#VocContext">comete:VocContext</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+    <tr>
+      <th colspan="2"><a href="#vocLocalUrl" id="vocLocalUrl">comete:vocLocalUrl</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#vocLocalUrl</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>URL of the related vocabulary</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has local URL</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#VocContext">comete:VocContext</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Resource">rdfs:Resource</a></code></td>
+    </tr>
+
+
+
+
+    <tr>
+      <th colspan="2"><a href="#vocNavigable" id="vocNavigable">comete:vocNavigable</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#vocNavigable</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>Usable vocabulary for thematic navigation</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>is navigable</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#VocContext">comete:VocContext</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+
+    <tr>
+      <th colspan="2"><a href="#vocSourceLocation" id="vocSourceLocation">comete:vocSourceLocation</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#vocSourceLocation</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>Location of the related vocabulary</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has source location</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#VocContext">comete:VocContext</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#Literal">rdfs:Literal</a></code></td>
+    </tr>
+
+
+    <tr>
+      <th colspan="2"><a href="#vocUri" id="vocUri">comete:vocUri</a> </th>
+    </tr>
+    <tr>
+      <td>URI: </td>
+      <td><code>http://comete.licef.ca/reference#vocUri</code> </td>
+    </tr>
+    <tr>
+      <td>Definition: </td>
+      <td>uri of a vocabulary context</td>
+    </tr>
+    <tr>
+      <td>Label: </td>
+      <td><em>has uri</em></td>
+    </tr>
+    <tr>
+      <td>Domain: </td>
+      <td><code><a href="http://comete.licef.ca/reference#VocContext">comete:VocContext</a></code></td>
+    </tr>
+    <tr>
+      <td>Range: </td>
+      <td><code><a href="http://www.w3.org/2004/02/skos/core#ConceptScheme">skos:ConceptScheme</a></code></td>
+    </tr>
+
+
+  </tbody>
+</table>
+
+<div id="div-appendix-overview-classes">
+<h3>External vocabularies used in COMETE</h3>
+
+<table class="quick-reference">
+  <caption></caption>
+  <colgroup><col class="quick-ref-key" /><col class="quick-ref-value"
+  /></colgroup>
+  <tbody>
+    <tr>
+      <th colspan="2"><a href="http://purl.org/dc/terms/">Dublin Core Terms</a></th>
+    </tr>
+    <tr>
+      <td>Used elements: </td>
+      <td><code>
+                <a href="http://purl.org/dc/terms/created">dct:created</a>
+                <a href="http://purl.org/dc/terms/creator">dct:creator</a>
+                <a href="http://purl.org/dc/terms/description">dct:description</a>
+                <a href="http://purl.org/dc/terms/format">dct:format</a>
+                <a href="http://purl.org/dc/terms/identifier">dct:identifier</a>
+                <a href="http://purl.org/dc/terms/publisher">dct:language</a>
+                <a href="http://purl.org/dc/terms/publisher">dct:publisher</a>
+                <a href="http://purl.org/dc/terms/replaces">dct:replaces</a>
+                <a href="http://purl.org/dc/terms/subject">dct:subject</a>
+                <a href="http://purl.org/dc/terms/title">dct:title</a>
+          </code></td>
+    </tr>
+
+    <tr>
+      <th colspan="2"><a href="http://xmlns.com/foaf/0.1/">FOAF</a></th>
+    </tr>
+    <tr>
+      <td>Used elements: </td>
+      <td><code><a href="http://xmlns.com/foaf/0.1/Document">foaf:Document</a>
+                <a href="http://xmlns.com/foaf/0.1/familyName">foaf:familyName</a>
+                <a href="http://xmlns.com/foaf/0.1/givenName">foaf:givenName</a>                
+                <a href="http://xmlns.com/foaf/0.1/homepage">foaf:homepage</a>
+                <a href="http://xmlns.com/foaf/0.1/mbox">foaf:mbox</a>
+                <a href="http://xmlns.com/foaf/0.1/name">foaf:name</a>
+                <a href="http://xmlns.com/foaf/0.1/page">foaf:page</a>
+                <a href="http://xmlns.com/foaf/0.1/phone">foaf:phone</a>
+                <a href="http://xmlns.com/foaf/0.1/img">foaf:img</a>
+                <a href="http://xmlns.com/foaf/0.1/isPrimaryTopicOf">foaf:isPrimaryTopicOf</a>
+                <a href="http://xmlns.com/foaf/0.1/logo">foaf:logo</a>
+                <a href="http://xmlns.com/foaf/0.1/primaryTopic">foaf:primaryTopic</a>
+          </code></td>
+    </tr>
+
+    <tr>
+      <th colspan="2"><a href="http://www.w3.org/ns/org#">ORG</a></th>
+    </tr>
+    <tr>
+      <td>Used elements: </td>
+      <td><code><a href="http://www.w3.org/ns/org#memberOf">org:memberOf</a>
+          </code></td>
+    </tr>
+
+    <tr>
+      <th colspan="2"><a href="http://www.w3.org/1999/02/22-rdf-syntax-ns#">RDF</a></th>
+    </tr>
+    <tr>
+      <td>Used elements: </td>
+      <td><code><a href="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">rdf:type</a>
+          </code></td>
+    </tr>
+
+    <tr>
+      <th colspan="2"><a href="http://www.w3.org/2000/01/rdf-schema#">RDFS</a></th>
+    </tr>
+    <tr>
+      <td>Used elements: </td>
+      <td><code><a href="http://www.w3.org/2000/01/rdf-schema#label">rdfs:label</a>
+          </code></td>
+    </tr>
+
+    <tr>
+      <th colspan="2"><a href="http://www.w3.org/2004/02/skos/core#">SKOS</a></th>
+    </tr>
+    <tr>
+      <td>Used elements: </td>
+      <td><code><a href="http://www.w3.org/2004/02/skos/core#Concept">skos:Concept</a>
+                <a href="http://www.w3.org/2004/02/skos/core#ConceptScheme">skos:ConceptScheme</a>
+                <a href="http://www.w3.org/2004/02/skos/core#broader">skos:broader</a>
+                <a href="http://www.w3.org/2004/02/skos/core#closeMatch">skos:closeMatch</a>
+                <a href="http://www.w3.org/2004/02/skos/core#definition">skos:definition</a>
+                <a href="http://www.w3.org/2004/02/skos/core#exactMatch">skos:exactMatch</a>
+                <a href="http://www.w3.org/2004/02/skos/core#inScheme">skos:inScheme</a>
+                <a href="http://www.w3.org/2004/02/skos/core#narrower">skos:narrower</a>
+                <a href="http://www.w3.org/2004/02/skos/core#narrowerTransitive">skos:narrowerTransitive</a>
+                <a href="http://www.w3.org/2004/02/skos/core#narrowMatch">skos:narrowMatch</a>
+                <a href="http://www.w3.org/2004/02/skos/core#prefLabel">skos:prefLabel</a>
+          </code></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<hr/>
+<h2 id="secref">References</h2>
+<dl>
+  <dt><a id="COMETE-RDF" name="COMETE-RDF">[COMETE-RDF]</a></dt>
+    <dd><cite><a href="comete.rdf">COMETE Reference - RDF/XML Variant</a></cite>, Alexis Miara, Frederic Bergeron.</dd>
+  <dt><a id="COMETE-PROJECT" name="COMETE-PROJECT">[COMETE-PROJECT]</a></dt>
+    <dd><cite><a href="https://github.com/LICEF/comete">https://github.com/LICEF/comete</a> </cite></dd>
+</dl>
+  
+</body></html>
