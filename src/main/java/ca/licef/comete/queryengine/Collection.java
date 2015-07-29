@@ -46,9 +46,11 @@ public class Collection {
 
     public List<String[]> getAll(String lang) throws Exception {
         File def = definitions;
-        File lgDef = new File( definitions.getParentFile(), lang + "_" + definitions.getName());
-        if (lgDef.exists())
-            def = lgDef;
+        if( !"".equals( lang ) ) {
+            File lgDef = new File( definitions.getParentFile(), lang + "_" + definitions.getName());
+            if (lgDef.exists())
+                def = lgDef;
+        }
         ArrayList<String[]> collections = new ArrayList<> ();
 
         Vector v = IOUtil.readLines(def);
