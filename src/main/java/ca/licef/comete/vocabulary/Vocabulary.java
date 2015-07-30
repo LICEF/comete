@@ -97,8 +97,7 @@ public class Vocabulary {
             }
 
             if (uri == null) {
-                concept = concept.replaceAll(" ", "%20");
-                concept = concept.replaceAll( "/", "%2F" );
+                concept = URLEncoder.encode(concept);
 
                 String vocCtxt = getTripleStore().getTriplesWithPredicateObject(
                         COMETE.vocUri, vocUri, null)[0].getSubject();
