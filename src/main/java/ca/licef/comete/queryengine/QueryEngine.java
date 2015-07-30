@@ -5,6 +5,7 @@ import ca.licef.comete.core.util.ResultSet;
 import ca.licef.comete.queryengine.util.Util;
 import ca.licef.comete.vocabularies.COMETE;
 import licef.IOUtil;
+import licef.StringUtil;
 import licef.reflection.Invoker;
 import licef.tsapi.TripleStore;
 import licef.tsapi.model.Triple;
@@ -41,6 +42,9 @@ public class QueryEngine {
 
     public ResultSet search( String query, String filters, String lang, boolean isShowHiddenRes, String outputFormat,
                              Integer start, Integer limit, String style, QueryCache cache) throws Exception {
+
+        if( StringUtil.isEmpty( query ) )
+            return( new ResultSet() );
 
         JSONArray queryArray = new JSONArray(query);
 

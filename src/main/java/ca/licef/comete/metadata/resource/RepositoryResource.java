@@ -72,11 +72,13 @@ public class RepositoryResource {
         @ApiResponse( code = 200, message = "The uri of the added or updated repository." ),
         @ApiResponse( code = 401, message = "Not authorized to manage repository objects." )
     } )
-    public Response addOrUpdateRepository( @Context HttpServletRequest request,
-                                           @ApiParam( value = "Unique identifier of the repository." ) @PathParam( "id" ) String id, 
-                                           @ApiParam( value = "String that will be used in the GUI to refer to the repository.", required = true ) @QueryParam( "label" ) String label, 
-                                           @ApiParam( value = "Type of supported harvesting method.", allowableValues = "HTML, OAI", required = true ) @QueryParam( "type" ) String type, 
-                                           @ApiParam( value = "Technical contact info of the repository." ) @QueryParam( "url" ) String url, @QueryParam( "adminEmail" ) String adminEmail ) throws Exception {
+    public Response addOrUpdateRepository( 
+            @Context HttpServletRequest request,
+            @ApiParam( value = "Unique identifier of the repository." ) @PathParam( "id" ) String id, 
+            @ApiParam( value = "String that will be used in the GUI to refer to the repository.", required = true ) @QueryParam( "label" ) String label, 
+            @ApiParam( value = "Type of supported harvesting method.", allowableValues = "HTML,OAI", required = true ) @QueryParam( "type" ) String type, 
+            @ApiParam( value = "Url of the endpoint of the repository.", required = true ) @QueryParam( "url" ) String url, 
+            @ApiParam( value = "Technical contact info of the repository." ) @QueryParam( "adminEmail" ) String adminEmail ) throws Exception {
         if (!Security.getInstance().isAuthorized(request))
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to manage repository objects.").build();
 
@@ -119,7 +121,7 @@ public class RepositoryResource {
     @Produces( MediaType.TEXT_PLAIN )
     @ApiOperation( value = "Delete all the records of the repository.", notes = "This can only be used by an Administrator." )
     @ApiResponses( value = {
-        @ApiResponse( code = 200, message = "Ok" ),
+        @ApiResponse( code = 200, message = "Ok" )
     } )
     public Response deleteRecords( @Context HttpServletRequest request,
                                    @ApiParam( value = "Uri of the repository." ) @PathParam( "uri" ) String uri ) throws Exception {

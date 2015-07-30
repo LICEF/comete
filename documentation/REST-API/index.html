@@ -1,0 +1,1141 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>API Reference</title>
+  </head>
+  <body>
+  <h1>Comete</h1>
+    <div class="app-desc">A RDF-based metadata record repository and search engine. for </div>
+    <div class="app-desc">More information: <a href="https://github.com/LICEF/comete">https://github.com/LICEF/comete</a></div>
+    <div class="app-desc">Contact Info: <a href="info@licef.ca">info@licef.ca</a></div>
+    <div class="app-desc">Version: 2.0.0-SNAPSHOT</div>
+    <div class="license-info">GPL</div>
+    <div class="license-url"></div>
+  <h2>Access</h2>
+  <div class="method-summary">Customize this message as you see fit!</div>
+  <h2>Methods</h2>
+  
+  
+  
+  <div class="method">
+    <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /harvestDefinitions</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">HarvestDefinition</span></div>
+    <div class="method-summary"><span class="nickname">getHarvestDefinitions</span> Get all harvest definitions.</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>&quot;aeiou&quot;</code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="post"><code class="huge"><span>post</span>: /harvestDefinitions</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">HarvestDefinition</span></div>
+    <div class="method-summary"><span class="nickname">addNewHarvestDefinition</span> Add a new harvest definition.</div>
+    <div class="method-notes">This can only be used by an Administrator.</div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Identifier of the harvest definition. </div>
+      <div class="param">name (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Name of the harvest definition.  This string is used in the GUI. </div>
+      <div class="param">type (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Type of harvesting method. </div>
+      <div class="param">url (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Url of the endpoint of the repository. </div>
+      <div class="param">ns (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Metadata namespace of the metadata records. </div>
+      <div class="param">adminEmail (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Technical contact info of the repository. </div>
+      <div class="param">isPendingByDefault (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Whether the harvested records should be marked as Pending for approval by default. default: off</div>
+      <div class="param">isCheckingBrokenLink (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Whether the harvested records should be checked for broken links by default. default: off</div>
+      <div class="param">isCheckingInvalid (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Whether the harvested records should be marked when they do not comply to the specified application profile. default: off</div>
+      <div class="param">invalidApplProf (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; URI of the application profile to check if isCheckingInvalid is true. </div>
+      <div class="param">xsl (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; XSLT code that will be applied to harvested records before import. </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /harvestDefinitions/{id}</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">HarvestDefinition</span></div>
+    <div class="method-summary"><span class="nickname">getHarvestDefinition</span> Get all the details of a specific harvest definition.</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>&quot;aeiou&quot;</code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="put"><code class="huge"><span>put</span>: /harvestDefinitions/{id}</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">HarvestDefinition</span></div>
+    <div class="method-summary"><span class="nickname">updateHarvestDefinition</span> Update an existing harvest definition.</div>
+    <div class="method-notes">This can only be used by an Administrator.</div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  </div>
+      <div class="param">name (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Name of the harvest definition.  This string is used in the GUI. </div>
+      <div class="param">type (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Type of harvesting method. </div>
+      <div class="param">url (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Url of the endpoint of the repository. </div>
+      <div class="param">ns (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Metadata namespace of the metadata records. </div>
+      <div class="param">adminEmail (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Technical contact info of the repository. </div>
+      <div class="param">isPendingByDefault (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Whether the harvested records should be marked as Pending for approval by default. default: off</div>
+      <div class="param">isCheckingBrokenLink (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Whether the harvested records should be checked for broken links by default. default: off</div>
+      <div class="param">isCheckingInvalid (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Whether the harvested records should be marked when they do not comply to the specified application profile. default: off</div>
+      <div class="param">invalidApplProf (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; URI of the application profile to check if isCheckingInvalid is true. </div>
+      <div class="param">xsl (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; XSLT code that will be applied to harvested records before import. </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="delete"><code class="huge"><span>delete</span>: /harvestDefinitions/{id}</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">HarvestDefinition</span></div>
+    <div class="method-summary"><span class="nickname">deleteHarvestDefinition</span> Delete the details of a specific harvest definition.</div>
+    <div class="method-notes">This can only be used by an Administrator.</div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="put"><code class="huge"><span>put</span>: /harvestDefinitions/{id}/xsl</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">HarvestDefinition</span></div>
+    <div class="method-summary"><span class="nickname">addXsl</span> Update the XSLT code that will be applied to harvested records before import.</div>
+    <div class="method-notes">This can only be used by an Administrator.</div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  </div>
+      <div class="param">file (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash;  </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /queryEngine/collections</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">QueryEngine</span></div>
+    <div class="method-summary"><span class="nickname">getCollections</span> Get the list of collections for the specified language.</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">lang (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Language of the collections that we want to retrieve. If no collections in the specified language exist, the collections for all languages will be listed. </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>&quot;aeiou&quot;</code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="post"><code class="huge"><span>post</span>: /queryEngine/collections</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">QueryEngine</span></div>
+    <div class="method-summary"><span class="nickname">addCollection</span> Add a new collection with no specified language.</div>
+    <div class="method-notes">This can only be used by an Administrator.</div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">label (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Label of the collection. </div>
+      <div class="param">q (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Query of the collection. </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /queryEngine/keywords</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">QueryEngine</span></div>
+    <div class="method-summary"><span class="nickname">getKeywords</span> List all the known keywords containing the specified value.</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">value (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; String contained in a keyword.  Default to empty string so that all keywords are returned. </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>&quot;aeiou&quot;</code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /queryEngine/searchAtom</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">QueryEngine</span></div>
+    <div class="method-summary"><span class="nickname">searchAtom</span> Performs a query and returned the result formatted in Atom.</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">q (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; JSON-formatted query. Default: all resources. default: [{"key":"fulltext","value":""}]</div>
+      <div class="param">start (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Index of the first resource. default: 0</div>
+      <div class="param">limit (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Number of resources per page. default: 20</div>
+      <div class="param">lang (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Language of the response. default: en</div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">SyndFeed</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /queryEngine/searchJson</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">QueryEngine</span></div>
+    <div class="method-summary"><span class="nickname">searchJson</span> Performs a query and returned the result formatted in JSON.</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">q (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; JSON-formatted query. Default: all resources. default: [{"key":"fulltext","value":""}]</div>
+      <div class="param">f (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Filter to modify the query. </div>
+      <div class="param">start (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Index of the first resource. default: 0</div>
+      <div class="param">limit (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Number of resources per page. default: 20</div>
+      <div class="param">style (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Style of the response. default: default</div>
+      <div class="param">lang (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Language of the response. default: en</div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>&quot;aeiou&quot;</code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /queryEngine/searchRss</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">QueryEngine</span></div>
+    <div class="method-summary"><span class="nickname">searchRss</span> Performs a query and returned the result formatted in RSS.</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">q (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; JSON-formatted query. Default: all resources. default: [{"key":"fulltext","value":""}]</div>
+      <div class="param">start (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Index of the first resource. default: 0</div>
+      <div class="param">limit (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Number of resources per page. default: 20</div>
+      <div class="param">lang (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Language of the response. default: en</div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">SyndFeed</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /repositories</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">Repository</span></div>
+    <div class="method-summary"><span class="nickname">getRepositories</span> Get all known repositories.</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>&quot;aeiou&quot;</code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="put"><code class="huge"><span>put</span>: /repositories/{id}</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">Repository</span></div>
+    <div class="method-summary"><span class="nickname">addOrUpdateRepository</span> Add or update a repository.</div>
+    <div class="method-notes">This can only be used by an Administrator.</div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Unique identifier of the repository. </div>
+      <div class="param">label (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; String that will be used in the GUI to refer to the repository. </div>
+      <div class="param">type (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Type of supported harvesting method. </div>
+      <div class="param">url (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Url of the endpoint of the repository. </div>
+      <div class="param">adminEmail (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Technical contact info of the repository. </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /repositories/{uri}/records</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">Repository</span></div>
+    <div class="method-summary"><span class="nickname">getRecords</span> Get the records contained in the repository.</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">uri (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Uri of the repository. </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="delete"><code class="huge"><span>delete</span>: /repositories/{uri}/records</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">Repository</span></div>
+    <div class="method-summary"><span class="nickname">deleteRecords</span> Delete all the records of the repository.</div>
+    <div class="method-notes">This can only be used by an Administrator.</div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">uri (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Uri of the repository. </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /settings/notifications</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">Settings</span></div>
+    <div class="method-summary"><span class="nickname">getNofificationSettings</span> Get the notification settings.</div>
+    <div class="method-notes">This can only be used by an Administrator.</div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>&quot;aeiou&quot;</code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="post"><code class="huge"><span>post</span>: /settings/notifications</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">Settings</span></div>
+    <div class="method-summary"><span class="nickname">setNotificationSettings</span> Set the notification settings.</div>
+    <div class="method-notes">This can only be used by an Administrator.</div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">notifEmail (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Email address where the notification are delivered. </div>
+      <div class="param">brokenLinkValidationCompletionNotif (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Whether a notification is sent after the broken link check is done. </div>
+      <div class="param">harvestCompletionNotif (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; Whether a notification is sent after the completion of a repository harvesting task. </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /settings/validatedApplicationProfiles</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">Settings</span></div>
+    <div class="method-summary"><span class="nickname">getValidatedApplicationProfiles</span> Get the validated application profiles when importing records.</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>&quot;aeiou&quot;</code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="put"><code class="huge"><span>put</span>: /settings/validatedApplicationProfiles</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">Settings</span></div>
+    <div class="method-summary"><span class="nickname">setValidatedApplicationProfiles</span> Set the validated application profiles when importing records.</div>
+    <div class="method-notes">This can only be used by an Administrator.</div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      <div class="param">http//ltsc.ieee.org/xsd/LOM/strict (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; LOM Strict appl. profile </div>
+      <div class="param">http//ltsc.ieee.org/xsd/LOM/loose (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; LOM Looset appl. profile </div>
+      <div class="param">http//lomFr.fr/validation/LomFRv1.0/core (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; LOM FR 1.0 appl. profile </div>
+      <div class="param">http//lomFr.fr/validation/ScoLomFRv1.0/core (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; SCO LOM FR 1.0 appl. profile </div>
+      <div class="param">http//lomFr.fr/validation/ScoLomFRv1.1/core (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; SCO LOM FR 1.1 appl. profile </div>
+      <div class="param">http//www.normetic.org/LomNormeticv1.2 (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; LOM Normetic 1.2 appl. profile </div>
+      <div class="param">http//www.openarchives.org/OAI/2.0/ (required)</div>
+
+      <div class="param-desc"><span class="param-type">Form Parameter</span> &mdash; OAI DC appl. profile </div>
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  <div class="method">
+    <div class="method-path"><pre class="get"><code class="huge"><span>get</span>: /system/status</code></pre></div>
+    <div class="method-tags"> <span class="method-tag">System</span></div>
+    <div class="method-summary"><span class="nickname">isReady</span> Indicates whether the system is ready to be used or if it&#39;s in maintenance mode.</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Parameters</h3>
+    <div class="field-items">
+      
+    </div>  <!-- field-items -->
+    <h3 class="field-label">Return type</h3>
+
+    <div class="return-type"><a href="#">String</a></div>
+
+    
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: </div>
+    <pre class="example"><code></code></pre>
+    
+  </div> <!-- method -->
+  <hr>
+  
+  
+
+  <h2>Models</h2>
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="Parent">Parent</a></h3>
+    <div class="field-items">
+      <div class="param">contentSize </div><div class="param-desc"><span class="param-type">Integer</span> </div>
+      <div class="param">descendants </div><div class="param-desc"><span class="param-type">org.jdom2.util.IteratorIterable&lt;org.jdom2.Content&gt;</span> </div>
+      <div class="param">document </div><div class="param-desc"><span class="param-type">Document</span> </div>
+      <div class="param">parent </div><div class="param-desc"><span class="param-type">Parent</span> </div>
+      <div class="param">content </div><div class="param-desc"><span class="param-type">array[Content]</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="Document">Document</a></h3>
+    <div class="field-items">
+      <div class="param">contentSize </div><div class="param-desc"><span class="param-type">Integer</span> </div>
+      <div class="param">descendants </div><div class="param-desc"><span class="param-type">org.jdom2.util.IteratorIterable&lt;org.jdom2.Content&gt;</span> </div>
+      <div class="param">namespacesInScope </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">namespacesInherited </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">namespacesIntroduced </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">rootElement </div><div class="param-desc"><span class="param-type">Element</span> </div>
+      <div class="param">docType </div><div class="param-desc"><span class="param-type">DocType</span> </div>
+      <div class="param">document </div><div class="param-desc"><span class="param-type">Document</span> </div>
+      <div class="param">baseURI </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">parent </div><div class="param-desc"><span class="param-type">Parent</span> </div>
+      <div class="param">content </div><div class="param-desc"><span class="param-type">array[Content]</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="SyndCategory">SyndCategory</a></h3>
+    <div class="field-items">
+      <div class="param">taxonomyUri </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">name </div><div class="param-desc"><span class="param-type">String</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="SyndFeed">SyndFeed</a></h3>
+    <div class="field-items">
+      <div class="param">title </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">image </div><div class="param-desc"><span class="param-type">SyndImage</span> </div>
+      <div class="param">uri </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">supportedFeedTypes </div><div class="param-desc"><span class="param-type">array[String]</span> </div>
+      <div class="param">preservingWireFeed </div><div class="param-desc"><span class="param-type">Boolean</span> </div>
+      <div class="param">feedType </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">titleEx </div><div class="param-desc"><span class="param-type">SyndContent</span> </div>
+      <div class="param">links </div><div class="param-desc"><span class="param-type">array[SyndLink]</span> </div>
+      <div class="param">descriptionEx </div><div class="param-desc"><span class="param-type">SyndContent</span> </div>
+      <div class="param">publishedDate </div><div class="param-desc"><span class="param-type">Date</span> </div>
+      <div class="param">authors </div><div class="param-desc"><span class="param-type">array[SyndPerson]</span> </div>
+      <div class="param">author </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">contributors </div><div class="param-desc"><span class="param-type">array[SyndPerson]</span> </div>
+      <div class="param">copyright </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">categories </div><div class="param-desc"><span class="param-type">array[SyndCategory]</span> </div>
+      <div class="param">foreignMarkup </div><div class="param-desc"><span class="param-type">array[Element]</span> </div>
+      <div class="param">docs </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">generator </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">managingEditor </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">webMaster </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">styleSheet </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">language </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">encoding </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">entries </div><div class="param-desc"><span class="param-type">array[SyndEntry]</span> </div>
+      <div class="param">description </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">link </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">modules </div><div class="param-desc"><span class="param-type">array[Module]</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="Module">Module</a></h3>
+    <div class="field-items">
+      <div class="param">uri </div><div class="param-desc"><span class="param-type">String</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="DocType">DocType</a></h3>
+    <div class="field-items">
+      <div class="param">internalSubset </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">elementName </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">publicID </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">systemID </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">value </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">parent </div><div class="param-desc"><span class="param-type">Document</span> </div>
+      <div class="param">namespacesInScope </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">namespacesInherited </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">namespacesIntroduced </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">cType </div><div class="param-desc"><span class="param-type">CType</span> </div>
+      <div class="param">parentElement </div><div class="param-desc"><span class="param-type">Element</span> </div>
+      <div class="param">document </div><div class="param-desc"><span class="param-type">Document</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="SyndEnclosure">SyndEnclosure</a></h3>
+    <div class="field-items">
+      <div class="param">url </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">length </div><div class="param-desc"><span class="param-type">Long</span> </div>
+      <div class="param">type </div><div class="param-desc"><span class="param-type">String</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="SyndPerson">SyndPerson</a></h3>
+    <div class="field-items">
+      <div class="param">uri </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">email </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">name </div><div class="param-desc"><span class="param-type">String</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="SyndContent">SyndContent</a></h3>
+    <div class="field-items">
+      <div class="param">mode </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">value </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">type </div><div class="param-desc"><span class="param-type">String</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="Attribute">Attribute</a></h3>
+    <div class="field-items">
+      <div class="param">intValue </div><div class="param-desc"><span class="param-type">Integer</span> </div>
+      <div class="param">longValue </div><div class="param-desc"><span class="param-type">Long</span> </div>
+      <div class="param">floatValue </div><div class="param-desc"><span class="param-type">Float</span> </div>
+      <div class="param">doubleValue </div><div class="param-desc"><span class="param-type">Double</span> </div>
+      <div class="param">booleanValue </div><div class="param-desc"><span class="param-type">Boolean</span> </div>
+      <div class="param">namespacesInScope </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">namespacesInherited </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">namespacesIntroduced </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">specified </div><div class="param-desc"><span class="param-type">Boolean</span> </div>
+      <div class="param">qualifiedName </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">namespacePrefix </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">document </div><div class="param-desc"><span class="param-type">Document</span> </div>
+      <div class="param">namespace </div><div class="param-desc"><span class="param-type">Namespace</span> </div>
+      <div class="param">attributeType </div><div class="param-desc"><span class="param-type">AttributeType</span> </div>
+      <div class="param">name </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">value </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">parent </div><div class="param-desc"><span class="param-type">Element</span> </div>
+      <div class="param">namespaceURI </div><div class="param-desc"><span class="param-type">String</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="Namespace">Namespace</a></h3>
+    <div class="field-items">
+      <div class="param">prefix </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">uRI </div><div class="param-desc"><span class="param-type">String</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="SyndLink">SyndLink</a></h3>
+    <div class="field-items">
+      <div class="param">title </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">rel </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">href </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">hreflang </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">length </div><div class="param-desc"><span class="param-type">Long</span> </div>
+      <div class="param">type </div><div class="param-desc"><span class="param-type">String</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="SyndImage">SyndImage</a></h3>
+    <div class="field-items">
+      <div class="param">title </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">url </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">description </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">link </div><div class="param-desc"><span class="param-type">String</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="Content">Content</a></h3>
+    <div class="field-items">
+      <div class="param">namespacesInScope </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">namespacesInherited </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">namespacesIntroduced </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">cType </div><div class="param-desc"><span class="param-type">CType</span> </div>
+      <div class="param">parentElement </div><div class="param-desc"><span class="param-type">Element</span> </div>
+      <div class="param">document </div><div class="param-desc"><span class="param-type">Document</span> </div>
+      <div class="param">value </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">parent </div><div class="param-desc"><span class="param-type">Parent</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="Element">Element</a></h3>
+    <div class="field-items">
+      <div class="param">text </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">rootElement </div><div class="param-desc"><span class="param-type">Boolean</span> </div>
+      <div class="param">additionalNamespaces </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">contentSize </div><div class="param-desc"><span class="param-type">Integer</span> </div>
+      <div class="param">textTrim </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">textNormalize </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">descendants </div><div class="param-desc"><span class="param-type">org.jdom2.util.IteratorIterable&lt;org.jdom2.Content&gt;</span> </div>
+      <div class="param">namespacesInScope </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">namespacesInherited </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">namespacesIntroduced </div><div class="param-desc"><span class="param-type">array[Namespace]</span> </div>
+      <div class="param">xMLBaseURI </div><div class="param-desc"><span class="param-type">URI</span> </div>
+      <div class="param">qualifiedName </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">namespacePrefix </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">namespace </div><div class="param-desc"><span class="param-type">Namespace</span> </div>
+      <div class="param">name </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">value </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">attributes </div><div class="param-desc"><span class="param-type">array[Attribute]</span> </div>
+      <div class="param">content </div><div class="param-desc"><span class="param-type">array[Content]</span> </div>
+      <div class="param">namespaceURI </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">children </div><div class="param-desc"><span class="param-type">array[Element]</span> </div>
+      <div class="param">cType </div><div class="param-desc"><span class="param-type">CType</span> </div>
+      <div class="param">parentElement </div><div class="param-desc"><span class="param-type">Element</span> </div>
+      <div class="param">document </div><div class="param-desc"><span class="param-type">Document</span> </div>
+      <div class="param">parent </div><div class="param-desc"><span class="param-type">Parent</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="SyndEntry">SyndEntry</a></h3>
+    <div class="field-items">
+      <div class="param">title </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">uri </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">titleEx </div><div class="param-desc"><span class="param-type">SyndContent</span> </div>
+      <div class="param">links </div><div class="param-desc"><span class="param-type">array[SyndLink]</span> </div>
+      <div class="param">publishedDate </div><div class="param-desc"><span class="param-type">Date</span> </div>
+      <div class="param">authors </div><div class="param-desc"><span class="param-type">array[SyndPerson]</span> </div>
+      <div class="param">author </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">contributors </div><div class="param-desc"><span class="param-type">array[SyndPerson]</span> </div>
+      <div class="param">categories </div><div class="param-desc"><span class="param-type">array[SyndCategory]</span> </div>
+      <div class="param">foreignMarkup </div><div class="param-desc"><span class="param-type">array[Element]</span> </div>
+      <div class="param">comments </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">enclosures </div><div class="param-desc"><span class="param-type">array[SyndEnclosure]</span> </div>
+      <div class="param">updatedDate </div><div class="param-desc"><span class="param-type">Date</span> </div>
+      <div class="param">wireEntry </div><div class="param-desc"><span class="param-type">Object</span> </div>
+      <div class="param">contents </div><div class="param-desc"><span class="param-type">array[SyndContent]</span> </div>
+      <div class="param">description </div><div class="param-desc"><span class="param-type">SyndContent</span> </div>
+      <div class="param">link </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">source </div><div class="param-desc"><span class="param-type">SyndFeed</span> </div>
+      <div class="param">modules </div><div class="param-desc"><span class="param-type">array[Module]</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  
+  <div class="model">
+    <h3 class="field-label"><a name="URI">URI</a></h3>
+    <div class="field-items">
+      <div class="param">scheme </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">fragment </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">authority </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">userInfo </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">host </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">port </div><div class="param-desc"><span class="param-type">Integer</span> </div>
+      <div class="param">path </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">query </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">schemeSpecificPart </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">absolute </div><div class="param-desc"><span class="param-type">Boolean</span> </div>
+      <div class="param">opaque </div><div class="param-desc"><span class="param-type">Boolean</span> </div>
+      <div class="param">rawSchemeSpecificPart </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">rawAuthority </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">rawUserInfo </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">rawPath </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">rawQuery </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">rawFragment </div><div class="param-desc"><span class="param-type">String</span> </div>
+      
+    </div>  <!-- field-items -->
+  </div>
+  
+  
+  <style>
+body { 
+	font-family: Trebuchet MS, sans-serif;
+	font-size: 15px;
+	color: #444;
+	margin-right: 24px;
+}
+
+h1	{
+	font-size: 25px;
+}
+h2	{
+	font-size: 20px;
+}
+h3	{
+	font-size: 16px;
+	font-weight: bold;
+}
+hr	{
+	height: 1px;
+	border: 0;
+	color: #ddd;
+	background-color: #ddd;
+	display: none;
+}
+
+.app-desc {
+  clear: both;
+  margin-left: 20px;
+}
+.param-name {
+  width: 100%;
+}
+.license-info {
+  margin-left: 20px;
+}
+
+.license-url {
+  margin-left: 20px;
+}
+
+.model {
+  margin: 0 0 0px 20px;
+}
+
+.method {
+  margin-left: 20px;
+}
+
+.method-notes	{
+	margin: 10px 0 20px 0;
+	font-size: 90%;
+	color: #555;
+}
+
+pre {
+  padding: 10px;
+  margin-bottom: 2px;
+}
+
+pre.get {
+  background-color: #0f6ab4;
+}
+
+pre.post {
+  background-color: #10a54a;
+}
+
+pre.put {
+  background-color: #c5862b;
+}
+
+pre.delete {
+  background-color: #a41e22;
+}
+
+.huge	{
+	color: #fff;
+}
+
+pre.example {
+  background-color: #f3f3f3;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+code {
+  white-space: pre;
+}
+
+.nickname {
+  font-weight: bold;
+}
+
+.method-path {
+  font-size: 1.5em;
+  background-color: #0f6ab4;
+}
+
+.parameter {
+  width: 500px;
+}
+
+.param {
+  width: 500px;
+  padding: 10px 0 0 20px;
+  font-weight: bold;
+}
+
+.param-desc {
+  width: 700px;
+  padding: 0 0 0 20px;
+  color: #777;
+}
+
+.param-type {
+  font-style: italic;
+}
+
+.field-label {
+  padding: 0;
+  margin: 0;
+  clear: both;
+}
+
+.field-items	{
+	padding: 0 0 15px 0;
+	margin-bottom: 15px;
+}
+
+.return-type {
+  clear: both;
+  padding-bottom: 10px;
+}
+
+.param-header {
+  font-weight: bold;
+}
+
+.method-tags {
+  text-align: right;
+}
+
+.method-tag {
+  background: none repeat scroll 0% 0% #24A600;
+  border-radius: 3px;
+  padding: 2px 10px;
+  margin: 2px;
+  color: #FFF;
+  display: inline-block;
+  text-decoration: none;
+}
+  </style>
+  </body>
+</html>
