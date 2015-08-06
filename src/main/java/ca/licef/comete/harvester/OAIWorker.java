@@ -219,6 +219,7 @@ public class OAIWorker extends Worker {
                     entries[ i ].startsWith( "oai:ccdmd.qc.ca" ) || // Records from CCDMD.
                     entries[ i ].startsWith( "oai:enseignement.be" ) || // Records from Respel.
                     entries[ i ].startsWith( "oai:diapason.bibl.ulaval.ca" ) || // Records from Diapason.
+                    entries[ i ].startsWith( "oai:oriwww.unit.eu" ) || // Records from UNIT.
                     entries[ i ].startsWith( "oai:canalsavoir.ca" ) ) // Records from Canal Savoir.
                 { 
                     return( false ); 
