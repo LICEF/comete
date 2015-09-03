@@ -308,6 +308,23 @@ public class Util {
                         CoreUtil.getResourceLabel(uri, outputLang, true)) );
                     if (obj.has("subConcepts") && obj.getBoolean("subConcepts"))
                         description.append( " " ).append( bundle.getString( "rs.advancedSearch.description.andSubConcepts" ) );
+
+                    boolean includeEquivalence = obj.has("equivalent") && obj.getBoolean("equivalent");
+                    if (includeEquivalence) {
+                        JSONArray eqVocs = (obj.has("eqVocs"))?obj.getJSONArray("eqVocs"):null;
+                        if (eqVocs != null) {
+                            String vocList = "";
+                            String sep = "";
+                            //concerned vocabs
+                            for (int k = 0; k < eqVocs.length(); k++) {
+                                vocList += sep + CoreUtil.getResourceLabel(eqVocs.getString(k), outputLang, true)[0];
+                                sep = ", ";
+                            }
+
+                            description.append( " " ).append(MessageFormat.format(bundle.getString("rs.advancedSearch.description.andEquivalentConcepts"),
+                                    vocList));
+                        }
+                    }
                 }
                 else if (condType.startsWith(NOT_CONCEPT_PREFIX)) {
                     String uri = obj.getString("value");
