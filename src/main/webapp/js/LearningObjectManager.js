@@ -236,7 +236,7 @@ Ext.define( 'Comete.Facets', {
             checked: true,
             style: { color: 'white' }, 
             margin: '5 0 0 20', 
-            boxLabel: tr('All '),
+            boxLabel: tr('All'),
             handler: this.checkAll,
             scope: this,
             key: null
