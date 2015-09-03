@@ -284,6 +284,7 @@ public class VocabularyManager {
         String id = null;
         String location = null;
         boolean navigableFlag = false;
+        boolean pivotFlag = false;
         String conceptUriPrefix = null;
         String conceptUriSuffix = null;
         String conceptLinkingPredicate = DCTERMS.subject.getURI();
@@ -306,6 +307,8 @@ public class VocabularyManager {
                     location = value;
                 if ("navigable".equals(e.getTagName()))
                     navigableFlag = "true".equals(value);
+                if ("pivot".equals(e.getTagName()))
+                    pivotFlag = "true".equals(value);
                 if ("conceptUriPrefix".equals(e.getTagName()))
                     conceptUriPrefix = value;
                 if ("conceptUriSuffix".equals(e.getTagName()))
@@ -333,6 +336,7 @@ public class VocabularyManager {
             tripleStore.insertTriple(new Triple(uri, COMETE.vocId, id));
             tripleStore.insertTriple(new Triple(uri, COMETE.vocSourceLocation, location));
             tripleStore.insertTriple(new Triple(uri, COMETE.vocNavigable, Boolean.toString(navigableFlag)));
+            tripleStore.insertTriple(new Triple(uri, COMETE.vocPivot, Boolean.toString(pivotFlag)));
             tripleStore.insertTriple(new Triple(uri, COMETE.vocConceptLinkingPredicate, conceptLinkingPredicate));
             if (conceptUriPrefix != null)
                 tripleStore.insertTriple(new Triple(uri, COMETE.vocConceptUriPrefix, conceptUriPrefix));
