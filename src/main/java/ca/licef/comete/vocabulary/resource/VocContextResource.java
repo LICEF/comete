@@ -186,6 +186,7 @@ public class VocContextResource {
                 location = "local: " + location;
             json.key( "location" ).value( location);
             json.key( "navigable" ).value( details[0].getValue("navigable").getContent() );
+            json.key( "pivot" ).value( details[0].getValue("pivot").getContent() );
             json.key( "linkingPredicate" ).value( details[0].getValue("predicate").getContent() );
             String pref = details[0].getValue("prefix").getContent();
             if (!"".equals(pref))
@@ -304,6 +305,30 @@ public class VocContextResource {
 
         String uri = Util.makeURI(id, COMETE.VocContext);
         Vocabulary.getInstance().updateVocContextNavigable(uri, false);
+
+        return Response.ok().build();
+    }
+
+    @POST
+    @Path( "{id}/pivot" )
+    public Response setVocContextPivot(@Context HttpServletRequest request, @PathParam( "id" ) String id) throws Exception {
+        if (!Security.getInstance().isAuthorized(request))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to change settings.").build();
+
+        String uri = Util.makeURI(id, COMETE.VocContext);
+        Vocabulary.getInstance().updateVocContextPivot(uri, true);
+
+        return Response.ok().build();
+    }
+
+    @DELETE
+    @Path( "{id}/pivot" )
+    public Response deleteVocContextPivot(@Context HttpServletRequest request, @PathParam( "id" ) String id) throws Exception {
+        if (!Security.getInstance().isAuthorized(request))
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized to change settings.").build();
+
+        String uri = Util.makeURI(id, COMETE.VocContext);
+        Vocabulary.getInstance().updateVocContextPivot(uri, false);
 
         return Response.ok().build();
     }

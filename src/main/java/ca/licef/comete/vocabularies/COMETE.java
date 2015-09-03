@@ -134,6 +134,9 @@ public class COMETE {
     /** <p>Usable vocabulary for thematic navigation</p> */
     public static final DatatypeProperty vocNavigable = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#vocNavigable" );
 
+    /** <p>Pivot vocabulary for vocs equivalences</p> */
+    public static final DatatypeProperty vocPivot = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#vocPivot" );
+
     /** <p>Location of the related vocabulary</p> */
     public static final DatatypeProperty vocSourceLocation = m_model.createDatatypeProperty( "http://comete.licef.ca/reference#vocSourceLocation" );
 

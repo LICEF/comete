@@ -7,7 +7,7 @@
         this.currentVocContextRestUrl = null;
 
         this.vocCtxtStore = Ext.create('Ext.data.JsonStore', {
-            model: 'VocCtxtModel',                
+            model: 'VocCtxtModel',
             proxy: vocCtxtProxy
         });   
         this.vocCtxtStore.sort( 'label', 'ASC' );
@@ -20,7 +20,7 @@
         });
            
         this.vocAliasStore = Ext.create('Ext.data.JsonStore', {
-            model: 'VocAliasModel',                
+            model: 'VocAliasModel',
             proxy: this.vocAliasProxy
         });
 
@@ -48,7 +48,7 @@
 
         this.vocabList = Ext.create('Ext.grid.Panel', { 
             store: this.vocCtxtStore,
-            margin: '0 20 10 10',                
+            margin: '0 20 10 10',
             columns: [ 
                 { dataIndex: 'label', text: tr('Vocabularies'), flex: 1, height: 28 }
             ],     
@@ -80,10 +80,18 @@
 
         this.cbNavigable = Ext.create('Ext.form.field.Checkbox', {
             fieldLabel: 'Navigable',
-            checked: false            
+            checked: false
         } );
 
         this.cbNavigable.on( 'change', this.setNavigable, this );
+
+        this.cbPivot = Ext.create('Ext.form.field.Checkbox', {
+            fieldLabel: 'Pivot',
+            checked: false
+        } );
+
+        this.cbPivot.on( 'change', this.setPivot, this );
+
 
         this.detailsPanel = Ext.create('Ext.Panel', { 
             region: 'center',
@@ -98,7 +106,8 @@
                      { fieldLabel: tr('Concept URI prefix'), editable: false },
                      { fieldLabel: tr('Concept URI suffix'), editable: false },
                      { fieldLabel: tr('Linking predicate'), editable: false },
-                     this.cbNavigable ]        
+                     this.cbNavigable,
+                     this.cbPivot ]
         }); 
 
         this.deleteAliasButton = Ext.create('Ext.button.Button', {
@@ -216,6 +225,7 @@
                     this.detailsPanel.getComponent(4).setValue(jsonDetails.uriSuffix);
                     this.detailsPanel.getComponent(5).setValue(jsonDetails.linkingPredicate);
                     this.detailsPanel.getComponent(6).setValue(jsonDetails.navigable);
+                    this.detailsPanel.getComponent(7).setValue(jsonDetails.pivot);
                     this.initDisplay = false;
                 },
                 scope: this 
@@ -236,6 +246,7 @@
             this.detailsPanel.getComponent(4).setValue("");
             this.detailsPanel.getComponent(5).setValue("");
             this.detailsPanel.getComponent(6).setValue("");
+            this.detailsPanel.getComponent(7).setValue("");
             this.vocAliasStore.removeAll();
             //buttons
             this.modifyButton.setDisabled(true);     
@@ -373,6 +384,23 @@
             methodType = 'DELETE';
         Ext.Ajax.request( {
             url: this.currentVocContextRestUrl + '/navigable',
+            method: methodType,
+            failure: function(response, opts) {
+                Ext.Msg.alert('Failure', response.responseText);  
+            }
+        } );
+    },
+    setPivot: function(cb, value) {
+        if (this.initDisplay)
+            return;
+
+        if (this.currentVocContextRestUrl == null)
+            return;
+        methodType = 'POST';
+        if (!value) 
+            methodType = 'DELETE';
+        Ext.Ajax.request( {
+            url: this.currentVocContextRestUrl + '/pivot',
             method: methodType,
             failure: function(response, opts) {
                 Ext.Msg.alert('Failure', response.responseText);  

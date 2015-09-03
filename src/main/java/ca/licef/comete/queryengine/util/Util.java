@@ -133,17 +133,22 @@ public class Util {
                     if (includeEquivalence) {
                         JSONArray eqVocs = (obj.has("eqVocs"))?obj.getJSONArray("eqVocs"):null;
                         if (eqVocs != null) {
-                            fromClause = "FROM <urn:x-arq:DefaultGraph>\n";
-                            Tuple[] ctxts = Vocabulary.getInstance().getVocContexts();
-                            for (Tuple ctxt : ctxts)
-                                fromClause += "FROM <" + ctxt.getValue("vocUri").getContent() + ">\n";
-
+                            //concerned vocabs
                             ArrayList<String> _eqVocs = new ArrayList<>();
-                            //first add start vocUri -AM
                             _eqVocs.add(Vocabulary.getInstance().getConceptScheme(uri));
                             for (int k = 0; k < eqVocs.length(); k++)
                                 _eqVocs.add(eqVocs.getString(k));
 
+                            //FROM clause
+                            fromClause = "FROM <urn:x-arq:DefaultGraph>\n";
+                            //add concerned vocabs URIs in from clause
+                            for (String _vocUri : _eqVocs)
+                                fromClause += "FROM <" + _vocUri + ">\n";
+                            //add pivots URIs in from clause
+                            for (Tuple pivot : Vocabulary.getInstance().getVocPivots())
+                                fromClause += "FROM <" + pivot.getValue("vocUri").getContent() + ">\n";
+
+                            //filter constraint
                             String vocFilterConstraint = CoreUtil.buildFilterConstraints(_eqVocs, "vocUri", true, "=", "||");
                             if (isSubConcept)
                                 clause = CoreUtil.getQuery("queryengine/advancedVocConceptEquivalenceHierarchyFragment.sparql", uri, vocFilterConstraint);
@@ -304,6 +309,23 @@ public class Util {
                         CoreUtil.getResourceLabel(uri, outputLang, true)) );
                     if (obj.has("subConcepts") && obj.getBoolean("subConcepts"))
                         description.append( " " ).append( bundle.getString( "rs.advancedSearch.description.andSubConcepts" ) );
+
+                    boolean includeEquivalence = obj.has("equivalent") && obj.getBoolean("equivalent");
+                    if (includeEquivalence) {
+                        JSONArray eqVocs = (obj.has("eqVocs"))?obj.getJSONArray("eqVocs"):null;
+                        if (eqVocs != null) {
+                            String vocList = "";
+                            String sep = "";
+                            //concerned vocabs
+                            for (int k = 0; k < eqVocs.length(); k++) {
+                                vocList += sep + CoreUtil.getResourceLabel(eqVocs.getString(k), outputLang, true)[0];
+                                sep = ", ";
+                            }
+
+                            description.append( " " ).append(MessageFormat.format(bundle.getString("rs.advancedSearch.description.andEquivalentConcepts"),
+                                    vocList));
+                        }
+                    }
                 }
                 else if (condType.startsWith(NOT_CONCEPT_PREFIX)) {
                     String uri = obj.getString("value");

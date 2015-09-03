@@ -385,4 +385,15 @@ public class Vocabulary {
             return Boolean.FALSE;
     }
 
+    public void updateVocContextPivot(String uri, boolean value) throws Exception {
+        Invoker inv = new Invoker(getTripleStore(), "licef.tsapi.TripleStore", "updateObjectTriple",
+                new Object[]{uri, COMETE.vocPivot, Boolean.toString(!value), Boolean.toString(value), new String[]{}});
+        getTripleStore().transactionalCall(inv, TripleStore.WRITE_MODE);
+    }
+
+    public Tuple[] getVocPivots() throws Exception {
+        String query = CoreUtil.getQuery("vocabulary/getVocPivots.sparql");
+        Invoker inv = new Invoker(getTripleStore(), "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
+        return (Tuple[])getTripleStore().transactionalCall(inv);
+    }
 }
