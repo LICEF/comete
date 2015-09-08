@@ -104,10 +104,12 @@ public class HTMLWorker extends Worker {
                 while ((line = reader.readLine()) != null) {
                     int workIndex = 0;
                     while (true) {
-                        int indexOfAnchorStart = line.indexOf("<a", workIndex);
+                        int indexOfAnchorStart = line.indexOf("<a ", workIndex);
                         if (indexOfAnchorStart == -1)
                             break;
                         int indexOfHrefStart = line.indexOf("href=\"", indexOfAnchorStart);
+                        if (indexOfHrefStart == -1)
+                            break;
                         int indexOfHrefEnd = line.indexOf("\">", indexOfHrefStart);
                         String href = line.substring(indexOfHrefStart + "href=\"".length(), indexOfHrefEnd);
                         String linkUrl = null;
