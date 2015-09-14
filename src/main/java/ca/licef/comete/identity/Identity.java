@@ -33,6 +33,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.*;
 
 public class Identity {
@@ -94,10 +96,24 @@ public class Identity {
             String logo = vcardElements.get("logo");
             if (email != null && !"".equals(email))
                 email = "mailto:" + email;
-            if (tel != null && !"".equals(tel))
-                tel = "tel:" + tel;
-            if (fax != null && !"".equals(fax))
-                fax = "fax:" + fax;
+            if (tel != null && !"".equals(tel)) {
+                try { 
+                    tel = "tel:" + URLEncoder.encode( tel, "UTF-8" );
+                }
+                catch( UnsupportedEncodingException e ) {
+                    e.printStackTrace();
+                    tel = null;
+                }
+            }
+            if (fax != null && !"".equals(fax)) {
+                try { 
+                    fax = "fax:" + URLEncoder.encode( fax, "UTF-8" );
+                }
+                catch( UnsupportedEncodingException e ) {
+                    e.printStackTrace();
+                    fax = null;
+                }
+            }
             if ("".equals(org))
                 org = null;
 
