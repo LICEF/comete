@@ -150,6 +150,14 @@ public class Identity {
             }
             if ("".equals(org))
                 org = null;
+            if(url != null && !"".equals(url)) {
+                try {
+                    new URL( url );
+                }
+                catch( MalformedURLException e ) {
+                    url = null; // Cannot make an url so it's invalid.
+                }
+            }
 
             formattedName = getFormattedName(formattedName, firstname, lastname, email, url, org);
 
