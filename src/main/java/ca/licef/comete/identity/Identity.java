@@ -34,6 +34,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.*;
 
@@ -94,8 +96,40 @@ public class Identity {
             String org = vcardElements.get("org");
             String orgAddress = vcardElements.get("orgAddress");
             String logo = vcardElements.get("logo");
-            if (email != null && !"".equals(email))
-                email = "mailto:" + email;
+            if (email != null && !"".equals(email)) {
+                email = email.trim();
+
+                if( email.indexOf( "http:" ) != -1 || email.indexOf( "https:" ) != -1 )
+                    email = null; // The email is a hyperlink so it's invalid.
+                else { 
+                    // Handle cases where the at-mark is obfuscated by user.
+                    email = email.replaceAll( "\\s*[\\[<({]?\\s*@\\s*[\\]>)}]?\\s*", "@" ); 
+                    email = email.replaceAll( "\\s*[\\[<({]?\\s+at\\s+[\\]>)}]?\\s*", "@" ); 
+                    
+                    // Handle cases where the dot is obfuscated by user.
+                    email = email.replaceAll( "\\s+dot\\s+", "." );
+
+                    int indexOfAtMark = email.indexOf( "@" );
+                    if( indexOfAtMark == -1 )
+                        email = null; // No at mark so the email is invalid.
+                    else {
+                        String user = email.substring( 0, indexOfAtMark );
+                        String domain = email.substring( indexOfAtMark + 1 );
+
+                        int indexOfSpace = user.indexOf( " " );
+                        if( user.indexOf( " " ) != -1 || domain.indexOf( " " ) != -1 )
+                            email = null; // Space found in the user or domain field so the email is invalid.
+
+                        email = "mailto:" + email;
+                        try {
+                            new URL( email );
+                        }
+                        catch( MalformedURLException e ) {
+                            email = null; // Cannot make an url so the email is invalid.
+                        }
+                    }
+                }
+            }
             if (tel != null && !"".equals(tel)) {
                 try { 
                     tel = "tel:" + URLEncoder.encode( tel, "UTF-8" );
