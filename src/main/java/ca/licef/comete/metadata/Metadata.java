@@ -500,6 +500,11 @@ public class Metadata {
         //managing main record
         String[] res = doManageRecord(oaiId, namespace, repoUri, resId, loURI, null, record, datestamp, false,
             isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid, invalidApplProf);
+
+        String state = res[3];
+        if ("ignored".equals(state))
+            return res;
+
         loURI = res[0];
         String recordUriPassed = res[1];
 
