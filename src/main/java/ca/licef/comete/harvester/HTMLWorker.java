@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import ca.licef.comete.metadata.util.Util;
+import licef.Sha1Util;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -47,8 +48,13 @@ public class HTMLWorker extends Worker {
                         throw new Exception( "Empty metadata record or metadata record not found." );
                     String[] data = Util.parseMetadataRecord(metadataNode);
                     String errorMessage = data[0];
-                    if (errorMessage != null)
-                        throw new Exception(errorMessage);
+                    if (errorMessage != null) {
+                        if ("No metametadata identifier field.".equals(errorMessage))
+                            //generate pseudo oaiId from record location
+                            data[3] = "oai:" + Sha1Util.hash(link.toString());
+                        else
+                            throw new Exception(errorMessage);
+                    }
 
                     String identifier = data[3];
                     String datestamp = link.getLatestDatestamp();

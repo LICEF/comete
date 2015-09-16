@@ -106,6 +106,21 @@ public class Metadata {
             return( null );
     }
 
+    private String[] getRecordInfos(String recordUri) throws Exception {
+        String query = CoreUtil.getQuery( "metadata/getMetadataRecordToRedigest.sparql", recordUri );
+        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
+        Tuple[] tuples = (Tuple[])tripleStore.transactionalCall(inv);
+        if( tuples.length > 0 ) {
+            Tuple tuple = tuples[0];
+            String oaiId = tuple.getValue("oaiId").getContent();
+            String namespace = tuple.getValue("metadataFormat").getContent();
+            String storeId = tuple.getValue("storeId").getContent();
+            String record = Store.getInstance().getDatastream(storeId, Constants.DATASTREAM_ORIGINAL_DATA);
+            return new String[]{oaiId, namespace, record};
+        }
+        return null;
+    }
+
     /*****
      * Local record upload management
      */
@@ -469,33 +484,76 @@ public class Metadata {
 
     private String[] manageRecord(String oaiId, String namespace, String repoUri, String record, String datestamp, 
             boolean isPendingByDefault, boolean isCheckingBrokenLink, boolean isCheckingInvalid, String invalidApplProf) throws Exception {
+
+        String resId = Util.getResourceIdentifier(record)[1];
+        String loURI = null;
+        //retrieve loURI from resId if exists
+        if (resId != null) {
+            Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore",
+                    "getTriplesWithPredicateObject", new Object[]{
+                    DCTERMS.identifier, resId, null, new String[]{}});
+            Triple[] triples = ((Triple[]) tripleStore.transactionalCall(inv));
+            if (triples.length > 0)
+                loURI = triples[0].getSubject();
+        }
+
+        //managing main record
+        String[] res = doManageRecord(oaiId, namespace, repoUri, resId, loURI, null, record, datestamp, false,
+            isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid, invalidApplProf);
+
+        String state = res[3];
+        if ("ignored".equals(state))
+            return res;
+
+        loURI = res[0];
+        String recordUriPassed = res[1];
+
+        //loop of managing for all other associated metadata records
+        //cumulate metadatas with the current LO
+        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore",
+                "getTriplesWithSubjectPredicate", new Object[]{
+                    loURI, COMETE.hasMetadataRecord, new String[]{} } );
+        Triple[] triples = ((Triple[])tripleStore.transactionalCall(inv));
+        for (Triple triple : triples) {
+            String recordUri = triple.getObject();
+            if (!recordUri.equals(recordUriPassed)) {
+                String[] infos = getRecordInfos(recordUri);
+                doManageRecord(infos[0], infos[1], null, resId, loURI, recordUri, infos[2], null, true, false, false, false, null);
+            }
+        }
+
+        return res;
+    }
+
+    private String[] doManageRecord(String oaiId, String namespace, String repoUri, String resId, String loURI, String recordURI, String record, String datestamp, boolean keepPreviousData,
+                                  boolean isPendingByDefault, boolean isCheckingBrokenLink, boolean isCheckingInvalid, String invalidApplProf) throws Exception {
         Invoker inv = new Invoker(this, "ca.licef.comete.metadata.Metadata",
-                "digestRecord", new Object[]{record, namespace, repoUri, oaiId, datestamp, isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid, invalidApplProf});
+                "digestRecord", new Object[]{recordURI, record, namespace, repoUri, resId, loURI, oaiId, datestamp, keepPreviousData, isPendingByDefault, isCheckingBrokenLink, isCheckingInvalid, invalidApplProf});
         String[] res = (String[])tripleStore.transactionalCall(inv, TripleStore.WRITE_MODE);
 
         //Identity and vocabulary referencement management
-        String loURI = res[0];
-        String recordURI = res[1];
+        //set URIs because can be previously null -AM
+        loURI = res[0];
+        recordURI = res[1];
         String storeId = res[2];
         linkToResources(loURI, recordURI, storeId, namespace);
 
         return res;
     }
 
-    public String[] digestRecord(String record, String namespace, String repoURI, String oaiId, String datestamp, 
+    public String[] digestRecord(String recordURI, String record, String namespace, String repoURI, String resId, String loURI, String oaiId, String datestamp, boolean keepPreviousData,
             boolean isPendingByDefault, boolean isCheckingBrokenLink, boolean isCheckingInvalid, String invalidApplProf) throws Exception {
         System.out.println( "Digesting record oaiId=" + oaiId + " from repoURI=" + repoURI + " datestamp=" + datestamp );        
         ArrayList<Triple> triples = new ArrayList<Triple>();
         String storeId;
         Store store = Store.getInstance();
-        boolean isUpdate = false;
+        boolean isUpdate = (loURI != null);
 
         MetadataFormat metadataFormat = MetadataFormats.getMetadataFormat(namespace);
 
-        String loURI = null;
-
-        //Retrieve of metadata record with metadata format and oaiID
-        String recordURI = getRecordURI(oaiId, namespace);
+        //Retrieve of metadata record with metadata format and oaiID if not provided
+        if (recordURI == null)
+            recordURI = getRecordURI(oaiId, namespace);
 
         if (recordURI != null) {
             if (datestamp != null) {
@@ -512,18 +570,21 @@ public class Metadata {
             }
 
             loURI = getLearningObjectURI(recordURI);
-            resetLearningObjectNonPersistentTriples(recordURI);
+            if (!keepPreviousData)
+                resetLearningObjectNonPersistentTriples(recordURI);
             storeId = getStoreIdFromURI(recordURI);
         }
         else {
             ////Is there another metadata record with the same oai-id ?
             ////if yes, retrieve of the described resource
-            String query = CoreUtil.getQuery( "metadata/getLearningObjectFromOtherMetadataRecord.sparql", oaiId );
-            Tuple[] tuples = tripleStore.sparqlSelect( query );
-            if (tuples.length > 0)
-                loURI = tuples[0].getValue("res").getContent();
+            if (loURI == null) {
+                String query = CoreUtil.getQuery("metadata/getLearningObjectFromOtherMetadataRecord.sparql", oaiId);
+                Tuple[] tuples = tripleStore.sparqlSelect(query);
+                if (tuples.length > 0)
+                    loURI = tuples[0].getValue("res").getContent();
+            }
 
-            //creation of new one
+            //creation of a new one
             if (loURI == null) {
                 loURI = CoreUtil.makeURI(COMETE.LearningObject);
                 triples.add( new Triple( loURI, RDF.type, COMETE.LearningObject ) );
@@ -558,6 +619,10 @@ public class Metadata {
             triples.add(new Triple(recordURI, COMETE.describes, loURI));
         }
 
+        //resource identifier
+        if (resId != null && !"".equals(resId))
+            triples.add(new Triple(loURI, DCTERMS.identifier, resId));
+
         //store content
         store.setDatastream(storeId, Constants.DATASTREAM_ORIGINAL_DATA, record);
 
@@ -586,8 +651,7 @@ public class Metadata {
         exposeRecords(loURI, storeId, metadataFormat);
 
         //oai-pmh properties
-        if (!isUpdate)
-            tripleStore.insertTriple( new Triple( recordURI, OAI.identifier, oaiId ) );
+        tripleStore.insertTriple( new Triple( recordURI, OAI.identifier, oaiId ) );
 
         //Set datestamp with current date unless not present (redigest case) -AM
         if (datestamp != null) {
@@ -784,19 +848,10 @@ public class Metadata {
     }
 
     public void redigestRecord(String recordUri) throws Exception {
-        String query = CoreUtil.getQuery( "metadata/getMetadataRecordToRedigest.sparql", recordUri );
-        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
-        Tuple[] tuples = (Tuple[])tripleStore.transactionalCall(inv);
-        if( tuples.length > 0 ) {
-            Tuple tuple = tuples[0];
-            String oaiId = tuple.getValue("oaiId").getContent();
-            String namespace = tuple.getValue("metadataFormat").getContent();
-            String storeId = tuple.getValue("storeId").getContent();
-            String record = Store.getInstance().getDatastream(storeId, Constants.DATASTREAM_ORIGINAL_DATA);
-            manageRecord(oaiId, namespace, null, record, null, false, false, false, null);
-        }
+        String[] infos = getRecordInfos(recordUri);
+        if (infos != null)
+            manageRecord(infos[0], infos[1], null, infos[2], null, false, false, false, null);
     }
-
 
     /*****
      * exposed format management
