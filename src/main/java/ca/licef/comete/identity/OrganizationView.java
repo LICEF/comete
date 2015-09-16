@@ -1,9 +1,13 @@
 package ca.licef.comete.identity;
 
 import ca.licef.comete.core.DefaultView;
+import licef.CommonNamespaceContext;
 import licef.XMLUtil;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import javax.servlet.ServletContext;
@@ -13,6 +17,8 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.stream.StreamSource;
 import java.io.BufferedReader;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Properties;
@@ -32,6 +38,23 @@ public class OrganizationView extends DefaultView {
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
         Document doc = docBuilder.parse( inputSource );
         Element rootElement = doc.getDocumentElement();
+
+        NodeList phoneElements = doc.getElementsByTagNameNS( CommonNamespaceContext.foafNSURI, "phone" );
+        for( int i = 0; i < phoneElements.getLength(); i++ ) {
+            Element phoneElement = (Element)phoneElements.item( i );
+            String phoneValue = phoneElement.getAttributeNS( CommonNamespaceContext.rdfNSURI, "resource" );
+            int indexOfFirstColon = phoneValue.indexOf( ":" );
+            if( indexOfFirstColon != -1 ) {
+                try { 
+                    String newphoneValue = phoneValue.substring( 0, indexOfFirstColon + 1 ) + URLDecoder.decode( phoneValue.substring( indexOfFirstColon + 1 ), "UTF-8" );
+                    Attr attr = phoneElement.getAttributeNodeNS( CommonNamespaceContext.rdfNSURI, "resource" );
+                    attr.setValue( newphoneValue );
+                }
+                catch( UnsupportedEncodingException e ) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
         String expandedXml = XMLUtil.serialize( doc, true );
 //System.out.println( "expandedXml for Org:"+expandedXml );
