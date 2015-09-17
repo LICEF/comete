@@ -46,24 +46,26 @@ public class HTMLWorker extends Worker {
                     Node metadataNode = link.getRecord();
                     if( metadataNode == null )
                         throw new Exception( "Empty metadata record or metadata record not found." );
-                    String[] data = Util.parseMetadataRecord(metadataNode);
-                    String errorMessage = data[0];
-                    if (errorMessage != null) {
-                        if ("No metametadata identifier field.".equals(errorMessage))
-                            //generate pseudo oaiId from record location
-                            data[3] = "oai:" + Sha1Util.hash(link.toString());
-                        else
-                            throw new Exception(errorMessage);
-                    }
-
-                    String identifier = data[3];
-                    String datestamp = link.getLatestDatestamp();
 
                     String metadata = null;
                     if( metadataNode != null ) {
                         metadataNode = postProcessMetadata( metadataNode );
                         metadata = XMLUtil.getXMLString( metadataNode, true );
                     }
+
+                    String[] data = Util.parseMetadataRecord(metadataNode);
+                    String errorMessage = data[0];
+                    String identifier = data[3];
+
+                    if (errorMessage != null) {
+                        if ("No metametadata identifier field.".equals(errorMessage))
+                            //generate pseudo oaiId from record location
+                            identifier = "oai:" + Sha1Util.hash(link.toString());
+                        else
+                            throw new Exception(errorMessage);
+                    }
+
+                    String datestamp = link.getLatestDatestamp();
                     digest(identifier, status, datestamp, metadata);
                 }
                 catch( Throwable t ) {
