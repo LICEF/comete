@@ -46,6 +46,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.List;
@@ -749,6 +751,32 @@ public class Util {
 
     public static String digestUrl( String url ) {
         if(url != null && !"".equals(url)) {
+
+            // Decode and reencode each parameter values to make sure that all of them are well encoded.
+            int indexOfQuestionMark = url.indexOf( "?" );
+            if( indexOfQuestionMark != -1 ) {
+                StringBuilder newUrl = new StringBuilder( url.substring( 0, indexOfQuestionMark + 1 ) );
+                String searchPart = url.substring( indexOfQuestionMark + 1 );
+                String[] keyVal = searchPart.split( "&" );
+                String paramDelim = "";
+                for( int i = 0; i < keyVal.length; i++ ) {
+                    String[] keyAndVal = keyVal[ i ].split( "=" );
+                    newUrl.append( paramDelim );
+                    newUrl.append( keyAndVal[ 0 ] );
+                    if( keyAndVal.length > 1 ) {
+                        newUrl.append( "=" );
+                        try {
+                            newUrl.append( URLEncoder.encode( URLDecoder.decode( keyAndVal[ 1 ], "UTF-8" ), "UTF-8" ) );
+                        }
+                        catch( UnsupportedEncodingException e ) {
+                            newUrl.append( keyAndVal[ 1 ] );
+                        }
+                    }
+                    paramDelim = "&";
+                }
+                url = newUrl.toString();
+            }
+
             UrlValidator validator = new UrlValidator();
             if( !validator.isValid( url ) ) 
                 return( null );
