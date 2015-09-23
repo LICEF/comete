@@ -21,6 +21,8 @@ import licef.tsapi.vocabulary.SKOS;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.apache.commons.validator.routines.EmailValidator;
+import org.apache.commons.validator.routines.UrlValidator;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -44,6 +46,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.List;
@@ -743,6 +747,81 @@ public class Util {
         message.setText( msg );
 
         Transport.send( message );
+    }
+
+    public static String digestUrl( String url ) {
+        if(url != null && !"".equals(url)) {
+
+            // Decode and reencode each parameter values to make sure that all of them are well encoded.
+            int indexOfQuestionMark = url.indexOf( "?" );
+            if( indexOfQuestionMark != -1 ) {
+                StringBuilder newUrl = new StringBuilder( url.substring( 0, indexOfQuestionMark + 1 ) );
+                String searchPart = url.substring( indexOfQuestionMark + 1 );
+                String[] keyVal = searchPart.split( "&" );
+                String paramDelim = "";
+                for( int i = 0; i < keyVal.length; i++ ) {
+                    String[] keyAndVal = keyVal[ i ].split( "=" );
+                    newUrl.append( paramDelim );
+                    newUrl.append( keyAndVal[ 0 ] );
+                    if( keyAndVal.length > 1 ) {
+                        newUrl.append( "=" );
+                        try {
+                            newUrl.append( URLEncoder.encode( URLDecoder.decode( keyAndVal[ 1 ], "UTF-8" ), "UTF-8" ) );
+                        }
+                        catch( UnsupportedEncodingException e ) {
+                            newUrl.append( keyAndVal[ 1 ] );
+                        }
+                    }
+                    paramDelim = "&";
+                }
+                url = newUrl.toString();
+            }
+
+            UrlValidator validator = new UrlValidator();
+            if( !validator.isValid( url ) ) 
+                return( null );
+
+            try {
+                new URL( url );
+            }
+            catch( MalformedURLException e ) {
+                return( null ); // Cannot make an url so it's invalid.
+            }
+        }
+        return( url );
+    }
+
+    public static String digestEmail( String email ) {
+        if (email != null && !"".equals(email)) {
+            email = email.trim();
+
+            if( email.startsWith( "http:" ) || email.startsWith( "ftp:" ) )
+                return( null ); // The email is a hyperlink so it's invalid.
+
+            // Handle cases where the at-mark is obfuscated by user.
+            email = email.replaceAll( "\\s*[\\[<({]?\\s*@\\s*[\\]>)}]?\\s*", "@" ); 
+            email = email.replaceAll( "\\s*[\\[<({]?\\s+at\\s+[\\]>)}]?\\s*", "@" ); 
+            
+            // Handle cases where the email is written in the form "Full name <email>".
+            email = email.replaceAll( "^.*\\s+[\\[<({](.+@.+)[\\]>)}]$", "$1" );
+
+            // Handle cases where the dot is obfuscated by user.
+            email = email.replaceAll( "\\s+dot\\s+", "." );
+             
+            // Make sure that the email is good enough.
+            // If the email is too weird, it is discarded.
+            if( !EmailValidator.getInstance( false ).isValid( email ) )
+                return( null );
+
+            email = "mailto:" + email;
+            try {
+                new URL( email );
+            }
+            catch( MalformedURLException e ) {
+                return( null ); // Cannot make an url so the email is invalid.
+            }
+        }
+        return( email );
     }
 
     public static String webappPath;

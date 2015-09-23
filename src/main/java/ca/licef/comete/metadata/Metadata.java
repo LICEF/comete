@@ -556,6 +556,19 @@ public class Metadata {
             recordURI = getRecordURI(oaiId, namespace);
 
         if (recordURI != null) {
+            String prevLoURI = getLearningObjectURI(recordURI);
+
+            //resource association to force LO unification on old stored resources.
+            if (loURI != null) {
+                if (!prevLoURI.equals(loURI)) {
+                    triples.add(new Triple(loURI, COMETE.hasMetadataRecord, recordURI));
+                    triples.add(new Triple(recordURI, COMETE.describes, loURI));
+                    tripleStore.removeResource(prevLoURI);
+                }
+            }
+            else
+                loURI = prevLoURI;
+
             if (datestamp != null) {
                 isUpdate = true;
                 Triple[] _triples = tripleStore.getTriplesWithSubjectPredicate(recordURI, OAI.datestamp);
@@ -569,7 +582,6 @@ public class Metadata {
                 }
             }
 
-            loURI = getLearningObjectURI(recordURI);
             if (!keepPreviousData)
                 resetLearningObjectNonPersistentTriples(recordURI);
             storeId = getStoreIdFromURI(recordURI);
@@ -697,7 +709,7 @@ public class Metadata {
         for (Triple triple : triples) {
             if (FOAF.page.getURI().equals(triple.getPredicate())) {
                 String location = triple.getObject();
-                if( location != null && !location.startsWith( "http" ) )
+                if( location != null && !location.startsWith( "http" ) && !location.startsWith( "ftp" ) )
                     location = "http://" + location;
                 try {
                     BrokenLinkChecker.Result result = BrokenLinkChecker.getInstance().testUrlLocation( new URL( location ) );
