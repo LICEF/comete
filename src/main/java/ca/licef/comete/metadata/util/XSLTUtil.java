@@ -50,7 +50,8 @@ public class XSLTUtil {
 
     public static String buildLocationTriple( String loURI, String location ) throws Exception {
         location = location.trim().replaceAll(" ", "%20");
-        if( location != null && !location.startsWith( "http" ) )
+        location = Util.digestUrl( location );
+        if( location != null && !location.startsWith( "http" ) && !location.startsWith( "ftp" ) )
             location = "http://" + location;
         Triple tripleLocation = new Triple( loURI, FOAF.page, location );
         return( getTripleAsString( tripleLocation ) );

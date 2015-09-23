@@ -709,7 +709,7 @@ public class Metadata {
         for (Triple triple : triples) {
             if (FOAF.page.getURI().equals(triple.getPredicate())) {
                 String location = triple.getObject();
-                if( location != null && !location.startsWith( "http" ) )
+                if( location != null && !location.startsWith( "http" ) && !location.startsWith( "ftp" ) )
                     location = "http://" + location;
                 try {
                     BrokenLinkChecker.Result result = BrokenLinkChecker.getInstance().testUrlLocation( new URL( location ) );
