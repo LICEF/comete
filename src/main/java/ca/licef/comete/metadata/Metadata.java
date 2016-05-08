@@ -1204,4 +1204,21 @@ public class Metadata {
     }
 
     private boolean isValidatorInitialized = false;
+
+    /* Google sitemap */
+    public String getLearningObjectsForSitemap(String language) throws Exception {
+        StringBuilder sb = new StringBuilder();
+
+        String query = CoreUtil.getQuery( "metadata/getLearningObjectsForSitemap.sparql", language );
+        Invoker inv = new Invoker(tripleStore, "licef.tsapi.TripleStore", "sparqlSelect", new Object[]{query});
+        Tuple[] tuples = (Tuple[])tripleStore.transactionalCall(inv);
+        for( Tuple tuple : tuples ) {
+            String uri = tuple.getValue("s").getContent();
+            sb.append(Core.getInstance().getCometeUrl() +
+                    "/rest/learningObjects/" + CoreUtil.getIdValue(uri) + "/html?lang=" +
+                        language + "&standalone=true\n");
+        }
+
+        return sb.toString();
+    }
 }

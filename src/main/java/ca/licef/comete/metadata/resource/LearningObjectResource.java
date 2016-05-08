@@ -233,4 +233,21 @@ public class LearningObjectResource {
         return (Response.ok().build());
     }
 
+
+    /* Sitemap Google */
+    @GET
+    @Path( "fr/sitemap.txt" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response frenchSitemap() throws Exception {
+        String sitemap = Metadata.getInstance().getLearningObjectsForSitemap("fr");
+        return (Response.ok(sitemap).build());
+    }
+
+    @GET
+    @Path( "en/sitemap.txt" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response englishSitemap() throws Exception {
+        String sitemap = Metadata.getInstance().getLearningObjectsForSitemap( "en" );
+        return (Response.ok(sitemap).build());
+    }
 }
