@@ -239,7 +239,7 @@
                                         <h2 class="BigSectionHeader"><xsl:value-of select="$ViewThisCardIn"/></h2>
                                         <a id="ViewThisCardIn">
                                             <xsl:attribute name="href"><xsl:value-of select="$standaloneCometeLink"/></xsl:attribute>
-                                            <img width="106" height="30">
+                                            <img width="120" height="47">
                                                 <xsl:attribute name="src"><xsl:value-of select="concat($imagePath, 'images/applicationLogo.png')"/></xsl:attribute>
                                                 <xsl:attribute name="title"><xsl:value-of select="$ViewThisCardIn"/></xsl:attribute>
                                                 <xsl:attribute name="alt"><xsl:value-of select="$ViewThisCardIn"/></xsl:attribute>
