@@ -696,7 +696,7 @@ public class Util {
         return( outputFile );
     }
 
-    public static String getMimeTypeIcon( String mimeType ) {
+    public static String getMimeTypeIcon( String mimeType, String isStandalone ) {
         String imagesPath = "images/mimeTypeIcons/";
         String path = webappPath + "/" + imagesPath;
         String iconFileStr = mimeType.replaceAll( "/", "_" ) + ".png";
@@ -714,6 +714,10 @@ public class Util {
                     effectiveIconFile = "default.png";
             }
         }
+
+        if ("true".equals(isStandalone))
+            imagesPath = "../../../" + imagesPath;
+
         return imagesPath + effectiveIconFile;
     }
 

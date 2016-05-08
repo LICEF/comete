@@ -33,13 +33,13 @@ import java.util.*;
  */
 public class LearningObjectView extends DefaultView {
 
-    public String getHtml(String uri, Locale locale, boolean isAdmin, String style) throws Exception {
+    public String getHtml(String uri, Locale locale, boolean isAdmin, String style, String isStandalone) throws Exception {
         TripleStore tripleStore = Core.getInstance().getTripleStore();
-        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.LearningObjectView", "doGetHtml", new Object[] { uri, locale, isAdmin, style } );
+        Invoker inv = new Invoker( this, "ca.licef.comete.metadata.LearningObjectView", "doGetHtml", new Object[] { uri, locale, isAdmin, style, isStandalone } );
         return( (String)tripleStore.transactionalCall( inv ) );
     }
     
-    public String doGetHtml(String uri, Locale locale, boolean isAdmin, String style) throws Exception {
+    public String doGetHtml(String uri, Locale locale, boolean isAdmin, String style, String isStandalone) throws Exception {
         Set contributes = new HashSet();
         HashMap contribRoles = new HashMap();
         HashMap contribOrganizations = new HashMap();
@@ -86,7 +86,7 @@ public class LearningObjectView extends DefaultView {
                 else
                     mimeType = firstFormat.substring( "http://purl.org/NET/mediatypes/".length() );
 
-                locationElement.setAttributeNS( CommonNamespaceContext.cometeNSURI, "icon", Util.getMimeTypeIcon( mimeType ) );
+                locationElement.setAttributeNS( CommonNamespaceContext.cometeNSURI, "icon", Util.getMimeTypeIcon( mimeType, isStandalone ) );
                 locationElement.setAttributeNS( CommonNamespaceContext.cometeNSURI, "mimeType", mimeType );
             }
             catch( IOException ioe ) {
@@ -224,6 +224,10 @@ public class LearningObjectView extends DefaultView {
         HashMap<String, String> params = new HashMap<String, String>();
         params.put( "uri", uri );
         params.put( "isAdmin", isAdmin + "" );
+        params.put( "isStandalone", isStandalone );
+        params.put( "imagePath", "true".equals(isStandalone)?"../../../":"" );
+        params.put( "standaloneCometeLink", Core.getInstance().getCometeUrl() +
+                "?lang=" + locale.getLanguage() + "&lo-uuid=" + CoreUtil.getIdValue(uri) );
 
         StreamSource source = new StreamSource( new StringReader( expandedXml ) );
         String str = ca.licef.comete.core.util.Util.applyXslToDocument( styleSheet, source, props, params, locale );

@@ -52,4 +52,6 @@
     <xsl:variable name="FullDatePattern" select="' le [D] [Mn] [Y]'"/>
     <xsl:variable name="Months" select="('janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre')"/>
 
+    <xsl:variable name="ViewThisCardIn" select="'Visualiser cette fiche dans'"/>
+
 </xsl:stylesheet>

@@ -29,11 +29,15 @@ public class LearningObjectResource {
     @GET
     @Path( "{id}/html" )
     @Produces( MediaType.TEXT_HTML )
-    public Response getLearningObjectAsHtml( @Context HttpServletRequest req, @PathParam( "id" ) String id, @DefaultValue( "en" ) @QueryParam( "lang" ) String lang, @DefaultValue( "default" ) @QueryParam( "style" ) String style ) throws Exception {
+    public Response getLearningObjectAsHtml( @Context HttpServletRequest req,
+                                             @PathParam( "id" ) String id,
+                                             @DefaultValue( "en" ) @QueryParam( "lang" ) String lang,
+                                             @DefaultValue( "default" ) @QueryParam( "style" ) String style,
+                                             @DefaultValue( "false" ) @QueryParam( "standalone" ) String standalone) throws Exception {
         boolean isAdmin = Security.getInstance().isAuthorized( req  );
         Locale locale = ( "fr".equals( lang ) ? Locale.FRENCH : Locale.ENGLISH );
         String loUri = ca.licef.comete.core.util.Util.makeURI(id, COMETE.LearningObject.getURI().toString());
-        String html = Metadata.getInstance().getLearningObjectView().getHtml( loUri, locale, isAdmin, style );
+        String html = Metadata.getInstance().getLearningObjectView().getHtml( loUri, locale, isAdmin, style, standalone );
         return Response.ok(html).build();
     }
 
