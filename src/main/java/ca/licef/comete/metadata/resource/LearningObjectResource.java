@@ -237,7 +237,7 @@ public class LearningObjectResource {
     /* Sitemap Google */
     @GET
     @Path( "fr/sitemap.txt" )
-    @Produces( MediaType.TEXT_PLAIN )
+    @Produces( MediaType.TEXT_PLAIN + ";charset=utf-8" )
     public Response frenchSitemap() throws Exception {
         String sitemap = Metadata.getInstance().getLearningObjectsForSitemap("fr");
         return (Response.ok(sitemap).build());
@@ -245,9 +245,9 @@ public class LearningObjectResource {
 
     @GET
     @Path( "en/sitemap.txt" )
-    @Produces( MediaType.TEXT_PLAIN )
+    @Produces( MediaType.TEXT_PLAIN + ";charset=utf-8" )
     public Response englishSitemap() throws Exception {
-        String sitemap = Metadata.getInstance().getLearningObjectsForSitemap( "en" );
+        String sitemap = Metadata.getInstance().getLearningObjectsForSitemap("en");
         return (Response.ok(sitemap).build());
     }
 }
