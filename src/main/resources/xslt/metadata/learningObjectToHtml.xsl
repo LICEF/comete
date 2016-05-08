@@ -18,6 +18,8 @@
 
     <xsl:param name="uri"/>
     <xsl:param name="isAdmin"/>
+    <xsl:param name="isStandalone"/>
+    <xsl:param name="imagePath"/>
 
     <xsl:variable name="lang" select="'en'"/>
     <xsl:variable name="title" select="'Resource'"/>
@@ -95,16 +97,29 @@
         <xsl:variable name="ampersand"><![CDATA[&]]></xsl:variable>
         <xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html></xsl:text>
         <html>
+            <xsl:if test="$isStandalone='true'">
+                <head>
+                    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                    <title><xsl:value-of select="$title" /></title>
+                    <link href="../../../ext-5.1.0/build/packages/ext-theme-crisp/build/resources/ext-theme-crisp-all.css" rel="stylesheet" type="text/css"/>
+                    <link href="../../../default.css" rel="stylesheet" type="text/css"/>
+                </head>
+            </xsl:if>
             <body id="LearningObjectBody" class="LearningObject">
+                <xsl:if test="$isStandalone='true'">
+                    <xsl:attribute name="style"><xsl:value-of select="'width:800px;font-family: helvetica,arial,verdana,sans-serif;font-size: 13px;'"/></xsl:attribute>
+                </xsl:if>
                 <div id="LearningObjectResource">
                 <xsl:attribute name="resource"><xsl:value-of select="$uri"/></xsl:attribute>
                 <div id="ResourceHeader">
                     <xsl:apply-templates select="foaf:page" mode="icon"/>
                     <p class="LearningObjectTitle">
                         <span id="LearningObjectResourceTitle" property="http://purl.org/dc/terms/title"><xsl:value-of select="$title"/></span>
-                        <xsl:call-template name="render-linked-data-link">
-                            <xsl:with-param name="uri" select="$uri"/>
-                        </xsl:call-template>
+                        <xsl:if test="$isStandalone!='true'">
+                            <xsl:call-template name="render-linked-data-link">
+                                <xsl:with-param name="uri" select="$uri"/>
+                            </xsl:call-template>
+                        </xsl:if>
                     </p>
                     <xsl:apply-templates select="foaf:page" mode="resFileType"/>
                 </div>
@@ -193,7 +208,23 @@
                                                 <ul>
                                                 <xsl:for-each select="current-group()">
                                                     <xsl:sort select="@conceptLabel" lang="$lang"/>
-                                                    <li><xsl:value-of select="@vocabLabel"/><img style="margin-bottom:-1px; margin-left:8px" src="images/split-arrow-tiny.png" width="12" height="17"/><span class="LearningResourceDetailHyperlink"><a class="RelatedLearningObjectsLink"><xsl:attribute name="href">javascript:setRequestVocConcept( '<xsl:value-of select="@rdf:resource"/>' );</xsl:attribute><xsl:value-of select="@conceptLabel"/></a></span></li>
+                                                    <li>
+                                                        <xsl:value-of select="@vocabLabel"/>
+                                                        <img style="margin-bottom:-1px; margin-left:8px" width="12" height="17">
+                                                            <xsl:attribute name="src"><xsl:value-of select="concat($imagePath, 'images/split-arrow-tiny.png')"/></xsl:attribute>
+                                                        </img>
+                                                        <span class="LearningResourceDetailHyperlink">
+                                                            <xsl:if test="$isStandalone!='true'">
+                                                                <a class="RelatedLearningObjectsLink">
+                                                                <xsl:attribute name="href">javascript:setRequestVocConcept( '<xsl:value-of select="@rdf:resource"/>' );</xsl:attribute><xsl:value-of select="@conceptLabel"/>
+                                                                </a>
+                                                            </xsl:if>
+                                                            <xsl:if test="$isStandalone='true'">
+                                                                    <span style="margin-left:8px"><xsl:value-of select="@conceptLabel"/></span>
+                                                            </xsl:if>
+
+                                                        </span>
+                                                    </li>
                                                 </xsl:for-each>
                                                 </ul>
                                         </xsl:for-each-group>
@@ -204,35 +235,41 @@
                     </tr>
                 </table>
 
-                <div class="Footer">
-                    <div id="SharingIcons">
-                        <h2 class="BigSectionHeader"><xsl:value-of select="$ShareResource"/></h2>
-                        <a id="ShareOnFacebookLink" target="_blank">
-                            <img src="images/shareOnFacebook.png" width="24" height="24">
-                                <xsl:attribute name="title"><xsl:value-of select="$ShareOnFacebook"/></xsl:attribute>
-                                <xsl:attribute name="alt"><xsl:value-of select="$ShareOnFacebook"/></xsl:attribute>
-                            </img>
-                        </a>
-                        <a id="ShareOnTwitter" target="_blank">
-                            <img src="images/shareOnTwitter.png" width="24" height="24">
-                                <xsl:attribute name="title"><xsl:value-of select="$ShareOnTwitter"/></xsl:attribute>
-                                <xsl:attribute name="alt"><xsl:value-of select="$ShareOnTwitter"/></xsl:attribute>
-                            </img>
-                        </a>
-                        <a id="ShareOnLinkedin" target="_blank">
-                            <img src="images/shareOnLinkedin.png" width="24" height="24">
-                                <xsl:attribute name="title"><xsl:value-of select="$ShareOnLinkedin"/></xsl:attribute>
-                                <xsl:attribute name="alt"><xsl:value-of select="$ShareOnLinkedin"/></xsl:attribute>
-                            </img>
-                        </a>
-                        <a id="ShareByEmail" target="_blank">
-                            <img src="images/shareByEmail.png" width="24" height="24">
-                                <xsl:attribute name="title"><xsl:value-of select="$ShareByEmail"/></xsl:attribute>
-                                <xsl:attribute name="alt"><xsl:value-of select="$ShareByEmail"/></xsl:attribute>
-                            </img>
-                        </a>
+                <xsl:if test="$isStandalone!='true'">
+                    <div class="Footer">
+                        <div id="SharingIcons">
+                            <h2 class="BigSectionHeader"><xsl:value-of select="$ShareResource"/></h2>
+                            <a id="ShareOnFacebookLink" target="_blank">
+                                <img width="24" height="24">
+                                    <xsl:attribute name="src"><xsl:value-of select="concat($imagePath, 'images/shareOnFacebook.png')"/></xsl:attribute>
+                                    <xsl:attribute name="title"><xsl:value-of select="$ShareOnFacebook"/></xsl:attribute>
+                                    <xsl:attribute name="alt"><xsl:value-of select="$ShareOnFacebook"/></xsl:attribute>
+                                </img>
+                            </a>
+                            <a id="ShareOnTwitter" target="_blank">
+                                <img width="24" height="24">
+                                    <xsl:attribute name="src"><xsl:value-of select="concat($imagePath, 'images/shareOnTwitter.png')"/></xsl:attribute>
+                                    <xsl:attribute name="title"><xsl:value-of select="$ShareOnTwitter"/></xsl:attribute>
+                                    <xsl:attribute name="alt"><xsl:value-of select="$ShareOnTwitter"/></xsl:attribute>
+                                </img>
+                            </a>
+                            <a id="ShareOnLinkedin" target="_blank">
+                                <img width="24" height="24">
+                                    <xsl:attribute name="src"><xsl:value-of select="concat($imagePath, 'images/shareOnLinkedin.png')"/></xsl:attribute>
+                                    <xsl:attribute name="title"><xsl:value-of select="$ShareOnLinkedin"/></xsl:attribute>
+                                    <xsl:attribute name="alt"><xsl:value-of select="$ShareOnLinkedin"/></xsl:attribute>
+                                </img>
+                            </a>
+                            <a id="ShareByEmail" target="_blank">
+                                <img width="24" height="24">
+                                    <xsl:attribute name="src"><xsl:value-of select="concat($imagePath, 'images/shareByEmail.png')"/></xsl:attribute>
+                                    <xsl:attribute name="title"><xsl:value-of select="$ShareByEmail"/></xsl:attribute>
+                                    <xsl:attribute name="alt"><xsl:value-of select="$ShareByEmail"/></xsl:attribute>
+                                </img>
+                            </a>
+                        </div>
                     </div>
-                </div>
+                </xsl:if>
                 </div>
             </body>
         </html>
@@ -282,7 +319,16 @@
                 <xsl:with-param name="string" select="."/>
             </xsl:call-template>
         </xsl:variable>
-        <li><span class="LearningResourceDetailHyperlink"><a><xsl:attribute name="href">javascript:setRequestKeyword( '<xsl:value-of select="$keyword"/>' );</xsl:attribute><xsl:value-of select="."/></a></span></li>
+        <li>
+            <span class="LearningResourceDetailHyperlink">
+                <xsl:if test="$isStandalone!='true'">
+                    <a><xsl:attribute name="href">javascript:setRequestKeyword( '<xsl:value-of select="$keyword"/>' );</xsl:attribute><xsl:value-of select="."/></a>
+                </xsl:if>
+                <xsl:if test="$isStandalone='true'">
+                    <xsl:value-of select="."/>
+                </xsl:if>
+            </span>
+        </li>
     </xsl:template>
 
     <xsl:template match="foaf:page" mode="icon">
@@ -303,7 +349,8 @@
 
     <xsl:template match="foaf:page" mode="link">
         <xsl:variable name="url" select="if( starts-with( @rdf:resource, 'http' ) ) then @rdf:resource else concat( 'http://', @rdf:resource )"/>
-        <a class="ResourceLink" target="_blank"><xsl:attribute name="href"><xsl:value-of select="$url"/></xsl:attribute><img height="38"><xsl:attribute name="src"><xsl:value-of select="concat('images/ViewResource_', $lang, '.png' )"/></xsl:attribute></img></a>
+        <a class="ResourceLink" target="_blank"><xsl:attribute name="href"><xsl:value-of select="$url"/></xsl:attribute><img height="38">
+            <xsl:attribute name="src"><xsl:value-of select="concat($imagePath, 'images/ViewResource_', $lang, '.png' )"/></xsl:attribute></img></a>
         <br clear="all"/>
     </xsl:template>
 
@@ -378,17 +425,20 @@
                     <xsl:with-param name="label" select="$name"/>
                     <xsl:with-param name="class" select="'CompactRelatedLearningObjectsLink'"/>
                 </xsl:call-template>
-                <a class="CompactContributeLink">
-                    <xsl:attribute name="href">javascript:showAdditionalIdentityInfo( '<xsl:value-of select="$identityLink"/>', 50, 50, 360, 360 );</xsl:attribute>
-                    <img src="images/details.png" width="16" height="16" style="margin-left: 4px; vertical-align: text-bottom;">
-                        <xsl:attribute name="alt"><xsl:value-of select="$ContributeLinkLabel"/></xsl:attribute>
-                        <xsl:attribute name="title"><xsl:value-of select="$ContributeLinkLabel"/></xsl:attribute>
-                    </img>
-                </a>
-                <xsl:call-template name="render-linked-data-link">
-                    <xsl:with-param name="uri" select="$uri"/>
-                    <xsl:with-param name="class" select="'CompactLinkedDataLink'"/>
-                </xsl:call-template>
+                <xsl:if test="$isStandalone!='true'">
+                    <a class="CompactContributeLink">
+                        <xsl:attribute name="href">javascript:showAdditionalIdentityInfo( '<xsl:value-of select="$identityLink"/>', 50, 50, 360, 360 );</xsl:attribute>
+                        <img width="16" height="16" style="margin-left: 4px; vertical-align: text-bottom;">
+                            <xsl:attribute name="src"><xsl:value-of select="concat($imagePath, 'images/details.png')"/></xsl:attribute>
+                            <xsl:attribute name="alt"><xsl:value-of select="$ContributeLinkLabel"/></xsl:attribute>
+                            <xsl:attribute name="title"><xsl:value-of select="$ContributeLinkLabel"/></xsl:attribute>
+                        </img>
+                    </a>
+                    <xsl:call-template name="render-linked-data-link">
+                        <xsl:with-param name="uri" select="$uri"/>
+                        <xsl:with-param name="class" select="'CompactLinkedDataLink'"/>
+                    </xsl:call-template>
+                </xsl:if>
             </span>
             <xsl:if test="$roles">
                 <xsl:variable name="strRoles">
@@ -437,11 +487,16 @@
         <xsl:param name="class" select="'RelatedLearningObjectsLink'"/>
         <xsl:variable name="functionName" select="if( contains( $uri, 'person' ) ) then 'setRequestContributor' else 'setRequestOrganization'"/>
         <xsl:variable name="title" select="if( contains( $uri, 'person' ) ) then $RelatedLearningObjectsToContribLinkLabel else $RelatedLearningObjectsToOrgLinkLabel"/>
-        <span class="LearningResourceDetailHyperlink"><a>
-            <xsl:attribute name="class"><xsl:value-of select="$class"/></xsl:attribute>
-            <xsl:attribute name="href">javascript:<xsl:value-of select="$functionName"/>( '<xsl:value-of select="$uri"/>', '<xsl:value-of select="replace( $label, '''', '\\''' )"/>' );</xsl:attribute>
-            <xsl:value-of select="$label"/>
-        </a></span>
+        <span class="LearningResourceDetailHyperlink">
+            <xsl:if test="$isStandalone!='true'">
+                <a><xsl:attribute name="class"><xsl:value-of select="$class"/></xsl:attribute>
+                <xsl:attribute name="href">javascript:<xsl:value-of select="$functionName"/>( '<xsl:value-of select="$uri"/>', '<xsl:value-of select="replace( $label, '''', '\\''' )"/>' );</xsl:attribute>
+                <xsl:value-of select="$label"/></a>
+            </xsl:if>
+            <xsl:if test="$isStandalone='true'">
+                <xsl:value-of select="$label"/>
+            </xsl:if>
+        </span>
     </xsl:template>
 
     <xsl:template name="render-linked-data-link">
@@ -455,7 +510,8 @@
         <a target="_blank">
             <xsl:attribute name="class"><xsl:value-of select="$class"/></xsl:attribute>
             <xsl:attribute name="href"><xsl:value-of select="$uri"/></xsl:attribute>
-            <img src="images/rdf.png" width="16" height="16" style="margin-left: 4px; vertical-align: text-bottom;">
+            <img width="16" height="16" style="margin-left: 4px; vertical-align: text-bottom;">
+                <xsl:attribute name="src"><xsl:value-of select="concat($imagePath, 'images/rdf.png')"/></xsl:attribute>
                 <xsl:attribute name="alt"><xsl:value-of select="$title"/></xsl:attribute>
                 <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
             </img>

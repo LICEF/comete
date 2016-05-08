@@ -210,7 +210,7 @@ public class QueryEngine {
                     mimetype = IOUtil.getMimeType(location);
                 else
                     mimetype = format.substring( "http://purl.org/NET/mediatypes/".length() );
-                image = CoreUtil.getMimeTypeIcon(mimetype);
+                image = CoreUtil.getMimeTypeIcon(mimetype, "false");
             }
             //
 
