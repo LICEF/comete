@@ -118,11 +118,9 @@
                     <xsl:apply-templates select="foaf:page" mode="icon"/>
                     <p class="LearningObjectTitle">
                         <span id="LearningObjectResourceTitle" property="http://purl.org/dc/terms/title"><xsl:value-of select="$title"/></span>
-                        <xsl:if test="$isStandalone!='true'">
-                            <xsl:call-template name="render-linked-data-link">
-                                <xsl:with-param name="uri" select="$uri"/>
-                            </xsl:call-template>
-                        </xsl:if>
+                        <xsl:call-template name="render-linked-data-link">
+                            <xsl:with-param name="uri" select="$uri"/>
+                        </xsl:call-template>
                     </p>
                     <xsl:apply-templates select="foaf:page" mode="resFileType"/>
                 </div>
