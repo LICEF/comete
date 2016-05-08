@@ -226,6 +226,8 @@ public class LearningObjectView extends DefaultView {
         params.put( "isAdmin", isAdmin + "" );
         params.put( "isStandalone", isStandalone );
         params.put( "imagePath", "true".equals(isStandalone)?"../../../":"" );
+        params.put( "standaloneCometeLink", Core.getInstance().getCometeUrl() +
+                "?lang=" + locale.getLanguage() + "&lo-uuid=" + CoreUtil.getIdValue(uri) );
 
         StreamSource source = new StreamSource( new StringReader( expandedXml ) );
         String str = ca.licef.comete.core.util.Util.applyXslToDocument( styleSheet, source, props, params, locale );

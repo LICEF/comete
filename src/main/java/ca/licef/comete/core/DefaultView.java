@@ -26,7 +26,7 @@ import java.util.Locale;
 
 public class DefaultView implements ResourceView {
 
-    static ca.licef.comete.core.util.Util CoreUtil;
+    public static ca.licef.comete.core.util.Util CoreUtil;
 
     TripleStore tripleStore = Core.getInstance().getTripleStore();
 

@@ -20,6 +20,7 @@
     <xsl:param name="isAdmin"/>
     <xsl:param name="isStandalone"/>
     <xsl:param name="imagePath"/>
+    <xsl:param name="standaloneCometeLink"/>
 
     <xsl:variable name="lang" select="'en'"/>
     <xsl:variable name="title" select="'Resource'"/>
@@ -68,6 +69,8 @@
     <xsl:variable name="PartialDateDelimiter" select="', '"/>
     <xsl:variable name="FullDatePattern" select="' on [MNn] [D], [Y]'"/>
     <xsl:variable name="Months" select="('January','February','March','April','May','June','July','August','September','October','November','December')"/>
+
+    <xsl:variable name="ViewThisCardIn" select="'View this card in'"/>
 
     <xsl:template match="/">
         <xsl:apply-templates select="rdf:RDF/rdf:Description[@rdf:about=$uri]" mode="learningObject"/>
@@ -230,6 +233,20 @@
                                         </xsl:for-each-group>
                                     </xsl:if>
                                 </div>
+
+                                <xsl:if test="$isStandalone='true'">
+                                    <div style="margin-top: 100px">
+                                        <h2 class="BigSectionHeader"><xsl:value-of select="$ViewThisCardIn"/></h2>
+                                        <a id="ViewThisCardIn">
+                                            <xsl:attribute name="href"><xsl:value-of select="$standaloneCometeLink"/></xsl:attribute>
+                                            <img width="106" height="30">
+                                                <xsl:attribute name="src"><xsl:value-of select="concat($imagePath, 'images/applicationLogo.png')"/></xsl:attribute>
+                                                <xsl:attribute name="title"><xsl:value-of select="$ViewThisCardIn"/></xsl:attribute>
+                                                <xsl:attribute name="alt"><xsl:value-of select="$ViewThisCardIn"/></xsl:attribute>
+                                            </img>
+                                        </a>
+                                    </div>
+                                </xsl:if>
                             </td>
                         </xsl:if>
                     </tr>
