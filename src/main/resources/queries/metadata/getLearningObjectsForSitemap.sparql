@@ -5,6 +5,8 @@ PREFIX comete: <http://comete.licef.ca/reference#>
 SELECT ?s
 WHERE '{'
     ?s rdf:type comete:LearningObject .
-    ?s dcterms:language "{0}"
+    ?s dcterms:language ?lg .
+    FILTER STRSTARTS( ?lg, "{0}" )
+    FILTER( NOT EXISTS '{' ?s comete:flag ?flag '}' || EXISTS '{' ?s comete:flag "forcedDiffusion" '}' )
 '}'
 
